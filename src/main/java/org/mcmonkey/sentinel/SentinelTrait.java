@@ -71,6 +71,12 @@ public class SentinelTrait extends Trait {
     @Persist("entityNameIgnores")
     public List<String> entityNameIgnores = new ArrayList<String>();
 
+    @Persist("heldItemTargets")
+    public List<String> heldItemTargets = new ArrayList<String>();
+
+    @Persist("heldItemIgnores")
+    public List<String> heldItemIgnores = new ArrayList<String>();
+
     @Persist("range")
     public double range = 20;
 
@@ -421,6 +427,10 @@ public class SentinelTrait extends Trait {
                 return true;
             }
         }
+        if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
+                && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemIgnores)) {
+            return true;
+        }
         return false;
     }
 
@@ -445,6 +455,10 @@ public class SentinelTrait extends Trait {
             if (targets.contains(poss)) {
                 return true;
             }
+        }
+        if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
+                && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemTargets)) {
+            return true;
         }
         return false;
     }

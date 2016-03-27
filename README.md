@@ -50,11 +50,10 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - Mounting:
 	- Ride a horse or whatever other NPC
 	- maybe support this in base Citizens rather than Sentinel?
-- Targets:
-	- Items (EG, "Sword" or "Diamond_Sword") being held: `helditem:ITEM_MATERIAL_NAME` (Regex!)
 - Commands:
 	- `/sentinel stats`
 	- `/sentinel fightback`
+	- maybe `/sentinel targets` separate from `info`
 - Other:
 	- old Sentry saves importer?
 

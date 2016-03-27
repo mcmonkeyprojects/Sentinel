@@ -91,6 +91,9 @@ public class SentinelPlugin extends JavaPlugin {
                     else if (info[0].equalsIgnoreCase("entityname")) {
                         names = sentinel.entityNameTargets;
                     }
+                    else if (info[0].equalsIgnoreCase("helditem")) {
+                        names = sentinel.heldItemTargets;
+                    }
                     try {
                         if ("Sentinel".matches(info[1])) {
                             ignoreMe++;
@@ -117,7 +120,7 @@ public class SentinelPlugin extends JavaPlugin {
                     valid.append(poss.name()).append(", ");
                 }
                 sender.sendMessage(prefixGood + "Valid targets: " + valid.substring(0, valid.length() - 2));
-                sender.sendMessage(prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX)");
+                sender.sendMessage(prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX)");
             }
             else {
                 if (sentinel.targets.add(target)) {
@@ -144,6 +147,9 @@ public class SentinelPlugin extends JavaPlugin {
                     else if (info[0].equalsIgnoreCase("entityname")) {
                         names = sentinel.entityNameTargets;
                     }
+                    else if (info[0].equalsIgnoreCase("helditem")) {
+                        names = sentinel.heldItemTargets;
+                    }
                     try {
                         if ("Sentinel".matches(info[1])) {
                             ignoreMe++;
@@ -164,7 +170,7 @@ public class SentinelPlugin extends JavaPlugin {
                     }
                 }
                 sender.sendMessage(prefixBad + "Invalid target!");
-                sender.sendMessage(prefixGood + "See '/sentinel addtarget' to view valid targets!");
+                sender.sendMessage(prefixGood + "See '/sentinel addtarget help' to view valid targets!");
             }
             else {
                 if (sentinel.targets.remove(target)) {
@@ -191,6 +197,9 @@ public class SentinelPlugin extends JavaPlugin {
                     else if (info[0].equalsIgnoreCase("entityname")) {
                         names = sentinel.entityNameIgnores;
                     }
+                    else if (info[0].equalsIgnoreCase("helditem")) {
+                        names = sentinel.heldItemIgnores;
+                    }
                     try {
                         if ("Sentinel".matches(info[1])) {
                             ignoreMe++;
@@ -212,7 +221,7 @@ public class SentinelPlugin extends JavaPlugin {
                     }
                 }
                 sender.sendMessage(prefixBad + "Invalid ignore target!");
-                sender.sendMessage(prefixGood + "See '/sentinel addtarget' to view valid targets!");
+                sender.sendMessage(prefixGood + "See '/sentinel addtarget help' to view valid targets!");
             }
             else {
                 if (sentinel.ignores.add(target)) {
@@ -239,6 +248,9 @@ public class SentinelPlugin extends JavaPlugin {
                     else if (info[0].equalsIgnoreCase("entityname")) {
                         names = sentinel.entityNameIgnores;
                     }
+                    else if (info[0].equalsIgnoreCase("helditem")) {
+                        names = sentinel.heldItemIgnores;
+                    }
                     try {
                         if ("Sentinel".matches(info[1])) {
                             ignoreMe++;
@@ -259,7 +271,7 @@ public class SentinelPlugin extends JavaPlugin {
                     }
                 }
                 sender.sendMessage(prefixBad + "Invalid ignore target!");
-                sender.sendMessage(prefixGood + "See '/sentinel addtarget' to view valid targets!");
+                sender.sendMessage(prefixGood + "See '/sentinel addtarget help' to view valid targets!");
             }
             else {
                 if (sentinel.ignores.remove(target)) {
@@ -368,10 +380,12 @@ public class SentinelPlugin extends JavaPlugin {
             sender.sendMessage(prefixGood + "Player Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.playerNameTargets));
             sender.sendMessage(prefixGood + "NPC Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.npcNameTargets));
             sender.sendMessage(prefixGood + "Entity Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.entityNameTargets));
+            sender.sendMessage(prefixGood + "Held Item Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.heldItemTargets));
             sender.sendMessage(prefixGood + "Ignored Targets: " + ChatColor.AQUA + getTargetString(sentinel.ignores));
             sender.sendMessage(prefixGood + "Ignored Player Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.playerNameIgnores));
             sender.sendMessage(prefixGood + "Ignored NPC Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.npcNameIgnores));
             sender.sendMessage(prefixGood + "Ignored Entity Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.entityNameIgnores));
+            sender.sendMessage(prefixGood + "Ignored Held Item Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.heldItemIgnores));
             sender.sendMessage(prefixGood + "Damage: " + ChatColor.AQUA + sentinel.damage);
             sender.sendMessage(prefixGood + "Armor: " + ChatColor.AQUA + sentinel.armor);
             sender.sendMessage(prefixGood + "Health: " + ChatColor.AQUA +
