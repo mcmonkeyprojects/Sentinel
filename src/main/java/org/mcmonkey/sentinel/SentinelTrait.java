@@ -365,6 +365,12 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean shouldTarget(LivingEntity entity) {
+        if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            return false;
+        }
+        if (entity.hasMetadata("NPC")) {
+            return targets.contains(SentinelTarget.NPCS);
+        }
         return isTargeted(entity) && !isIgnored(entity);
     }
 

@@ -5,6 +5,7 @@ import org.bukkit.entity.EntityType;
     import java.util.HashSet;
 
     public enum SentinelTarget {
+        NPCS(new EntityType[] {}, "NPC"),
         PASSIVE_MOB(new EntityType[] {
                 EntityType.PIG, EntityType.OCELOT, EntityType.COW, EntityType.RABBIT, EntityType.SHEEP, EntityType.CHICKEN, EntityType.MUSHROOM_COW,
                 EntityType.HORSE, EntityType.IRON_GOLEM, EntityType.SQUID, EntityType.VILLAGER, EntityType.WOLF, EntityType.SNOWMAN},

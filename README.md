@@ -53,8 +53,8 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - Targets:
 	- Player by name: `player:NAME`
 	- NPC by name: `npc:NAME`
-	- NPCs in general: `npcs`
 	- Items (EG, "Sword" or "Diamond_Sword") being held: `helditem:ITEM_MATERIAL_NAME`
+	- The NPC's owner (For easy ignoring, default ignore status!) `OWNER`
 - Commands:
 	- `/sentinel stats`
 	
