@@ -25,6 +25,8 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- Run command: /sentinel help
 		- This will list all your options to edit the NPC's Sentinel settings.
 			- Play with them freely, just be careful if you have other players around!
+- Examples:
+	- To make your NPC attack sword wielders, use `/sentinel addtarget helditem:.*sword`
 
 ### Supported things
 

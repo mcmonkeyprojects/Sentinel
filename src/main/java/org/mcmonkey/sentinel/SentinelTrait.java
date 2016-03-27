@@ -8,7 +8,6 @@ import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_9_R1.Overridden;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -19,6 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class SentinelTrait extends Trait {
 
@@ -398,7 +398,8 @@ public class SentinelTrait extends Trait {
 
     public boolean isRegexTargeted(String name, List<String> regexes) {
         for (String str: regexes) {
-            if (name.matches(str)) {
+            Pattern pattern = Pattern.compile(str, Pattern.CASE_INSENSITIVE);
+            if (pattern.matcher(name).matches()) {
                 return true;
             }
         }
