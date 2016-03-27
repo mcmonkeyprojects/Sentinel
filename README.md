@@ -48,6 +48,12 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - Mounting:
 	- Ride a horse or whatever other NPC
 	- maybe support this in base Citizens rather than Sentinel?
+- Targets:
+	- Player by name: `player:NAME`
+	- NPC by name: `npc:NAME`
+	- NPCs in general: `npcs`
+	- Items (EG, "Sword" or "Diamond_Sword") being held: `helditem:ITEM_MATERIAL_NAME`
+	
 
 ### Need help using Sentinel? Try one of these places:
 
