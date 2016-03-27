@@ -37,8 +37,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 ### TODO
 
 - Weapons:
-	- lingering potions
-		- Just... throw the potions at things
+	- Stick calls down lightning
 - Ammo:
 	- Basically, optionally require ammo be fed into the NPC for bows/fireballs, or spare swords if the current sword breaks.
 - Damage calculation:

@@ -153,9 +153,10 @@ public class SentinelTrait extends Trait {
     public void firePotion(ItemStack potion, Location target, Vector lead) {
         stats_potionsThrown++;
         HashMap.SimpleEntry<Location, Vector> start = getLaunchDetail(target, lead);
-        Entity entpotion = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.SPLASH_POTION);
-        ((SplashPotion) entpotion).setShooter(getLivingEntity());
-        ((SplashPotion) entpotion).setItem(potion);
+        Entity entpotion = start.getKey().getWorld().spawnEntity(start.getKey(),
+                potion.getType() == Material.SPLASH_POTION ? EntityType.SPLASH_POTION: EntityType.LINGERING_POTION);
+        ((ThrownPotion) entpotion).setShooter(getLivingEntity());
+        ((ThrownPotion) entpotion).setItem(potion);
         entpotion.setVelocity(start.getValue());
         swingWeapon();
     }
@@ -299,8 +300,8 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean usesPotion() {
-        // TODO: Use as valid weapon!
-        return getLivingEntity().getEquipment().getItemInMainHand().getType() == Material.SPLASH_POTION;
+        Material type = getLivingEntity().getEquipment().getItemInMainHand().getType();
+        return type == Material.SPLASH_POTION || type == Material.LINGERING_POTION;
     }
 
     public boolean shouldTarget(LivingEntity entity) {
