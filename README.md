@@ -37,7 +37,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 ### TODO
 
 - Weapons:
-	- splash potions
+	- lingering potions
 		- Just... throw the potions at things
 - Ammo:
 	- Basically, optionally require ammo be fed into the NPC for bows/fireballs, or spare swords if the current sword breaks.
@@ -53,6 +53,8 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- NPC by name: `npc:NAME`
 	- NPCs in general: `npcs`
 	- Items (EG, "Sword" or "Diamond_Sword") being held: `helditem:ITEM_MATERIAL_NAME`
+- Commands:
+	- `/sentinel stats`
 	
 
 ### Need help using Sentinel? Try one of these places:

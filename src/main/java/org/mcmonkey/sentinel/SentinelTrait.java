@@ -12,7 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class SentinelTrait extends Trait {
 
@@ -28,6 +30,9 @@ public class SentinelTrait extends Trait {
 
     @Persist("stats_arrowsFired")
     public long stats_arrowsFired = 0;
+
+    @Persist("stats_potionsThrow")
+    public long stats_potionsThrown = 0;
 
     @Persist("stats_fireballsFired")
     public long stats_fireballsFired = 0;
@@ -106,8 +111,7 @@ public class SentinelTrait extends Trait {
         }
     }
 
-    public void fireArrow(Location target, Vector lead) {
-        stats_arrowsFired++;
+    public HashMap.SimpleEntry<Location, Vector> getLaunchDetail(Location target, Vector lead) {
         double speed;
         npc.faceLocation(target);
         double angt = -1;
@@ -119,7 +123,7 @@ public class SentinelTrait extends Trait {
             }
         }
         if (Double.isInfinite(angt)) {
-            return;
+            return null;
         }
         double hangT = SentinelUtilities.hangtime(angt, speed, target.getY() - start.getY(), 20);
         Location to = target.clone().add(lead.clone().multiply(hangT));
@@ -135,7 +139,7 @@ public class SentinelTrait extends Trait {
             }
         }
         if (Double.isInfinite(angt)) {
-            return;
+            return null;
         }
         relative.setY(Math.tan(angt) * deltaXZ);
         relative = relative.normalize();
@@ -143,9 +147,25 @@ public class SentinelTrait extends Trait {
         speed = speed + (1.188 * hangT * hangT);
         relative = relative.multiply(speed / 20.0);
         start.setDirection(normrel);
-        Entity arrow = start.getWorld().spawnEntity(start, EntityType.ARROW);
+        return new HashMap.SimpleEntry<Location, Vector>(start, relative);
+    }
+
+    public void firePotion(ItemStack potion, Location target, Vector lead) {
+        stats_potionsThrown++;
+        HashMap.SimpleEntry<Location, Vector> start = getLaunchDetail(target, lead);
+        Entity entpotion = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.SPLASH_POTION);
+        ((SplashPotion) entpotion).setShooter(getLivingEntity());
+        ((SplashPotion) entpotion).setItem(potion);
+        entpotion.setVelocity(start.getValue());
+        swingWeapon();
+    }
+
+    public void fireArrow(Location target, Vector lead) {
+        stats_arrowsFired++;
+        HashMap.SimpleEntry<Location, Vector> start = getLaunchDetail(target, lead);
+        Entity arrow = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.ARROW);
         ((Projectile)arrow).setShooter(getLivingEntity());
-        arrow.setVelocity(normrel);
+        arrow.setVelocity(start.getValue());
         // TODO: Apply damage amount!
         // TODO: Prevent pick up if needed!
         useItem();
@@ -202,7 +222,22 @@ public class SentinelTrait extends Trait {
                 }
                 timeSinceAttack = 0;
                 // TODO: Consume ammo if needed!
-                fireArrow(entity.getEyeLocation(), entity.getVelocity()); // TODO: Better leading calculation?
+                fireArrow(entity.getEyeLocation(), entity.getVelocity());
+            }
+            else if (rangedChase) {
+                chase(entity);
+            }
+        }
+        else if (usesPotion()) {
+            double distsq = entity.getLocation().distanceSquared(getLivingEntity().getLocation());
+            if (canSee(entity)) {
+                if (timeSinceAttack < attackRate) {
+                    return;
+                }
+                timeSinceAttack = 0;
+                // TODO: Consume ammo if needed!
+                firePotion(getLivingEntity().getEquipment().getItemInMainHand(),
+                        entity.getEyeLocation(), entity.getVelocity());
             }
             else if (rangedChase) {
                 chase(entity);
