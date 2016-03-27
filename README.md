@@ -32,6 +32,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - Weapons:
 	- Fists
 	- Bow
+		- equip NPC with arrows of any given type in their inventory to to set fired arrow type!
 	- Blaze rod (shoots fire balls!)
 	- Potions (splash, lingering)
 	- Nether star (strikes lightning!)

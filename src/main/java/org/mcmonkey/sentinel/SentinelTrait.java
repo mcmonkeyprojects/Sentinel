@@ -8,7 +8,11 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_9_R1.Overridden;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -161,11 +165,19 @@ public class SentinelTrait extends Trait {
         swingWeapon();
     }
 
-    public void fireArrow(Location target, Vector lead) {
+    public void fireArrow(ItemStack type, Location target, Vector lead) {
         stats_arrowsFired++;
         HashMap.SimpleEntry<Location, Vector> start = getLaunchDetail(target, lead);
-        Entity arrow = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.ARROW);
+        Entity arrow = start.getKey().getWorld().spawnEntity(start.getKey(),
+                type.getType() == Material.SPECTRAL_ARROW ? EntityType.SPECTRAL_ARROW :
+                        (type.getType() == Material.TIPPED_ARROW ? EntityType.TIPPED_ARROW : EntityType.ARROW));
         ((Projectile)arrow).setShooter(getLivingEntity());
+        if (arrow instanceof TippedArrow) {
+            ((TippedArrow)arrow).setBasePotionData(((PotionMeta)type.getItemMeta()).getBasePotionData());
+            for (PotionEffect effect: ((PotionMeta)type.getItemMeta()).getCustomEffects()) {
+                ((TippedArrow)arrow).addCustomEffect(effect, true);
+            }
+        }
         arrow.setVelocity(start.getValue());
         // TODO: Apply damage amount!
         // TODO: Prevent pick up if needed!
@@ -214,6 +226,22 @@ public class SentinelTrait extends Trait {
         npc.getNavigator().setTarget(entity.getLocation());
     }
 
+    public ItemStack getArrow() {
+        if (getLivingEntity() instanceof InventoryHolder) {
+            Inventory inv = ((InventoryHolder)getLivingEntity()).getInventory();
+            for (int i = 0; i < inv.getSize(); i++) {
+                ItemStack item = inv.getItem(i);
+                if (item != null) {
+                    Material mat = item.getType();
+                    if (mat == Material.ARROW || mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW) {
+                        return item;
+                    }
+                }
+            }
+        }
+        return new ItemStack(Material.ARROW);
+    }
+
     public void tryAttack(LivingEntity entity) {
         stats_attackAttempts++;
         if (usesBow()) {
@@ -223,7 +251,7 @@ public class SentinelTrait extends Trait {
                 }
                 timeSinceAttack = 0;
                 // TODO: Consume ammo if needed!
-                fireArrow(entity.getEyeLocation(), entity.getVelocity());
+                fireArrow(getArrow(), entity.getEyeLocation(), entity.getVelocity());
             }
             else if (rangedChase) {
                 chase(entity);
