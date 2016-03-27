@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class SentinelPlugin extends JavaPlugin {
 
@@ -65,6 +66,8 @@ public class SentinelPlugin extends JavaPlugin {
         return null;
     }
 
+    private long ignoreMe = 0;
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         String arg0 = args.length > 0 ? args[0].toLowerCase(): "help";
@@ -76,12 +79,45 @@ public class SentinelPlugin extends JavaPlugin {
         else if (arg0.equals("addtarget") && sender.hasPermission("sentinel.addtarget") && args.length > 1) {
             SentinelTarget target = SentinelTarget.forName(args[1].toUpperCase());
             if (target == null) {
+                String[] info = args[1].split(":", 2);
+                if (info.length > 1) {
+                    List<String> names = null;
+                    if (info[0].equalsIgnoreCase("player")) {
+                        names = sentinel.playerNameTargets;
+                    }
+                    else if (info[0].equalsIgnoreCase("npc")) {
+                        names = sentinel.npcNameTargets;
+                    }
+                    else if (info[0].equalsIgnoreCase("entityname")) {
+                        names = sentinel.entityNameTargets;
+                    }
+                    try {
+                        if ("Sentinel".matches(info[1])) {
+                            ignoreMe++;
+                        }
+                    }
+                    catch (Exception e) {
+                        names = null;
+                        sender.sendMessage(prefixBad + "Bad regular expression!");
+                    }
+                    if (names != null) {
+                        if (names.contains(info[1])) {
+                            sender.sendMessage(prefixBad + "Already tracking that name target!");
+                        }
+                        else {
+                            names.add(info[1]);
+                            sender.sendMessage(prefixGood + "Tracking new target!");
+                        }
+                        return true;
+                    }
+                }
                 sender.sendMessage(prefixBad + "Invalid target!");
                 StringBuilder valid = new StringBuilder();
                 for (SentinelTarget poss: SentinelTarget.values()) {
                     valid.append(poss.name()).append(", ");
                 }
                 sender.sendMessage(prefixGood + "Valid targets: " + valid.substring(0, valid.length() - 2));
+                sender.sendMessage(prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX)");
             }
             else {
                 if (sentinel.targets.add(target)) {
@@ -96,12 +132,39 @@ public class SentinelPlugin extends JavaPlugin {
         else if (arg0.equals("removetarget") && sender.hasPermission("sentinel.removetarget") && args.length > 1) {
             SentinelTarget target = SentinelTarget.forName(args[1].toUpperCase());
             if (target == null) {
-                sender.sendMessage(prefixBad + "Invalid target!");
-                StringBuilder valid = new StringBuilder();
-                for (SentinelTarget poss: SentinelTarget.values()) {
-                    valid.append(poss.name()).append(", ");
+                String[] info = args[1].split(":", 2);
+                if (info.length > 1) {
+                    List<String> names = null;
+                    if (info[0].equalsIgnoreCase("player")) {
+                        names = sentinel.playerNameTargets;
+                    }
+                    else if (info[0].equalsIgnoreCase("npc")) {
+                        names = sentinel.npcNameTargets;
+                    }
+                    else if (info[0].equalsIgnoreCase("entityname")) {
+                        names = sentinel.entityNameTargets;
+                    }
+                    try {
+                        if ("Sentinel".matches(info[1])) {
+                            ignoreMe++;
+                        }
+                    }
+                    catch (Exception e) {
+                        names = null;
+                        sender.sendMessage(prefixBad + "Bad regular expression!");
+                    }
+                    if (names != null) {
+                        if (!names.remove(info[1])) {
+                            sender.sendMessage(prefixBad + "Not tracking that name target!");
+                        }
+                        else {
+                            sender.sendMessage(prefixGood + "No longer tracking that target!");
+                        }
+                        return true;
+                    }
                 }
-                sender.sendMessage(prefixGood + "Valid targets: " + valid.substring(0, valid.length() - 2));
+                sender.sendMessage(prefixBad + "Invalid target!");
+                sender.sendMessage(prefixGood + "See '/sentinel addtarget' to view valid targets!");
             }
             else {
                 if (sentinel.targets.remove(target)) {
@@ -116,12 +179,40 @@ public class SentinelPlugin extends JavaPlugin {
         else if (arg0.equals("addignore") && sender.hasPermission("sentinel.addignore") && args.length > 1) {
             SentinelTarget target = SentinelTarget.forName(args[1].toUpperCase());
             if (target == null) {
-                sender.sendMessage(prefixBad + "Invalid ignore target!");
-                StringBuilder valid = new StringBuilder();
-                for (SentinelTarget poss: SentinelTarget.values()) {
-                    valid.append(poss.name()).append(", ");
+                String[] info = args[1].split(":", 2);
+                if (info.length > 1) {
+                    List<String> names = null;
+                    if (info[0].equalsIgnoreCase("player")) {
+                        names = sentinel.playerNameIgnores;
+                    }
+                    else if (info[0].equalsIgnoreCase("npc")) {
+                        names = sentinel.npcNameIgnores;
+                    }
+                    else if (info[0].equalsIgnoreCase("entityname")) {
+                        names = sentinel.entityNameIgnores;
+                    }
+                    try {
+                        if ("Sentinel".matches(info[1])) {
+                            ignoreMe++;
+                        }
+                    }
+                    catch (Exception e) {
+                        names = null;
+                        sender.sendMessage(prefixBad + "Bad regular expression!");
+                    }
+                    if (names != null) {
+                        if (!names.contains(info[1])) {
+                            sender.sendMessage(prefixBad + "Already ignoring that name target!");
+                        }
+                        else {
+                            names.add(info[1]);
+                            sender.sendMessage(prefixGood + "Ignoring new target!");
+                        }
+                        return true;
+                    }
                 }
-                sender.sendMessage(prefixGood + "Valid ignore targets: " + valid.substring(0, valid.length() - 2));
+                sender.sendMessage(prefixBad + "Invalid ignore target!");
+                sender.sendMessage(prefixGood + "See '/sentinel addtarget' to view valid targets!");
             }
             else {
                 if (sentinel.ignores.add(target)) {
@@ -136,12 +227,39 @@ public class SentinelPlugin extends JavaPlugin {
         else if (arg0.equals("removeignore") && sender.hasPermission("sentinel.removeignore") && args.length > 1) {
             SentinelTarget target = SentinelTarget.forName(args[1].toUpperCase());
             if (target == null) {
-                sender.sendMessage(prefixBad + "Invalid ignore target!");
-                StringBuilder valid = new StringBuilder();
-                for (SentinelTarget poss: SentinelTarget.values()) {
-                    valid.append(poss.name()).append(", ");
+                String[] info = args[1].split(":", 2);
+                if (info.length > 1) {
+                    List<String> names = null;
+                    if (info[0].equalsIgnoreCase("player")) {
+                        names = sentinel.playerNameIgnores;
+                    }
+                    else if (info[0].equalsIgnoreCase("npc")) {
+                        names = sentinel.npcNameIgnores;
+                    }
+                    else if (info[0].equalsIgnoreCase("entityname")) {
+                        names = sentinel.entityNameIgnores;
+                    }
+                    try {
+                        if ("Sentinel".matches(info[1])) {
+                            ignoreMe++;
+                        }
+                    }
+                    catch (Exception e) {
+                        names = null;
+                        sender.sendMessage(prefixBad + "Bad regular expression!");
+                    }
+                    if (names != null) {
+                        if (!names.remove(info[1])) {
+                            sender.sendMessage(prefixBad + "Was not ignoring that name target!");
+                        }
+                        else {
+                            sender.sendMessage(prefixGood + "Not ignoring that target along longer!");
+                        }
+                        return true;
+                    }
                 }
-                sender.sendMessage(prefixGood + "Valid ignore targets: " + valid.substring(0, valid.length() - 2));
+                sender.sendMessage(prefixBad + "Invalid ignore target!");
+                sender.sendMessage(prefixGood + "See '/sentinel addtarget' to view valid targets!");
             }
             else {
                 if (sentinel.ignores.remove(target)) {
@@ -247,7 +365,13 @@ public class SentinelPlugin extends JavaPlugin {
             sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
                     + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()));
             sender.sendMessage(prefixGood + "Targets: " + ChatColor.AQUA + getTargetString(sentinel.targets));
-            sender.sendMessage(prefixGood + "Ignored targets: " + ChatColor.AQUA + getTargetString(sentinel.ignores));
+            sender.sendMessage(prefixGood + "Player Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.playerNameTargets));
+            sender.sendMessage(prefixGood + "NPC Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.npcNameTargets));
+            sender.sendMessage(prefixGood + "Entity Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.entityNameTargets));
+            sender.sendMessage(prefixGood + "Ignored Targets: " + ChatColor.AQUA + getTargetString(sentinel.ignores));
+            sender.sendMessage(prefixGood + "Ignored Player Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.playerNameIgnores));
+            sender.sendMessage(prefixGood + "Ignored NPC Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.npcNameIgnores));
+            sender.sendMessage(prefixGood + "Ignored Entity Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.entityNameIgnores));
             sender.sendMessage(prefixGood + "Damage: " + ChatColor.AQUA + sentinel.damage);
             sender.sendMessage(prefixGood + "Armor: " + ChatColor.AQUA + sentinel.armor);
             sender.sendMessage(prefixGood + "Health: " + ChatColor.AQUA +
@@ -274,6 +398,14 @@ public class SentinelPlugin extends JavaPlugin {
             if (sender.hasPermission("sentinel.admin")) sender.sendMessage(prefixGood + "Be careful, you can edit other player's NPCs!");
             return true;
         }
+    }
+
+    public String getNameTargetString(List<String> strs) {
+        StringBuilder targets = new StringBuilder();
+        for (String str: strs) {
+            targets.append(str).append(", ");
+        }
+        return targets.length() > 0 ? targets.substring(0, targets.length() - 2): targets.toString();
     }
 
     public String getTargetString(HashSet<SentinelTarget> sentinel) {

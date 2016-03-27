@@ -51,12 +51,12 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- Ride a horse or whatever other NPC
 	- maybe support this in base Citizens rather than Sentinel?
 - Targets:
-	- Player by name: `player:NAME` (Regex!)
-	- NPC by name: `npc:NAME` (Regex!)
 	- Items (EG, "Sword" or "Diamond_Sword") being held: `helditem:ITEM_MATERIAL_NAME` (Regex!)
 - Commands:
 	- `/sentinel stats`
-	
+	- `/sentinel fightback`
+- Other:
+	- old Sentry saves importer?
 
 ### Need help using Sentinel? Try one of these places:
 

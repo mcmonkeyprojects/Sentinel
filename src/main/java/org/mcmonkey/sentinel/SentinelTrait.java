@@ -1,5 +1,6 @@
 package org.mcmonkey.sentinel;
 
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
@@ -17,9 +18,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class SentinelTrait extends Trait {
 
@@ -51,6 +50,27 @@ public class SentinelTrait extends Trait {
     @Persist("targets")
     public HashSet<SentinelTarget> targets = new HashSet<SentinelTarget>();
 
+    @Persist("ignores")
+    public HashSet<SentinelTarget> ignores = new HashSet<SentinelTarget>();
+
+    @Persist("playerNameTargets")
+    public List<String> playerNameTargets = new ArrayList<String>();
+
+    @Persist("playerNameIgnores")
+    public List<String> playerNameIgnores = new ArrayList<String>();
+
+    @Persist("npcNameTargets")
+    public List<String> npcNameTargets = new ArrayList<String>();
+
+    @Persist("npcNameIgnores")
+    public List<String> npcNameIgnores = new ArrayList<String>();
+
+    @Persist("entityNameTargets")
+    public List<String> entityNameTargets = new ArrayList<String>();
+
+    @Persist("entityNameIgnores")
+    public List<String> entityNameIgnores = new ArrayList<String>();
+
     @Persist("range")
     public double range = 20;
 
@@ -62,9 +82,6 @@ public class SentinelTrait extends Trait {
 
     @Persist("health")
     public double health = 20;
-
-    @Persist("ignores")
-    public HashSet<SentinelTarget> ignores = new HashSet<SentinelTarget>();
 
     @Persist("ranged_chase")
     public boolean rangedChase = false;
@@ -370,13 +387,31 @@ public class SentinelTrait extends Trait {
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             return false;
         }
-        if (entity.hasMetadata("NPC")) {
-            return targets.contains(SentinelTarget.NPCS);
-        }
         return isTargeted(entity) && !isIgnored(entity);
     }
 
+    public boolean isRegexTargeted(String name, List<String> regexes) {
+        for (String str: regexes) {
+            if (name.matches(str)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isIgnored(LivingEntity entity) {
+        if (entity.hasMetadata("NPC")) {
+            return ignores.contains(SentinelTarget.NPCS) ||
+                    isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), npcNameIgnores);
+        }
+        else if (entity instanceof Player) {
+            if (isRegexTargeted(((Player) entity).getName(), playerNameIgnores)) {
+                return true;
+            }
+        }
+        else if (isRegexTargeted(entity.getCustomName() == null ? entity.getType().name(): entity.getCustomName(), entityNameIgnores)) {
+            return true;
+        }
         if (ignores.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(npc.getTrait(Owner.class).getOwnerId())) {
             return true;
         }
@@ -390,6 +425,18 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isTargeted(LivingEntity entity) {
+        if (entity.hasMetadata("NPC")) {
+            return targets.contains(SentinelTarget.NPCS) ||
+                    isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), npcNameTargets);
+        }
+        if (entity instanceof Player) {
+            if (isRegexTargeted(((Player) entity).getName(), playerNameTargets)) {
+                return true;
+            }
+        }
+        else if (isRegexTargeted(entity.getCustomName() == null ? entity.getType().name(): entity.getCustomName(), entityNameTargets)) {
+            return true;
+        }
         if (targets.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(npc.getTrait(Owner.class).getOwnerId())) {
             return true;
         }
