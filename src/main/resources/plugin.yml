@@ -7,7 +7,7 @@ depend: [Citizens]
 commands:
   sentinel:
     description: Lists Sentinel commands.
-    usage: /denizen help
+    usage: /sentinel help
     permission: sentinel.basic
 
 permissions:
@@ -15,4 +15,29 @@ permissions:
     description: Gives access to Sentinel commands.
     default: op
     children:
+      # /sentinel
       sentinel.basic: true
+      # /sentinel addtarget TYPE
+      sentinel.addtarget: true
+      # /sentinel removetarget TYPE
+      sentinel.removetarget: true
+      # /sentinel addignore TYPE
+      sentinel.addignore: true
+      # /sentinel removeignore TYPE
+      sentinel.removeignore: true
+      # /sentinel range RANGE
+      sentinel.range: true
+      # /sentinel damage DAMAGE
+      sentinel.damage: true
+      # /sentinel health HEALTH
+      sentinel.health: true
+      # /sentinel armor ARMOR
+      sentinel.armor: true
+      # /sentinel attackrate RATE
+      sentinel.attackrate: true
+      # /sentinel invincible
+      sentinel.invincible: true
+      # /sentinel info
+      sentinel.info: true
+      # Edit other people's NPCs
+      sentinel.admin: true

@@ -1,1 +1,24 @@
-# TODO: CONFIGURATION
+# Sentinel plugin configuration file
+
+# Default settings for a new NPC
+sentinel defaults:
+    # Whether 'close quarters' NPCs should chase targets
+    close chase target: true
+    # Whether 'ranged attack' NPCs should chase targets
+    ranged chase target: false
+    # How much damage to do. -1 for calculated values.
+    damage: -1
+    # How much armor to have (percentage). -1 for calculated values.
+    armor: -1
+    # How much health to have.
+    health: 20
+    # Whether this NPC is invincible.
+    invincible: false
+    # Attack rate, in ticks
+    attack rate: 30
+
+# How fast to recalculate, in ticks.
+update rate: 10
+
+# Do not touch!
+config version: 1
