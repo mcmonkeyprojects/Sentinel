@@ -2,6 +2,7 @@ package org.mcmonkey.sentinel;
 
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -92,6 +93,7 @@ public class SentinelTrait extends Trait {
         }
         invincible = config.getBoolean("defaults.invincible", false);
         npc.setProtected(invincible);
+        ignores.add(SentinelTarget.OWNER);
     }
 
     public void useItem() {
@@ -375,6 +377,9 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isIgnored(LivingEntity entity) {
+        if (ignores.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(npc.getTrait(Owner.class).getOwnerId())) {
+            return true;
+        }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
         for (SentinelTarget poss: possible) {
             if (ignores.contains(poss)) {
@@ -385,6 +390,9 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isTargeted(LivingEntity entity) {
+        if (targets.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(npc.getTrait(Owner.class).getOwnerId())) {
+            return true;
+        }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
         for (SentinelTarget poss: possible) {
             if (targets.contains(poss)) {
