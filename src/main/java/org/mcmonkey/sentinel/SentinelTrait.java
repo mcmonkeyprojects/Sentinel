@@ -271,6 +271,21 @@ public class SentinelTrait extends Trait {
                 chase(entity);
             }
         }
+        else if (usesSpectral()) {
+            if (canSee(entity)) {
+                if (timeSinceAttack < attackRate) {
+                    return;
+                }
+                timeSinceAttack = 0;
+                // TODO: Consume ammo if needed!
+                swingWeapon();
+                // TODO: Audio?
+                entity.setGlowing(true);
+            }
+            else if (rangedChase) {
+                chase(entity);
+            }
+        }
         else {
             double distsq = entity.getLocation().distanceSquared(getLivingEntity().getLocation());
             if (distsq < 3 * 3) {
@@ -310,6 +325,10 @@ public class SentinelTrait extends Trait {
 
     public boolean usesLightning() {
         return getLivingEntity().getEquipment().getItemInMainHand().getType() == Material.NETHER_STAR;
+    }
+
+    public boolean usesSpectral() {
+        return getLivingEntity().getEquipment().getItemInMainHand().getType() == Material.SPECTRAL_ARROW;
     }
 
     public boolean usesPotion() {

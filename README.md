@@ -35,6 +35,8 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- Blaze rod (shoots fire balls!)
 	- Potions (splash, lingering)
 	- Nether star (strikes lightning!)
+	- Spectral arrow (makes the target glow, without damaging it.)
+		- (To make a target glow ++ damage it, equip a bow + arm it with spectral arrows!)
 
 ### TODO
 
