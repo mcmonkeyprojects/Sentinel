@@ -26,6 +26,29 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 		- This will list all your options to edit the NPC's Sentinel settings.
 			- Play with them freely, just be careful if you have other players around!
 
+### Supported things
+
+- View `/sentinel addtarget` to view a list of currently supported targets.
+- Weapons:
+	- Fists
+	- Bow
+	- Blaze rod (shoots fire balls!)
+
+### TODO
+
+- Weapons:
+	- splash potions
+		- Just... throw the potions at things
+- Ammo:
+	- Basically, optionally require ammo be fed into the NPC for bows/fireballs, or spare swords if the current sword breaks.
+- Damage calculation:
+	- Caculate damage from the item rather than enforcing a specific value
+- Armor calculation:
+	- Calculate armor protection from equipment rather than enforcing a specific value.
+- Mounting:
+	- Ride a horse or whatever other NPC
+	- maybe support this in base Citizens rather than Sentinel?
+
 ### Need help using Sentinel? Try one of these places:
 
 **IRC** (Modern): http://webchat.esper.net/?channels=citizens  
