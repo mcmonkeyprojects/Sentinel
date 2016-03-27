@@ -33,11 +33,11 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- Fists
 	- Bow
 	- Blaze rod (shoots fire balls!)
+	- Potions (splash, lingering)
+	- Nether star (strikes lightning!)
 
 ### TODO
 
-- Weapons:
-	- Stick calls down lightning
 - Ammo:
 	- Basically, optionally require ammo be fed into the NPC for bows/fireballs, or spare swords if the current sword breaks.
 - Damage calculation:
