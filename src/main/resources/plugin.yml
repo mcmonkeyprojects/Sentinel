@@ -1,0 +1,18 @@
+name: Sentinel
+authors: ['mcmonkey']
+version: ${project.version} (build ${BUILD_NUMBER})
+main: org.mcmonkey.sentinel.SentinelPlugin
+depend: [Citizens]
+
+commands:
+  sentinel:
+    description: Lists Sentinel commands.
+    usage: /denizen help
+    permission: sentinel.basic
+
+permissions:
+  sentinel.*:
+    description: Gives access to Sentinel commands.
+    default: op
+    children:
+      sentinel.basic: true

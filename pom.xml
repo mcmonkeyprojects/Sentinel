@@ -1,0 +1,76 @@
+<!-- Sentinel build file -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.mcmonkey</groupId>
+    <artifactId>sentinel</artifactId>
+    <packaging>jar</packaging>
+    <version>0.1</version>
+    <name>Sentinel</name>
+    <description>Combat NPCs for Spigot</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <craftbukkit.version>1.8.8-R0.1-SNAPSHOT</craftbukkit.version>
+        <citizens.version>2.0.17-SNAPSHOT</citizens.version>
+        <BUILD_NUMBER>Unknown</BUILD_NUMBER>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>citizens-repo</id>
+            <url>http://repo.citizensnpcs.co</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>${craftbukkit.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>${craftbukkit.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.citizensnpcs</groupId>
+            <artifactId>citizens</artifactId>
+            <version>${citizens.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <ciManagement>
+        <system>jenkins</system>
+        <url>http://ci.citizensnpcs.co</url>
+    </ciManagement>
+    <scm>
+        <connection>scm:git:git://github.com/mcmonkey4eva/Sentinel.git</connection>
+        <developerConnection>scm:git:git:@github.com:mcmonkey4eva/Sentinel.git</developerConnection>
+        <url>https://github.com/mcmonkey4eva/Sentinel/tree/master/</url>
+    </scm>
+
+    <build>
+        <defaultGoal>clean package install</defaultGoal>
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>*.yml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+    <url>https://github.com/mcmonkey4eva/Sentinel</url>
+</project>
