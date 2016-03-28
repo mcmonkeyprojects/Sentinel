@@ -35,6 +35,8 @@ permissions:
       sentinel.armor: true
       # /sentinel attackrate RATE
       sentinel.attackrate: true
+      # /sentinel healrate RATE
+      sentinel.healrate: true
       # /sentinel invincible
       sentinel.invincible: true
       # /sentinel fightback

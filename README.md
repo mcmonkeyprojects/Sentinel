@@ -57,7 +57,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - Commands:
 	- `/sentinel stats`
 	- `/sentinel guard PLAYERNAME`
-	- `/sentinel healrate RATE`
+	- `/sentinel forgive PLAYERNAME/all` forgives attackers
 - Other:
 	- old Sentry saves importer?
 	- Maximum chase range

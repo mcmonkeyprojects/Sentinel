@@ -16,6 +16,8 @@ sentinel defaults:
     invincible: false
     # Attack rate, in ticks.
     attack rate: 30
+    # Heal rate, in ticks.
+    heal rate: 30
     # Whether this NPC fights back.
     fightback: true
 

@@ -363,6 +363,22 @@ public class SentinelPlugin extends JavaPlugin {
             }
             return true;
         }
+        else if (arg0.equals("healrate") && sender.hasPermission("sentinel.healrate") && args.length > 1) {
+            try {
+                int d = Integer.valueOf(args[1]);
+                if (d >= 0 && d <= 2000) {
+                    sentinel.healRate = d;
+                    sender.sendMessage(prefixGood + "Heal rate set!");
+                }
+                else {
+                    throw new NumberFormatException("Number out or range.");
+                }
+            }
+            catch (NumberFormatException ex) {
+                sender.sendMessage(prefixBad + "Invalid rate number!");
+            }
+            return true;
+        }
         else if (arg0.equals("invincible") && sender.hasPermission("sentinel.invincible") && args.length > 1) {
             sentinel.setInvincible(!sentinel.invincible);
             if (sentinel.invincible) {
@@ -422,7 +438,8 @@ public class SentinelPlugin extends JavaPlugin {
             if (sender.hasPermission("sentinel.damage")) sender.sendMessage(prefixGood + "/sentinel damage DAMAGE - Sets the NPC's attack damage.");
             if (sender.hasPermission("sentinel.armor")) sender.sendMessage(prefixGood + "/sentinel armor ARMOR - Sets the NPC's armor level.");
             if (sender.hasPermission("sentinel.health")) sender.sendMessage(prefixGood + "/sentinel health HEALTH - Sets the NPC's health level.");
-            if (sender.hasPermission("sentinel.attackrate")) sender.sendMessage(prefixGood + "/sentinel attackrate RATE - Toggles the rate at which the NPC attacks, in ticks.");
+            if (sender.hasPermission("sentinel.attackrate")) sender.sendMessage(prefixGood + "/sentinel attackrate RATE - Changes the rate at which the NPC attacks, in ticks.");
+            if (sender.hasPermission("sentinel.healrate")) sender.sendMessage(prefixGood + "/sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.");
             if (sender.hasPermission("sentinel.invincible")) sender.sendMessage(prefixGood + "/sentinel invincible - Toggles whether the NPC is invincible.");
             if (sender.hasPermission("sentinel.fightback")) sender.sendMessage(prefixGood + "/sentinel fightback - Toggles whether the NPC will fight back.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");

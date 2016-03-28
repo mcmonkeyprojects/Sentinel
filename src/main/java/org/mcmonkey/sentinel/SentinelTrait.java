@@ -111,6 +111,9 @@ public class SentinelTrait extends Trait {
     @Persist("attackRate")
     public int attackRate = 30;
 
+    @Persist("healRate")
+    public int healRate = 30;
+
     @EventHandler
     public void whenWeAreAttacked(EntityDamageByEntityEvent event) {
         if (!npc.isSpawned()) {
@@ -146,6 +149,8 @@ public class SentinelTrait extends Trait {
     public void onAttach() {
         FileConfiguration config = SentinelPlugin.instance.getConfig();
         attackRate = config.getInt("sentinel defaults.attack rate", 30);
+        healRate
+                = config.getInt("sentinel defaults.heal rate", 30);
         rangedChase = config.getBoolean("sentinel defaults.ranged chase target", false);
         closeChase = config.getBoolean("sentinel defaults.close chase target", true);
         armor = config.getDouble("sentinel defaults.armor", -1);
@@ -437,7 +442,7 @@ public class SentinelTrait extends Trait {
         return isTargeted(entity) && !isIgnored(entity);
     }
 
-    private HashSet<UUID> currentTargets = new HashSet<UUID>(); // TODO: Apology / cancel attack system! // TODO: stop attack when target dies!
+    private HashSet<UUID> currentTargets = new HashSet<UUID>(); // TODO: Apology / cancel attack system!
 
     public boolean isRegexTargeted(String name, List<String> regexes) {
         for (String str: regexes) {
@@ -556,9 +561,8 @@ public class SentinelTrait extends Trait {
     public void runUpdate() {
         timeSinceAttack += SentinelPlugin.instance.tickRate;
         timeSinceHeal += SentinelPlugin.instance.tickRate;
-        // TODO: HealRate
-        if (timeSinceHeal > 20 && getLivingEntity().getHealth() < health) {
-            getLivingEntity().setHealth(getLivingEntity().getHealth() + 1);
+        if (healRate > 0 && timeSinceHeal > healRate && getLivingEntity().getHealth() < health) {
+            getLivingEntity().setHealth(Math.min(getLivingEntity().getHealth() + 1.0, health));
             timeSinceHeal = 0;
         }
         for (UUID uuid : new HashSet<UUID>(currentTargets)) {
