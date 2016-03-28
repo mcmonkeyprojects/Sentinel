@@ -1,7 +1,7 @@
 Sentinel NPCs: Combat NPCs for Spigot!
 --------------------------------------
 
-**Version 0.1**: Compatible with Spigot 1.9
+**Version 0.2**: Compatible with Spigot 1.9
 
 **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Sentinel/  
 **Download (Spigot releases)**: (COMING SOON)  
@@ -56,9 +56,8 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- maybe support this in base Citizens rather than Sentinel?
 - Commands:
 	- `/sentinel stats`
-	- `/sentinel fightback`
-	- maybe `/sentinel targets` separate from `info`
 	- `/sentinel guard PLAYERNAME`
+	- `/sentinel healrate RATE`
 - Other:
 	- old Sentry saves importer?
 	- Maximum chase range

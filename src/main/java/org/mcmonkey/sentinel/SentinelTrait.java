@@ -5,12 +5,16 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.util.PlayerAnimation;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -130,7 +134,12 @@ public class SentinelTrait extends Trait {
                 return;
             }
         }
-        currentTarget = e.getUniqueId();
+        currentTargets.add(e.getUniqueId());
+    }
+
+    @EventHandler
+    public void whenAnEnemyDies(EntityDeathEvent event) {
+        currentTargets.remove(event.getEntity().getUniqueId());
     }
 
     @Override
@@ -428,7 +437,7 @@ public class SentinelTrait extends Trait {
         return isTargeted(entity) && !isIgnored(entity);
     }
 
-    private UUID currentTarget = null;
+    private HashSet<UUID> currentTargets = new HashSet<UUID>(); // TODO: Apology / cancel attack system! // TODO: stop attack when target dies!
 
     public boolean isRegexTargeted(String name, List<String> regexes) {
         for (String str: regexes) {
@@ -470,7 +479,7 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isTargeted(LivingEntity entity) {
-        if (currentTarget != null && currentTarget.equals(entity.getUniqueId())) {
+        if (currentTargets.contains(entity.getUniqueId())) {
             return true;
         }
         if (entity.hasMetadata("NPC")) {
@@ -535,12 +544,31 @@ public class SentinelTrait extends Trait {
 
     public long timeSinceHeal = 0;
 
+    private Entity getEntityForID(UUID id) {
+        // TODO: Remove NMS here!
+        net.minecraft.server.v1_9_R1.Entity nmsEntity = ((CraftWorld) getLivingEntity().getWorld()).getHandle().getEntity(id);
+        if (nmsEntity != null) {
+            return nmsEntity.getBukkitEntity();
+        }
+        return null;
+    }
+
     public void runUpdate() {
         timeSinceAttack += SentinelPlugin.instance.tickRate;
         timeSinceHeal += SentinelPlugin.instance.tickRate;
         // TODO: HealRate
         if (timeSinceHeal > 20 && getLivingEntity().getHealth() < health) {
-            getLivingEntity().setHealth(getLivingEntity().getHealth() + 0.5);
+            getLivingEntity().setHealth(getLivingEntity().getHealth() + 1);
+            timeSinceHeal = 0;
+        }
+        for (UUID uuid : new HashSet<UUID>(currentTargets)) {
+            Entity e = getEntityForID(uuid);
+            if (e == null) {
+                currentTargets.remove(uuid);
+            }
+            else if (e.getLocation().distanceSquared(getLivingEntity().getLocation()) > range * range * 4) {
+                currentTargets.remove(uuid);
+            }
         }
         LivingEntity target = findBestTarget();
         if (target == null) {
@@ -567,6 +595,11 @@ public class SentinelTrait extends Trait {
         stats_timesSpawned++;
         setHealth(health);
         setInvincible(invincible);
+    }
+
+    @Override
+    public void onDespawn() {
+        currentTargets.clear();
     }
 
     public void setHealth(double heal) {
