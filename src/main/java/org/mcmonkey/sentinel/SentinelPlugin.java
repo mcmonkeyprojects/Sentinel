@@ -382,23 +382,39 @@ public class SentinelPlugin extends JavaPlugin {
             }
             return true;
         }
-        else if (arg0.equals("invincible") && sender.hasPermission("sentinel.invincible") && args.length > 1) {
+        else if (arg0.equals("invincible") && sender.hasPermission("sentinel.invincible")) {
             sentinel.setInvincible(!sentinel.invincible);
             if (sentinel.invincible) {
-                sender.sendMessage(prefixGood + "Sentinel now invincible!");
+                sender.sendMessage(prefixGood + "NPC now invincible!");
             }
             else {
-                sender.sendMessage(prefixGood + "Sentinel no longer invincible!");
+                sender.sendMessage(prefixGood + "NPC no longer invincible!");
             }
             return true;
         }
-        else if (arg0.equals("fightback") && sender.hasPermission("sentinel.fightback") && args.length > 1) {
+        else if (arg0.equals("fightback") && sender.hasPermission("sentinel.fightback")) {
             sentinel.fightback = !sentinel.fightback;
             if (sentinel.fightback) {
-                sender.sendMessage(prefixGood + "Sentinel now fights back!");
+                sender.sendMessage(prefixGood + "NPC now fights back!");
             }
             else {
-                sender.sendMessage(prefixGood + "Sentinel no longer fights back!");
+                sender.sendMessage(prefixGood + "NPC no longer fights back!");
+            }
+            return true;
+        }
+        else if (arg0.equals("guard") && sender.hasPermission("sentinel.guard")) {
+            if (args.length > 1) {
+                Player pl = Bukkit.getPlayer(args[1]);
+                sentinel.setGuarding(pl == null ? null: pl.getUniqueId());
+            }
+            else {
+                sentinel.setGuarding(null);
+            }
+            if (sentinel.getGuarding() == null) {
+                sender.sendMessage(prefixGood + "NPC now guarding its area!");
+            }
+            else {
+                sender.sendMessage(prefixGood + "NPC now guarding that player!");
             }
             return true;
         }
@@ -419,7 +435,8 @@ public class SentinelPlugin extends JavaPlugin {
         }
         else if (arg0.equals("info") && sender.hasPermission("sentinel.info")) {
             sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
-                    + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()));
+                    + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()) +
+                    (sentinel.getGuarding() == null ? "": ColorBasic + ", guarding: " + ChatColor.RESET + Bukkit.getOfflinePlayer(sentinel.getGuarding()).getName()));
             sender.sendMessage(prefixGood + "Damage: " + ChatColor.AQUA + sentinel.damage);
             sender.sendMessage(prefixGood + "Armor: " + ChatColor.AQUA + sentinel.armor);
             sender.sendMessage(prefixGood + "Health: " + ChatColor.AQUA +
@@ -458,6 +475,7 @@ public class SentinelPlugin extends JavaPlugin {
             if (sender.hasPermission("sentinel.health")) sender.sendMessage(prefixGood + "/sentinel health HEALTH - Sets the NPC's health level.");
             if (sender.hasPermission("sentinel.attackrate")) sender.sendMessage(prefixGood + "/sentinel attackrate RATE - Changes the rate at which the NPC attacks, in ticks.");
             if (sender.hasPermission("sentinel.healrate")) sender.sendMessage(prefixGood + "/sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.");
+            if (sender.hasPermission("sentinel.guard")) sender.sendMessage(prefixGood + "/sentinel guard [PLAYERNAME] - Makes the NPC guard a specific player. Don't specify a player to stop guarding.");
             if (sender.hasPermission("sentinel.invincible")) sender.sendMessage(prefixGood + "/sentinel invincible - Toggles whether the NPC is invincible.");
             if (sender.hasPermission("sentinel.fightback")) sender.sendMessage(prefixGood + "/sentinel fightback - Toggles whether the NPC will fight back.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");

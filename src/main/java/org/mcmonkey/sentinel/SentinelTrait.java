@@ -8,7 +8,6 @@ import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
@@ -18,6 +17,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -123,6 +123,30 @@ public class SentinelTrait extends Trait {
     @Persist("healRate")
     public int healRate = 30;
 
+    @Persist("guardingUpper")
+    public long guardingUpper = 0;
+
+    @Persist("guardingLower")
+    public long guardingLower = 0;
+
+    public UUID getGuarding() {
+        if (guardingLower == 0 && guardingUpper == 0) {
+            return null;
+        }
+        return new UUID(guardingUpper, guardingLower);
+    }
+
+    public void setGuarding(UUID uuid) {
+        if (uuid == null) {
+            guardingUpper = 0;
+            guardingLower = 0;
+        }
+        else {
+            guardingUpper = uuid.getMostSignificantBits();
+            guardingLower = uuid.getLeastSignificantBits();
+        }
+    }
+
     @EventHandler
     public void whenAttacksAreHappening(EntityDamageByEntityEvent event) {
         if (!npc.isSpawned()) {
@@ -148,8 +172,12 @@ public class SentinelTrait extends Trait {
         if (!npc.isSpawned()) {
             return;
         }
-        if (event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId())) {
-            stats_damageTaken += event.getFinalDamage();
+        boolean isMe = event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId());
+        boolean isFriend = getGuarding() != null && event.getEntity().getUniqueId().equals(getGuarding());
+        if (isMe || isFriend) {
+            if (isMe) {
+                stats_damageTaken += event.getFinalDamage();
+            }
             if (event.getDamager() instanceof LivingEntity) {
                 currentTargets.add(event.getDamager().getUniqueId());
             }
@@ -313,10 +341,10 @@ public class SentinelTrait extends Trait {
             }
             // TODO: Less randomness, more game-like calculations.
             double multiplier = 1;
-            multiplier += weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
+            multiplier += weapon.getItemMeta() == null ? 0: weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
             switch (weapon.getType()) {
                 case BOW:
-                    return 6 * (1 + weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3);
+                    return 6 * (1 + (weapon.getItemMeta() == null ? 0: weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3));
                 case DIAMOND_SWORD:
                     return 7 * multiplier;
                 case IRON_SWORD:
@@ -592,6 +620,9 @@ public class SentinelTrait extends Trait {
                     isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), npcNameIgnores);
         }
         else if (entity instanceof Player) {
+            if (getGuarding() != null && entity.getUniqueId().equals(getGuarding())) {
+                return true;
+            }
             if (isRegexTargeted(((Player) entity).getName(), playerNameIgnores)) {
                 return true;
             }
@@ -707,10 +738,22 @@ public class SentinelTrait extends Trait {
             }
         }
         LivingEntity target = findBestTarget();
-        if (target == null) {
-            return;
+        if (target != null) {
+            tryAttack(target);
         }
-        tryAttack(target);
+        if (getGuarding() != null) {
+            Player player = Bukkit.getPlayer(getGuarding());
+            if (player != null) {
+                double dist = getLivingEntity().getLocation().distanceSquared(player.getLocation());
+                if (dist > 60 * 60) {
+                    npc.teleport(player.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                }
+                if (dist > 7 * 7) {
+                    npc.getNavigator().getDefaultParameters().range(100);
+                    npc.getNavigator().setTarget(player.getLocation());
+                }
+            }
+        }
     }
 
     @Override

@@ -49,7 +49,6 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- Ride a horse or whatever other NPC
 	- maybe support this in base Citizens rather than Sentinel?
 - Commands:
-	- `/sentinel guard PLAYERNAME`
 	- `/sentinel forgive PLAYERNAME/all` forgives attackers
 - Other:
 	- old Sentry saves importer?
