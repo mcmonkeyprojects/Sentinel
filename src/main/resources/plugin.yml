@@ -41,7 +41,7 @@ permissions:
       sentinel.invincible: true
       # /sentinel fightback
       sentinel.fightback: true
-      # /sentinel info, /sentinel targets
+      # /sentinel info, /sentinel targets, /sentinel stats
       sentinel.info: true
       # Edit other people's NPCs
       sentinel.admin: true

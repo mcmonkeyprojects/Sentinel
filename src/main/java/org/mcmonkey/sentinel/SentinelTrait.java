@@ -13,7 +13,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -53,6 +55,12 @@ public class SentinelTrait extends Trait {
 
     @Persist("stats_attackAttempts")
     public long stats_attackAttempts = 0;
+
+    @Persist("stats_damageTaken")
+    public double stats_damageTaken = 0;
+
+    @Persist("stats_damageGiven")
+    public double stats_damageGiven = 0;
 
     @Persist("targets")
     public HashSet<SentinelTarget> targets = new HashSet<SentinelTarget>();
@@ -115,11 +123,45 @@ public class SentinelTrait extends Trait {
     public int healRate = 30;
 
     @EventHandler
-    public void whenWeAreAttacked(EntityDamageByEntityEvent event) {
+    public void whenAttacksAreHappening(EntityDamageByEntityEvent event) {
         if (!npc.isSpawned()) {
             return;
         }
-        if (!event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId())) {
+        if (event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, -getArmor() * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
+            return;
+        }
+        if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            event.setDamage(EntityDamageEvent.DamageModifier.BASE, getDamage());
+        }
+        if (event.getDamager() instanceof Projectile) {
+            ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
+            if (source instanceof LivingEntity && ((LivingEntity) source).getUniqueId().equals(getLivingEntity().getUniqueId())) {
+                event.setDamage(EntityDamageEvent.DamageModifier.BASE, getDamage());
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void whenAttacksHappened(EntityDamageByEntityEvent event) {
+        if (!npc.isSpawned()) {
+            return;
+        }
+        if (event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            stats_damageTaken += event.getFinalDamage();
+            if (event.getDamager() instanceof LivingEntity) {
+                currentTargets.add(event.getDamager().getUniqueId());
+            }
+            else if (event.getDamager() instanceof Projectile) {
+                ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
+                if (source instanceof LivingEntity) {
+                    currentTargets.add(((LivingEntity) source).getUniqueId());
+                }
+            }
+            return;
+        }
+        if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            stats_damageGiven += event.getFinalDamage();
             return;
         }
         Entity e = event.getDamager();
@@ -128,16 +170,12 @@ public class SentinelTrait extends Trait {
                 ProjectileSource source = ((Projectile)e).getShooter();
                 if (source instanceof LivingEntity) {
                     e = (LivingEntity) source;
+                    if (e.getUniqueId().equals(getLivingEntity().getUniqueId())) {
+                        stats_damageGiven += event.getFinalDamage();
+                    }
                 }
-                else {
-                    return;
-                }
-            }
-            else {
-                return;
             }
         }
-        currentTargets.add(e.getUniqueId());
     }
 
     @EventHandler
@@ -276,12 +314,75 @@ public class SentinelTrait extends Trait {
         return damage;
     }
 
-    // TODO: use this value!
     public double getArmor() {
         if (armor < 0) {
+            // TODO: Enchantments!
             double baseArmor = 0;
-            // TODO: Calculate armor!
-            return baseArmor;
+            ItemStack helmet = getLivingEntity().getEquipment().getHelmet();
+            if (helmet != null && helmet.getType() == Material.DIAMOND_HELMET) {
+                baseArmor += 0.12;
+            }
+            if (helmet != null && helmet.getType() == Material.GOLD_HELMET) {
+                baseArmor += 0.08;
+            }
+            if (helmet != null && helmet.getType() == Material.IRON_HELMET) {
+                baseArmor += 0.08;
+            }
+            if (helmet != null && helmet.getType() == Material.LEATHER_HELMET) {
+                baseArmor += 0.04;
+            }
+            if (helmet != null && helmet.getType() == Material.CHAINMAIL_HELMET) {
+                baseArmor += 0.08;
+            }
+            ItemStack chestplate = getLivingEntity().getEquipment().getChestplate();
+            if (chestplate != null && chestplate.getType() == Material.DIAMOND_CHESTPLATE) {
+                baseArmor += 0.32;
+            }
+            if (chestplate != null && chestplate.getType() == Material.GOLD_CHESTPLATE) {
+                baseArmor += 0.20;
+            }
+            if (chestplate != null && chestplate.getType() == Material.IRON_CHESTPLATE) {
+                baseArmor += 0.24;
+            }
+            if (chestplate != null && chestplate.getType() == Material.LEATHER_CHESTPLATE) {
+                baseArmor += 0.12;
+            }
+            if (chestplate != null && chestplate.getType() == Material.CHAINMAIL_CHESTPLATE) {
+                baseArmor += 0.20;
+            }
+            ItemStack leggings = getLivingEntity().getEquipment().getLeggings();
+            if (leggings != null && leggings.getType() == Material.DIAMOND_LEGGINGS) {
+                baseArmor += 0.24;
+            }
+            if (leggings != null && leggings.getType() == Material.GOLD_LEGGINGS) {
+                baseArmor += 0.12;
+            }
+            if (leggings != null && leggings.getType() == Material.IRON_LEGGINGS) {
+                baseArmor += 0.20;
+            }
+            if (leggings != null && leggings.getType() == Material.LEATHER_LEGGINGS) {
+                baseArmor += 0.08;
+            }
+            if (leggings != null && leggings.getType() == Material.CHAINMAIL_LEGGINGS) {
+                baseArmor += 0.16;
+            }
+            ItemStack boots = getLivingEntity().getEquipment().getBoots();
+            if (boots != null && boots.getType() == Material.DIAMOND_BOOTS) {
+                baseArmor += 0.12;
+            }
+            if (boots != null && boots.getType() == Material.GOLD_BOOTS) {
+                baseArmor += 0.04;
+            }
+            if (boots != null && boots.getType() == Material.IRON_BOOTS) {
+                baseArmor += 0.08;
+            }
+            if (boots != null && boots.getType() == Material.LEATHER_BOOTS) {
+                baseArmor += 0.04;
+            }
+            if (boots != null && boots.getType() == Material.CHAINMAIL_BOOTS) {
+                baseArmor += 0.04;
+            }
+            return Math.min(baseArmor, 0.80);
         }
         return armor;
     }

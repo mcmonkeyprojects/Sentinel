@@ -60,6 +60,9 @@ public class SentinelPlugin extends JavaPlugin {
 
     public SentinelTrait getSentinelFor(CommandSender sender) {
         NPC npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
+        if (npc == null) {
+            return null;
+        }
         if (npc.hasTrait(SentinelTrait.class)) {
             return npc.getTrait(SentinelTrait.class);
         }
@@ -422,10 +425,25 @@ public class SentinelPlugin extends JavaPlugin {
             sender.sendMessage(prefixGood + "Health: " + ChatColor.AQUA +
             (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/": "") + sentinel.health);
             sender.sendMessage(prefixGood + "Range: " + ChatColor.AQUA + sentinel.range);
+            sender.sendMessage(prefixGood + "Attack Rate: " + ChatColor.AQUA + sentinel.attackRate);
+            sender.sendMessage(prefixGood + "Heal Rate: " + ChatColor.AQUA + sentinel.healRate);
             sender.sendMessage(prefixGood + "Invincibility Enabled: " + ChatColor.AQUA + sentinel.invincible);
             sender.sendMessage(prefixGood + "Fightback Enabled: " + ChatColor.AQUA + sentinel.fightback);
             sender.sendMessage(prefixGood + "Ranged Chasing Enabled: " + ChatColor.AQUA + sentinel.rangedChase);
             sender.sendMessage(prefixGood + "Close-Quarters Chasing Enabled: " + ChatColor.AQUA + sentinel.closeChase);
+            return true;
+        }
+        else if (arg0.equals("stats") && sender.hasPermission("sentinel.info")) {
+            sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
+                    + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()));
+            sender.sendMessage(prefixGood + "Arrows fired: " + ChatColor.AQUA + sentinel.stats_arrowsFired);
+            sender.sendMessage(prefixGood + "Potions thrown: " + ChatColor.AQUA + sentinel.stats_potionsThrown);
+            sender.sendMessage(prefixGood + "Fireballs launched: " + ChatColor.AQUA + sentinel.stats_fireballsFired);
+            sender.sendMessage(prefixGood + "Times spawned: " + ChatColor.AQUA + sentinel.stats_timesSpawned);
+            sender.sendMessage(prefixGood + "Punches: " + ChatColor.AQUA + sentinel.stats_punches);
+            sender.sendMessage(prefixGood + "Damage Given: " + ChatColor.AQUA + sentinel.stats_damageGiven);
+            sender.sendMessage(prefixGood + "Damage Taken: " + ChatColor.AQUA + sentinel.stats_damageTaken);
+            sender.sendMessage(prefixGood + "Minutes spawned: " + ChatColor.AQUA + sentinel.stats_ticksSpawned / (20.0 * 60.0));
             return true;
         }
         else {

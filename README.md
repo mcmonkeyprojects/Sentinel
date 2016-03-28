@@ -12,7 +12,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 
 ### Usage
 
-- First, get acquainted with Citizens in general for best luck using.
+- First, get acquainted with Citizens in general for best luck using Sentinel.
 - Second, download the plugin and put it into your server's `plugins` folder.
 - Third, start the server to generate a config, then close the server and edit the config to your liking and finally restart the server.
 - Now, to create your first Sentinel:
@@ -34,7 +34,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - Weapons:
 	- Fists
 	- Bow
-		- equip NPC with arrows of any given type in their inventory to to set fired arrow type!
+		- equip NPC with arrows of any given type in their inventory to set fired arrow type!
 	- Blaze rod (shoots fire balls!)
 	- Potions (splash, lingering)
 	- Nether star (strikes lightning!)
@@ -55,7 +55,6 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- Ride a horse or whatever other NPC
 	- maybe support this in base Citizens rather than Sentinel?
 - Commands:
-	- `/sentinel stats`
 	- `/sentinel guard PLAYERNAME`
 	- `/sentinel forgive PLAYERNAME/all` forgives attackers
 - Other:
