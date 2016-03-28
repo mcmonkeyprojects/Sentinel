@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -307,9 +308,39 @@ public class SentinelTrait extends Trait {
     public double getDamage() {
         if (damage < 0) {
             ItemStack weapon = getLivingEntity().getEquipment().getItemInMainHand();
-            double baseDamage = 1;
-            // TODO: Calculate damage!
-            return baseDamage;
+            if (weapon == null) {
+                return 1;
+            }
+            // TODO: Less randomness, more game-like calculations.
+            double multiplier = 1;
+            multiplier += weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
+            switch (weapon.getType()) {
+                case BOW:
+                    return 6 * (1 + weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3);
+                case DIAMOND_SWORD:
+                    return 7 * multiplier;
+                case IRON_SWORD:
+                    return 6 * multiplier;
+                case STONE_SWORD:
+                    return 5 * multiplier;
+                case GOLD_SWORD:
+                case WOOD_SWORD:
+                    return 4 * multiplier;
+                case DIAMOND_AXE:
+                case IRON_AXE:
+                case STONE_AXE:
+                case GOLD_AXE:
+                case WOOD_AXE:
+                    return 3 * multiplier;
+                case DIAMOND_PICKAXE:
+                case IRON_PICKAXE:
+                case STONE_PICKAXE:
+                case GOLD_PICKAXE:
+                case WOOD_PICKAXE:
+                    return 2 * multiplier;
+                default:
+                    return 1 * multiplier;
+            }
         }
         return damage;
     }

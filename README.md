@@ -45,12 +45,6 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 
 - Ammo:
 	- Basically, optionally require ammo be fed into the NPC for bows/fireballs, or spare swords if the current sword breaks.
-- Damage calculation:
-	- Caculate damage from the item rather than enforcing a specific value
-	- Also, if an enforced value is specified... actually use it!
-- Armor calculation:
-	- Calculate armor protection from equipment rather than enforcing a specific value.
-	- Also, if an enforced value is specified... actually use it!
 - Mounting:
 	- Ride a horse or whatever other NPC
 	- maybe support this in base Citizens rather than Sentinel?
