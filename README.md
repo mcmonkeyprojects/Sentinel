@@ -46,7 +46,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 **Beta**:
 
 - Ammo:
-	- Basically, optionally require ammo be fed into the NPC for bows/fireballs, or spare swords if the current sword breaks.
+	- Basically, optionally require ammo be fed into the NPC for bows/fireballs, or spare swords if the current sword breaks. (waiting on Citizens2 issue 721)
 - Mounting:
 	- Ride a horse or whatever other NPC (waiting on Citizens2 issue 719)
 - Commands:

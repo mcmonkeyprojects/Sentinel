@@ -10,6 +10,7 @@ import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
@@ -633,7 +634,7 @@ public class SentinelTrait extends Trait {
                 }
                 timeSinceAttack = 0;
                 swingWeapon();
-                entity.getWorld().strikeLightning(entity.getLocation()); // TODO: Audio?
+                entity.getWorld().strikeLightning(entity.getLocation());
                 if (needsAmmo) {
                     takeOne();
                     grabNextItem();
@@ -651,7 +652,7 @@ public class SentinelTrait extends Trait {
                 timeSinceAttack = 0;
                 if (!entity.isGlowing()) {
                     swingWeapon();
-                    // TODO: Audio?
+                    entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_VILLAGER_YES, 1f, 1f); // TODO: Better sound!
                     entity.setGlowing(true);
                     if (needsAmmo) {
                         takeOne();
