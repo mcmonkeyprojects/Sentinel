@@ -20,6 +20,8 @@ sentinel defaults:
     heal rate: 30
     # Whether this NPC fights back.
     fightback: true
+    # Whether this NPC needs ammo to fight with.
+    needs ammo: false
 
 # How fast to recalculate, in ticks.
 update rate: 10

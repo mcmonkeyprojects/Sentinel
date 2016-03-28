@@ -402,6 +402,36 @@ public class SentinelPlugin extends JavaPlugin {
             }
             return true;
         }
+        else if (arg0.equals("needammo") && sender.hasPermission("sentinel.needammo")) {
+            sentinel.needsAmmo = !sentinel.needsAmmo;
+            if (sentinel.needsAmmo) {
+                sender.sendMessage(prefixGood + "NPC now needs ammo!");
+            }
+            else {
+                sender.sendMessage(prefixGood + "NPC no longer needs ammo!");
+            }
+            return true;
+        }
+        else if (arg0.equals("chaseclose") && sender.hasPermission("sentinel.chase")) {
+            sentinel.closeChase = !sentinel.closeChase;
+            if (sentinel.closeChase) {
+                sender.sendMessage(prefixGood + "NPC now will chase while close!");
+            }
+            else {
+                sender.sendMessage(prefixGood + "NPC no longer will chase while close!");
+            }
+            return true;
+        }
+        else if (arg0.equals("chaseranged") && sender.hasPermission("sentinel.chase")) {
+            sentinel.rangedChase = !sentinel.rangedChase;
+            if (sentinel.rangedChase) {
+                sender.sendMessage(prefixGood + "NPC now will chase while ranged!");
+            }
+            else {
+                sender.sendMessage(prefixGood + "NPC no longer will chase while ranged!");
+            }
+            return true;
+        }
         else if (arg0.equals("guard") && sender.hasPermission("sentinel.guard")) {
             if (args.length > 1) {
                 Player pl = Bukkit.getPlayer(args[1]);
@@ -456,8 +486,8 @@ public class SentinelPlugin extends JavaPlugin {
             sender.sendMessage(prefixGood + "Arrows fired: " + ChatColor.AQUA + sentinel.stats_arrowsFired);
             sender.sendMessage(prefixGood + "Potions thrown: " + ChatColor.AQUA + sentinel.stats_potionsThrown);
             sender.sendMessage(prefixGood + "Fireballs launched: " + ChatColor.AQUA + sentinel.stats_fireballsFired);
-            sender.sendMessage(prefixGood + "Times spawned: " + ChatColor.AQUA + sentinel.stats_timesSpawned);
             sender.sendMessage(prefixGood + "Punches: " + ChatColor.AQUA + sentinel.stats_punches);
+            sender.sendMessage(prefixGood + "Times spawned: " + ChatColor.AQUA + sentinel.stats_timesSpawned);
             sender.sendMessage(prefixGood + "Damage Given: " + ChatColor.AQUA + sentinel.stats_damageGiven);
             sender.sendMessage(prefixGood + "Damage Taken: " + ChatColor.AQUA + sentinel.stats_damageTaken);
             sender.sendMessage(prefixGood + "Minutes spawned: " + ChatColor.AQUA + sentinel.stats_ticksSpawned / (20.0 * 60.0));
@@ -478,6 +508,9 @@ public class SentinelPlugin extends JavaPlugin {
             if (sender.hasPermission("sentinel.guard")) sender.sendMessage(prefixGood + "/sentinel guard [PLAYERNAME] - Makes the NPC guard a specific player. Don't specify a player to stop guarding.");
             if (sender.hasPermission("sentinel.invincible")) sender.sendMessage(prefixGood + "/sentinel invincible - Toggles whether the NPC is invincible.");
             if (sender.hasPermission("sentinel.fightback")) sender.sendMessage(prefixGood + "/sentinel fightback - Toggles whether the NPC will fight back.");
+            if (sender.hasPermission("sentinel.needammo")) sender.sendMessage(prefixGood + "/sentinel needammo - Toggles whether the NPC will need ammo.");
+            if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseclose - Toggles whether the NPC will chase while in 'close quarters' fights.");
+            if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
             if (sender.hasPermission("sentinel.admin")) sender.sendMessage(prefixGood + "Be careful, you can edit other player's NPCs!");

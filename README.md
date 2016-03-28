@@ -1,7 +1,7 @@
 Sentinel NPCs: Combat NPCs for Spigot!
 --------------------------------------
 
-**Version 0.2**: Compatible with Spigot 1.9
+**Version 0.3**: Compatible with Spigot 1.9
 
 **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Sentinel/  
 **Download (Spigot releases)**: (COMING SOON)  
@@ -43,17 +43,24 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 
 ### TODO
 
+**Beta**:
+
 - Ammo:
 	- Basically, optionally require ammo be fed into the NPC for bows/fireballs, or spare swords if the current sword breaks.
 - Mounting:
-	- Ride a horse or whatever other NPC
-	- maybe support this in base Citizens rather than Sentinel?
+	- Ride a horse or whatever other NPC (waiting on Citizens2 issue 719)
 - Commands:
 	- `/sentinel forgive PLAYERNAME/all` forgives attackers
 - Other:
 	- old Sentry saves importer?
-	- Maximum chase range
+	- Maximum chase range (waiting on Citizens2 issue 718)
 	- Automated respawn or removal on death
+
+**Future**:
+
+- Events
+	- Java and Denizen level events
+- Denizen tags
 
 ### Need help using Sentinel? Try one of these places:
 

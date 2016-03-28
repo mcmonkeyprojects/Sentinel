@@ -1,8 +1,10 @@
 package org.mcmonkey.sentinel;
 
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.trait.trait.Inventory;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.Bukkit;
@@ -18,7 +20,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -94,16 +95,16 @@ public class SentinelTrait extends Trait {
     public List<String> heldItemIgnores = new ArrayList<String>();
 
     @Persist("range")
-    public double range = 20;
+    public double range = 20.0;
 
     @Persist("damage")
-    public double damage = -1;
+    public double damage = -1.0;
 
     @Persist("armor")
-    public double armor = -1;
+    public double armor = -1.0;
 
     @Persist("health")
-    public double health = 20;
+    public double health = 20.0;
 
     @Persist("ranged_chase")
     public boolean rangedChase = false;
@@ -128,6 +129,12 @@ public class SentinelTrait extends Trait {
 
     @Persist("guardingLower")
     public long guardingLower = 0;
+
+    @Persist("maxChaseRange")
+    public double maxChaseRange = 50.0;
+
+    @Persist("needsAmmo")
+    public boolean needsAmmo = false;
 
     public UUID getGuarding() {
         if (guardingLower == 0 && guardingUpper == 0) {
@@ -458,19 +465,110 @@ public class SentinelTrait extends Trait {
     }
 
     public ItemStack getArrow() {
-        if (getLivingEntity() instanceof InventoryHolder) {
-            Inventory inv = ((InventoryHolder)getLivingEntity()).getInventory();
-            for (int i = 0; i < inv.getSize(); i++) {
-                ItemStack item = inv.getItem(i);
+        if (!npc.hasTrait(Inventory.class)) {
+            return needsAmmo ? null : new ItemStack(Material.ARROW, 1);
+        }
+        Inventory inv = npc.getTrait(Inventory.class);
+        ItemStack[] items = inv.getContents();
+        for (int i = 0; i < items.length; i++) {
+            ItemStack item = items[i];
+            if (item != null) {
+                Material mat = item.getType();
+                if (mat == Material.ARROW || mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW) {
+                    return item.clone();
+                }
+            }
+        }
+        return needsAmmo ? null : new ItemStack(Material.ARROW, 1);
+    }
+
+    public void reduceDurability() {
+        ItemStack item = getLivingEntity().getEquipment().getItemInMainHand();
+        if (item != null && item.getType() != Material.AIR) {
+            if (item.getDurability() >= item.getType().getMaxDurability() - 1) {
+                getLivingEntity().getEquipment().setItemInMainHand(null);
+            }
+            else {
+                item.setDurability((short) (item.getDurability() + 1));
+                getLivingEntity().getEquipment().setItemInMainHand(item);
+            }
+        }
+    }
+
+    public void takeArrow() {
+        if (!npc.hasTrait(Inventory.class)) {
+            return;
+        }
+        Inventory inv = npc.getTrait(Inventory.class);
+        ItemStack[] items = inv.getContents();
+            for (int i = 0; i < items.length; i++) {
+                ItemStack item = items[i];
                 if (item != null) {
                     Material mat = item.getType();
                     if (mat == Material.ARROW || mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW) {
-                        return item;
+                        if (item.getAmount() > 1) {
+                            item.setAmount(item.getAmount() - 1);
+                            items[i] = item;
+                            inv.setContents(items);
+                            return;
+                        }
+                        else {
+                            items[i] = null;
+                            inv.setContents(items);
+                            return;
+                        }
+                    }
+                }
+        }
+    }
+
+    public void takeOne() {
+        ItemStack item = getLivingEntity().getEquipment().getItemInMainHand();
+        if (item != null && item.getType() != Material.AIR) {
+            if (item.getAmount() > 1) {
+                item.setAmount(item.getAmount() - 1);
+                getLivingEntity().getEquipment().setItemInMainHand(item);
+            }
+            else {
+                getLivingEntity().getEquipment().setItemInMainHand(null);
+            }
+        }
+    }
+
+    public void grabNextItem() {
+        if (!npc.hasTrait(Inventory.class)) {
+            return;
+        }
+        Inventory inv = npc.getTrait(Inventory.class);
+        ItemStack[] items = inv.getContents();
+        ItemStack held = getLivingEntity().getEquipment().getItemInMainHand();
+        if (held != null && held.getType() != Material.AIR) {
+            return;
+        }
+        for (int i = 0; i < items.length; i++) {
+            ItemStack item = items[i];
+            if (item != null) {
+                Material mat = item.getType();
+                if (mat == Material.SPLASH_POTION || mat == Material.LINGERING_POTION
+                        || mat == Material.BOW || mat == Material.NETHER_STAR || mat == Material.BLAZE_ROD) {
+                    if (item.getAmount() > 1) {
+                        item.setAmount(item.getAmount() - 1);
+                        items[i] = item;
+                        inv.setContents(items);
+                        item = item.clone();
+                        item.setAmount(1);
+                        getLivingEntity().getEquipment().setItemInMainHand(item);
+                        return;
+                    }
+                    else {
+                        items[i] = null;
+                        inv.setContents(items);
+                        getLivingEntity().getEquipment().setItemInMainHand(item);
+                        return;
                     }
                 }
             }
         }
-        return new ItemStack(Material.ARROW);
     }
 
     public void tryAttack(LivingEntity entity) {
@@ -481,23 +579,32 @@ public class SentinelTrait extends Trait {
                     return;
                 }
                 timeSinceAttack = 0;
-                // TODO: Consume ammo if needed!
-                fireArrow(getArrow(), entity.getEyeLocation(), entity.getVelocity());
+                ItemStack item = getArrow();
+                if (item != null) {
+                    fireArrow(item, entity.getEyeLocation(), entity.getVelocity());
+                    if (needsAmmo) {
+                        reduceDurability();
+                        takeArrow();
+                        grabNextItem();
+                    }
+                }
             }
             else if (rangedChase) {
                 chase(entity);
             }
         }
         else if (usesPotion()) {
-            double distsq = entity.getLocation().distanceSquared(getLivingEntity().getLocation());
             if (canSee(entity)) {
                 if (timeSinceAttack < attackRate) {
                     return;
                 }
                 timeSinceAttack = 0;
-                // TODO: Consume ammo if needed!
                 firePotion(getLivingEntity().getEquipment().getItemInMainHand(),
                         entity.getEyeLocation(), entity.getVelocity());
+                if (needsAmmo) {
+                    takeOne();
+                    grabNextItem();
+                }
             }
             else if (rangedChase) {
                 chase(entity);
@@ -509,8 +616,11 @@ public class SentinelTrait extends Trait {
                     return;
                 }
                 timeSinceAttack = 0;
-                // TODO: Consume ammo if needed!
                 fireFireball(entity.getEyeLocation());
+                if (needsAmmo) {
+                    takeOne();
+                    grabNextItem();
+                }
             }
             else if (rangedChase) {
                 chase(entity);
@@ -522,9 +632,12 @@ public class SentinelTrait extends Trait {
                     return;
                 }
                 timeSinceAttack = 0;
-                // TODO: Consume ammo if needed!
                 swingWeapon();
                 entity.getWorld().strikeLightning(entity.getLocation()); // TODO: Audio?
+                if (needsAmmo) {
+                    takeOne();
+                    grabNextItem();
+                }
             }
             else if (rangedChase) {
                 chase(entity);
@@ -536,10 +649,15 @@ public class SentinelTrait extends Trait {
                     return;
                 }
                 timeSinceAttack = 0;
-                // TODO: Consume ammo if needed!
-                swingWeapon();
-                // TODO: Audio?
-                entity.setGlowing(true);
+                if (!entity.isGlowing()) {
+                    swingWeapon();
+                    // TODO: Audio?
+                    entity.setGlowing(true);
+                    if (needsAmmo) {
+                        takeOne();
+                        grabNextItem();
+                    }
+                }
             }
             else if (rangedChase) {
                 chase(entity);
@@ -554,6 +672,10 @@ public class SentinelTrait extends Trait {
                 timeSinceAttack = 0;
                 // TODO: Damage sword if needed!
                 punch(entity);
+                if (needsAmmo && shouldTakeDura()) {
+                    reduceDurability();
+                    grabNextItem();
+                }
             }
             else {
                 chase(entity);
@@ -575,7 +697,7 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean usesBow() {
-        return getLivingEntity().getEquipment().getItemInMainHand().getType() == Material.BOW;
+        return getLivingEntity().getEquipment().getItemInMainHand().getType() == Material.BOW && getArrow() != null;
     }
 
     public boolean usesFireball() {
@@ -593,6 +715,11 @@ public class SentinelTrait extends Trait {
     public boolean usesPotion() {
         Material type = getLivingEntity().getEquipment().getItemInMainHand().getType();
         return type == Material.SPLASH_POTION || type == Material.LINGERING_POTION;
+    }
+
+    public boolean shouldTakeDura() {
+        Material type = getLivingEntity().getEquipment().getItemInMainHand().getType();
+        return type == Material.BOW || type.name().endsWith("SWORD");
     }
 
     public boolean shouldTarget(LivingEntity entity) {
@@ -750,6 +877,7 @@ public class SentinelTrait extends Trait {
                 }
                 if (dist > 7 * 7) {
                     npc.getNavigator().getDefaultParameters().range(100);
+                    npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
                     npc.getNavigator().setTarget(player.getLocation());
                 }
             }
