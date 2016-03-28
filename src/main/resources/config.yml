@@ -2,9 +2,9 @@
 
 # Default settings for a new NPC
 sentinel defaults:
-    # Whether 'close quarters' NPCs should chase targets
+    # Whether 'close quarters' NPCs should chase targets.
     close chase target: true
-    # Whether 'ranged attack' NPCs should chase targets
+    # Whether 'ranged attack' NPCs should chase targets.
     ranged chase target: false
     # How much damage to do. -1 for calculated values.
     damage: -1
@@ -14,8 +14,10 @@ sentinel defaults:
     health: 20
     # Whether this NPC is invincible.
     invincible: false
-    # Attack rate, in ticks
+    # Attack rate, in ticks.
     attack rate: 30
+    # Whether this NPC fights back.
+    fightback: true
 
 # How fast to recalculate, in ticks.
 update rate: 10

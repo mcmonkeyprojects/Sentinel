@@ -373,7 +373,17 @@ public class SentinelPlugin extends JavaPlugin {
             }
             return true;
         }
-        else if (arg0.equals("info") && sender.hasPermission("sentinel.info")) {
+        else if (arg0.equals("fightback") && sender.hasPermission("sentinel.fightback") && args.length > 1) {
+            sentinel.fightback = !sentinel.fightback;
+            if (sentinel.fightback) {
+                sender.sendMessage(prefixGood + "Sentinel now fights back!");
+            }
+            else {
+                sender.sendMessage(prefixGood + "Sentinel no longer fights back!");
+            }
+            return true;
+        }
+        else if (arg0.equals("targets") && sender.hasPermission("sentinel.info")) {
             sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
                     + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()));
             sender.sendMessage(prefixGood + "Targets: " + ChatColor.AQUA + getTargetString(sentinel.targets));
@@ -386,12 +396,18 @@ public class SentinelPlugin extends JavaPlugin {
             sender.sendMessage(prefixGood + "Ignored NPC Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.npcNameIgnores));
             sender.sendMessage(prefixGood + "Ignored Entity Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.entityNameIgnores));
             sender.sendMessage(prefixGood + "Ignored Held Item Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.heldItemIgnores));
+            return true;
+        }
+        else if (arg0.equals("info") && sender.hasPermission("sentinel.info")) {
+            sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
+                    + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()));
             sender.sendMessage(prefixGood + "Damage: " + ChatColor.AQUA + sentinel.damage);
             sender.sendMessage(prefixGood + "Armor: " + ChatColor.AQUA + sentinel.armor);
             sender.sendMessage(prefixGood + "Health: " + ChatColor.AQUA +
             (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/": "") + sentinel.health);
             sender.sendMessage(prefixGood + "Range: " + ChatColor.AQUA + sentinel.range);
             sender.sendMessage(prefixGood + "Invincibility Enabled: " + ChatColor.AQUA + sentinel.invincible);
+            sender.sendMessage(prefixGood + "Fightback Enabled: " + ChatColor.AQUA + sentinel.fightback);
             sender.sendMessage(prefixGood + "Ranged Chasing Enabled: " + ChatColor.AQUA + sentinel.rangedChase);
             sender.sendMessage(prefixGood + "Close-Quarters Chasing Enabled: " + ChatColor.AQUA + sentinel.closeChase);
             return true;
@@ -408,7 +424,9 @@ public class SentinelPlugin extends JavaPlugin {
             if (sender.hasPermission("sentinel.health")) sender.sendMessage(prefixGood + "/sentinel health HEALTH - Sets the NPC's health level.");
             if (sender.hasPermission("sentinel.attackrate")) sender.sendMessage(prefixGood + "/sentinel attackrate RATE - Toggles the rate at which the NPC attacks, in ticks.");
             if (sender.hasPermission("sentinel.invincible")) sender.sendMessage(prefixGood + "/sentinel invincible - Toggles whether the NPC is invincible.");
-            if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current sentinel.");
+            if (sender.hasPermission("sentinel.fightback")) sender.sendMessage(prefixGood + "/sentinel fightback - Toggles whether the NPC will fight back.");
+            if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
+            if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
             if (sender.hasPermission("sentinel.admin")) sender.sendMessage(prefixGood + "Be careful, you can edit other player's NPCs!");
             return true;
         }

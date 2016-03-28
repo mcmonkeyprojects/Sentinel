@@ -47,8 +47,10 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- Basically, optionally require ammo be fed into the NPC for bows/fireballs, or spare swords if the current sword breaks.
 - Damage calculation:
 	- Caculate damage from the item rather than enforcing a specific value
+	- Also, if an enforced value is specified... actually use it!
 - Armor calculation:
 	- Calculate armor protection from equipment rather than enforcing a specific value.
+	- Also, if an enforced value is specified... actually use it!
 - Mounting:
 	- Ride a horse or whatever other NPC
 	- maybe support this in base Citizens rather than Sentinel?
@@ -56,8 +58,11 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- `/sentinel stats`
 	- `/sentinel fightback`
 	- maybe `/sentinel targets` separate from `info`
+	- `/sentinel guard PLAYERNAME`
 - Other:
 	- old Sentry saves importer?
+	- Maximum chase range
+	- Automated respawn or removal on death
 
 ### Need help using Sentinel? Try one of these places:
 

@@ -9,11 +9,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -98,8 +101,37 @@ public class SentinelTrait extends Trait {
     @Persist("invincible")
     public boolean invincible = false;
 
+    @Persist("fightback")
+    public boolean fightback = true;
+
     @Persist("attackRate")
     public int attackRate = 30;
+
+    @EventHandler
+    public void whenWeAreAttacked(EntityDamageByEntityEvent event) {
+        if (!npc.isSpawned()) {
+            return;
+        }
+        if (!event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            return;
+        }
+        Entity e = event.getDamager();
+        if (!(e instanceof LivingEntity)) {
+            if (e instanceof Projectile) {
+                ProjectileSource source = ((Projectile)e).getShooter();
+                if (source instanceof LivingEntity) {
+                    e = (LivingEntity) source;
+                }
+                else {
+                    return;
+                }
+            }
+            else {
+                return;
+            }
+        }
+        currentTarget = e.getUniqueId();
+    }
 
     @Override
     public void onAttach() {
@@ -114,8 +146,8 @@ public class SentinelTrait extends Trait {
             getLivingEntity().setMaxHealth(health);
             getLivingEntity().setHealth(health);
         }
-        invincible = config.getBoolean("defaults.invincible", false);
-        npc.setProtected(invincible);
+        setInvincible(config.getBoolean("sentinel defaults.invincible", false));
+        fightback = config.getBoolean("sentinel defaults.fightback", true);
         ignores.add(SentinelTarget.OWNER);
     }
 
@@ -396,6 +428,8 @@ public class SentinelTrait extends Trait {
         return isTargeted(entity) && !isIgnored(entity);
     }
 
+    private UUID currentTarget = null;
+
     public boolean isRegexTargeted(String name, List<String> regexes) {
         for (String str: regexes) {
             Pattern pattern = Pattern.compile(str, Pattern.CASE_INSENSITIVE);
@@ -436,6 +470,9 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isTargeted(LivingEntity entity) {
+        if (currentTarget != null && currentTarget.equals(entity.getUniqueId())) {
+            return true;
+        }
         if (entity.hasMetadata("NPC")) {
             return targets.contains(SentinelTarget.NPCS) ||
                     isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), npcNameTargets);
