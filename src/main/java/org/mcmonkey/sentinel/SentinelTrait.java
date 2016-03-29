@@ -652,7 +652,15 @@ public class SentinelTrait extends Trait {
                 timeSinceAttack = 0;
                 if (!entity.isGlowing()) {
                     swingWeapon();
-                    entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_VILLAGER_YES, 1f, 1f); // TODO: Better sound!
+                    try {
+                        Sound snd = Sound.valueOf(SentinelPlugin.instance.getConfig().getString("random.spectral sound", "ENTITY_VILLAGER_YES"));
+                        if (snd != null) {
+                            entity.getWorld().playSound(entity.getLocation(), snd, 1f, 1f);
+                        }
+                    }
+                    catch (Exception e) {
+                        // Do nothing!
+                    }
                     entity.setGlowing(true);
                     if (needsAmmo) {
                         takeOne();

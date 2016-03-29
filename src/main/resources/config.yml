@@ -23,6 +23,10 @@ sentinel defaults:
     # Whether this NPC needs ammo to fight with.
     needs ammo: false
 
+random:
+    # What sound to play when the "spectral" attack is used.
+    spectral sound: ENTITY_VILLAGER_YES
+
 # How fast to recalculate, in ticks.
 update rate: 10
 
