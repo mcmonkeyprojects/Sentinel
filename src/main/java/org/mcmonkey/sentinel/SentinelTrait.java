@@ -826,7 +826,7 @@ public class SentinelTrait extends Trait {
         Location pos = getLivingEntity().getEyeLocation();
         LivingEntity closest = null;
         for (LivingEntity ent: getLivingEntity().getWorld().getLivingEntities()) {
-            if (ignoreGlow && ent.isGlowing()) {
+            if ((ignoreGlow && ent.isGlowing()) || ent.isDead()) {
                 continue;
             }
             double dist = ent.getEyeLocation().distanceSquared(pos);
@@ -838,7 +838,7 @@ public class SentinelTrait extends Trait {
         if (closest == null) {
             // NOTE: Possibly can be optimized by retrieving a list from the above logic?
             for (LivingEntity ent: getLivingEntity().getWorld().getLivingEntities()) {
-                if (ignoreGlow && ent.isGlowing()) {
+                if ((ignoreGlow && ent.isGlowing()) || ent.isDead()) {
                     continue;
                 }
                 double dist = ent.getEyeLocation().distanceSquared(pos);
