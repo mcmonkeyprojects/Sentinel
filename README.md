@@ -28,7 +28,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - Examples:
 	- To make your NPC attack sword wielders, use `/sentinel addtarget helditem:.*sword`
 
-### Supported things
+### Some random supported things
 
 - View `/sentinel addtarget` to view a list of currently supported targets. This includes all entity types and some special options such "NPCs" or "OWNER" (There are several more!)
 - Weapons:
@@ -40,6 +40,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- Nether star (strikes lightning!)
 	- Spectral arrow (makes the target glow, without damaging it.)
 		- (To make a target glow ++ damage it, equip a bow + arm it with spectral arrows!)
+- Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
 
 ### TODO
 
@@ -54,7 +55,6 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - Other:
 	- old Sentry saves importer?
 	- Maximum chase range (waiting on Citizens2 issue 718)
-	- Automated respawn or removal on death
 
 **Future**:
 

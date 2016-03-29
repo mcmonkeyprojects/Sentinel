@@ -22,6 +22,8 @@ sentinel defaults:
     fightback: true
     # Whether this NPC needs ammo to fight with.
     needs ammo: false
+    # Default respawn time, in ticks.
+    respawn time: 100
 
 random:
     # What sound to play when the "spectral" attack is used.

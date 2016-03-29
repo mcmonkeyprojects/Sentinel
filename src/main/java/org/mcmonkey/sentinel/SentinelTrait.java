@@ -137,6 +137,9 @@ public class SentinelTrait extends Trait {
     @Persist("needsAmmo")
     public boolean needsAmmo = false;
 
+    @Persist("respawnTime")
+    public long respawnTime = 100;
+
     public UUID getGuarding() {
         if (guardingLower == 0 && guardingUpper == 0) {
             return null;
@@ -224,8 +227,8 @@ public class SentinelTrait extends Trait {
     public void onAttach() {
         FileConfiguration config = SentinelPlugin.instance.getConfig();
         attackRate = config.getInt("sentinel defaults.attack rate", 30);
-        healRate
-                = config.getInt("sentinel defaults.heal rate", 30);
+        healRate = config.getInt("sentinel defaults.heal rate", 30);
+        respawnTime = config.getInt("sentinel defaults.respawn time", 100);
         rangedChase = config.getBoolean("sentinel defaults.ranged chase target", false);
         closeChase = config.getBoolean("sentinel defaults.close chase target", true);
         armor = config.getDouble("sentinel defaults.armor", -1);
@@ -913,11 +916,47 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    public BukkitRunnable respawnMe;
+
     @Override
     public void onSpawn() {
         stats_timesSpawned++;
         setHealth(health);
         setInvincible(invincible);
+        if (respawnMe != null) {
+            respawnMe.cancel();
+            respawnMe = null;
+        }
+    }
+
+    @EventHandler
+    public void whenSomethingDies(EntityDeathEvent event) {
+        if (!CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
+                || !CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getUniqueId().equals(npc.getUniqueId())) {
+            return;
+        }
+        onDeath();
+    }
+
+    public void onDeath() {
+        if (respawnTime < 0) {
+            BukkitRunnable removeMe = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    npc.destroy();
+                }
+            };
+            removeMe.runTaskLater(SentinelPlugin.instance, 1);
+        }
+        else if (respawnTime > 0) {
+            respawnMe = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    npc.spawn(npc.getStoredLocation());
+                }
+            };
+            respawnMe.runTaskLater(SentinelPlugin.instance, respawnTime);
+        }
     }
 
     @Override

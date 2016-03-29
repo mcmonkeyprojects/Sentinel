@@ -37,6 +37,8 @@ permissions:
       sentinel.attackrate: true
       # /sentinel healrate RATE
       sentinel.healrate: true
+      # /sentinel respawntime TIME
+      sentinel.respawntime: true
       # /sentinel guard PLAYER
       sentinel.guard: true
       # /sentinel invincible

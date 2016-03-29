@@ -11,7 +11,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,6 +51,20 @@ public class SentinelPlugin extends JavaPlugin {
         if (getConfig().getInt("config version", 0) != 1) {
             getLogger().warning("Outdated Sentinel config - please delete it to regenerate it!");
         }
+        BukkitRunnable postLoad = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (NPC npc: CitizensAPI.getNPCRegistry()) {
+                    if (!npc.isSpawned() && npc.hasTrait(SentinelTrait.class)) {
+                        SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
+                        if (sentinel.respawnTime > 0) {
+                            npc.spawn(npc.getStoredLocation());
+                        }
+                    }
+                }
+            }
+        };
+        postLoad.runTaskLater(this, 40);
         tickRate = getConfig().getInt("update rate", 10);
         getLogger().info("Sentinel loaded!");
     }
@@ -382,6 +399,17 @@ public class SentinelPlugin extends JavaPlugin {
             }
             return true;
         }
+        else if (arg0.equals("respawntime") && sender.hasPermission("sentinel.respawntime") && args.length > 1) {
+            try {
+                long d = Long.valueOf(args[1]);
+                sentinel.respawnTime = d;
+                sender.sendMessage(prefixGood + "Respawn time set!");
+            }
+            catch (NumberFormatException ex) {
+                sender.sendMessage(prefixBad + "Invalid time number!");
+            }
+            return true;
+        }
         else if (arg0.equals("invincible") && sender.hasPermission("sentinel.invincible")) {
             sentinel.setInvincible(!sentinel.invincible);
             if (sentinel.invincible) {
@@ -474,6 +502,7 @@ public class SentinelPlugin extends JavaPlugin {
             sender.sendMessage(prefixGood + "Range: " + ChatColor.AQUA + sentinel.range);
             sender.sendMessage(prefixGood + "Attack Rate: " + ChatColor.AQUA + sentinel.attackRate);
             sender.sendMessage(prefixGood + "Heal Rate: " + ChatColor.AQUA + sentinel.healRate);
+            sender.sendMessage(prefixGood + "Respawn Time: " + ChatColor.AQUA + sentinel.respawnTime);
             sender.sendMessage(prefixGood + "Invincibility Enabled: " + ChatColor.AQUA + sentinel.invincible);
             sender.sendMessage(prefixGood + "Fightback Enabled: " + ChatColor.AQUA + sentinel.fightback);
             sender.sendMessage(prefixGood + "Ranged Chasing Enabled: " + ChatColor.AQUA + sentinel.rangedChase);
@@ -505,6 +534,7 @@ public class SentinelPlugin extends JavaPlugin {
             if (sender.hasPermission("sentinel.health")) sender.sendMessage(prefixGood + "/sentinel health HEALTH - Sets the NPC's health level.");
             if (sender.hasPermission("sentinel.attackrate")) sender.sendMessage(prefixGood + "/sentinel attackrate RATE - Changes the rate at which the NPC attacks, in ticks.");
             if (sender.hasPermission("sentinel.healrate")) sender.sendMessage(prefixGood + "/sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.");
+            if (sender.hasPermission("sentinel.healrate")) sender.sendMessage(prefixGood + "/sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in ticks.");
             if (sender.hasPermission("sentinel.guard")) sender.sendMessage(prefixGood + "/sentinel guard [PLAYERNAME] - Makes the NPC guard a specific player. Don't specify a player to stop guarding.");
             if (sender.hasPermission("sentinel.invincible")) sender.sendMessage(prefixGood + "/sentinel invincible - Toggles whether the NPC is invincible.");
             if (sender.hasPermission("sentinel.fightback")) sender.sendMessage(prefixGood + "/sentinel fightback - Toggles whether the NPC will fight back.");
