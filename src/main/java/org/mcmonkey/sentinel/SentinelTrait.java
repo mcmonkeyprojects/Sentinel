@@ -821,10 +821,14 @@ public class SentinelTrait extends Trait {
      * Failing a direct line of sight, the nearest entity in range at all will be chosen.
      */
     public LivingEntity findBestTarget() {
+        boolean ignoreGlow = usesSpectral();
         double rangesquared = range * range;
         Location pos = getLivingEntity().getEyeLocation();
         LivingEntity closest = null;
         for (LivingEntity ent: getLivingEntity().getWorld().getLivingEntities()) {
+            if (ignoreGlow && ent.isGlowing()) {
+                continue;
+            }
             double dist = ent.getEyeLocation().distanceSquared(pos);
             if (dist < rangesquared && shouldTarget(ent) && canSee(ent)) {
                 rangesquared = dist;
@@ -834,6 +838,9 @@ public class SentinelTrait extends Trait {
         if (closest == null) {
             // NOTE: Possibly can be optimized by retrieving a list from the above logic?
             for (LivingEntity ent: getLivingEntity().getWorld().getLivingEntities()) {
+                if (ignoreGlow && ent.isGlowing()) {
+                    continue;
+                }
                 double dist = ent.getEyeLocation().distanceSquared(pos);
                 if (dist < rangesquared && shouldTarget(ent)) {
                     rangesquared = dist;
