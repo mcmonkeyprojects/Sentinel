@@ -440,6 +440,16 @@ public class SentinelPlugin extends JavaPlugin {
             }
             return true;
         }
+        else if (arg0.equals("safeshot") && sender.hasPermission("sentinel.safeshot")) {
+            sentinel.safeShot = !sentinel.safeShot;
+            if (sentinel.safeShot) {
+                sender.sendMessage(prefixGood + "NPC now is a safe shot!");
+            }
+            else {
+                sender.sendMessage(prefixGood + "NPC is no longer a safe shot!");
+            }
+            return true;
+        }
         else if (arg0.equals("chaseclose") && sender.hasPermission("sentinel.chase")) {
             sentinel.closeChase = !sentinel.closeChase;
             if (sentinel.closeChase) {
@@ -507,6 +517,7 @@ public class SentinelPlugin extends JavaPlugin {
             sender.sendMessage(prefixGood + "Fightback Enabled: " + ChatColor.AQUA + sentinel.fightback);
             sender.sendMessage(prefixGood + "Ranged Chasing Enabled: " + ChatColor.AQUA + sentinel.rangedChase);
             sender.sendMessage(prefixGood + "Close-Quarters Chasing Enabled: " + ChatColor.AQUA + sentinel.closeChase);
+            sender.sendMessage(prefixGood + "Safe-Shot Enabled: " + ChatColor.AQUA + sentinel.safeShot);
             return true;
         }
         else if (arg0.equals("stats") && sender.hasPermission("sentinel.info")) {
@@ -534,11 +545,12 @@ public class SentinelPlugin extends JavaPlugin {
             if (sender.hasPermission("sentinel.health")) sender.sendMessage(prefixGood + "/sentinel health HEALTH - Sets the NPC's health level.");
             if (sender.hasPermission("sentinel.attackrate")) sender.sendMessage(prefixGood + "/sentinel attackrate RATE - Changes the rate at which the NPC attacks, in ticks.");
             if (sender.hasPermission("sentinel.healrate")) sender.sendMessage(prefixGood + "/sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.");
-            if (sender.hasPermission("sentinel.healrate")) sender.sendMessage(prefixGood + "/sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in ticks.");
+            if (sender.hasPermission("sentinel.respawntime")) sender.sendMessage(prefixGood + "/sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in ticks.");
             if (sender.hasPermission("sentinel.guard")) sender.sendMessage(prefixGood + "/sentinel guard [PLAYERNAME] - Makes the NPC guard a specific player. Don't specify a player to stop guarding.");
             if (sender.hasPermission("sentinel.invincible")) sender.sendMessage(prefixGood + "/sentinel invincible - Toggles whether the NPC is invincible.");
             if (sender.hasPermission("sentinel.fightback")) sender.sendMessage(prefixGood + "/sentinel fightback - Toggles whether the NPC will fight back.");
             if (sender.hasPermission("sentinel.needammo")) sender.sendMessage(prefixGood + "/sentinel needammo - Toggles whether the NPC will need ammo.");
+            if (sender.hasPermission("sentinel.safeshot")) sender.sendMessage(prefixGood + "/sentinel safeshot - Toggles whether the NPC will avoid damaging non-targets.");
             if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseclose - Toggles whether the NPC will chase while in 'close quarters' fights.");
             if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");

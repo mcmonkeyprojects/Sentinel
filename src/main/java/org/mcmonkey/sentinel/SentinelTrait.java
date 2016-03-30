@@ -137,6 +137,9 @@ public class SentinelTrait extends Trait {
     @Persist("needsAmmo")
     public boolean needsAmmo = false;
 
+    @Persist("safeShot")
+    public boolean safeShot = true;
+
     @Persist("respawnTime")
     public long respawnTime = 100;
 
@@ -201,6 +204,10 @@ public class SentinelTrait extends Trait {
             return;
         }
         if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            if (safeShot && !shouldTarget((LivingEntity) event.getEntity())) {
+                event.setCancelled(true);
+                return;
+            }
             stats_damageGiven += event.getFinalDamage();
             return;
         }
@@ -211,7 +218,12 @@ public class SentinelTrait extends Trait {
                 if (source instanceof LivingEntity) {
                     e = (LivingEntity) source;
                     if (e.getUniqueId().equals(getLivingEntity().getUniqueId())) {
+                        if (safeShot && !shouldTarget((LivingEntity) event.getEntity())) {
+                            event.setCancelled(true);
+                            return;
+                        }
                         stats_damageGiven += event.getFinalDamage();
+                        return;
                     }
                 }
             }
@@ -240,6 +252,8 @@ public class SentinelTrait extends Trait {
         }
         setInvincible(config.getBoolean("sentinel defaults.invincible", false));
         fightback = config.getBoolean("sentinel defaults.fightback", true);
+        needsAmmo = config.getBoolean("sentinel defaults.needs ammo", false);
+        safeShot = config.getBoolean("sentinel defaults.safe shot", true);
         ignores.add(SentinelTarget.OWNER);
     }
 

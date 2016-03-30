@@ -22,6 +22,8 @@ sentinel defaults:
     fightback: true
     # Whether this NPC needs ammo to fight with.
     needs ammo: false
+    # Whether the NPC will avoiding damaging non-targets.
+    safe shot: true
     # Default respawn time, in ticks.
     respawn time: 100
 

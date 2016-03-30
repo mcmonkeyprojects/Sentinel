@@ -47,6 +47,8 @@ permissions:
       sentinel.fightback: true
       # /sentinel needammo
       sentinel.needammo: true
+      # /sentinel safeshot
+      sentinel.safeshot: true
       # /sentinel chaseclose, chaseranged
       sentinel.chase: true
       # /sentinel info, /sentinel targets, /sentinel stats
