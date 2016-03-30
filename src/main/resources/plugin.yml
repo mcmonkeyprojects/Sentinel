@@ -38,6 +38,8 @@ permissions:
       # /sentinel healrate RATE
       sentinel.healrate: true
       # /sentinel respawntime TIME
+      sentinel.chaserange: true
+      # /sentinel chaserange RANGE
       sentinel.respawntime: true
       # /sentinel guard PLAYER
       sentinel.guard: true

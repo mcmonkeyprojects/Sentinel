@@ -54,7 +54,6 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 	- `/sentinel forgive PLAYERNAME/all` forgives attackers
 - Other:
 	- old Sentry saves importer?
-	- Maximum chase range (waiting on Citizens2 issue 718)
 
 **Future**:
 

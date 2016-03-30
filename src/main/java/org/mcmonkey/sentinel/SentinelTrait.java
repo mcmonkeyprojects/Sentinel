@@ -6,6 +6,9 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Inventory;
 import net.citizensnpcs.api.trait.trait.Owner;
+import net.citizensnpcs.trait.waypoint.Waypoint;
+import net.citizensnpcs.trait.waypoint.WaypointProvider;
+import net.citizensnpcs.trait.waypoint.Waypoints;
 import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -142,6 +145,9 @@ public class SentinelTrait extends Trait {
 
     @Persist("respawnTime")
     public long respawnTime = 100;
+
+    @Persist("chaseRange")
+    public double chaseRange = 100;
 
     public UUID getGuarding() {
         if (guardingLower == 0 && guardingUpper == 0) {
@@ -840,7 +846,7 @@ public class SentinelTrait extends Trait {
     public LivingEntity findBestTarget() {
         boolean ignoreGlow = usesSpectral();
         double rangesquared = range * range;
-        Location pos = getLivingEntity().getEyeLocation();
+        Location pos = getGuardZone();
         LivingEntity closest = null;
         for (LivingEntity ent: getLivingEntity().getWorld().getLivingEntities()) {
             if ((ignoreGlow && ent.isGlowing()) || ent.isDead()) {
@@ -904,7 +910,9 @@ public class SentinelTrait extends Trait {
         if (getGuarding() != null) {
             Player player = Bukkit.getPlayer(getGuarding());
             if (player != null) {
-                double dist = getLivingEntity().getLocation().distanceSquared(player.getLocation());
+                Location myLoc = getLivingEntity().getLocation();
+                Location theirLoc = player.getLocation();
+                double dist = theirLoc.getWorld().equals(myLoc.getWorld()) ? myLoc.distanceSquared(theirLoc) : MAX_DIST;
                 if (dist > 60 * 60) {
                     npc.teleport(player.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 }
@@ -915,6 +923,55 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
+        else if (chaseRange > 0) {
+            Location near = nearestPathPoint();
+            if (near != null && near.distanceSquared(getLivingEntity().getLocation()) > chaseRange * chaseRange) {
+                npc.getNavigator().setTarget(near);
+            }
+        }
+    }
+
+    private final static double MAX_DIST = 100000000;
+
+    public Location getGuardZone() {
+        if (getGuarding() != null) {
+            Player player = Bukkit.getPlayer(getGuarding());
+            if (player != null) {
+                return player.getLocation();
+            }
+        }
+        if (chaseRange > 0) {
+            Location goal = nearestPathPoint();
+            if (goal != null) {
+                return goal;
+            }
+        }
+        return getLivingEntity().getLocation();
+    }
+
+    public Location nearestPathPoint() {
+        if (!npc.hasTrait(Waypoints.class)) {
+            return null;
+        }
+        Waypoints wp = npc.getTrait(Waypoints.class);
+        if (!(wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
+            return null;
+        }
+        Location baseloc = getLivingEntity().getLocation();
+        Location nearest = null;
+        double dist = MAX_DIST;
+        for (Waypoint wayp : ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()) {
+            Location l = wayp.getLocation();
+            if (!l.getWorld().equals(baseloc.getWorld())) {
+                continue;
+            }
+            double d = baseloc.distanceSquared(l);
+            if (d < dist) {
+                dist = d;
+                nearest = l;
+            }
+        }
+        return nearest;
     }
 
     @Override

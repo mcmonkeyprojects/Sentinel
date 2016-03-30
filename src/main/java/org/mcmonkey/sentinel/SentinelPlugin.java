@@ -410,6 +410,17 @@ public class SentinelPlugin extends JavaPlugin {
             }
             return true;
         }
+        else if (arg0.equals("chaserange") && sender.hasPermission("sentinel.chaserange") && args.length > 1) {
+            try {
+                double d = Double.valueOf(args[1]);
+                sentinel.chaseRange = d;
+                sender.sendMessage(prefixGood + "Chase range set!");
+            }
+            catch (NumberFormatException ex) {
+                sender.sendMessage(prefixBad + "Invalid range number!");
+            }
+            return true;
+        }
         else if (arg0.equals("invincible") && sender.hasPermission("sentinel.invincible")) {
             sentinel.setInvincible(!sentinel.invincible);
             if (sentinel.invincible) {
@@ -517,6 +528,7 @@ public class SentinelPlugin extends JavaPlugin {
             sender.sendMessage(prefixGood + "Fightback Enabled: " + ChatColor.AQUA + sentinel.fightback);
             sender.sendMessage(prefixGood + "Ranged Chasing Enabled: " + ChatColor.AQUA + sentinel.rangedChase);
             sender.sendMessage(prefixGood + "Close-Quarters Chasing Enabled: " + ChatColor.AQUA + sentinel.closeChase);
+            sender.sendMessage(prefixGood + "Maximum chase range: " + ChatColor.AQUA + sentinel.chaseRange);
             sender.sendMessage(prefixGood + "Safe-Shot Enabled: " + ChatColor.AQUA + sentinel.safeShot);
             return true;
         }
@@ -546,6 +558,7 @@ public class SentinelPlugin extends JavaPlugin {
             if (sender.hasPermission("sentinel.attackrate")) sender.sendMessage(prefixGood + "/sentinel attackrate RATE - Changes the rate at which the NPC attacks, in ticks.");
             if (sender.hasPermission("sentinel.healrate")) sender.sendMessage(prefixGood + "/sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.");
             if (sender.hasPermission("sentinel.respawntime")) sender.sendMessage(prefixGood + "/sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in ticks.");
+            if (sender.hasPermission("sentinel.chaserange")) sender.sendMessage(prefixGood + "/sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.");
             if (sender.hasPermission("sentinel.guard")) sender.sendMessage(prefixGood + "/sentinel guard [PLAYERNAME] - Makes the NPC guard a specific player. Don't specify a player to stop guarding.");
             if (sender.hasPermission("sentinel.invincible")) sender.sendMessage(prefixGood + "/sentinel invincible - Toggles whether the NPC is invincible.");
             if (sender.hasPermission("sentinel.fightback")) sender.sendMessage(prefixGood + "/sentinel fightback - Toggles whether the NPC will fight back.");
