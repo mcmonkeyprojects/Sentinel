@@ -559,7 +559,7 @@ public class SentinelPlugin extends JavaPlugin {
             if (sender.hasPermission("sentinel.healrate")) sender.sendMessage(prefixGood + "/sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.");
             if (sender.hasPermission("sentinel.respawntime")) sender.sendMessage(prefixGood + "/sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in ticks.");
             if (sender.hasPermission("sentinel.chaserange")) sender.sendMessage(prefixGood + "/sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.");
-            if (sender.hasPermission("sentinel.guard")) sender.sendMessage(prefixGood + "/sentinel guard [PLAYERNAME] - Makes the NPC guard a specific player. Don't specify a player to stop guarding.");
+            if (sender.hasPermission("sentinel.guard")) sender.sendMessage(prefixGood + "/sentinel guard (PLAYERNAME) - Makes the NPC guard a specific player. Don't specify a player to stop guarding.");
             if (sender.hasPermission("sentinel.invincible")) sender.sendMessage(prefixGood + "/sentinel invincible - Toggles whether the NPC is invincible.");
             if (sender.hasPermission("sentinel.fightback")) sender.sendMessage(prefixGood + "/sentinel fightback - Toggles whether the NPC will fight back.");
             if (sender.hasPermission("sentinel.needammo")) sender.sendMessage(prefixGood + "/sentinel needammo - Toggles whether the NPC will need ammo.");
@@ -568,6 +568,7 @@ public class SentinelPlugin extends JavaPlugin {
             if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
+            if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel stats - Shows statistics about the current NPC.");
             if (sender.hasPermission("sentinel.admin")) sender.sendMessage(prefixGood + "Be careful, you can edit other player's NPCs!");
             return true;
         }

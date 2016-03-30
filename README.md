@@ -28,9 +28,46 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - Examples:
 	- To make your NPC attack sword wielders, use `/sentinel addtarget helditem:.*sword`
 
+### Commands
+
+- /sentinel help - Shows help info.
+- /sentinel addtarget TYPE - Adds a target.
+- /sentinel removetarget TYPE - Removes a target.
+- /sentinel addignore TYPE - Ignores a target.
+- /sentinel removeignore TYPE - Allows targetting a target.
+- /sentinel range RANGE - Sets the NPC's maximum attack range.
+- /sentinel damage DAMAGE - Sets the NPC's attack damage.
+- /sentinel armor ARMOR - Sets the NPC's armor level.
+- /sentinel health HEALTH - Sets the NPC's health level.
+- /sentinel attackrate RATE - Changes the rate at which the NPC attacks, in ticks.
+- /sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.
+- /sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in ticks.
+- /sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.
+- /sentinel guard (PLAYERNAME) - Makes the NPC guard a specific player. Don't specify a player to stop guarding.
+- /sentinel invincible - Toggles whether the NPC is invincible.
+- /sentinel fightback - Toggles whether the NPC will fight back.
+- /sentinel needammo - Toggles whether the NPC will need ammo.
+- /sentinel safeshot - Toggles whether the NPC will avoid damaging non-targets.
+- /sentinel chaseclose - Toggles whether the NPC will chase while in 'close quarters' fights.
+- /sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.
+- /sentinel info - Shows info on the current NPC.
+- /sentinel stats - Shows statistics about the current NPC.
+- /sentinel targets - Shows the targets of the current NPC.
+
+### Permissions
+- sentinel.basic for the /sentinel command
+- sentinel.admin to edit other player's Sentinel NPCs.
+- Everything else is "sentinel.X" where "X" is the command name, EG "sentinel.info".
+
+### Targets
+
+These are all valid targets and ignores:
+
+- Primary set: NPCS, OWNER, PASSIVE_MOB, MOBS, MONSTERS, PLAYERS, PIGS, OCELOTS, COWS, RABBITS, SHEEP, CHICKENS, HORSES, MUSHROOM_COW, IRON_GOLEMS, SQUIDS, VILLAGER, WOLF, SNOWMEN, WITCH, GUARDIANS, SHULKERS, CREERERS, SKELETONS, ZOMBIES, MAGMA_CUBES, ZOMBIE_PIGMEN, SILVERFISH, BATS, BLAZES, GHASTS, GIANTS, SLIME, SPIDER, CAVE_SPIDERS, ENDERMEN, ENDERMITES, WITHER, ENDERDRAGON
+- Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX)
+
 ### Some random supported things
 
-- View `/sentinel addtarget` to view a list of currently supported targets. This includes all entity types and some special options such "NPCs" or "OWNER" (There are several more!)
 - Weapons:
 	- Fists
 	- Bow
