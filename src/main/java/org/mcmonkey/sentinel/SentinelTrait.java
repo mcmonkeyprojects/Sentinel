@@ -481,7 +481,12 @@ public class SentinelTrait extends Trait {
         npc.faceLocation(entity.getLocation());
         swingWeapon();
         stats_punches++;
-        entity.damage(getDamage(), getLivingEntity());
+        if (SentinelPlugin.instance.getConfig().getBoolean("random.workaround damage", false)) {
+            entity.damage(getDamage());
+        }
+        else {
+            entity.damage(getDamage(), getLivingEntity());
+        }
     }
 
     public void chase(LivingEntity entity) {
@@ -1041,7 +1046,6 @@ public class SentinelTrait extends Trait {
             getLivingEntity().setMaxHealth(health);
         }
     }
-
 
     public void setInvincible(boolean inv) {
         invincible = inv;

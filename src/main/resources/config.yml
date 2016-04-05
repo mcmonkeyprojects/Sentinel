@@ -30,6 +30,8 @@ sentinel defaults:
 random:
     # What sound to play when the "spectral" attack is used.
     spectral sound: ENTITY_VILLAGER_YES
+    # Whether to use 'workaround' mode of fist damage.
+    workaround damage: false
 
 # How fast to recalculate, in ticks.
 update rate: 10
