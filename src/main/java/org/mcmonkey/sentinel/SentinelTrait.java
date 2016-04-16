@@ -24,7 +24,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
@@ -490,6 +489,7 @@ public class SentinelTrait extends Trait {
     }
 
     public void chase(LivingEntity entity) {
+        npc.getNavigator().getDefaultParameters().stuckAction(null);
         npc.getNavigator().setTarget(entity.getLocation());
     }
 
