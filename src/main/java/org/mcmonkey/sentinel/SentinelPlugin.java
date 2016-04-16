@@ -73,6 +73,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         tickRate = getConfig().getInt("update rate", 10);
         getLogger().info("Sentinel loaded!");
         getServer().getPluginManager().registerEvents(this, this);
+        try {
+            MetricsLite metrics = new MetricsLite(this);
+            metrics.start();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     final static String InvPrefix = ChatColor.GREEN + "Sentinel ";
