@@ -10,10 +10,7 @@ import net.citizensnpcs.trait.waypoint.Waypoint;
 import net.citizensnpcs.trait.waypoint.WaypointProvider;
 import net.citizensnpcs.trait.waypoint.Waypoints;
 import net.citizensnpcs.util.PlayerAnimation;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
@@ -784,6 +781,9 @@ public class SentinelTrait extends Trait {
                     isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), npcNameIgnores);
         }
         else if (entity instanceof Player) {
+            if (((Player) entity).getGameMode() == GameMode.CREATIVE || ((Player) entity).getGameMode() == GameMode.SPECTATOR) {
+                return true;
+            }
             if (getGuarding() != null && entity.getUniqueId().equals(getGuarding())) {
                 return true;
             }
