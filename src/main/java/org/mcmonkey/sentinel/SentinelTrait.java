@@ -167,13 +167,13 @@ public class SentinelTrait extends Trait {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void whenAttacksAreHappening(EntityDamageByEntityEvent event) {
         if (!npc.isSpawned()) {
             return;
         }
         if (event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId())) {
-            event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, -getArmor() * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
+            event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, -getArmor(getLivingEntity()) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
             return;
         }
         if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
@@ -404,11 +404,11 @@ public class SentinelTrait extends Trait {
         return damage;
     }
 
-    public double getArmor() {
+    public double getArmor(LivingEntity ent) {
         if (armor < 0) {
             // TODO: Enchantments!
             double baseArmor = 0;
-            ItemStack helmet = getLivingEntity().getEquipment().getHelmet();
+            ItemStack helmet = ent.getEquipment().getHelmet();
             if (helmet != null && helmet.getType() == Material.DIAMOND_HELMET) {
                 baseArmor += 0.12;
             }
@@ -424,7 +424,7 @@ public class SentinelTrait extends Trait {
             if (helmet != null && helmet.getType() == Material.CHAINMAIL_HELMET) {
                 baseArmor += 0.08;
             }
-            ItemStack chestplate = getLivingEntity().getEquipment().getChestplate();
+            ItemStack chestplate = ent.getEquipment().getChestplate();
             if (chestplate != null && chestplate.getType() == Material.DIAMOND_CHESTPLATE) {
                 baseArmor += 0.32;
             }
@@ -440,7 +440,7 @@ public class SentinelTrait extends Trait {
             if (chestplate != null && chestplate.getType() == Material.CHAINMAIL_CHESTPLATE) {
                 baseArmor += 0.20;
             }
-            ItemStack leggings = getLivingEntity().getEquipment().getLeggings();
+            ItemStack leggings = ent.getEquipment().getLeggings();
             if (leggings != null && leggings.getType() == Material.DIAMOND_LEGGINGS) {
                 baseArmor += 0.24;
             }
@@ -456,7 +456,7 @@ public class SentinelTrait extends Trait {
             if (leggings != null && leggings.getType() == Material.CHAINMAIL_LEGGINGS) {
                 baseArmor += 0.16;
             }
-            ItemStack boots = getLivingEntity().getEquipment().getBoots();
+            ItemStack boots = ent.getEquipment().getBoots();
             if (boots != null && boots.getType() == Material.DIAMOND_BOOTS) {
                 baseArmor += 0.12;
             }
@@ -482,7 +482,7 @@ public class SentinelTrait extends Trait {
         swingWeapon();
         stats_punches++;
         if (SentinelPlugin.instance.getConfig().getBoolean("random.workaround damage", false)) {
-            entity.damage(getDamage());
+            entity.damage(getDamage() * (1.0 - getArmor(entity)));
         }
         else {
             entity.damage(getDamage(), getLivingEntity());

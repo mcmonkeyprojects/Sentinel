@@ -37,4 +37,4 @@ random:
 update rate: 10
 
 # Do not touch!
-config version: 1
+config version: 2
