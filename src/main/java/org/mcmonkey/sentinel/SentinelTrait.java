@@ -145,6 +145,9 @@ public class SentinelTrait extends Trait {
     @Persist("chaseRange")
     public double chaseRange = 100;
 
+    @Persist("drops")
+    public List<ItemStack> drops = new ArrayList<ItemStack>();
+
     public UUID getGuarding() {
         if (guardingLower == 0 && guardingUpper == 0) {
             return null;
@@ -1011,10 +1014,13 @@ public class SentinelTrait extends Trait {
                 || !CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getUniqueId().equals(npc.getUniqueId())) {
             return;
         }
-        onDeath();
+        onDeath(event.getEntity().getLocation());
     }
 
-    public void onDeath() {
+    public void onDeath(Location spot) {
+        for (ItemStack item: drops) {
+            spot.getWorld().dropItemNaturally(spot, item.clone());
+        }
         if (respawnTime < 0) {
             BukkitRunnable removeMe = new BukkitRunnable() {
                 @Override
@@ -1028,7 +1034,9 @@ public class SentinelTrait extends Trait {
             respawnMe = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    npc.spawn(npc.getStoredLocation());
+                    if (CitizensAPI.getNPCRegistry().getById(npc.getId()) != null) {
+                        npc.spawn(npc.getStoredLocation());
+                    }
                 }
             };
             respawnMe.runTaskLater(SentinelPlugin.instance, respawnTime);

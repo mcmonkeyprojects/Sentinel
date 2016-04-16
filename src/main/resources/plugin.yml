@@ -53,6 +53,8 @@ permissions:
       sentinel.safeshot: true
       # /sentinel chaseclose, chaseranged
       sentinel.chase: true
+      # /sentinel drops
+      sentinel.drops: true
       # /sentinel info, /sentinel targets, /sentinel stats
       sentinel.info: true
       # Edit other people's NPCs

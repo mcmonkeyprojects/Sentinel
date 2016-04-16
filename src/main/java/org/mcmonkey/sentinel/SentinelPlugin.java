@@ -6,6 +6,7 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import net.citizensnpcs.api.trait.trait.Owner;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,6 +14,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -20,7 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class SentinelPlugin extends JavaPlugin {
+public class SentinelPlugin extends JavaPlugin implements Listener {
 
     public static final String ColorBasic = ChatColor.YELLOW.toString();
 
@@ -67,6 +72,26 @@ public class SentinelPlugin extends JavaPlugin {
         postLoad.runTaskLater(this, 40);
         tickRate = getConfig().getInt("update rate", 10);
         getLogger().info("Sentinel loaded!");
+        getServer().getPluginManager().registerEvents(this, this);
+    }
+
+    final static String InvPrefix = ChatColor.GREEN + "Sentinel ";
+
+    @EventHandler
+    public void onInvClose(InventoryCloseEvent event) {
+        if (event.getInventory().getTitle().startsWith(InvPrefix)) {
+            int id = Integer.parseInt(event.getInventory().getTitle().substring(InvPrefix.length()));
+            NPC npc = CitizensAPI.getNPCRegistry().getById(id);
+            if (npc != null && npc.hasTrait(SentinelTrait.class)) {
+                List<ItemStack> its = npc.getTrait(SentinelTrait.class).drops;
+                its.clear();
+                for (ItemStack it: event.getInventory().getContents()) {
+                    if (it != null && it.getType() != Material.AIR) {
+                        its.add(it);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -497,6 +522,13 @@ public class SentinelPlugin extends JavaPlugin {
             }
             return true;
         }
+        else if (arg0.equals("drops") && sender.hasPermission("sentinel.drops")) {
+            Inventory inv = Bukkit.createInventory(null, 9 * 4, InvPrefix + sentinel.getNPC().getId());
+            ItemStack[] items = new ItemStack[sentinel.drops.size()];
+            inv.addItem(sentinel.drops.toArray(items));
+            ((Player) sender).openInventory(inv);
+            return true;
+        }
         else if (arg0.equals("targets") && sender.hasPermission("sentinel.info")) {
             sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
                     + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()));
@@ -566,6 +598,7 @@ public class SentinelPlugin extends JavaPlugin {
             if (sender.hasPermission("sentinel.safeshot")) sender.sendMessage(prefixGood + "/sentinel safeshot - Toggles whether the NPC will avoid damaging non-targets.");
             if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseclose - Toggles whether the NPC will chase while in 'close quarters' fights.");
             if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.");
+            if (sender.hasPermission("sentinel.drops")) sender.sendMessage(prefixGood + "/sentinel drops - Changes the drops of the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel stats - Shows statistics about the current NPC.");
