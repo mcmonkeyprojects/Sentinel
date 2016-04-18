@@ -130,9 +130,6 @@ public class SentinelTrait extends Trait {
     @Persist("guardingLower")
     public long guardingLower = 0;
 
-    @Persist("maxChaseRange")
-    public double maxChaseRange = 50.0;
-
     @Persist("needsAmmo")
     public boolean needsAmmo = false;
 
@@ -144,6 +141,9 @@ public class SentinelTrait extends Trait {
 
     @Persist("chaseRange")
     public double chaseRange = 100;
+
+    @Persist("spawnPoint")
+    public Location spawnPoint = null;
 
     @Persist("drops")
     public List<ItemStack> drops = new ArrayList<ItemStack>();
@@ -1040,7 +1040,7 @@ public class SentinelTrait extends Trait {
                 @Override
                 public void run() {
                     if (CitizensAPI.getNPCRegistry().getById(npc.getId()) != null) {
-                        npc.spawn(npc.getStoredLocation());
+                        npc.spawn(spawnPoint == null ? npc.getStoredLocation() : spawnPoint);
                     }
                 }
             };

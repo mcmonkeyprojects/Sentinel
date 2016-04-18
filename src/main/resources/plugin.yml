@@ -55,6 +55,8 @@ permissions:
       sentinel.chase: true
       # /sentinel drops
       sentinel.drops: true
+      # /sentinel spawnpoint
+      sentinel.spawnpoint: true
       # /sentinel info, /sentinel targets, /sentinel stats
       sentinel.info: true
       # Edit other people's NPCs

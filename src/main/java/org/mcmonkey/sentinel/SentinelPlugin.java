@@ -4,10 +4,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.citizensnpcs.api.trait.trait.Owner;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -63,7 +60,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     if (!npc.isSpawned() && npc.hasTrait(SentinelTrait.class)) {
                         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
                         if (sentinel.respawnTime > 0) {
-                            npc.spawn(npc.getStoredLocation());
+                            npc.spawn(sentinel.spawnPoint == null ? npc.getStoredLocation() : sentinel.spawnPoint);
                         }
                     }
                 }
@@ -537,6 +534,27 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             ((Player) sender).openInventory(inv);
             return true;
         }
+        else if (arg0.equals("spawnpoint") && sender.hasPermission("sentinel.spawnpoint")) {
+            if (!sentinel.getNPC().isSpawned()) {
+                sender.sendMessage("NPC must be spawned for this command!");
+            }
+            else {
+                Location pos = sentinel.getLivingEntity().getLocation().getBlock().getLocation();
+                if (sentinel.spawnPoint != null
+                        && pos.getBlockX() == sentinel.spawnPoint.getBlockX()
+                        && pos.getBlockY() == sentinel.spawnPoint.getBlockY()
+                        && pos.getBlockZ() == sentinel.spawnPoint.getBlockZ()
+                        && pos.getWorld().getName().equals(sentinel.spawnPoint.getWorld().getName())) {
+                    sentinel.spawnPoint = null;
+                    sender.sendMessage("Spawn point removed!");
+                }
+                else {
+                    sentinel.spawnPoint = pos;
+                    sender.sendMessage("Spawn point updated!");
+                }
+            }
+            return true;
+        }
         else if (arg0.equals("targets") && sender.hasPermission("sentinel.info")) {
             sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
                     + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()));
@@ -607,6 +625,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseclose - Toggles whether the NPC will chase while in 'close quarters' fights.");
             if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.");
             if (sender.hasPermission("sentinel.drops")) sender.sendMessage(prefixGood + "/sentinel drops - Changes the drops of the current NPC.");
+            if (sender.hasPermission("sentinel.spawnpoint")) sender.sendMessage(prefixGood + "/sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel stats - Shows statistics about the current NPC.");

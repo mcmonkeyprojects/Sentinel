@@ -52,6 +52,8 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - /sentinel safeshot - Toggles whether the NPC will avoid damaging non-targets.
 - /sentinel chaseclose - Toggles whether the NPC will chase while in 'close quarters' fights.
 - /sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.
+- /sentinel drops - Changes the drops of the current NPC.
+- /sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.
 - /sentinel info - Shows info on the current NPC.
 - /sentinel stats - Shows statistics about the current NPC.
 - /sentinel targets - Shows the targets of the current NPC.
