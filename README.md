@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](http://i.imgur.com/VDwTzrs.gif)
 
-**Version 0.3**: Compatible with Spigot 1.9
+**Version 0.4 alpha**: Compatible with Spigot 1.9
 
 **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Sentinel/  
 **Download (Spigot releases)**: (COMING SOON)  
@@ -85,10 +85,6 @@ These are all valid targets and ignores:
 
 **Beta**:
 
-- Ammo:
-	- Basically, optionally require ammo be fed into the NPC for bows/fireballs, or spare swords if the current sword breaks. (waiting on Citizens2 issue 721)
-- Mounting:
-	- Ride a horse or whatever other NPC (waiting on Citizens2 issue 719)
 - Commands:
 	- `/sentinel forgive PLAYERNAME/all` forgives attackers
 - Other:
