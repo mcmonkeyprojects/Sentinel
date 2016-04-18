@@ -482,6 +482,11 @@ public class SentinelTrait extends Trait {
         stats_punches++;
         if (SentinelPlugin.instance.getConfig().getBoolean("random.workaround damage", false)) {
             entity.damage(getDamage() * (1.0 - getArmor(entity)));
+            Vector relative = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector());
+            relative = relative.normalize();
+            relative.setY(0.75);
+            relative.multiply(0.5);
+            entity.setVelocity(entity.getVelocity().add(relative));
         }
         else {
             entity.damage(getDamage(), getLivingEntity());
