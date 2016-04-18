@@ -173,6 +173,10 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                         }
                         return true;
                     }
+                    else if (info[0].equalsIgnoreCase("event")) {
+                        info[1] = info[1].toLowerCase();
+                        names = sentinel.eventTargets;
+                    }
                     try {
                         if ("Sentinel".matches(info[1])) {
                             ignoreMe++;
@@ -199,7 +203,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     valid.append(poss.name()).append(", ");
                 }
                 sender.sendMessage(prefixGood + "Valid targets: " + valid.substring(0, valid.length() - 2));
-                sender.sendMessage(prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)");
+                sender.sendMessage(prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT), event:pvp/pvnpc/pve");
             }
             else {
                 if (sentinel.targets.add(target)) {
@@ -238,6 +242,10 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                             sender.sendMessage(prefixGood + "No longer tracking that target!");
                         }
                         return true;
+                    }
+                    else if (info[0].equalsIgnoreCase("event")) {
+                        info[1] = info[1].toLowerCase();
+                        names = sentinel.eventTargets;
                     }
                     try {
                         if ("Sentinel".matches(info[1])) {
@@ -624,6 +632,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Entity Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.entityNameTargets));
             sender.sendMessage(prefixGood + "Held Item Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.heldItemTargets));
             sender.sendMessage(prefixGood + "Group Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.groupTargets));
+            sender.sendMessage(prefixGood + "Event Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.eventTargets));
             sender.sendMessage(prefixGood + "Ignored Targets: " + ChatColor.AQUA + getTargetString(sentinel.ignores));
             sender.sendMessage(prefixGood + "Ignored Player Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.playerNameIgnores));
             sender.sendMessage(prefixGood + "Ignored NPC Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.npcNameIgnores));

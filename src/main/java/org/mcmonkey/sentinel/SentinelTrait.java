@@ -100,6 +100,9 @@ public class SentinelTrait extends Trait {
     @Persist("groupIgnores")
     public List<String> groupIgnores = new ArrayList<String>();
 
+    @Persist("eventTargets")
+    public List<String> eventTargets = new ArrayList<String>();
+
     @Persist("range")
     public double range = 20.0;
 
@@ -238,6 +241,25 @@ public class SentinelTrait extends Trait {
                     }
                 }
             }
+        }
+        boolean isEventTarget = false;
+        if (eventTargets.contains("pvp")
+                && event.getEntity() instanceof Player
+                && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+            isEventTarget = true;
+        }
+        else if (eventTargets.contains("pve")
+                && !(event.getEntity() instanceof Player)
+                && event.getEntity() instanceof LivingEntity) {
+            isEventTarget = true;
+        }
+        else if (eventTargets.contains("pvnpc")
+                && event.getEntity() instanceof LivingEntity
+                && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+            isEventTarget = true;
+        }
+        if (isEventTarget && canSee((LivingEntity) event.getDamager())) {
+            currentTargets.add(event.getDamager().getUniqueId());
         }
     }
 

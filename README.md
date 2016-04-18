@@ -12,6 +12,8 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 
+**IMPORTANT:** NPC's won't do melee damage? In your config.yml file, toggle the setting that says "workaround damage" to true, and restart your server!
+
 ### Usage
 
 - First, get acquainted with Citizens in general for best luck using Sentinel.
@@ -68,7 +70,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 These are all valid targets and ignores:
 
 - Primary set: NPCS, OWNER, PASSIVE_MOB, MOBS, MONSTERS, PLAYERS, PIGS, OCELOTS, COWS, RABBITS, SHEEP, CHICKENS, HORSES, MUSHROOM_COW, IRON_GOLEMS, SQUIDS, VILLAGER, WOLF, SNOWMEN, WITCH, GUARDIANS, SHULKERS, CREERERS, SKELETONS, ZOMBIES, MAGMA_CUBES, ZOMBIE_PIGMEN, SILVERFISH, BATS, BLAZES, GHASTS, GIANTS, SLIME, SPIDER, CAVE_SPIDERS, ENDERMEN, ENDERMITES, WITHER, ENDERDRAGON
-- Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)
+- Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT), event:pvp/pvnpc/pve
 
 ### Some random supported things
 
