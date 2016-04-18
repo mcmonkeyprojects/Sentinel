@@ -4,6 +4,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.citizensnpcs.api.trait.trait.Owner;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,9 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -35,6 +36,22 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     static HashMap<EntityType, HashSet<SentinelTarget>> entityToTargets = new HashMap<EntityType, HashSet<SentinelTarget>>();
 
     public static SentinelPlugin instance;
+
+    public Permission vaultPerms;
+
+    public void tryGetPerms() {
+        if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
+            return;
+        }
+        try {
+            RegisteredServiceProvider<Permission> rsp = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
+            vaultPerms = rsp.getProvider();
+            getLogger().info("Vault linked! Group targets will work.");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public int tickRate = 10;
 
@@ -77,6 +94,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         catch (Exception e) {
             e.printStackTrace();
         }
+        tryGetPerms();
 
     }
 
@@ -144,6 +162,17 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     else if (info[0].equalsIgnoreCase("helditem")) {
                         names = sentinel.heldItemTargets;
                     }
+                    else if (info[0].equalsIgnoreCase("group")) {
+                        names = sentinel.groupTargets;
+                        if (names.contains(info[1])) {
+                            sender.sendMessage(prefixBad + "Already tracking that name target!");
+                        }
+                        else {
+                            names.add(info[1]);
+                            sender.sendMessage(prefixGood + "Tracking new target!");
+                        }
+                        return true;
+                    }
                     try {
                         if ("Sentinel".matches(info[1])) {
                             ignoreMe++;
@@ -170,7 +199,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     valid.append(poss.name()).append(", ");
                 }
                 sender.sendMessage(prefixGood + "Valid targets: " + valid.substring(0, valid.length() - 2));
-                sender.sendMessage(prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX)");
+                sender.sendMessage(prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)");
             }
             else {
                 if (sentinel.targets.add(target)) {
@@ -200,6 +229,16 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     else if (info[0].equalsIgnoreCase("helditem")) {
                         names = sentinel.heldItemTargets;
                     }
+                    else if (info[0].equalsIgnoreCase("group")) {
+                        names = sentinel.groupTargets;
+                        if (!names.remove(info[1])) {
+                            sender.sendMessage(prefixBad + "Not tracking that target!");
+                        }
+                        else {
+                            sender.sendMessage(prefixGood + "No longer tracking that target!");
+                        }
+                        return true;
+                    }
                     try {
                         if ("Sentinel".matches(info[1])) {
                             ignoreMe++;
@@ -211,7 +250,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     }
                     if (names != null) {
                         if (!names.remove(info[1])) {
-                            sender.sendMessage(prefixBad + "Not tracking that name target!");
+                            sender.sendMessage(prefixBad + "Not tracking that target!");
                         }
                         else {
                             sender.sendMessage(prefixGood + "No longer tracking that target!");
@@ -250,6 +289,17 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     else if (info[0].equalsIgnoreCase("helditem")) {
                         names = sentinel.heldItemIgnores;
                     }
+                    else if (info[0].equalsIgnoreCase("group")) {
+                        names = sentinel.groupIgnores;
+                        if (!names.contains(info[1])) {
+                            sender.sendMessage(prefixBad + "Already ignoring that target!");
+                        }
+                        else {
+                            names.add(info[1]);
+                            sender.sendMessage(prefixGood + "Ignoring new target!");
+                        }
+                        return true;
+                    }
                     try {
                         if ("Sentinel".matches(info[1])) {
                             ignoreMe++;
@@ -261,7 +311,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     }
                     if (names != null) {
                         if (!names.contains(info[1])) {
-                            sender.sendMessage(prefixBad + "Already ignoring that name target!");
+                            sender.sendMessage(prefixBad + "Already ignoring that target!");
                         }
                         else {
                             names.add(info[1]);
@@ -301,6 +351,16 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     else if (info[0].equalsIgnoreCase("helditem")) {
                         names = sentinel.heldItemIgnores;
                     }
+                    else if (info[0].equalsIgnoreCase("group")) {
+                        names = sentinel.groupIgnores;
+                        if (!names.remove(info[1])) {
+                            sender.sendMessage(prefixBad + "Was not ignoring that target!");
+                        }
+                        else {
+                            sender.sendMessage(prefixGood + "Not ignoring that target along longer!");
+                        }
+                        return true;
+                    }
                     try {
                         if ("Sentinel".matches(info[1])) {
                             ignoreMe++;
@@ -312,7 +372,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     }
                     if (names != null) {
                         if (!names.remove(info[1])) {
-                            sender.sendMessage(prefixBad + "Was not ignoring that name target!");
+                            sender.sendMessage(prefixBad + "Was not ignoring that target!");
                         }
                         else {
                             sender.sendMessage(prefixGood + "Not ignoring that target along longer!");
@@ -563,11 +623,13 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "NPC Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.npcNameTargets));
             sender.sendMessage(prefixGood + "Entity Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.entityNameTargets));
             sender.sendMessage(prefixGood + "Held Item Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.heldItemTargets));
+            sender.sendMessage(prefixGood + "Group Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.groupTargets));
             sender.sendMessage(prefixGood + "Ignored Targets: " + ChatColor.AQUA + getTargetString(sentinel.ignores));
             sender.sendMessage(prefixGood + "Ignored Player Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.playerNameIgnores));
             sender.sendMessage(prefixGood + "Ignored NPC Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.npcNameIgnores));
             sender.sendMessage(prefixGood + "Ignored Entity Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.entityNameIgnores));
             sender.sendMessage(prefixGood + "Ignored Held Item Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.heldItemIgnores));
+            sender.sendMessage(prefixGood + "Ignored Group Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.groupIgnores));
             return true;
         }
         else if (arg0.equals("info") && sender.hasPermission("sentinel.info")) {

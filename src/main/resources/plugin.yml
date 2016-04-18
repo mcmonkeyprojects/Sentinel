@@ -3,6 +3,7 @@ authors: ['mcmonkey']
 version: ${project.version} (build ${BUILD_NUMBER})
 main: org.mcmonkey.sentinel.SentinelPlugin
 depend: [Citizens]
+softdepend: [Vault]
 
 commands:
   sentinel:

@@ -94,6 +94,12 @@ public class SentinelTrait extends Trait {
     @Persist("heldItemIgnores")
     public List<String> heldItemIgnores = new ArrayList<String>();
 
+    @Persist("groupTargets")
+    public List<String> groupTargets = new ArrayList<String>();
+
+    @Persist("groupIgnores")
+    public List<String> groupIgnores = new ArrayList<String>();
+
     @Persist("range")
     public double range = 20.0;
 
@@ -798,6 +804,13 @@ public class SentinelTrait extends Trait {
             if (isRegexTargeted(((Player) entity).getName(), playerNameIgnores)) {
                 return true;
             }
+            if (SentinelPlugin.instance.vaultPerms != null) {
+                for (String group : groupIgnores) {
+                    if (SentinelPlugin.instance.vaultPerms.playerInGroup((Player) entity, group)) {
+                        return true;
+                    }
+                }
+            }
         }
         else if (isRegexTargeted(entity.getCustomName() == null ? entity.getType().name(): entity.getCustomName(), entityNameIgnores)) {
             return true;
@@ -829,6 +842,13 @@ public class SentinelTrait extends Trait {
         if (entity instanceof Player) {
             if (isRegexTargeted(((Player) entity).getName(), playerNameTargets)) {
                 return true;
+            }
+            if (SentinelPlugin.instance.vaultPerms != null) {
+                for (String group : groupTargets) {
+                    if (SentinelPlugin.instance.vaultPerms.playerInGroup((Player) entity, group)) {
+                        return true;
+                    }
+                }
             }
         }
         else if (isRegexTargeted(entity.getCustomName() == null ? entity.getType().name(): entity.getCustomName(), entityNameTargets)) {
