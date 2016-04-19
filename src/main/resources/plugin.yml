@@ -58,6 +58,8 @@ permissions:
       sentinel.drops: true
       # /sentinel spawnpoint
       sentinel.spawnpoint: true
+      # /sentinel forgive
+      sentinel.forgive: true
       # /sentinel info, /sentinel targets, /sentinel stats
       sentinel.info: true
       # Edit other people's NPCs

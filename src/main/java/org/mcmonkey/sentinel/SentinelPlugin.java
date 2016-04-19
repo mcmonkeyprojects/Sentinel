@@ -596,6 +596,10 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             return true;
         }
         else if (arg0.equals("drops") && sender.hasPermission("sentinel.drops")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(prefixBad + "Players only!");
+                return true;
+            }
             Inventory inv = Bukkit.createInventory(null, 9 * 4, InvPrefix + sentinel.getNPC().getId());
             ItemStack[] items = new ItemStack[sentinel.drops.size()];
             inv.addItem(sentinel.drops.toArray(items));
@@ -604,7 +608,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("spawnpoint") && sender.hasPermission("sentinel.spawnpoint")) {
             if (!sentinel.getNPC().isSpawned()) {
-                sender.sendMessage("NPC must be spawned for this command!");
+                sender.sendMessage(prefixBad + "NPC must be spawned for this command!");
             }
             else {
                 Location pos = sentinel.getLivingEntity().getLocation().getBlock().getLocation();
@@ -614,13 +618,18 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                         && pos.getBlockZ() == sentinel.spawnPoint.getBlockZ()
                         && pos.getWorld().getName().equals(sentinel.spawnPoint.getWorld().getName())) {
                     sentinel.spawnPoint = null;
-                    sender.sendMessage("Spawn point removed!");
+                    sender.sendMessage(prefixGood + "Spawn point removed!");
                 }
                 else {
                     sentinel.spawnPoint = pos;
-                    sender.sendMessage("Spawn point updated!");
+                    sender.sendMessage(prefixGood + "Spawn point updated!");
                 }
             }
+            return true;
+        }
+        else if (arg0.equals("forgive") && sender.hasPermission("sentinel.forgive")) {
+            sentinel.targets.clear();
+            sender.sendMessage(prefixGood + "Targets forgiven.");
             return true;
         }
         else if (arg0.equals("targets") && sender.hasPermission("sentinel.info")) {
@@ -697,6 +706,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.");
             if (sender.hasPermission("sentinel.drops")) sender.sendMessage(prefixGood + "/sentinel drops - Changes the drops of the current NPC.");
             if (sender.hasPermission("sentinel.spawnpoint")) sender.sendMessage(prefixGood + "/sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.");
+            if (sender.hasPermission("sentinel.forgive")) sender.sendMessage(prefixGood + "/sentinel forgive - Forgives all current targets.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel stats - Shows statistics about the current NPC.");

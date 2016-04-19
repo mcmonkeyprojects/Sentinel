@@ -56,6 +56,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - /sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.
 - /sentinel drops - Changes the drops of the current NPC.
 - /sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.
+- /sentinel forgive - Forgives all current targets.
 - /sentinel info - Shows info on the current NPC.
 - /sentinel stats - Shows statistics about the current NPC.
 - /sentinel targets - Shows the targets of the current NPC.
@@ -84,21 +85,6 @@ These are all valid targets and ignores:
 	- Spectral arrow (makes the target glow, without damaging it.)
 		- (To make a target glow ++ damage it, equip a bow + arm it with spectral arrows!)
 - Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
-
-### TODO
-
-**Beta**:
-
-- Commands:
-	- `/sentinel forgive PLAYERNAME/all` forgives attackers
-- Other:
-	- old Sentry saves importer?
-
-**Future**:
-
-- Events
-	- Java and Denizen level events
-- Denizen tags
 
 ### Need help using Sentinel? Try one of these places:
 
