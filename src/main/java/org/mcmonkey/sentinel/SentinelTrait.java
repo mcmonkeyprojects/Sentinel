@@ -945,6 +945,12 @@ public class SentinelTrait extends Trait {
     public void runUpdate() {
         timeSinceAttack += SentinelPlugin.instance.tickRate;
         timeSinceHeal += SentinelPlugin.instance.tickRate;
+        if (getLivingEntity().getLocation().getY() <= 0) {
+            getLivingEntity().damage(1);
+            if (!npc.isSpawned()) {
+                return;
+            }
+        }
         if (healRate > 0 && timeSinceHeal > healRate && getLivingEntity().getHealth() < health) {
             getLivingEntity().setHealth(Math.min(getLivingEntity().getHealth() + 1.0, health));
             timeSinceHeal = 0;
