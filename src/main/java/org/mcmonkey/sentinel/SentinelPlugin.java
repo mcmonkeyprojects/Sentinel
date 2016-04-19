@@ -149,6 +149,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (target == null) {
                 String[] info = args[1].split(":", 2);
                 if (info.length > 1) {
+                    info[1] = ChatColor.translateAlternateColorCodes('&', info[1]);
                     List<String> names = null;
                     if (info[0].equalsIgnoreCase("player")) {
                         names = sentinel.playerNameTargets;
@@ -220,6 +221,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (target == null) {
                 String[] info = args[1].split(":", 2);
                 if (info.length > 1) {
+                    info[1] = ChatColor.translateAlternateColorCodes('&', info[1]);
                     List<String> names = null;
                     if (info[0].equalsIgnoreCase("player")) {
                         names = sentinel.playerNameTargets;
@@ -284,6 +286,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (target == null) {
                 String[] info = args[1].split(":", 2);
                 if (info.length > 1) {
+                    info[1] = ChatColor.translateAlternateColorCodes('&', info[1]);
                     List<String> names = null;
                     if (info[0].equalsIgnoreCase("player")) {
                         names = sentinel.playerNameIgnores;
@@ -346,6 +349,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (target == null) {
                 String[] info = args[1].split(":", 2);
                 if (info.length > 1) {
+                    info[1] = ChatColor.translateAlternateColorCodes('&', info[1]);
                     List<String> names = null;
                     if (info[0].equalsIgnoreCase("player")) {
                         names = sentinel.playerNameIgnores;
