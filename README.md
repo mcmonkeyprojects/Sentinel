@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](http://i.imgur.com/VDwTzrs.gif)
 
-**Version 0.4 alpha**: Compatible with Spigot 1.9
+**Version 0.5 beta**: Compatible with Spigot 1.9
 
 **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Sentinel/  
 **Download (Spigot releases)**: https://www.spigotmc.org/resources/sentinel.22017/  
@@ -61,6 +61,8 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - /sentinel info - Shows info on the current NPC.
 - /sentinel stats - Shows statistics about the current NPC.
 - /sentinel targets - Shows the targets of the current NPC.
+- /sentinel kill - Kills the NPC.
+- /sentinel respawn - Respawns the NPC.
 
 ### Permissions
 - sentinel.basic for the /sentinel command
