@@ -302,7 +302,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     }
                     else if (info[0].equalsIgnoreCase("group")) {
                         names = sentinel.groupIgnores;
-                        if (!names.contains(info[1])) {
+                        if (names.contains(info[1])) {
                             sender.sendMessage(prefixBad + "Already ignoring that target!");
                         }
                         else {
@@ -321,7 +321,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                         sender.sendMessage(prefixBad + "Bad regular expression!");
                     }
                     if (names != null) {
-                        if (!names.contains(info[1])) {
+                        if (names.contains(info[1])) {
                             sender.sendMessage(prefixBad + "Already ignoring that target!");
                         }
                         else {
