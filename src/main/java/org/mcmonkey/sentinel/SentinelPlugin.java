@@ -9,10 +9,12 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -646,6 +648,24 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             return true;
         }
+        else if (arg0.equals("kill") && sender.hasPermission("sentinel.kill")) {
+            if (!sentinel.getNPC().isSpawned()) {
+                sender.sendMessage(prefixBad + "NPC is already dead!");
+            }
+            else {
+                sentinel.getLivingEntity().damage(sentinel.health * 2);
+                sender.sendMessage(prefixGood + "Killed!");
+            }
+            return true;
+        }
+        else if (arg0.equals("respawn") && sender.hasPermission("sentinel.respawn")) {
+            Location loc = sentinel.spawnPoint == null ? sentinel.getNPC().getStoredLocation() : sentinel.spawnPoint;
+            if (!sentinel.getNPC().spawn(loc)) {
+                sentinel.getNPC().teleport(loc, PlayerTeleportEvent.TeleportCause.COMMAND);
+            }
+            sender.sendMessage(prefixGood + "Respawned!");
+            return true;
+        }
         else if (arg0.equals("targets") && sender.hasPermission("sentinel.info")) {
             sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
                     + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()));
@@ -682,6 +702,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Close-Quarters Chasing Enabled: " + ChatColor.AQUA + sentinel.closeChase);
             sender.sendMessage(prefixGood + "Maximum chase range: " + ChatColor.AQUA + sentinel.chaseRange);
             sender.sendMessage(prefixGood + "Safe-Shot Enabled: " + ChatColor.AQUA + sentinel.safeShot);
+            sender.sendMessage(prefixGood + "Enemy-Drops Enabled: " + ChatColor.AQUA + sentinel.enemyDrops);
             return true;
         }
         else if (arg0.equals("stats") && sender.hasPermission("sentinel.info")) {
@@ -722,6 +743,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (sender.hasPermission("sentinel.spawnpoint")) sender.sendMessage(prefixGood + "/sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.");
             if (sender.hasPermission("sentinel.forgive")) sender.sendMessage(prefixGood + "/sentinel forgive - Forgives all current targets.");
             if (sender.hasPermission("sentinel.enemydrops")) sender.sendMessage(prefixGood + "/sentinel enemydrops - Toggles whether enemy mobs of this NPC drop items.");
+            if (sender.hasPermission("sentinel.kill")) sender.sendMessage(prefixGood + "/sentinel kill - Kills the NPC.");
+            if (sender.hasPermission("sentinel.respawn")) sender.sendMessage(prefixGood + "/sentinel respawn - Respawns the NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel stats - Shows statistics about the current NPC.");

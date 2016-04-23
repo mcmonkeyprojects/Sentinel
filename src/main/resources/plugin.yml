@@ -62,6 +62,10 @@ permissions:
       sentinel.forgive: true
       # /sentinel enemydrops
       sentinel.enemydrops: true
+      # /sentinel kill
+      sentinel.kill: true
+      # /sentinel respawn
+      sentinel.respawn: true
       # /sentinel info, /sentinel targets, /sentinel stats
       sentinel.info: true
       # Edit other people's NPCs

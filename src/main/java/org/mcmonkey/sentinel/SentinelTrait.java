@@ -1118,15 +1118,29 @@ public class SentinelTrait extends Trait {
             removeMe.runTaskLater(SentinelPlugin.instance, 1);
         }
         else if (respawnTime > 0) {
+            final long rsT = respawnTime;
             respawnMe = new BukkitRunnable() {
+                long timer = 0;
                 @Override
                 public void run() {
                     if (CitizensAPI.getNPCRegistry().getById(npc.getId()) != null) {
-                        npc.spawn(spawnPoint == null ? npc.getStoredLocation() : spawnPoint);
+                        if (npc.isSpawned()) {
+                            this.cancel();
+                            return;
+                        }
+                        if (timer >= rsT) {
+                            npc.spawn(spawnPoint == null ? npc.getStoredLocation() : spawnPoint);
+                            this.cancel();
+                            return;
+                        }
+                        timer += 10;
+                    }
+                    else {
+                        this.cancel();
                     }
                 }
             };
-            respawnMe.runTaskLater(SentinelPlugin.instance, respawnTime);
+            respawnMe.runTaskTimer(SentinelPlugin.instance, 10, 10);
         }
     }
 
