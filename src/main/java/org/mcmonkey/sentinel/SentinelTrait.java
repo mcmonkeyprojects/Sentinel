@@ -1,6 +1,7 @@
 package org.mcmonkey.sentinel;
 
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -535,6 +536,12 @@ public class SentinelTrait extends Trait {
     }
 
     public void chase(LivingEntity entity) {
+        if (npc.getNavigator().getTargetType() == TargetType.LOCATION
+                && npc.getNavigator().getTargetAsLocation() != null
+                && npc.getNavigator().getTargetAsLocation().getWorld().equals(entity.getWorld())
+                && npc.getNavigator().getTargetAsLocation().distanceSquared(entity.getLocation()) < 2 * 2) {
+            return;
+        }
         npc.getNavigator().getDefaultParameters().stuckAction(null);
         npc.getNavigator().setTarget(entity.getLocation());
     }
