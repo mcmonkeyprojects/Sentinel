@@ -22,10 +22,12 @@ sentinel defaults:
     fightback: true
     # Whether this NPC needs ammo to fight with.
     needs ammo: false
-    # Whether the NPC will avoiding damaging non-targets.
+    # Whether this NPC will avoid damaging non-targets.
     safe shot: true
     # Default respawn time, in ticks.
     respawn time: 100
+    # Whether enemy mobs killed by this NPC should drop items.
+    enemy drops: false
 
 random:
     # What sound to play when the "spectral" attack is used.

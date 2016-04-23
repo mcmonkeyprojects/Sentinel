@@ -57,6 +57,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - /sentinel drops - Changes the drops of the current NPC.
 - /sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.
 - /sentinel forgive - Forgives all current targets.
+- /sentinel enemydrops - Toggles whether enemy mobs of this NPC drop items.
 - /sentinel info - Shows info on the current NPC.
 - /sentinel stats - Shows statistics about the current NPC.
 - /sentinel targets - Shows the targets of the current NPC.

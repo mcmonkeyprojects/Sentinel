@@ -636,6 +636,16 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Targets forgiven.");
             return true;
         }
+        else if (arg0.equals("enemydrops") && sender.hasPermission("sentinel.enemydrops")) {
+            sentinel.enemyDrops = !sentinel.enemyDrops;
+            if (sentinel.enemyDrops) {
+                sender.sendMessage(prefixGood + "NPC enemy mobs now drop items and XP!");
+            }
+            else {
+                sender.sendMessage(prefixGood + "NPC enemy mobs no longer drop items and XP!");
+            }
+            return true;
+        }
         else if (arg0.equals("targets") && sender.hasPermission("sentinel.info")) {
             sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
                     + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()));
@@ -711,6 +721,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (sender.hasPermission("sentinel.drops")) sender.sendMessage(prefixGood + "/sentinel drops - Changes the drops of the current NPC.");
             if (sender.hasPermission("sentinel.spawnpoint")) sender.sendMessage(prefixGood + "/sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.");
             if (sender.hasPermission("sentinel.forgive")) sender.sendMessage(prefixGood + "/sentinel forgive - Forgives all current targets.");
+            if (sender.hasPermission("sentinel.enemydrops")) sender.sendMessage(prefixGood + "/sentinel enemydrops - Toggles whether enemy mobs of this NPC drop items.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel stats - Shows statistics about the current NPC.");

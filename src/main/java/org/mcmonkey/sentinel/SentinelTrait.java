@@ -157,6 +157,9 @@ public class SentinelTrait extends Trait {
     @Persist("drops")
     public List<ItemStack> drops = new ArrayList<ItemStack>();
 
+    @Persist("enemyDrops")
+    public boolean enemyDrops = false;
+
     public UUID getGuarding() {
         if (guardingLower == 0 && guardingUpper == 0) {
             return null;
@@ -195,7 +198,7 @@ public class SentinelTrait extends Trait {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void whenAttacksHappened(EntityDamageByEntityEvent event) {
         if (!npc.isSpawned()) {
             return;
@@ -223,6 +226,9 @@ public class SentinelTrait extends Trait {
                 return;
             }
             stats_damageGiven += event.getFinalDamage();
+            if (!enemyDrops) {
+                needsDropsClear.put(event.getEntity().getUniqueId(), true);
+            }
             return;
         }
         Entity e = event.getDamager();
@@ -237,6 +243,9 @@ public class SentinelTrait extends Trait {
                             return;
                         }
                         stats_damageGiven += event.getFinalDamage();
+                        if (!enemyDrops) {
+                            needsDropsClear.put(event.getEntity().getUniqueId(), true);
+                        }
                         return;
                     }
                 }
@@ -287,6 +296,7 @@ public class SentinelTrait extends Trait {
         fightback = config.getBoolean("sentinel defaults.fightback", true);
         needsAmmo = config.getBoolean("sentinel defaults.needs ammo", false);
         safeShot = config.getBoolean("sentinel defaults.safe shot", true);
+        enemyDrops = config.getBoolean("sentinel defaults.enemy drops", false);
         ignores.add(SentinelTarget.OWNER);
     }
 
@@ -515,6 +525,9 @@ public class SentinelTrait extends Trait {
             relative.setY(0.75);
             relative.multiply(0.5);
             entity.setVelocity(entity.getVelocity().add(relative));
+            if (!enemyDrops) {
+                needsDropsClear.put(entity.getUniqueId(), true);
+            }
         }
         else {
             entity.damage(getDamage(), getLivingEntity());
@@ -1061,19 +1074,33 @@ public class SentinelTrait extends Trait {
         }
     }
 
-    @EventHandler
-    public void whenSomethingDies(EntityDeathEvent event) {
-        if (!CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
-                || !CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getUniqueId().equals(npc.getUniqueId())) {
-            return;
-        }
-        onDeath(event.getEntity().getLocation());
+    public HashMap<UUID, Boolean> needsDropsClear = new HashMap<UUID, Boolean>();
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void whenSomethingMightDie(EntityDamageByEntityEvent event) {
+        needsDropsClear.remove(event.getEntity().getUniqueId());
     }
 
-    public void onDeath(Location spot) {
-        for (ItemStack item: drops) {
-            spot.getWorld().dropItemNaturally(spot, item.clone());
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void whenWeDie(EntityDeathEvent event) {
+        if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
+                && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getUniqueId().equals(npc.getUniqueId())) {
+            event.getDrops().clear();
+            event.getDrops().addAll(drops);
+            event.setDroppedExp(0);
+            onDeath();
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void whenSomethingDies(EntityDeathEvent event) {
+        if (needsDropsClear.containsKey(event.getEntity().getUniqueId())) {
+            event.getDrops().clear();
+            event.setDroppedExp(0);
+        }
+    }
+
+    public void onDeath() {
         if (respawnTime < 0) {
             BukkitRunnable removeMe = new BukkitRunnable() {
                 @Override
