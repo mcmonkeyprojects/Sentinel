@@ -1121,7 +1121,14 @@ public class SentinelTrait extends Trait {
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
                 && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getUniqueId().equals(npc.getUniqueId())) {
             event.getDrops().clear();
-            event.getDrops().addAll(drops);
+            if (!SentinelPlugin.instance.getConfig().getBoolean("random.workaround drops", false)) {
+                event.getDrops().addAll(drops);
+            }
+            else {
+                for (ItemStack item: drops) {
+                    event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), item.clone());
+                }
+            }
             event.setDroppedExp(0);
             onDeath();
         }
