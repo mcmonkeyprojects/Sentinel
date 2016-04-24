@@ -161,6 +161,8 @@ public class SentinelTrait extends Trait {
     @Persist("enemyDrops")
     public boolean enemyDrops = false;
 
+    public LivingEntity chasing = null;
+
     public UUID getGuarding() {
         if (guardingLower == 0 && guardingUpper == 0) {
             return null;
@@ -542,6 +544,7 @@ public class SentinelTrait extends Trait {
                 && npc.getNavigator().getTargetAsLocation().distanceSquared(entity.getLocation()) < 2 * 2) {
             return;
         }
+        chasing = entity;
         npc.getNavigator().getDefaultParameters().stuckAction(null);
         npc.getNavigator().setTarget(entity.getLocation());
     }
@@ -653,11 +656,20 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    public void rechase() {
+        if (chasing != null) {
+            chase(chasing);
+        }
+    }
+
     public void tryAttack(LivingEntity entity) {
         stats_attackAttempts++;
         if (usesBow()) {
             if (canSee(entity)) {
                 if (timeSinceAttack < attackRate) {
+                    if (rangedChase) {
+                        rechase();
+                    }
                     return;
                 }
                 timeSinceAttack = 0;
@@ -678,6 +690,9 @@ public class SentinelTrait extends Trait {
         else if (usesPotion()) {
             if (canSee(entity)) {
                 if (timeSinceAttack < attackRate) {
+                    if (rangedChase) {
+                        rechase();
+                    }
                     return;
                 }
                 timeSinceAttack = 0;
@@ -695,6 +710,9 @@ public class SentinelTrait extends Trait {
         else if (usesFireball()) {
             if (canSee(entity)) {
                 if (timeSinceAttack < attackRate) {
+                    if (rangedChase) {
+                        rechase();
+                    }
                     return;
                 }
                 timeSinceAttack = 0;
@@ -711,6 +729,9 @@ public class SentinelTrait extends Trait {
         else if (usesLightning()) {
             if (canSee(entity)) {
                 if (timeSinceAttack < attackRate) {
+                    if (rangedChase) {
+                        rechase();
+                    }
                     return;
                 }
                 timeSinceAttack = 0;
@@ -728,6 +749,9 @@ public class SentinelTrait extends Trait {
         else if (usesSpectral()) {
             if (canSee(entity)) {
                 if (timeSinceAttack < attackRate) {
+                    if (rangedChase) {
+                        rechase();
+                    }
                     return;
                 }
                 timeSinceAttack = 0;
@@ -757,6 +781,9 @@ public class SentinelTrait extends Trait {
             double distsq = entity.getLocation().distanceSquared(getLivingEntity().getLocation());
             if (distsq < 3 * 3) {
                 if (timeSinceAttack < attackRate) {
+                    if (closeChase) {
+                        rechase();
+                    }
                     return;
                 }
                 timeSinceAttack = 0;
@@ -767,7 +794,7 @@ public class SentinelTrait extends Trait {
                     grabNextItem();
                 }
             }
-            else {
+            else if (closeChase) {
                 chase(entity);
             }
         }
@@ -985,6 +1012,7 @@ public class SentinelTrait extends Trait {
             }
         }
         LivingEntity target = findBestTarget();
+        chasing = target;
         if (target != null) {
             tryAttack(target);
         }
