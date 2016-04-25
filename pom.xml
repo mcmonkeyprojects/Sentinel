@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <craftbukkit.version>1.9-R0.1-SNAPSHOT</craftbukkit.version>
         <citizens.version>2.0.17-SNAPSHOT</citizens.version>
-		<sentry.version>1.8.6</sentry.version>
+        <sentry.version>1.8.6</sentry.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
     </properties>
 

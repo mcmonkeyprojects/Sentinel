@@ -143,15 +143,15 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         String arg0 = args.length > 0 ? args[0].toLowerCase(): "help";
         SentinelTrait sentinel = getSentinelFor(sender);
         if (arg0.equals("sentryimport") && sender.hasPermission("sentinel.import")) {
-        	if (Bukkit.getServer().getPluginManager().getPlugin("Sentry") == null) {
-        		sender.sendMessage(prefixBad + "Sentry plugin must be installed to perform import!");
-        	}
-        	else {
-        		sender.sendMessage(prefixGood + "Converting all npcs from sentry to sentinel...");
-        		int imported = SentryImport.PerformImport();
-        		sender.sendMessage(prefixGood + "Imported " + imported + " sentries. You may now restart and remove the sentry plugin.");
-        	}
-        	return true;
+            if (Bukkit.getServer().getPluginManager().getPlugin("Sentry") == null) {
+                sender.sendMessage(prefixBad + "Sentry plugin must be installed to perform import!");
+            }
+            else {
+                sender.sendMessage(prefixGood + "Converting all npcs from sentry to sentinel...");
+                int imported = SentryImport.PerformImport();
+                sender.sendMessage(prefixGood + "Imported " + imported + " sentries. You may now restart and remove the sentry plugin.");
+            }
+            return true;
         }
         // All commands below this point will require a sentinel to be selected
         else if (sentinel == null && !arg0.equals("help")) {
