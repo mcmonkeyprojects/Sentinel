@@ -113,6 +113,9 @@ public class SentinelTrait extends Trait {
     @Persist("armor")
     public double armor = -1.0;
 
+    public static final int healthMin = 1;
+    public static final int healthMax = 2000;
+    
     @Persist("health")
     public double health = 20.0;
 
@@ -128,9 +131,15 @@ public class SentinelTrait extends Trait {
     @Persist("fightback")
     public boolean fightback = true;
 
+    public static final int attackRateMin = 10;
+    public static final int attackRateMax = 2000;
+    
     @Persist("attackRate")
     public int attackRate = 30;
 
+    public static final int healRateMin = 0;
+    public static final int healRateMax = 2000;
+    
     @Persist("healRate")
     public int healRate = 30;
 

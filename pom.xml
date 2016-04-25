@@ -15,6 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <craftbukkit.version>1.9-R0.1-SNAPSHOT</craftbukkit.version>
         <citizens.version>2.0.17-SNAPSHOT</citizens.version>
+		<sentry.version>1.8.6</sentry.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
     </properties>
 
@@ -55,6 +56,13 @@
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
             <version>1.5.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.aufdemrand</groupId>
+            <artifactId>sentry</artifactId>
+            <version>${sentry.version}</version>
+            <type>jar</type>
             <scope>provided</scope>
         </dependency>
     </dependencies>
