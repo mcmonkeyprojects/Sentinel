@@ -3,7 +3,7 @@ authors: ['mcmonkey']
 version: ${project.version} (build ${BUILD_NUMBER})
 main: org.mcmonkey.sentinel.SentinelPlugin
 depend: [Citizens]
-softdepend: [Vault]
+softdepend: [Vault, Sentry]
 
 commands:
   sentinel:
@@ -70,3 +70,5 @@ permissions:
       sentinel.info: true
       # Edit other people's NPCs
       sentinel.admin: true
+      # Import sentry data
+      sentinel.sentryimport: true

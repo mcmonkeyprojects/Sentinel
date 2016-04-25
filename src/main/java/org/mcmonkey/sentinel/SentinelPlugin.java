@@ -142,7 +142,19 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         String arg0 = args.length > 0 ? args[0].toLowerCase(): "help";
         SentinelTrait sentinel = getSentinelFor(sender);
-        if (sentinel == null && !arg0.equals("help")) {
+        if (arg0.equals("sentryimport") && sender.hasPermission("sentinel.sentryimport")) {
+            if (Bukkit.getServer().getPluginManager().getPlugin("Sentry") == null) {
+                sender.sendMessage(prefixBad + "Sentry plugin must be installed to perform import!");
+            }
+            else {
+                sender.sendMessage(prefixGood + "Converting all npcs from sentry to sentinel...");
+                int imported = SentryImport.PerformImport();
+                sender.sendMessage(prefixGood + "Imported " + imported + " sentries. You may now restart and remove the sentry plugin.");
+            }
+            return true;
+        }
+        // All commands below this point will require a sentinel to be selected
+        else if (sentinel == null && !arg0.equals("help")) {
             sender.sendMessage(prefixBad + "Must have an NPC selected!");
             return true;
         }
@@ -458,7 +470,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("health") && sender.hasPermission("sentinel.health") && args.length > 1) {
             try {
                 Double d = Double.valueOf(args[1]);
-                if (d <= 200) {
+                if ((d >= SentinelTrait.healthMin) && (d <= SentinelTrait.healthMax)) {
                     sentinel.setHealth(d);
                     sender.sendMessage(prefixGood + "Health set!");
                 }
@@ -474,7 +486,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("attackrate") && sender.hasPermission("sentinel.attackrate") && args.length > 1) {
             try {
                 int d = Integer.valueOf(args[1]);
-                if (d >= 10 && d <= 2000) {
+                if (d >= SentinelTrait.attackRateMin && d <= SentinelTrait.attackRateMax) {
                     sentinel.attackRate = d;
                     sender.sendMessage(prefixGood + "Attack rate set!");
                 }
@@ -490,7 +502,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("healrate") && sender.hasPermission("sentinel.healrate") && args.length > 1) {
             try {
                 int d = Integer.valueOf(args[1]);
-                if (d >= 0 && d <= 2000) {
+                if (d >= SentinelTrait.healRateMin && d <= SentinelTrait.healRateMax) {
                     sentinel.healRate = d;
                     sender.sendMessage(prefixGood + "Heal rate set!");
                 }
