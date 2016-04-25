@@ -70,3 +70,5 @@ permissions:
       sentinel.info: true
       # Edit other people's NPCs
       sentinel.admin: true
+      # Import sentry data
+      sentinel.sentryimport: true

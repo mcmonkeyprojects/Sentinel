@@ -142,7 +142,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         String arg0 = args.length > 0 ? args[0].toLowerCase(): "help";
         SentinelTrait sentinel = getSentinelFor(sender);
-        if (arg0.equals("sentryimport") && sender.hasPermission("sentinel.import")) {
+        if (arg0.equals("sentryimport") && sender.hasPermission("sentinel.sentryimport")) {
             if (Bukkit.getServer().getPluginManager().getPlugin("Sentry") == null) {
                 sender.sendMessage(prefixBad + "Sentry plugin must be installed to perform import!");
             }
