@@ -64,6 +64,10 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - /sentinel kill - Kills the NPC.
 - /sentinel respawn - Respawns the NPC.
 
+### Sentry user?
+
+Type "/sentinel sentryimport" on a server running both Sentry and Sentinel to instantly transfer all data to Sentinel!
+
 ### Permissions
 - sentinel.basic for the /sentinel command
 - sentinel.admin to edit other player's Sentinel NPCs.

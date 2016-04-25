@@ -69,7 +69,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         instance = this;
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SentinelTrait.class).withName("sentinel"));
         saveDefaultConfig();
-        if (getConfig().getInt("config version", 0) != 2) {
+        if (getConfig().getInt("config version", 0) != 3) {
             getLogger().warning("Outdated Sentinel config - please delete it to regenerate it!");
         }
         BukkitRunnable postLoad = new BukkitRunnable() {
@@ -147,13 +147,12 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 sender.sendMessage(prefixBad + "Sentry plugin must be installed to perform import!");
             }
             else {
-                sender.sendMessage(prefixGood + "Converting all npcs from sentry to sentinel...");
+                sender.sendMessage(prefixGood + "Converting all NPCs from Sentry to Sentinel...");
                 int imported = SentryImport.PerformImport();
-                sender.sendMessage(prefixGood + "Imported " + imported + " sentries. You may now restart and remove the sentry plugin.");
+                sender.sendMessage(prefixGood + "Imported " + imported + " Sentry NPCs. You may now restart and remove the Sentry plugin.");
             }
             return true;
         }
-        // All commands below this point will require a sentinel to be selected
         else if (sentinel == null && !arg0.equals("help")) {
             sender.sendMessage(prefixBad + "Must have an NPC selected!");
             return true;
