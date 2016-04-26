@@ -68,6 +68,8 @@ permissions:
       sentinel.respawn: true
       # /sentinel sentryimport
       sentinel.sentryimport: true
+      # /sentinel targettime TIME
+      sentinel.targettime: true
       # /sentinel info, /sentinel targets, /sentinel stats
       sentinel.info: true
       # Edit other people's NPCs

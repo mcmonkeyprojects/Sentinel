@@ -28,6 +28,8 @@ sentinel defaults:
     respawn time: 100
     # Whether enemy mobs killed by this NPC should drop items.
     enemy drops: false
+    # How long to target temporary enemies for, in ticks. 0 means never-forget.
+    enemy target time: 0
 
 random:
     # What sound to play when the "spectral" attack is used.
@@ -41,4 +43,4 @@ random:
 update rate: 10
 
 # Do not touch!
-config version: 3
+config version: 4

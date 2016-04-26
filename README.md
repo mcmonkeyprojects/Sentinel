@@ -63,6 +63,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - /sentinel targets - Shows the targets of the current NPC.
 - /sentinel kill - Kills the NPC.
 - /sentinel respawn - Respawns the NPC.
+- /sentinel targettime TIME - Sets the NPCs enemy target time limit.
 
 ### Sentry user?
 

@@ -173,6 +173,9 @@ public class SentinelTrait extends Trait {
     @Persist("enemyDrops")
     public boolean enemyDrops = false;
 
+    @Persist("enemyTargetTime")
+    public long enemyTargetTime = 0;
+
     public LivingEntity chasing = null;
 
     public UUID getGuarding() {
@@ -224,13 +227,13 @@ public class SentinelTrait extends Trait {
             if (isMe) {
                 stats_damageTaken += event.getFinalDamage();
             }
-            if (fightback && event.getDamager() instanceof LivingEntity) {
-                currentTargets.add(event.getDamager().getUniqueId());
+            if (fightback && (event.getDamager() instanceof LivingEntity)) {
+                addTarget(event.getDamager().getUniqueId());
             }
             else if (event.getDamager() instanceof Projectile) {
                 ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
-                if (fightback && source instanceof LivingEntity) {
-                    currentTargets.add(((LivingEntity) source).getUniqueId());
+                if (fightback && (source instanceof LivingEntity)) {
+                    addTarget(((LivingEntity) source).getUniqueId());
                 }
             }
             return;
@@ -283,13 +286,15 @@ public class SentinelTrait extends Trait {
             isEventTarget = true;
         }
         if (isEventTarget && canSee((LivingEntity) event.getDamager())) {
-            currentTargets.add(event.getDamager().getUniqueId());
+            addTarget(event.getDamager().getUniqueId());
         }
     }
 
     @EventHandler
     public void whenAnEnemyDies(EntityDeathEvent event) {
-        currentTargets.remove(event.getEntity().getUniqueId());
+        SentinelCurrentTarget target = new SentinelCurrentTarget();
+        target.targetID = event.getEntity().getUniqueId();
+        currentTargets.remove(target);
     }
 
     @Override
@@ -312,6 +317,7 @@ public class SentinelTrait extends Trait {
         needsAmmo = config.getBoolean("sentinel defaults.needs ammo", false);
         safeShot = config.getBoolean("sentinel defaults.safe shot", true);
         enemyDrops = config.getBoolean("sentinel defaults.enemy drops", false);
+        enemyTargetTime = config.getInt("sentinel defaults.enemy target time", 0);
         ignores.add(SentinelTarget.OWNER);
     }
 
@@ -858,7 +864,15 @@ public class SentinelTrait extends Trait {
         return isTargeted(entity) && !isIgnored(entity);
     }
 
-    private HashSet<UUID> currentTargets = new HashSet<UUID>(); // TODO: Apology / cancel attack system!
+    private HashSet<SentinelCurrentTarget> currentTargets = new HashSet<SentinelCurrentTarget>();
+
+    public void addTarget(UUID id) {
+        SentinelCurrentTarget target = new SentinelCurrentTarget();
+        target.targetID = id;
+        target.ticksLeft = enemyTargetTime;
+        currentTargets.remove(target);
+        currentTargets.add(target);
+    }
 
     public boolean isRegexTargeted(String name, List<String> regexes) {
         for (String str: regexes) {
@@ -913,7 +927,9 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isTargeted(LivingEntity entity) {
-        if (currentTargets.contains(entity.getUniqueId())) {
+        SentinelCurrentTarget target = new SentinelCurrentTarget();
+        target.targetID = entity.getUniqueId();
+        if (currentTargets.contains(target)) {
             return true;
         }
         if (entity.hasMetadata("NPC")) {
@@ -1001,6 +1017,24 @@ public class SentinelTrait extends Trait {
         return null;
     }
 
+    private void updateTargets() {
+        for (SentinelCurrentTarget uuid : new HashSet<SentinelCurrentTarget>(currentTargets)) {
+            Entity e = getEntityForID(uuid.targetID);
+            if (e == null) {
+                currentTargets.remove(uuid);
+            }
+            else if (e.getLocation().distanceSquared(getLivingEntity().getLocation()) > range * range * 4) {
+                currentTargets.remove(uuid);
+            }
+            else if (uuid.ticksLeft > 0) {
+                uuid.ticksLeft -= SentinelPlugin.instance.tickRate;
+                if (uuid.ticksLeft <= 0) {
+                    currentTargets.remove(uuid);
+                }
+            }
+        }
+    }
+
     public void runUpdate() {
         timeSinceAttack += SentinelPlugin.instance.tickRate;
         timeSinceHeal += SentinelPlugin.instance.tickRate;
@@ -1014,20 +1048,12 @@ public class SentinelTrait extends Trait {
             getLivingEntity().setHealth(Math.min(getLivingEntity().getHealth() + 1.0, health));
             timeSinceHeal = 0;
         }
-        for (UUID uuid : new HashSet<UUID>(currentTargets)) {
-            Entity e = getEntityForID(uuid);
-            if (e == null) {
-                currentTargets.remove(uuid);
-            }
-            else if (e.getLocation().distanceSquared(getLivingEntity().getLocation()) > range * range * 4) {
-                currentTargets.remove(uuid);
-            }
-        }
         LivingEntity target = findBestTarget();
         chasing = target;
         if (target != null) {
             tryAttack(target);
         }
+        updateTargets();
         if (getGuarding() != null) {
             Player player = Bukkit.getPlayer(getGuarding());
             if (player != null) {

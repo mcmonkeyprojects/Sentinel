@@ -9,7 +9,6 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,7 +68,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         instance = this;
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SentinelTrait.class).withName("sentinel"));
         saveDefaultConfig();
-        if (getConfig().getInt("config version", 0) != 3) {
+        if (getConfig().getInt("config version", 0) != 4) {
             getLogger().warning("Outdated Sentinel config - please delete it to regenerate it!");
         }
         BukkitRunnable postLoad = new BukkitRunnable() {
@@ -514,6 +513,22 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             return true;
         }
+        else if (arg0.equals("targettime") && sender.hasPermission("sentinel.targettime") && args.length > 1) {
+            try {
+                int d = Integer.valueOf(args[1]);
+                if (d >= 0) {
+                    sentinel.enemyTargetTime = d;
+                    sender.sendMessage(prefixGood + "Target time set!");
+                }
+                else {
+                    throw new NumberFormatException("Number out or range.");
+                }
+            }
+            catch (NumberFormatException ex) {
+                sender.sendMessage(prefixBad + "Invalid time number!");
+            }
+            return true;
+        }
         else if (arg0.equals("respawntime") && sender.hasPermission("sentinel.respawntime") && args.length > 1) {
             try {
                 long d = Long.valueOf(args[1]);
@@ -756,6 +771,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (sender.hasPermission("sentinel.enemydrops")) sender.sendMessage(prefixGood + "/sentinel enemydrops - Toggles whether enemy mobs of this NPC drop items.");
             if (sender.hasPermission("sentinel.kill")) sender.sendMessage(prefixGood + "/sentinel kill - Kills the NPC.");
             if (sender.hasPermission("sentinel.respawn")) sender.sendMessage(prefixGood + "/sentinel respawn - Respawns the NPC.");
+            if (sender.hasPermission("sentinel.targettime")) sender.sendMessage(prefixGood + "/sentinel targettime TIME - Sets the NPCs enemy target time limit.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel stats - Shows statistics about the current NPC.");
