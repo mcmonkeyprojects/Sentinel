@@ -224,12 +224,12 @@ public class SentinelTrait extends Trait {
             if (isMe) {
                 stats_damageTaken += event.getFinalDamage();
             }
-            if (event.getDamager() instanceof LivingEntity) {
+            if (fightback && event.getDamager() instanceof LivingEntity) {
                 currentTargets.add(event.getDamager().getUniqueId());
             }
             else if (event.getDamager() instanceof Projectile) {
                 ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
-                if (source instanceof LivingEntity) {
+                if (fightback && source instanceof LivingEntity) {
                     currentTargets.add(((LivingEntity) source).getUniqueId());
                 }
             }
