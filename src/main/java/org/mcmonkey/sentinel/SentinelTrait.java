@@ -988,19 +988,6 @@ public class SentinelTrait extends Trait {
                 closest = ent;
             }
         }
-        if (closest == null) {
-            // NOTE: Possibly can be optimized by retrieving a list from the above logic?
-            for (LivingEntity ent: getLivingEntity().getWorld().getLivingEntities()) {
-                if ((ignoreGlow && ent.isGlowing()) || ent.isDead()) {
-                    continue;
-                }
-                double dist = ent.getEyeLocation().distanceSquared(pos);
-                if (dist < rangesquared && shouldTarget(ent)) {
-                    rangesquared = dist;
-                    closest = ent;
-                }
-            }
-        }
         return closest;
     }
 
