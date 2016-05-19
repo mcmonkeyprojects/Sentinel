@@ -78,6 +78,10 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     if (!npc.isSpawned() && npc.hasTrait(SentinelTrait.class)) {
                         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
                         if (sentinel.respawnTime > 0) {
+                            if (sentinel.spawnPoint == null && npc.getStoredLocation() == null) {
+                                getLogger().warning("NPC " + npc.getId() + " has a null spawn point and can't be spawned. Perhaps the world was deleted?");
+                                continue;
+                            }
                             npc.spawn(sentinel.spawnPoint == null ? npc.getStoredLocation() : sentinel.spawnPoint);
                         }
                     }

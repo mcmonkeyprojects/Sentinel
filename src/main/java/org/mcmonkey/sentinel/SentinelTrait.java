@@ -1189,6 +1189,11 @@ public class SentinelTrait extends Trait {
                             return;
                         }
                         if (timer >= rsT) {
+                            if (spawnPoint == null && npc.getStoredLocation() == null) {
+                                SentinelPlugin.instance.getLogger().warning("NPC " + npc.getId() + " has a null spawn point and can't be spawned. Perhaps the world was deleted?");
+                                this.cancel();
+                                return;
+                            }
                             npc.spawn(spawnPoint == null ? npc.getStoredLocation() : spawnPoint);
                             this.cancel();
                             return;
