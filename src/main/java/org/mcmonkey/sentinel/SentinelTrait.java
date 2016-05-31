@@ -21,6 +21,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -1146,6 +1147,9 @@ public class SentinelTrait extends Trait {
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
                 && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getUniqueId().equals(npc.getUniqueId())) {
             event.getDrops().clear();
+            if (event instanceof PlayerDeathEvent && !SentinelPlugin.instance.getConfig().getBoolean("random.death messages", true)) {
+                ((PlayerDeathEvent) event).setDeathMessage("");
+            }
             if (!SentinelPlugin.instance.getConfig().getBoolean("random.workaround drops", false)) {
                 event.getDrops().addAll(drops);
             }

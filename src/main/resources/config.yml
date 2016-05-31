@@ -38,9 +38,11 @@ random:
     workaround damage: false
     # Whether to enforce drops even when 'keepInventory' or similar are enabled.
     workaround drops: false
+    # Whether to permit death messages to show for Sentinel NPC deaths.
+    death messages: true
 
 # How fast to recalculate, in ticks.
 update rate: 10
 
 # Do not touch!
-config version: 4
+config version: 5

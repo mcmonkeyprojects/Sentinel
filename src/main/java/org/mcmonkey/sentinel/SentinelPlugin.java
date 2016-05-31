@@ -68,7 +68,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         instance = this;
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SentinelTrait.class).withName("sentinel"));
         saveDefaultConfig();
-        if (getConfig().getInt("config version", 0) != 4) {
+        if (getConfig().getInt("config version", 0) != 5) {
             getLogger().warning("Outdated Sentinel config - please delete it to regenerate it!");
         }
         BukkitRunnable postLoad = new BukkitRunnable() {
