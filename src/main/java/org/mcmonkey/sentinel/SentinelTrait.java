@@ -1222,6 +1222,7 @@ public class SentinelTrait extends Trait {
         health = heal;
         if (npc.isSpawned()) {
             getLivingEntity().setMaxHealth(health);
+            getLivingEntity().setHealth(health);
         }
     }
 
