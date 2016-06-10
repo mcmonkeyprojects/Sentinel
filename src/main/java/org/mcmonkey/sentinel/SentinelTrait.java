@@ -13,7 +13,7 @@ import net.citizensnpcs.trait.waypoint.Waypoints;
 import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -998,7 +998,7 @@ public class SentinelTrait extends Trait {
 
     private Entity getEntityForID(UUID id) {
         // TODO: Remove NMS here!
-        net.minecraft.server.v1_9_R2.Entity nmsEntity = ((CraftWorld) getLivingEntity().getWorld()).getHandle().getEntity(id);
+        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftWorld) getLivingEntity().getWorld()).getHandle().getEntity(id);
         if (nmsEntity != null) {
             return nmsEntity.getBukkitEntity();
         }
