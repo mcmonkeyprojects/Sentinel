@@ -1165,7 +1165,7 @@ public class SentinelTrait extends Trait {
 
     @EventHandler(priority = EventPriority.LOW)
     public void whenSomethingDies(EntityDeathEvent event) {
-        if (needsDropsClear.containsKey(event.getEntity().getUniqueId())) {
+        if (event.getEntity().getType() != EntityType.PLAYER && needsDropsClear.containsKey(event.getEntity().getUniqueId())) {
             event.getDrops().clear();
             event.setDroppedExp(0);
         }
