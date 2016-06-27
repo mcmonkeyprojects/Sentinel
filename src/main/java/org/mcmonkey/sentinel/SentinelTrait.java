@@ -568,8 +568,8 @@ public class SentinelTrait extends Trait {
         }
         chasing = entity;
         npc.getNavigator().getDefaultParameters().stuckAction(null);
-        npc.getNavigator().getLocalParameters().speedModifier((float)speed);
         npc.getNavigator().setTarget(entity.getLocation());
+        npc.getNavigator().getLocalParameters().speedModifier((float)speed);
     }
 
     public ItemStack getArrow() {
@@ -1058,8 +1058,8 @@ public class SentinelTrait extends Trait {
                 if (dist > 7 * 7) {
                     npc.getNavigator().getDefaultParameters().range(100);
                     npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
-                    npc.getNavigator().getLocalParameters().speedModifier((float)speed);
                     npc.getNavigator().setTarget(player.getLocation());
+                    npc.getNavigator().getLocalParameters().speedModifier((float)speed);
                 }
             }
         }
@@ -1067,8 +1067,8 @@ public class SentinelTrait extends Trait {
             Location near = nearestPathPoint();
             if (near != null && near.distanceSquared(getLivingEntity().getLocation()) > chaseRange * chaseRange) {
                 npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
-                npc.getNavigator().getLocalParameters().speedModifier((float)speed);
                 npc.getNavigator().setTarget(near);
+                npc.getNavigator().getLocalParameters().speedModifier((float)speed);
             }
         }
     }
