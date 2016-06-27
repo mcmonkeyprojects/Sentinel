@@ -177,6 +177,9 @@ public class SentinelTrait extends Trait {
     @Persist("enemyTargetTime")
     public long enemyTargetTime = 0;
 
+    @Persist("speed")
+    public double speed = 1;
+
     public LivingEntity chasing = null;
 
     public UUID getGuarding() {
@@ -344,12 +347,12 @@ public class SentinelTrait extends Trait {
     }
 
     public HashMap.SimpleEntry<Location, Vector> getLaunchDetail(Location target, Vector lead) {
-        double speed;
+        double speeda;
         npc.faceLocation(target);
         double angt = -1;
         Location start = getLivingEntity().getEyeLocation().clone().add(getLivingEntity().getEyeLocation().getDirection());
-        for (speed = 20; speed <= 45; speed += 5) {
-            angt = SentinelUtilities.getArrowAngle(start, target, speed, 20);
+        for (speeda = 20; speeda <= 45; speeda += 5) {
+            angt = SentinelUtilities.getArrowAngle(start, target, speeda, 20);
             if (!Double.isInfinite(angt)) {
                 break;
             }
@@ -357,15 +360,15 @@ public class SentinelTrait extends Trait {
         if (Double.isInfinite(angt)) {
             return null;
         }
-        double hangT = SentinelUtilities.hangtime(angt, speed, target.getY() - start.getY(), 20);
+        double hangT = SentinelUtilities.hangtime(angt, speeda, target.getY() - start.getY(), 20);
         Location to = target.clone().add(lead.clone().multiply(hangT));
         Vector relative = to.clone().subtract(start.toVector()).toVector();
         double deltaXZ = Math.sqrt(relative.getX() * relative.getX() + relative.getZ() * relative.getZ());
         if (deltaXZ == 0) {
             deltaXZ = 0.1;
         }
-        for (speed = 20; speed < 45; speed += 5) {
-            angt = SentinelUtilities.getArrowAngle(start, to, speed, 20);
+        for (speeda = 20; speeda < 45; speeda += 5) {
+            angt = SentinelUtilities.getArrowAngle(start, to, speeda, 20);
             if (!Double.isInfinite(angt)) {
                 break;
             }
@@ -376,8 +379,8 @@ public class SentinelTrait extends Trait {
         relative.setY(Math.tan(angt) * deltaXZ);
         relative = relative.normalize();
         Vector normrel = relative.clone();
-        speed = speed + (1.188 * hangT * hangT);
-        relative = relative.multiply(speed / 20.0);
+        speeda = speeda + (1.188 * hangT * hangT);
+        relative = relative.multiply(speeda / 20.0);
         start.setDirection(normrel);
         return new HashMap.SimpleEntry<Location, Vector>(start, relative);
     }
@@ -565,6 +568,7 @@ public class SentinelTrait extends Trait {
         }
         chasing = entity;
         npc.getNavigator().getDefaultParameters().stuckAction(null);
+        npc.getNavigator().getLocalParameters().speedModifier((float)speed);
         npc.getNavigator().setTarget(entity.getLocation());
     }
 
@@ -1054,6 +1058,7 @@ public class SentinelTrait extends Trait {
                 if (dist > 7 * 7) {
                     npc.getNavigator().getDefaultParameters().range(100);
                     npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
+                    npc.getNavigator().getLocalParameters().speedModifier((float)speed);
                     npc.getNavigator().setTarget(player.getLocation());
                 }
             }
@@ -1061,6 +1066,8 @@ public class SentinelTrait extends Trait {
         else if (chaseRange > 0) {
             Location near = nearestPathPoint();
             if (near != null && near.distanceSquared(getLivingEntity().getLocation()) > chaseRange * chaseRange) {
+                npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
+                npc.getNavigator().getLocalParameters().speedModifier((float)speed);
                 npc.getNavigator().setTarget(near);
             }
         }

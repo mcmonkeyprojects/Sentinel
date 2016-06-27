@@ -453,6 +453,22 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             return true;
         }
+        else if (arg0.equals("speed") && sender.hasPermission("sentinel.speed") && args.length > 1) {
+            try {
+                Double d = Double.valueOf(args[1]);
+                if (d < 1000 && d >= 0) {
+                    sentinel.speed = d;
+                    sender.sendMessage(prefixGood + "Speed set!");
+                }
+                else {
+                    throw new NumberFormatException("Number out or range.");
+                }
+            }
+            catch (NumberFormatException ex) {
+                sender.sendMessage(prefixBad + "Invalid speed number!");
+            }
+            return true;
+        }
         else if (arg0.equals("armor") && sender.hasPermission("sentinel.armor") && args.length > 1) {
             try {
                 Double d = Double.valueOf(args[1]);
@@ -775,7 +791,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (sender.hasPermission("sentinel.enemydrops")) sender.sendMessage(prefixGood + "/sentinel enemydrops - Toggles whether enemy mobs of this NPC drop items.");
             if (sender.hasPermission("sentinel.kill")) sender.sendMessage(prefixGood + "/sentinel kill - Kills the NPC.");
             if (sender.hasPermission("sentinel.respawn")) sender.sendMessage(prefixGood + "/sentinel respawn - Respawns the NPC.");
-            if (sender.hasPermission("sentinel.targettime")) sender.sendMessage(prefixGood + "/sentinel targettime TIME - Sets the NPCs enemy target time limit.");
+            if (sender.hasPermission("sentinel.targettime")) sender.sendMessage(prefixGood + "/sentinel targettime TIME - Sets the NPC's enemy target time limit.");
+            if (sender.hasPermission("sentinel.speed")) sender.sendMessage(prefixGood + "/sentinel speed SPEED - Sets the NPC's speed modifier.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel stats - Shows statistics about the current NPC.");

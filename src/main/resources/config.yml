@@ -30,6 +30,8 @@ sentinel defaults:
     enemy drops: false
     # How long to target temporary enemies for, in ticks. 0 means never-forget.
     enemy target time: 0
+    # What speed should be used, as a multiple of the default speed.
+    speed: 0
 
 random:
     # What sound to play when the "spectral" attack is used.
