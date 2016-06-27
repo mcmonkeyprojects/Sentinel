@@ -3,10 +3,13 @@ package org.mcmonkey.sentinel;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
+import net.citizensnpcs.api.ai.speech.SpeechContext;
+import net.citizensnpcs.api.ai.speech.VocalChord;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Inventory;
 import net.citizensnpcs.api.trait.trait.Owner;
+import net.citizensnpcs.npc.ai.speech.CitizensSpeechFactory;
 import net.citizensnpcs.trait.waypoint.Waypoint;
 import net.citizensnpcs.trait.waypoint.WaypointProvider;
 import net.citizensnpcs.trait.waypoint.Waypoints;
@@ -22,6 +25,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -179,6 +183,15 @@ public class SentinelTrait extends Trait {
 
     @Persist("speed")
     public double speed = 1;
+
+    @Persist("warning_text")
+    public String warningText = "";
+
+    @Persist("greeting_text")
+    public String greetingText = "";
+
+    @Persist("greet_range")
+    public double greetRange = 10;
 
     public LivingEntity chasing = null;
 
@@ -871,6 +884,8 @@ public class SentinelTrait extends Trait {
 
     private HashSet<SentinelCurrentTarget> currentTargets = new HashSet<SentinelCurrentTarget>();
 
+    private HashSet<UUID> greetedAlready = new HashSet<UUID>();
+
     public void addTarget(UUID id) {
         SentinelCurrentTarget target = new SentinelCurrentTarget();
         target.targetID = id;
@@ -1142,6 +1157,34 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    public void sayTo(Player player, String message) {
+        SpeechContext sc = new SpeechContext(npc, message, player);
+        npc.getDefaultSpeechController().speak(sc, "chat");
+    }
+
+    @EventHandler
+    public void onPlayerMovesInRange(PlayerMoveEvent event) {
+        if (!npc.isSpawned()) {
+            return;
+        }
+        double dist = event.getTo().distanceSquared(getLivingEntity().getLocation());
+        boolean known = greetedAlready.contains(event.getPlayer().getUniqueId());
+        if (dist < greetRange && !known && canSee(event.getPlayer())) {
+            greetedAlready.add(event.getPlayer().getUniqueId());
+            boolean enemy = isTargeted(event.getPlayer()) && !isIgnored(event.getPlayer());
+            if (enemy && warningText != null && warningText.length() > 0) {
+                sayTo(event.getPlayer(), warningText);
+            }
+            else if (!enemy && greetingText != null && greetingText.length() > 0) {
+                sayTo(event.getPlayer(), greetingText);
+            }
+        }
+        else if (dist >= greetRange + 1 && known) {
+            greetedAlready.remove(event.getPlayer().getUniqueId());
+            // TODO: Farewell text perhaps?
+        }
+    }
+
     public HashMap<UUID, Boolean> needsDropsClear = new HashMap<UUID, Boolean>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -1179,6 +1222,8 @@ public class SentinelTrait extends Trait {
     }
 
     public void onDeath() {
+        greetedAlready.clear();
+        currentTargets.clear();
         if (respawnTime < 0) {
             BukkitRunnable removeMe = new BukkitRunnable() {
                 @Override

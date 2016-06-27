@@ -429,7 +429,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     sender.sendMessage(prefixGood + "Range set!");
                 }
                 else {
-                    throw new NumberFormatException("Number out or range.");
+                    throw new NumberFormatException("Number out of range.");
                 }
             }
             catch (NumberFormatException ex) {
@@ -445,7 +445,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     sender.sendMessage(prefixGood + "Damage set!");
                 }
                 else {
-                    throw new NumberFormatException("Number out or range.");
+                    throw new NumberFormatException("Number out of range.");
                 }
             }
             catch (NumberFormatException ex) {
@@ -461,11 +461,27 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     sender.sendMessage(prefixGood + "Speed set!");
                 }
                 else {
-                    throw new NumberFormatException("Number out or range.");
+                    throw new NumberFormatException("Number out of range.");
                 }
             }
             catch (NumberFormatException ex) {
                 sender.sendMessage(prefixBad + "Invalid speed number!");
+            }
+            return true;
+        }
+        else if (arg0.equals("greetrange") && sender.hasPermission("sentinel.speed") && args.length > 1) {
+            try {
+                Double d = Double.valueOf(args[1]);
+                if (d < 100) {
+                    sentinel.greetRange = d;
+                    sender.sendMessage(prefixGood + "Range set!");
+                }
+                else {
+                    throw new NumberFormatException("Number out of range.");
+                }
+            }
+            catch (NumberFormatException ex) {
+                sender.sendMessage(prefixBad + "Invalid range number!");
             }
             return true;
         }
@@ -477,7 +493,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     sender.sendMessage(prefixGood + "Armor set!");
                 }
                 else {
-                    throw new NumberFormatException("Number out or range.");
+                    throw new NumberFormatException("Number out of range.");
                 }
             }
             catch (NumberFormatException ex) {
@@ -493,7 +509,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     sender.sendMessage(prefixGood + "Health set!");
                 }
                 else {
-                    throw new NumberFormatException("Number out or range.");
+                    throw new NumberFormatException("Number out of range.");
                 }
             }
             catch (NumberFormatException ex) {
@@ -509,7 +525,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     sender.sendMessage(prefixGood + "Attack rate set!");
                 }
                 else {
-                    throw new NumberFormatException("Number out or range.");
+                    throw new NumberFormatException("Number out of range.");
                 }
             }
             catch (NumberFormatException ex) {
@@ -525,7 +541,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     sender.sendMessage(prefixGood + "Heal rate set!");
                 }
                 else {
-                    throw new NumberFormatException("Number out or range.");
+                    throw new NumberFormatException("Number out of range.");
                 }
             }
             catch (NumberFormatException ex) {
@@ -541,7 +557,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     sender.sendMessage(prefixGood + "Target time set!");
                 }
                 else {
-                    throw new NumberFormatException("Number out or range.");
+                    throw new NumberFormatException("Number out of range.");
                 }
             }
             catch (NumberFormatException ex) {
@@ -712,6 +728,16 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Respawned!");
             return true;
         }
+        else if (arg0.equals("greeting") && sender.hasPermission("sentinel.greet")) {
+            sentinel.greetingText = SentinelUtilities.concatWithSpaces(args, 1);
+            sender.sendMessage(prefixGood + "Set!");
+            return true;
+        }
+        else if (arg0.equals("warning") && sender.hasPermission("sentinel.greet")) {
+            sentinel.warningText = SentinelUtilities.concatWithSpaces(args, 1);
+            sender.sendMessage(prefixGood + "Set!");
+            return true;
+        }
         else if (arg0.equals("targets") && sender.hasPermission("sentinel.info")) {
             sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
                     + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()));
@@ -793,6 +819,9 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (sender.hasPermission("sentinel.respawn")) sender.sendMessage(prefixGood + "/sentinel respawn - Respawns the NPC.");
             if (sender.hasPermission("sentinel.targettime")) sender.sendMessage(prefixGood + "/sentinel targettime TIME - Sets the NPC's enemy target time limit.");
             if (sender.hasPermission("sentinel.speed")) sender.sendMessage(prefixGood + "/sentinel speed SPEED - Sets the NPC's speed modifier.");
+            if (sender.hasPermission("sentinel.greet")) sender.sendMessage(prefixGood + "/sentinel greeting GREETING - Sets a greeting message for the NPC to say.");
+            if (sender.hasPermission("sentinel.greet")) sender.sendMessage(prefixGood + "/sentinel warning WARNING - Sets a warning message for the NPC to say.");
+            if (sender.hasPermission("sentinel.greet")) sender.sendMessage(prefixGood + "/sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
             if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel stats - Shows statistics about the current NPC.");

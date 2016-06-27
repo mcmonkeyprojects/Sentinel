@@ -66,6 +66,9 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - /sentinel targettime TIME - Sets the NPC's enemy target time limit.
 - /sentinel speed - Sets the NPC's speed modifier.
 - /sentinel targettime TIME - Sets the NPCs enemy target time limit.
+- /sentinel greeting GREETING - Sets a greeting message for the NPC to say.
+- /sentinel warning WARNING - Sets a warning message for the NPC to say.
+- /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
 
 ### Sentry user?
 
@@ -74,7 +77,9 @@ Type "/sentinel sentryimport" on a server running both Sentry and Sentinel to in
 ### Permissions
 - sentinel.basic for the /sentinel command
 - sentinel.admin to edit other player's Sentinel NPCs.
-- Everything else is "sentinel.X" where "X" is the command name, EG "sentinel.info".
+- sentinel.greet for commands: greeting, warning, greetrange
+- sentinel.info for commands: info, stats, targets
+- Everything else is "sentinel.X" where "X" is the command name, EG "sentinel.damage".
 
 ### Targets
 

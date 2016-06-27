@@ -72,6 +72,8 @@ permissions:
       sentinel.targettime: true
       # /sentinel speed SPEED
       sentinel.speed: true
+      # /sentinel greeting GREETING, sentinel warning WARNING, sentinel greetrange RANGE
+      sentinel.greet: true
       # /sentinel info, /sentinel targets, /sentinel stats
       sentinel.info: true
       # Edit other people's NPCs

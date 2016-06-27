@@ -32,4 +32,12 @@ public class SentinelUtilities {
         }
         return (a + Math.sqrt(a2)) / gravity;
     }
+
+    public static String concatWithSpaces(String[] strs, int start) {
+        String temp = "";
+        for (int i = start; i < strs.length; i++) {
+            temp += strs[i] + " ";
+        }
+        return temp;
+    }
 }
