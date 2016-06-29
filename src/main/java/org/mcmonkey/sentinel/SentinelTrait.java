@@ -1167,6 +1167,9 @@ public class SentinelTrait extends Trait {
         if (!npc.isSpawned()) {
             return;
         }
+        if (!event.getTo().getWorld().equals(getLivingEntity().getLocation().getWorld())) {
+            return;
+        }
         double dist = event.getTo().distanceSquared(getLivingEntity().getLocation());
         boolean known = greetedAlready.contains(event.getPlayer().getUniqueId());
         if (dist < greetRange && !known && canSee(event.getPlayer())) {
