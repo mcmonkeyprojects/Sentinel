@@ -882,7 +882,7 @@ public class SentinelTrait extends Trait {
         return isTargeted(entity) && !isIgnored(entity);
     }
 
-    private HashSet<SentinelCurrentTarget> currentTargets = new HashSet<SentinelCurrentTarget>();
+    public HashSet<SentinelCurrentTarget> currentTargets = new HashSet<SentinelCurrentTarget>();
 
     private HashSet<UUID> greetedAlready = new HashSet<UUID>();
 
