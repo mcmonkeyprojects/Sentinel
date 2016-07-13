@@ -7,6 +7,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Sentinel/  
 **Download (Spigot releases)**: https://www.spigotmc.org/resources/sentinel.22017/  
+**Download (Bukkit releases)**: http://dev.bukkit.org/bukkit-plugins/sentinel/  
 
 ### Info
 
