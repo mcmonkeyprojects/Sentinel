@@ -42,6 +42,8 @@ random:
     workaround drops: false
     # Whether to permit death messages to show for Sentinel NPC deaths.
     death messages: true
+    # How fast to try to shoot things (EG arrows).
+    shoot speed minimum: 20
 
 # How fast to recalculate, in ticks.
 update rate: 10

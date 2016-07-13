@@ -362,9 +362,10 @@ public class SentinelTrait extends Trait {
     public HashMap.SimpleEntry<Location, Vector> getLaunchDetail(Location target, Vector lead) {
         double speeda;
         npc.faceLocation(target);
-        double angt = -1;
+        double angt = Double.POSITIVE_INFINITY;
         Location start = getLivingEntity().getEyeLocation().clone().add(getLivingEntity().getEyeLocation().getDirection());
-        for (speeda = 20; speeda <= 45; speeda += 5) {
+        double sbase = SentinelPlugin.instance.getConfig().getDouble("random.shoot speed minimum", 20);
+        for (speeda = sbase; speeda <= sbase + 15; speeda += 5) {
             angt = SentinelUtilities.getArrowAngle(start, target, speeda, 20);
             if (!Double.isInfinite(angt)) {
                 break;
@@ -380,7 +381,7 @@ public class SentinelTrait extends Trait {
         if (deltaXZ == 0) {
             deltaXZ = 0.1;
         }
-        for (speeda = 20; speeda < 45; speeda += 5) {
+        for (speeda = sbase; speeda <= sbase + 15; speeda += 5) {
             angt = SentinelUtilities.getArrowAngle(start, to, speeda, 20);
             if (!Double.isInfinite(angt)) {
                 break;
