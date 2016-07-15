@@ -4,12 +4,10 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
-import net.citizensnpcs.api.ai.speech.VocalChord;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Inventory;
 import net.citizensnpcs.api.trait.trait.Owner;
-import net.citizensnpcs.npc.ai.speech.CitizensSpeechFactory;
 import net.citizensnpcs.trait.waypoint.Waypoint;
 import net.citizensnpcs.trait.waypoint.WaypointProvider;
 import net.citizensnpcs.trait.waypoint.Waypoints;
@@ -69,6 +67,9 @@ public class SentinelTrait extends Trait {
 
     @Persist("stats_fireballsFired")
     public long stats_fireballsFired = 0;
+
+    @Persist("stats_snowballsThrown")
+    public long stats_snowballsThrown = 0;
 
     @Persist("stats_punches")
     public long stats_punches = 0;
@@ -424,9 +425,18 @@ public class SentinelTrait extends Trait {
             }
         }
         arrow.setVelocity(start.getValue());
-        // TODO: Apply damage amount!
         // TODO: Prevent pick up if needed!
         useItem();
+    }
+
+    public void fireSnowball(Location target) {
+        swingWeapon();
+        stats_snowballsThrown++;
+        npc.faceLocation(target);
+        Vector forward = getLivingEntity().getEyeLocation().getDirection();
+        Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(2));
+        Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.SNOWBALL);
+        ent.setVelocity(target.clone().subtract(spawnAt).toVector().normalize().multiply(2.5)); // TODO: Fiddle with '2.5'.
     }
 
     public void fireFireball(Location target) {
@@ -437,7 +447,6 @@ public class SentinelTrait extends Trait {
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(2));
         Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.SMALL_FIREBALL);
         ent.setVelocity(target.clone().subtract(spawnAt).toVector().normalize().multiply(4)); // TODO: Fiddle with '4'.
-        // TODO: Apply damage amount!
     }
 
     public double getDamage() {
@@ -623,24 +632,51 @@ public class SentinelTrait extends Trait {
         }
         Inventory inv = npc.getTrait(Inventory.class);
         ItemStack[] items = inv.getContents();
-            for (int i = 0; i < items.length; i++) {
-                ItemStack item = items[i];
-                if (item != null) {
-                    Material mat = item.getType();
-                    if (mat == Material.ARROW || mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW) {
-                        if (item.getAmount() > 1) {
-                            item.setAmount(item.getAmount() - 1);
-                            items[i] = item;
-                            inv.setContents(items);
-                            return;
-                        }
-                        else {
-                            items[i] = null;
-                            inv.setContents(items);
-                            return;
-                        }
+        for (int i = 0; i < items.length; i++) {
+            ItemStack item = items[i];
+            if (item != null) {
+                Material mat = item.getType();
+                if (mat == Material.ARROW || mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW) {
+                    if (item.getAmount() > 1) {
+                        item.setAmount(item.getAmount() - 1);
+                        items[i] = item;
+                        inv.setContents(items);
+                        return;
+                    }
+                    else {
+                        items[i] = null;
+                        inv.setContents(items);
+                        return;
                     }
                 }
+            }
+        }
+    }
+
+    public void takeSnowball() {
+        if (!npc.hasTrait(Inventory.class)) {
+            return;
+        }
+        Inventory inv = npc.getTrait(Inventory.class);
+        ItemStack[] items = inv.getContents();
+        for (int i = 0; i < items.length; i++) {
+            ItemStack item = items[i];
+            if (item != null) {
+                Material mat = item.getType();
+                if (mat == Material.SNOW_BALL) {
+                    if (item.getAmount() > 1) {
+                        item.setAmount(item.getAmount() - 1);
+                        items[i] = item;
+                        inv.setContents(items);
+                        return;
+                    }
+                    else {
+                        items[i] = null;
+                        inv.setContents(items);
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -671,7 +707,7 @@ public class SentinelTrait extends Trait {
             ItemStack item = items[i];
             if (item != null) {
                 Material mat = item.getType();
-                if (mat == Material.SPLASH_POTION || mat == Material.LINGERING_POTION
+                if (mat == Material.SPLASH_POTION || mat == Material.LINGERING_POTION || mat == Material.SNOW_BALL
                         || mat == Material.BOW || mat == Material.NETHER_STAR || mat == Material.BLAZE_ROD) {
                     if (item.getAmount() > 1) {
                         item.setAmount(item.getAmount() - 1);
@@ -700,6 +736,7 @@ public class SentinelTrait extends Trait {
     }
 
     public void tryAttack(LivingEntity entity) {
+        // TODO: Simplify this code!
         stats_attackAttempts++;
         if (usesBow()) {
             if (canSee(entity)) {
@@ -716,6 +753,28 @@ public class SentinelTrait extends Trait {
                     if (needsAmmo) {
                         reduceDurability();
                         takeArrow();
+                        grabNextItem();
+                    }
+                }
+            }
+            else if (rangedChase) {
+                chase(entity);
+            }
+        }
+        else if (usesSnowball()) {
+            if (canSee(entity)) {
+                if (timeSinceAttack < attackRate) {
+                    if (rangedChase) {
+                        rechase();
+                    }
+                    return;
+                }
+                timeSinceAttack = 0;
+                ItemStack item = getArrow();
+                if (item != null) {
+                    fireSnowball(entity.getEyeLocation());
+                    if (needsAmmo) {
+                        takeSnowball();
                         grabNextItem();
                     }
                 }
@@ -847,7 +906,12 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isRanged() {
-        return usesBow() || usesFireball();
+        return usesBow()
+                || usesFireball()
+                || usesSnowball()
+                || usesLightning()
+                || usesSpectral()
+                || usesPotion();
     }
 
     public boolean usesBow() {
@@ -856,6 +920,10 @@ public class SentinelTrait extends Trait {
 
     public boolean usesFireball() {
         return getLivingEntity().getEquipment().getItemInMainHand().getType() == Material.BLAZE_ROD;
+    }
+
+    public boolean usesSnowball() {
+        return getLivingEntity().getEquipment().getItemInMainHand().getType() == Material.SNOW_BALL;
     }
 
     public boolean usesLightning() {
@@ -1033,8 +1101,10 @@ public class SentinelTrait extends Trait {
             Entity e = getEntityForID(uuid.targetID);
             if (e == null) {
                 currentTargets.remove(uuid);
+                continue;
             }
-            else if (e.getLocation().distanceSquared(getLivingEntity().getLocation()) > range * range * 4) {
+            double d = e.getLocation().distanceSquared(getLivingEntity().getLocation());
+            if (d > range * range * 4 && d > chaseRange * chaseRange * 4) {
                 currentTargets.remove(uuid);
             }
             else if (uuid.ticksLeft > 0) {
