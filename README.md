@@ -102,6 +102,7 @@ These are all valid targets and ignores:
 		- (To make a target glow ++ damage it, equip a bow + arm it with spectral arrows!)
 - Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
 - Sentinels will guard a point or path if either is set using the command "`/npc path`"
+- To make a ghast or blaze fire fireballs, give them a blazerod!
 
 ### Need help using Sentinel? Try one of these places:
 

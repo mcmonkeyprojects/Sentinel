@@ -360,11 +360,19 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    public double firingMinimumRange() {
+        EntityType type = getLivingEntity().getType();
+        if (type == EntityType.WITHER || type == EntityType.WITHER) {
+            return 8; // Yikes!
+        }
+        return 2;
+    }
+
     public HashMap.SimpleEntry<Location, Vector> getLaunchDetail(Location target, Vector lead) {
         double speeda;
         npc.faceLocation(target);
         double angt = Double.POSITIVE_INFINITY;
-        Location start = getLivingEntity().getEyeLocation().clone().add(getLivingEntity().getEyeLocation().getDirection());
+        Location start = getLivingEntity().getEyeLocation().clone().add(getLivingEntity().getEyeLocation().getDirection().multiply(firingMinimumRange()));
         double sbase = SentinelPlugin.instance.getConfig().getDouble("random.shoot speed minimum", 20);
         for (speeda = sbase; speeda <= sbase + 15; speeda += 5) {
             angt = SentinelUtilities.getArrowAngle(start, target, speeda, 20);
@@ -434,8 +442,9 @@ public class SentinelTrait extends Trait {
         stats_snowballsThrown++;
         npc.faceLocation(target);
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
-        Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(2));
+        Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
         Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.SNOWBALL);
+        ((Projectile) ent).setShooter(getLivingEntity());
         ent.setVelocity(target.clone().subtract(spawnAt).toVector().normalize().multiply(2.5)); // TODO: Fiddle with '2.5'.
     }
 
@@ -444,8 +453,9 @@ public class SentinelTrait extends Trait {
         stats_fireballsFired++;
         npc.faceLocation(target);
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
-        Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(2));
+        Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
         Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.SMALL_FIREBALL);
+        ((Projectile) ent).setShooter(getLivingEntity());
         ent.setVelocity(target.clone().subtract(spawnAt).toVector().normalize().multiply(4)); // TODO: Fiddle with '4'.
     }
 
