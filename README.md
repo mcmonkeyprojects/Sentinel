@@ -93,6 +93,7 @@ These are all valid targets and ignores:
 
 - Weapons:
 	- Fists
+	- Swords/tools
 	- Bow
 		- equip NPC with arrows of any given type in their inventory to set fired arrow type!
 	- Blaze rod (shoots fire balls!)
@@ -100,6 +101,7 @@ These are all valid targets and ignores:
 	- Nether star (strikes lightning!)
 	- Spectral arrow (makes the target glow, without damaging it.)
 		- (To make a target glow ++ damage it, equip a bow + arm it with spectral arrows!)
+	- Snowballs
 - Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
 - Sentinels will guard a point or path if either is set using the command "`/npc path`"
 - To make a ghast or blaze fire fireballs, give them a blazerod!
