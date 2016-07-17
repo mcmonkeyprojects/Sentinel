@@ -65,7 +65,8 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - /sentinel kill - Kills the NPC.
 - /sentinel respawn - Respawns the NPC.
 - /sentinel targettime TIME - Sets the NPC's enemy target time limit.
-- /sentinel speed - Sets the NPC's speed modifier.
+- /sentinel speed - Sets the NPC's movement speed modifier.
+- /sentinel autoswitch - Toggles whether the NPC automatically switches items.
 - /sentinel targettime TIME - Sets the NPCs enemy target time limit.
 - /sentinel greeting GREETING - Sets a greeting message for the NPC to say.
 - /sentinel warning WARNING - Sets a warning message for the NPC to say.

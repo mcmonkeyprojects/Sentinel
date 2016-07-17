@@ -30,8 +30,10 @@ sentinel defaults:
     enemy drops: false
     # How long to target temporary enemies for, in ticks. 0 means never-forget.
     enemy target time: 0
-    # What speed should be used, as a multiple of the default speed.
-    speed: 0
+    # What movement (chase) speed should be used, as a multiple of the default speed.
+    speed: 1
+    # Whether to automatically switch to the most appropriate available weapon. (Bow at range, or sword up close).
+    autoswitch: false
 
 random:
     # What sound to play when the "spectral" attack is used.
@@ -49,4 +51,4 @@ random:
 update rate: 10
 
 # Do not touch!
-config version: 5
+config version: 6

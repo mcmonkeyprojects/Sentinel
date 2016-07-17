@@ -68,7 +68,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         instance = this;
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SentinelTrait.class).withName("sentinel"));
         saveDefaultConfig();
-        if (getConfig().getInt("config version", 0) != 5) {
+        if (getConfig().getInt("config version", 0) != 6) {
             getLogger().warning("Outdated Sentinel config - please delete it to regenerate it!");
         }
         BukkitRunnable postLoad = new BukkitRunnable() {
@@ -597,6 +597,16 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             return true;
         }
+        else if (arg0.equals("autoswitch") && sender.hasPermission("sentinel.autoswitch")) {
+            sentinel.autoswitch = !sentinel.autoswitch;
+            if (sentinel.autoswitch) {
+                sender.sendMessage(prefixGood + "NPC now automatically switches items!");
+            }
+            else {
+                sender.sendMessage(prefixGood + "NPC no longer automatically switches items!");
+            }
+            return true;
+        }
         else if (arg0.equals("fightback") && sender.hasPermission("sentinel.fightback")) {
             sentinel.fightback = !sentinel.fightback;
             if (sentinel.fightback) {
@@ -775,6 +785,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Maximum chase range: " + ChatColor.AQUA + sentinel.chaseRange);
             sender.sendMessage(prefixGood + "Safe-Shot Enabled: " + ChatColor.AQUA + sentinel.safeShot);
             sender.sendMessage(prefixGood + "Enemy-Drops Enabled: " + ChatColor.AQUA + sentinel.enemyDrops);
+            sender.sendMessage(prefixGood + "Autoswitch Enabled: " + ChatColor.AQUA + sentinel.autoswitch);
             return true;
         }
         else if (arg0.equals("stats") && sender.hasPermission("sentinel.info")) {
@@ -819,7 +830,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (sender.hasPermission("sentinel.kill")) sender.sendMessage(prefixGood + "/sentinel kill - Kills the NPC.");
             if (sender.hasPermission("sentinel.respawn")) sender.sendMessage(prefixGood + "/sentinel respawn - Respawns the NPC.");
             if (sender.hasPermission("sentinel.targettime")) sender.sendMessage(prefixGood + "/sentinel targettime TIME - Sets the NPC's enemy target time limit.");
-            if (sender.hasPermission("sentinel.speed")) sender.sendMessage(prefixGood + "/sentinel speed SPEED - Sets the NPC's speed modifier.");
+            if (sender.hasPermission("sentinel.speed")) sender.sendMessage(prefixGood + "/sentinel speed SPEED - Sets the NPC's movement speed modifier.");
+            if (sender.hasPermission("sentinel.autoswitch")) sender.sendMessage(prefixGood + "/sentinel autoswitch - Toggles whether the NPC automatically switches items.");
             if (sender.hasPermission("sentinel.greet")) sender.sendMessage(prefixGood + "/sentinel greeting GREETING - Sets a greeting message for the NPC to say.");
             if (sender.hasPermission("sentinel.greet")) sender.sendMessage(prefixGood + "/sentinel warning WARNING - Sets a warning message for the NPC to say.");
             if (sender.hasPermission("sentinel.greet")) sender.sendMessage(prefixGood + "/sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.");
