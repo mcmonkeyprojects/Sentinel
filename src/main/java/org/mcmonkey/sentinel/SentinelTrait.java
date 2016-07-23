@@ -307,7 +307,7 @@ public class SentinelTrait extends Trait {
             isEventTarget = true;
         }
         if (isEventTarget && e != null && e instanceof LivingEntity && canSee((LivingEntity) e)) {
-            addTarget(event.getDamager().getUniqueId());
+            addTarget(e.getUniqueId());
         }
     }
 
