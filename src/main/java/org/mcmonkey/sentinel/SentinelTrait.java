@@ -306,7 +306,7 @@ public class SentinelTrait extends Trait {
                 && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             isEventTarget = true;
         }
-        if (isEventTarget && canSee((LivingEntity) event.getDamager())) {
+        if (isEventTarget && e != null && e instanceof LivingEntity && canSee((LivingEntity) e)) {
             addTarget(event.getDamager().getUniqueId());
         }
     }
