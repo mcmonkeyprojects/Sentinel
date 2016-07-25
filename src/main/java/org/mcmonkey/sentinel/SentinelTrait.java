@@ -275,7 +275,7 @@ public class SentinelTrait extends Trait {
         Entity e = event.getDamager();
         if (!(e instanceof LivingEntity)) {
             if (e instanceof Projectile) {
-                ProjectileSource source = ((Projectile)e).getShooter();
+                ProjectileSource source = ((Projectile) e).getShooter();
                 if (source instanceof LivingEntity) {
                     e = (LivingEntity) source;
                     if (e.getUniqueId().equals(getLivingEntity().getUniqueId())) {
@@ -422,7 +422,7 @@ public class SentinelTrait extends Trait {
         stats_potionsThrown++;
         HashMap.SimpleEntry<Location, Vector> start = getLaunchDetail(target, lead);
         Entity entpotion = start.getKey().getWorld().spawnEntity(start.getKey(),
-                potion.getType() == Material.SPLASH_POTION ? EntityType.SPLASH_POTION: EntityType.LINGERING_POTION);
+                potion.getType() == Material.SPLASH_POTION ? EntityType.SPLASH_POTION : EntityType.LINGERING_POTION);
         ((ThrownPotion) entpotion).setShooter(getLivingEntity());
         ((ThrownPotion) entpotion).setItem(potion);
         entpotion.setVelocity(start.getValue());
@@ -435,9 +435,9 @@ public class SentinelTrait extends Trait {
         Entity arrow = start.getKey().getWorld().spawnEntity(start.getKey(),
                 type.getType() == Material.SPECTRAL_ARROW ? EntityType.SPECTRAL_ARROW :
                         (type.getType() == Material.TIPPED_ARROW ? EntityType.TIPPED_ARROW : EntityType.ARROW));
-        ((Projectile)arrow).setShooter(getLivingEntity());
+        ((Projectile) arrow).setShooter(getLivingEntity());
         if (arrow instanceof TippedArrow) {
-            PotionData data = ((PotionMeta)type.getItemMeta()).getBasePotionData();
+            PotionData data = ((PotionMeta) type.getItemMeta()).getBasePotionData();
             if (data.getType() == null || data.getType() == PotionType.UNCRAFTABLE) {
                 // TODO: Perhaps a **single** warning?
             }
@@ -483,10 +483,10 @@ public class SentinelTrait extends Trait {
             }
             // TODO: Less randomness, more game-like calculations.
             double multiplier = 1;
-            multiplier += weapon.getItemMeta() == null ? 0: weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
+            multiplier += weapon.getItemMeta() == null ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
             switch (weapon.getType()) {
                 case BOW:
-                    return 6 * (1 + (weapon.getItemMeta() == null ? 0: weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3));
+                    return 6 * (1 + (weapon.getItemMeta() == null ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3));
                 case DIAMOND_SWORD:
                     return 7 * multiplier;
                 case IRON_SWORD:
@@ -618,7 +618,7 @@ public class SentinelTrait extends Trait {
         chasing = entity;
         npc.getNavigator().getDefaultParameters().stuckAction(null);
         npc.getNavigator().setTarget(entity.getLocation());
-        npc.getNavigator().getLocalParameters().speedModifier((float)speed);
+        npc.getNavigator().getLocalParameters().speedModifier((float) speed);
     }
 
     public ItemStack getArrow() {
@@ -799,7 +799,7 @@ public class SentinelTrait extends Trait {
         int i = 0;
         Inventory inv = npc.getTrait(Inventory.class);
         ItemStack[] items = inv.getContents();
-        ItemStack held = items[0] == null ? null: items[0].clone();
+        ItemStack held = items[0] == null ? null : items[0].clone();
         boolean edit = false;
         while (!isRanged() && i < items.length - 1) {
             i++;
@@ -823,7 +823,7 @@ public class SentinelTrait extends Trait {
         int i = 0;
         Inventory inv = npc.getTrait(Inventory.class);
         ItemStack[] items = inv.getContents();
-        ItemStack held = items[0] == null ? null: items[0].clone();
+        ItemStack held = items[0] == null ? null : items[0].clone();
         boolean edit = false;
         while (isRanged() && i < items.length - 1) {
             i++;
@@ -1102,7 +1102,7 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isRegexTargeted(String name, List<String> regexes) {
-        for (String str: regexes) {
+        for (String str : regexes) {
             Pattern pattern = Pattern.compile(str, Pattern.CASE_INSENSITIVE);
             if (pattern.matcher(name).matches()) {
                 return true;
@@ -1134,14 +1134,14 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
-        else if (isRegexTargeted(entity.getCustomName() == null ? entity.getType().name(): entity.getCustomName(), entityNameIgnores)) {
+        else if (isRegexTargeted(entity.getCustomName() == null ? entity.getType().name() : entity.getCustomName(), entityNameIgnores)) {
             return true;
         }
         if (ignores.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(npc.getTrait(Owner.class).getOwnerId())) {
             return true;
         }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
-        for (SentinelTarget poss: possible) {
+        for (SentinelTarget poss : possible) {
             if (ignores.contains(poss)) {
                 return true;
             }
@@ -1175,14 +1175,14 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
-        else if (isRegexTargeted(entity.getCustomName() == null ? entity.getType().name(): entity.getCustomName(), entityNameTargets)) {
+        else if (isRegexTargeted(entity.getCustomName() == null ? entity.getType().name() : entity.getCustomName(), entityNameTargets)) {
             return true;
         }
         if (targets.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(npc.getTrait(Owner.class).getOwnerId())) {
             return true;
         }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
-        for (SentinelTarget poss: possible) {
+        for (SentinelTarget poss : possible) {
             if (targets.contains(poss)) {
                 return true;
             }
@@ -1206,7 +1206,7 @@ public class SentinelTrait extends Trait {
         double crsq = chaseRange * chaseRange;
         Location pos = getGuardZone();
         LivingEntity closest = null;
-        for (LivingEntity ent: getLivingEntity().getWorld().getLivingEntities()) {
+        for (LivingEntity ent : getLivingEntity().getWorld().getLivingEntities()) {
             if ((ignoreGlow && ent.isGlowing()) || ent.isDead()) {
                 continue;
             }
@@ -1286,7 +1286,7 @@ public class SentinelTrait extends Trait {
                     npc.getNavigator().getDefaultParameters().range(100);
                     npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
                     npc.getNavigator().setTarget(player.getLocation());
-                    npc.getNavigator().getLocalParameters().speedModifier((float)speed);
+                    npc.getNavigator().getLocalParameters().speedModifier((float) speed);
                 }
             }
         }
@@ -1295,7 +1295,7 @@ public class SentinelTrait extends Trait {
             if (near != null && near.distanceSquared(getLivingEntity().getLocation()) > chaseRange * chaseRange) {
                 npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
                 npc.getNavigator().setTarget(near);
-                npc.getNavigator().getLocalParameters().speedModifier((float)speed);
+                npc.getNavigator().getLocalParameters().speedModifier((float) speed);
             }
         }
     }
@@ -1419,7 +1419,7 @@ public class SentinelTrait extends Trait {
                 event.getDrops().addAll(drops);
             }
             else {
-                for (ItemStack item: drops) {
+                for (ItemStack item : drops) {
                     event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), item.clone());
                 }
             }
@@ -1452,6 +1452,7 @@ public class SentinelTrait extends Trait {
             final long rsT = respawnTime;
             respawnMe = new BukkitRunnable() {
                 long timer = 0;
+
                 @Override
                 public void run() {
                     if (CitizensAPI.getNPCRegistry().getById(npc.getId()) != null) {

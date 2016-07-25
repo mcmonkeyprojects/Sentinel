@@ -57,7 +57,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     public int tickRate = 10;
 
     static {
-        for (EntityType type: EntityType.values()) {
+        for (EntityType type : EntityType.values()) {
             entityToTargets.put(type, new HashSet<SentinelTarget>());
         }
     }
@@ -74,7 +74,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         BukkitRunnable postLoad = new BukkitRunnable() {
             @Override
             public void run() {
-                for (NPC npc: CitizensAPI.getNPCRegistry()) {
+                for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (!npc.isSpawned() && npc.hasTrait(SentinelTrait.class)) {
                         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
                         if (sentinel.respawnTime > 0) {
@@ -113,7 +113,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             if (npc != null && npc.hasTrait(SentinelTrait.class)) {
                 List<ItemStack> its = npc.getTrait(SentinelTrait.class).drops;
                 its.clear();
-                for (ItemStack it: event.getInventory().getContents()) {
+                for (ItemStack it : event.getInventory().getContents()) {
                     if (it != null && it.getType() != Material.AIR) {
                         its.add(it);
                     }
@@ -143,7 +143,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        String arg0 = args.length > 0 ? args[0].toLowerCase(): "help";
+        String arg0 = args.length > 0 ? args[0].toLowerCase() : "help";
         SentinelTrait sentinel = getSentinelFor(sender);
         if (arg0.equals("sentryimport") && sender.hasPermission("sentinel.sentryimport")) {
             if (Bukkit.getServer().getPluginManager().getPlugin("Sentry") == null) {
@@ -216,7 +216,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
                 sender.sendMessage(prefixBad + "Invalid target!");
                 StringBuilder valid = new StringBuilder();
-                for (SentinelTarget poss: SentinelTarget.values()) {
+                for (SentinelTarget poss : SentinelTarget.values()) {
                     valid.append(poss.name()).append(", ");
                 }
                 sender.sendMessage(prefixGood + "Valid targets: " + valid.substring(0, valid.length() - 2));
@@ -660,7 +660,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("guard") && sender.hasPermission("sentinel.guard")) {
             if (args.length > 1) {
                 Player pl = Bukkit.getPlayer(args[1]);
-                sentinel.setGuarding(pl == null ? null: pl.getUniqueId());
+                sentinel.setGuarding(pl == null ? null : pl.getUniqueId());
             }
             else {
                 sentinel.setGuarding(null);
@@ -769,11 +769,11 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("info") && sender.hasPermission("sentinel.info")) {
             sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
                     + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()) +
-                    (sentinel.getGuarding() == null ? "": ColorBasic + ", guarding: " + ChatColor.RESET + Bukkit.getOfflinePlayer(sentinel.getGuarding()).getName()));
+                    (sentinel.getGuarding() == null ? "" : ColorBasic + ", guarding: " + ChatColor.RESET + Bukkit.getOfflinePlayer(sentinel.getGuarding()).getName()));
             sender.sendMessage(prefixGood + "Damage: " + ChatColor.AQUA + sentinel.damage);
             sender.sendMessage(prefixGood + "Armor: " + ChatColor.AQUA + sentinel.armor);
             sender.sendMessage(prefixGood + "Health: " + ChatColor.AQUA +
-            (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/": "") + sentinel.health);
+                    (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/" : "") + sentinel.health);
             sender.sendMessage(prefixGood + "Range: " + ChatColor.AQUA + sentinel.range);
             sender.sendMessage(prefixGood + "Attack Rate: " + ChatColor.AQUA + sentinel.attackRate);
             sender.sendMessage(prefixGood + "Heal Rate: " + ChatColor.AQUA + sentinel.healRate);
@@ -803,60 +803,132 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             return true;
         }
         else {
-            if (sender.hasPermission("sentinel.basic")) sender.sendMessage(prefixGood + "/sentinel help - Shows help info.");
-            if (sender.hasPermission("sentinel.addtarget")) sender.sendMessage(prefixGood + "/sentinel addtarget TYPE - Adds a target.");
-            if (sender.hasPermission("sentinel.removetarget")) sender.sendMessage(prefixGood + "/sentinel removetarget TYPE - Removes a target.");
-            if (sender.hasPermission("sentinel.addignore")) sender.sendMessage(prefixGood + "/sentinel addignore TYPE - Ignores a target.");
-            if (sender.hasPermission("sentinel.removeignore")) sender.sendMessage(prefixGood + "/sentinel removeignore TYPE - Allows targetting a target.");
-            if (sender.hasPermission("sentinel.range")) sender.sendMessage(prefixGood + "/sentinel range RANGE - Sets the NPC's maximum attack range.");
-            if (sender.hasPermission("sentinel.damage")) sender.sendMessage(prefixGood + "/sentinel damage DAMAGE - Sets the NPC's attack damage.");
-            if (sender.hasPermission("sentinel.armor")) sender.sendMessage(prefixGood + "/sentinel armor ARMOR - Sets the NPC's armor level.");
-            if (sender.hasPermission("sentinel.health")) sender.sendMessage(prefixGood + "/sentinel health HEALTH - Sets the NPC's health level.");
-            if (sender.hasPermission("sentinel.attackrate")) sender.sendMessage(prefixGood + "/sentinel attackrate RATE - Changes the rate at which the NPC attacks, in ticks.");
-            if (sender.hasPermission("sentinel.healrate")) sender.sendMessage(prefixGood + "/sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.");
-            if (sender.hasPermission("sentinel.respawntime")) sender.sendMessage(prefixGood + "/sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in ticks.");
-            if (sender.hasPermission("sentinel.chaserange")) sender.sendMessage(prefixGood + "/sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.");
-            if (sender.hasPermission("sentinel.guard")) sender.sendMessage(prefixGood + "/sentinel guard (PLAYERNAME) - Makes the NPC guard a specific player. Don't specify a player to stop guarding.");
-            if (sender.hasPermission("sentinel.invincible")) sender.sendMessage(prefixGood + "/sentinel invincible - Toggles whether the NPC is invincible.");
-            if (sender.hasPermission("sentinel.fightback")) sender.sendMessage(prefixGood + "/sentinel fightback - Toggles whether the NPC will fight back.");
-            if (sender.hasPermission("sentinel.needammo")) sender.sendMessage(prefixGood + "/sentinel needammo - Toggles whether the NPC will need ammo.");
-            if (sender.hasPermission("sentinel.safeshot")) sender.sendMessage(prefixGood + "/sentinel safeshot - Toggles whether the NPC will avoid damaging non-targets.");
-            if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseclose - Toggles whether the NPC will chase while in 'close quarters' fights.");
-            if (sender.hasPermission("sentinel.chase")) sender.sendMessage(prefixGood + "/sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.");
-            if (sender.hasPermission("sentinel.drops")) sender.sendMessage(prefixGood + "/sentinel drops - Changes the drops of the current NPC.");
-            if (sender.hasPermission("sentinel.spawnpoint")) sender.sendMessage(prefixGood + "/sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.");
-            if (sender.hasPermission("sentinel.forgive")) sender.sendMessage(prefixGood + "/sentinel forgive - Forgives all current targets.");
-            if (sender.hasPermission("sentinel.enemydrops")) sender.sendMessage(prefixGood + "/sentinel enemydrops - Toggles whether enemy mobs of this NPC drop items.");
-            if (sender.hasPermission("sentinel.kill")) sender.sendMessage(prefixGood + "/sentinel kill - Kills the NPC.");
-            if (sender.hasPermission("sentinel.respawn")) sender.sendMessage(prefixGood + "/sentinel respawn - Respawns the NPC.");
-            if (sender.hasPermission("sentinel.targettime")) sender.sendMessage(prefixGood + "/sentinel targettime TIME - Sets the NPC's enemy target time limit.");
-            if (sender.hasPermission("sentinel.speed")) sender.sendMessage(prefixGood + "/sentinel speed SPEED - Sets the NPC's movement speed modifier.");
-            if (sender.hasPermission("sentinel.autoswitch")) sender.sendMessage(prefixGood + "/sentinel autoswitch - Toggles whether the NPC automatically switches items.");
-            if (sender.hasPermission("sentinel.greet")) sender.sendMessage(prefixGood + "/sentinel greeting GREETING - Sets a greeting message for the NPC to say.");
-            if (sender.hasPermission("sentinel.greet")) sender.sendMessage(prefixGood + "/sentinel warning WARNING - Sets a warning message for the NPC to say.");
-            if (sender.hasPermission("sentinel.greet")) sender.sendMessage(prefixGood + "/sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.");
-            if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
-            if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
-            if (sender.hasPermission("sentinel.info")) sender.sendMessage(prefixGood + "/sentinel stats - Shows statistics about the current NPC.");
-            if (sender.hasPermission("sentinel.admin")) sender.sendMessage(prefixGood + "Be careful, you can edit other player's NPCs!");
+            if (sender.hasPermission("sentinel.basic")) {
+                sender.sendMessage(prefixGood + "/sentinel help - Shows help info.");
+            }
+            if (sender.hasPermission("sentinel.addtarget")) {
+                sender.sendMessage(prefixGood + "/sentinel addtarget TYPE - Adds a target.");
+            }
+            if (sender.hasPermission("sentinel.removetarget")) {
+                sender.sendMessage(prefixGood + "/sentinel removetarget TYPE - Removes a target.");
+            }
+            if (sender.hasPermission("sentinel.addignore")) {
+                sender.sendMessage(prefixGood + "/sentinel addignore TYPE - Ignores a target.");
+            }
+            if (sender.hasPermission("sentinel.removeignore")) {
+                sender.sendMessage(prefixGood + "/sentinel removeignore TYPE - Allows targetting a target.");
+            }
+            if (sender.hasPermission("sentinel.range")) {
+                sender.sendMessage(prefixGood + "/sentinel range RANGE - Sets the NPC's maximum attack range.");
+            }
+            if (sender.hasPermission("sentinel.damage")) {
+                sender.sendMessage(prefixGood + "/sentinel damage DAMAGE - Sets the NPC's attack damage.");
+            }
+            if (sender.hasPermission("sentinel.armor")) {
+                sender.sendMessage(prefixGood + "/sentinel armor ARMOR - Sets the NPC's armor level.");
+            }
+            if (sender.hasPermission("sentinel.health")) {
+                sender.sendMessage(prefixGood + "/sentinel health HEALTH - Sets the NPC's health level.");
+            }
+            if (sender.hasPermission("sentinel.attackrate")) {
+                sender.sendMessage(prefixGood + "/sentinel attackrate RATE - Changes the rate at which the NPC attacks, in ticks.");
+            }
+            if (sender.hasPermission("sentinel.healrate")) {
+                sender.sendMessage(prefixGood + "/sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.");
+            }
+            if (sender.hasPermission("sentinel.respawntime")) {
+                sender.sendMessage(prefixGood + "/sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in ticks.");
+            }
+            if (sender.hasPermission("sentinel.chaserange")) {
+                sender.sendMessage(prefixGood + "/sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.");
+            }
+            if (sender.hasPermission("sentinel.guard")) {
+                sender.sendMessage(prefixGood + "/sentinel guard (PLAYERNAME) - Makes the NPC guard a specific player. Don't specify a player to stop guarding.");
+            }
+            if (sender.hasPermission("sentinel.invincible")) {
+                sender.sendMessage(prefixGood + "/sentinel invincible - Toggles whether the NPC is invincible.");
+            }
+            if (sender.hasPermission("sentinel.fightback")) {
+                sender.sendMessage(prefixGood + "/sentinel fightback - Toggles whether the NPC will fight back.");
+            }
+            if (sender.hasPermission("sentinel.needammo")) {
+                sender.sendMessage(prefixGood + "/sentinel needammo - Toggles whether the NPC will need ammo.");
+            }
+            if (sender.hasPermission("sentinel.safeshot")) {
+                sender.sendMessage(prefixGood + "/sentinel safeshot - Toggles whether the NPC will avoid damaging non-targets.");
+            }
+            if (sender.hasPermission("sentinel.chase")) {
+                sender.sendMessage(prefixGood + "/sentinel chaseclose - Toggles whether the NPC will chase while in 'close quarters' fights.");
+            }
+            if (sender.hasPermission("sentinel.chase")) {
+                sender.sendMessage(prefixGood + "/sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.");
+            }
+            if (sender.hasPermission("sentinel.drops")) {
+                sender.sendMessage(prefixGood + "/sentinel drops - Changes the drops of the current NPC.");
+            }
+            if (sender.hasPermission("sentinel.spawnpoint")) {
+                sender.sendMessage(prefixGood + "/sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.");
+            }
+            if (sender.hasPermission("sentinel.forgive")) {
+                sender.sendMessage(prefixGood + "/sentinel forgive - Forgives all current targets.");
+            }
+            if (sender.hasPermission("sentinel.enemydrops")) {
+                sender.sendMessage(prefixGood + "/sentinel enemydrops - Toggles whether enemy mobs of this NPC drop items.");
+            }
+            if (sender.hasPermission("sentinel.kill")) {
+                sender.sendMessage(prefixGood + "/sentinel kill - Kills the NPC.");
+            }
+            if (sender.hasPermission("sentinel.respawn")) {
+                sender.sendMessage(prefixGood + "/sentinel respawn - Respawns the NPC.");
+            }
+            if (sender.hasPermission("sentinel.targettime")) {
+                sender.sendMessage(prefixGood + "/sentinel targettime TIME - Sets the NPC's enemy target time limit.");
+            }
+            if (sender.hasPermission("sentinel.speed")) {
+                sender.sendMessage(prefixGood + "/sentinel speed SPEED - Sets the NPC's movement speed modifier.");
+            }
+            if (sender.hasPermission("sentinel.autoswitch")) {
+                sender.sendMessage(prefixGood + "/sentinel autoswitch - Toggles whether the NPC automatically switches items.");
+            }
+            if (sender.hasPermission("sentinel.greet")) {
+                sender.sendMessage(prefixGood + "/sentinel greeting GREETING - Sets a greeting message for the NPC to say.");
+            }
+            if (sender.hasPermission("sentinel.greet")) {
+                sender.sendMessage(prefixGood + "/sentinel warning WARNING - Sets a warning message for the NPC to say.");
+            }
+            if (sender.hasPermission("sentinel.greet")) {
+                sender.sendMessage(prefixGood + "/sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.");
+            }
+            if (sender.hasPermission("sentinel.info")) {
+                sender.sendMessage(prefixGood + "/sentinel info - Shows info on the current NPC.");
+            }
+            if (sender.hasPermission("sentinel.info")) {
+                sender.sendMessage(prefixGood + "/sentinel targets - Shows the targets of the current NPC.");
+            }
+            if (sender.hasPermission("sentinel.info")) {
+                sender.sendMessage(prefixGood + "/sentinel stats - Shows statistics about the current NPC.");
+            }
+            if (sender.hasPermission("sentinel.admin")) {
+                sender.sendMessage(prefixGood + "Be careful, you can edit other player's NPCs!");
+            }
             return true;
         }
     }
 
     public String getNameTargetString(List<String> strs) {
         StringBuilder targets = new StringBuilder();
-        for (String str: strs) {
+        for (String str : strs) {
             targets.append(str).append(", ");
         }
-        return targets.length() > 0 ? targets.substring(0, targets.length() - 2): targets.toString();
+        return targets.length() > 0 ? targets.substring(0, targets.length() - 2) : targets.toString();
     }
 
     public String getTargetString(HashSet<SentinelTarget> sentinel) {
         StringBuilder targets = new StringBuilder();
-        for (SentinelTarget target: sentinel) {
+        for (SentinelTarget target : sentinel) {
             targets.append(target.name()).append(", ");
         }
-        return targets.length() > 0 ? targets.substring(0, targets.length() - 2): targets.toString();
+        return targets.length() > 0 ? targets.substring(0, targets.length() - 2) : targets.toString();
     }
 
     public String getOwner(NPC npc) {

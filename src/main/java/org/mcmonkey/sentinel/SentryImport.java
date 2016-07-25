@@ -1,6 +1,7 @@
 package org.mcmonkey.sentinel;
 
 import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Listener;
@@ -13,7 +14,7 @@ import net.citizensnpcs.api.npc.NPC;
 public class SentryImport implements Listener {
 
     /**
-     *  Converts Sentry NPCs to Sentinel NPCs. Returns the number of NPCs converted.
+     * Converts Sentry NPCs to Sentinel NPCs. Returns the number of NPCs converted.
      */
     public static int PerformImport() {
         int convertedCount = 0;
@@ -31,7 +32,7 @@ public class SentryImport implements Listener {
             }
             SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
             sentinel.armor = sentry.Armor;
-            sentinel.attackRate = (int)(sentry.AttackRateSeconds * 20);
+            sentinel.attackRate = (int) (sentry.AttackRateSeconds * 20);
             if (sentinel.attackRate < SentinelTrait.attackRateMin) {
                 sentinel.attackRate = SentinelTrait.attackRateMin;
             }
@@ -49,7 +50,7 @@ public class SentryImport implements Listener {
                 hpHealedPerPeriod = .5 / sentry.HealRate;
             }
             double secondsPerHpPoint = sentry.HealRate / hpHealedPerPeriod;
-            sentinel.healRate = (int)(20 * secondsPerHpPoint);
+            sentinel.healRate = (int) (20 * secondsPerHpPoint);
             if (sentinel.healRate < SentinelTrait.healRateMin) {
                 sentinel.healRate = SentinelTrait.healRateMin;
             }
@@ -89,7 +90,7 @@ public class SentryImport implements Listener {
             sentinel.playerNameIgnores.clear();
             sentinel.npcNameIgnores.clear();
             sentinel.groupIgnores.clear();
-            for (String t: sentry.validTargets) {
+            for (String t : sentry.validTargets) {
                 if (t.contains("ENTITY:ALL")) {
                     sentinel.targets.add(SentinelTarget.MOBS);
                     sentinel.targets.add(SentinelTarget.PLAYERS);
@@ -137,7 +138,7 @@ public class SentryImport implements Listener {
                     }
                 }
             }
-            for (String t: sentry.ignoreTargets) {
+            for (String t : sentry.ignoreTargets) {
                 if (t.contains("ENTITY:ALL")) {
                     sentinel.ignores.add(SentinelTarget.MOBS);
                     sentinel.ignores.add(SentinelTarget.PLAYERS);
