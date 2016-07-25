@@ -27,7 +27,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -435,9 +437,15 @@ public class SentinelTrait extends Trait {
                         (type.getType() == Material.TIPPED_ARROW ? EntityType.TIPPED_ARROW : EntityType.ARROW));
         ((Projectile)arrow).setShooter(getLivingEntity());
         if (arrow instanceof TippedArrow) {
-            ((TippedArrow)arrow).setBasePotionData(((PotionMeta)type.getItemMeta()).getBasePotionData());
-            for (PotionEffect effect: ((PotionMeta)type.getItemMeta()).getCustomEffects()) {
-                ((TippedArrow)arrow).addCustomEffect(effect, true);
+            PotionData data = ((PotionMeta)type.getItemMeta()).getBasePotionData();
+            if (data.getType() == null || data.getType() == PotionType.UNCRAFTABLE) {
+                // TODO: Perhaps a **single** warning?
+            }
+            else {
+                ((TippedArrow) arrow).setBasePotionData(data);
+                for (PotionEffect effect : ((PotionMeta) type.getItemMeta()).getCustomEffects()) {
+                    ((TippedArrow) arrow).addCustomEffect(effect, true);
+                }
             }
         }
         arrow.setVelocity(start.getValue());
