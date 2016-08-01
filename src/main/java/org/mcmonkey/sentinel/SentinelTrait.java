@@ -619,16 +619,22 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    Location bunny_goal = new Location(null, 0, 0, 0);
+
     public void chase(LivingEntity entity) {
         if (npc.getNavigator().getTargetType() == TargetType.LOCATION
                 && npc.getNavigator().getTargetAsLocation() != null
-                && npc.getNavigator().getTargetAsLocation().getWorld().equals(entity.getWorld())
-                && npc.getNavigator().getTargetAsLocation().distanceSquared(entity.getLocation()) < 2 * 2) {
+                && ((npc.getNavigator().getTargetAsLocation().getWorld().equals(entity.getWorld())
+                && npc.getNavigator().getTargetAsLocation().distanceSquared(entity.getLocation()) < 2 * 2)
+                || (npc.getNavigator().getTargetAsLocation().getWorld().equals(bunny_goal.getWorld())
+                && npc.getNavigator().getTargetAsLocation().distanceSquared(bunny_goal) < 2 * 2))) {
             return;
         }
         chasing = entity;
         npc.getNavigator().getDefaultParameters().stuckAction(null);
         npc.getNavigator().setTarget(entity.getLocation());
+        System.out.println(bunny_goal.toString());
+        bunny_goal = entity.getLocation();
         npc.getNavigator().getLocalParameters().speedModifier((float) speed);
     }
 
