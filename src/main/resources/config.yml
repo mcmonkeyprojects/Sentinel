@@ -34,6 +34,8 @@ sentinel defaults:
     speed: 1
     # Whether to automatically switch to the most appropriate available weapon. (Bow at range, or sword up close).
     autoswitch: false
+    # Accuracy offset, 0 means perfectly accurate, 5 means pretty inaccurate.
+    accuracy: 0
 
 random:
     # What sound to play when the "spectral" attack is used.

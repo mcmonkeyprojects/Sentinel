@@ -71,6 +71,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - /sentinel greeting GREETING - Sets a greeting message for the NPC to say.
 - /sentinel warning WARNING - Sets a warning message for the NPC to say.
 - /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
+- /sentinel accuracy OFFSET - Sets the accuracy of an NPC.
 
 ### Sentry user?
 

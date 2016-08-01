@@ -199,6 +199,9 @@ public class SentinelTrait extends Trait {
     @Persist("autoswitch")
     public boolean autoswitch = false;
 
+    @Persist("accuracy")
+    public double accuracy = 0;
+
     public LivingEntity chasing = null;
 
     public UUID getGuarding() {
@@ -418,6 +421,14 @@ public class SentinelTrait extends Trait {
         return new HashMap.SimpleEntry<Location, Vector>(start, relative);
     }
 
+    public double randomAcc() {
+        return SentinelUtilities.random.nextDouble() * accuracy * 2 - accuracy;
+    }
+
+    public Vector fixForAcc(Vector input) {
+        return new Vector(input.getX() + randomAcc(), input.getY() + randomAcc(), input.getZ() + randomAcc());
+    }
+
     public void firePotion(ItemStack potion, Location target, Vector lead) {
         stats_potionsThrown++;
         HashMap.SimpleEntry<Location, Vector> start = getLaunchDetail(target, lead);
@@ -425,7 +436,7 @@ public class SentinelTrait extends Trait {
                 potion.getType() == Material.SPLASH_POTION ? EntityType.SPLASH_POTION : EntityType.LINGERING_POTION);
         ((ThrownPotion) entpotion).setShooter(getLivingEntity());
         ((ThrownPotion) entpotion).setItem(potion);
-        entpotion.setVelocity(start.getValue());
+        entpotion.setVelocity(fixForAcc(start.getValue()));
         swingWeapon();
     }
 
@@ -448,7 +459,7 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
-        arrow.setVelocity(start.getValue());
+        arrow.setVelocity(fixForAcc(start.getValue()));
         // TODO: Prevent pick up if needed!
         useItem();
     }
@@ -461,7 +472,7 @@ public class SentinelTrait extends Trait {
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
         Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.SNOWBALL);
         ((Projectile) ent).setShooter(getLivingEntity());
-        ent.setVelocity(target.clone().subtract(spawnAt).toVector().normalize().multiply(2.5)); // TODO: Fiddle with '2.5'.
+        ent.setVelocity(fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(2.0))); // TODO: Fiddle with '2.0'.
     }
 
     public void fireFireball(Location target) {
@@ -472,7 +483,7 @@ public class SentinelTrait extends Trait {
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
         Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.SMALL_FIREBALL);
         ((Projectile) ent).setShooter(getLivingEntity());
-        ent.setVelocity(target.clone().subtract(spawnAt).toVector().normalize().multiply(4)); // TODO: Fiddle with '4'.
+        ent.setVelocity(fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(4))); // TODO: Fiddle with '4'.
     }
 
     public double getDamage() {

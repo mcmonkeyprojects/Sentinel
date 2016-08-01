@@ -433,7 +433,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
             catch (NumberFormatException ex) {
-                sender.sendMessage(prefixBad + "Invalid range number!");
+                sender.sendMessage(prefixBad + "Invalid range number: " + ex.getMessage());
             }
             return true;
         }
@@ -449,7 +449,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
             catch (NumberFormatException ex) {
-                sender.sendMessage(prefixBad + "Invalid damage number!");
+                sender.sendMessage(prefixBad + "Invalid damage number: " + ex.getMessage());
             }
             return true;
         }
@@ -465,7 +465,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
             catch (NumberFormatException ex) {
-                sender.sendMessage(prefixBad + "Invalid speed number!");
+                sender.sendMessage(prefixBad + "Invalid speed number: " + ex.getMessage());
             }
             return true;
         }
@@ -481,7 +481,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
             catch (NumberFormatException ex) {
-                sender.sendMessage(prefixBad + "Invalid range number!");
+                sender.sendMessage(prefixBad + "Invalid range number: " + ex.getMessage());
             }
             return true;
         }
@@ -497,7 +497,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
             catch (NumberFormatException ex) {
-                sender.sendMessage(prefixBad + "Invalid armor number!");
+                sender.sendMessage(prefixBad + "Invalid armor number: " + ex.getMessage());
             }
             return true;
         }
@@ -513,7 +513,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
             catch (NumberFormatException ex) {
-                sender.sendMessage(prefixBad + "Invalid health number!");
+                sender.sendMessage(prefixBad + "Invalid health number: " + ex.getMessage());
             }
             return true;
         }
@@ -529,7 +529,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
             catch (NumberFormatException ex) {
-                sender.sendMessage(prefixBad + "Invalid rate number!");
+                sender.sendMessage(prefixBad + "Invalid rate number: " + ex.getMessage());
             }
             return true;
         }
@@ -545,7 +545,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
             catch (NumberFormatException ex) {
-                sender.sendMessage(prefixBad + "Invalid rate number!");
+                sender.sendMessage(prefixBad + "Invalid rate number: " + ex.getMessage());
             }
             return true;
         }
@@ -561,7 +561,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
             catch (NumberFormatException ex) {
-                sender.sendMessage(prefixBad + "Invalid time number!");
+                sender.sendMessage(prefixBad + "Invalid time number: " + ex.getMessage());
             }
             return true;
         }
@@ -572,7 +572,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 sender.sendMessage(prefixGood + "Respawn time set!");
             }
             catch (NumberFormatException ex) {
-                sender.sendMessage(prefixBad + "Invalid time number!");
+                sender.sendMessage(prefixBad + "Invalid time number: " + ex.getMessage());
             }
             return true;
         }
@@ -584,6 +584,22 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             catch (NumberFormatException ex) {
                 sender.sendMessage(prefixBad + "Invalid range number!");
+            }
+            return true;
+        }
+        else if (arg0.equals("accuracy") && sender.hasPermission("sentinel.accuracy") && args.length > 1) {
+            try {
+                double d = Double.valueOf(args[1]);
+                if (d < 0 || d > 10) {
+                    throw new NumberFormatException("Number out of range!");
+                }
+                else {
+                    sentinel.accuracy = d;
+                    sender.sendMessage(prefixGood + "Accuracy offset set!");
+                }
+            }
+            catch (NumberFormatException ex) {
+                sender.sendMessage(prefixBad + "Invalid accuracy offset number: " + ex.getMessage());
             }
             return true;
         }
@@ -778,6 +794,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Attack Rate: " + ChatColor.AQUA + sentinel.attackRate);
             sender.sendMessage(prefixGood + "Heal Rate: " + ChatColor.AQUA + sentinel.healRate);
             sender.sendMessage(prefixGood + "Respawn Time: " + ChatColor.AQUA + sentinel.respawnTime);
+            sender.sendMessage(prefixGood + "Accuracy: " + ChatColor.AQUA + sentinel.accuracy);
             sender.sendMessage(prefixGood + "Invincibility Enabled: " + ChatColor.AQUA + sentinel.invincible);
             sender.sendMessage(prefixGood + "Fightback Enabled: " + ChatColor.AQUA + sentinel.fightback);
             sender.sendMessage(prefixGood + "Ranged Chasing Enabled: " + ChatColor.AQUA + sentinel.rangedChase);
@@ -889,6 +906,9 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             if (sender.hasPermission("sentinel.autoswitch")) {
                 sender.sendMessage(prefixGood + "/sentinel autoswitch - Toggles whether the NPC automatically switches items.");
+            }
+            if (sender.hasPermission("sentinel.accuracy")) {
+                sender.sendMessage(prefixGood + "/sentinel accuracy OFFSET - Sets the accuracy of an NPC.");
             }
             if (sender.hasPermission("sentinel.greet")) {
                 sender.sendMessage(prefixGood + "/sentinel greeting GREETING - Sets a greeting message for the NPC to say.");

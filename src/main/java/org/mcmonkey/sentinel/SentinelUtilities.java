@@ -3,7 +3,11 @@ package org.mcmonkey.sentinel;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
+import java.util.Random;
+
 public class SentinelUtilities {
+
+    public static Random random = new Random();
 
     public static double getArrowAngle(Location fireFrom, Location fireTo, double speed, double gravity) {
         Vector delta = fireTo.clone().subtract(fireFrom).toVector();
