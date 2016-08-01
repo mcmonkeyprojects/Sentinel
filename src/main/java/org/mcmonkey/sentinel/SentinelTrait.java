@@ -633,7 +633,6 @@ public class SentinelTrait extends Trait {
         chasing = entity;
         npc.getNavigator().getDefaultParameters().stuckAction(null);
         npc.getNavigator().setTarget(entity.getLocation());
-        System.out.println(bunny_goal.toString());
         bunny_goal = entity.getLocation();
         npc.getNavigator().getLocalParameters().speedModifier((float) speed);
     }
