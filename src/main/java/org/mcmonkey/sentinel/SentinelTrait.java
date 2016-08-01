@@ -8,6 +8,7 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Inventory;
 import net.citizensnpcs.api.trait.trait.Owner;
+import net.citizensnpcs.api.trait.trait.Spawned;
 import net.citizensnpcs.trait.waypoint.Waypoint;
 import net.citizensnpcs.trait.waypoint.WaypointProvider;
 import net.citizensnpcs.trait.waypoint.Waypoints;
@@ -1453,6 +1454,9 @@ public class SentinelTrait extends Trait {
     }
 
     public void onDeath() {
+        if (npc.hasTrait(Spawned.class)) {
+            npc.getTrait(Spawned.class).setSpawned(false);
+        }
         greetedAlready.clear();
         currentTargets.clear();
         if (respawnTime < 0) {
