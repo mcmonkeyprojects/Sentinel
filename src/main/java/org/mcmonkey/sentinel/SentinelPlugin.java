@@ -604,7 +604,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             return true;
         }
         else if (arg0.equals("invincible") && sender.hasPermission("sentinel.invincible")) {
-            sentinel.setInvincible(!sentinel.invincible);
+            boolean mode = !sentinel.invincible;
+            if (args.length > 1 && "true".equalsIgnoreCase(args[1])) {
+                mode = true;
+            }
+            if (args.length > 1 && "false".equalsIgnoreCase(args[1])) {
+                mode = false;
+            }
+            sentinel.setInvincible(mode);
             if (sentinel.invincible) {
                 sender.sendMessage(prefixGood + "NPC now invincible!");
             }
@@ -624,7 +631,15 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             return true;
         }
         else if (arg0.equals("fightback") && sender.hasPermission("sentinel.fightback")) {
-            sentinel.fightback = !sentinel.fightback;
+            boolean mode = !sentinel.fightback;
+            if (args.length > 1 && "true".equalsIgnoreCase(args[1])) {
+                mode = true;
+            }
+            if (args.length > 1 && "false".equalsIgnoreCase(args[1])) {
+                mode = false;
+            }
+            sentinel.fightback = mode;
+
             if (sentinel.fightback) {
                 sender.sendMessage(prefixGood + "NPC now fights back!");
             }
