@@ -461,7 +461,9 @@ public class SentinelTrait extends Trait {
             }
         }
         arrow.setVelocity(fixForAcc(start.getValue()));
-        // TODO: Prevent pick up if needed!
+        if (npc.getTrait(Inventory.class).getContents()[0].containsEnchantment(Enchantment.ARROW_FIRE)) {
+            arrow.setFireTicks(10000);
+        }
         useItem();
     }
 
