@@ -223,14 +223,25 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    public static boolean warned_ARMOR = false;
+
     @EventHandler(priority = EventPriority.HIGH)
     public void whenAttacksAreHappening(EntityDamageByEntityEvent event) {
         if (!npc.isSpawned()) {
             return;
         }
-        if (event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId())) {
-            event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, -getArmor(getLivingEntity()) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
-            return;
+        try {
+            if (event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId())) {
+                event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, -getArmor(getLivingEntity()) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
+                return;
+            }
+        }
+        catch (Exception ex) {
+            if (!warned_ARMOR) {
+                warned_ARMOR = true;
+                SentinelPlugin.instance.getLogger().severe("INVALID DAMAGE EVENT PASSED TO SENTINEL, CANNOT INTERACT PROPERLY."
+                + " Please fix the plugin that caused this damage! Will not mention again until server restart!");
+            }
         }
         if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
             event.setDamage(EntityDamageEvent.DamageModifier.BASE, getDamage());
