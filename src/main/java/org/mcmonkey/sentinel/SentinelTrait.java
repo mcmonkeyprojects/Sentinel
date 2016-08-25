@@ -1146,11 +1146,14 @@ public class SentinelTrait extends Trait {
             return ignores.contains(SentinelTarget.NPCS) ||
                     isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), npcNameIgnores);
         }
+        if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            return true;
+        }
+        if (getGuarding() != null && entity.getUniqueId().equals(getGuarding())) {
+            return true;
+        }
         else if (entity instanceof Player) {
             if (((Player) entity).getGameMode() == GameMode.CREATIVE || ((Player) entity).getGameMode() == GameMode.SPECTATOR) {
-                return true;
-            }
-            if (getGuarding() != null && entity.getUniqueId().equals(getGuarding())) {
                 return true;
             }
             if (isRegexTargeted(((Player) entity).getName(), playerNameIgnores)) {
@@ -1186,6 +1189,12 @@ public class SentinelTrait extends Trait {
     public boolean isTargeted(LivingEntity entity) {
         SentinelCurrentTarget target = new SentinelCurrentTarget();
         target.targetID = entity.getUniqueId();
+        if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            return false;
+        }
+        if (getGuarding() != null && entity.getUniqueId().equals(getGuarding())) {
+            return false;
+        }
         if (currentTargets.contains(target)) {
             return true;
         }
