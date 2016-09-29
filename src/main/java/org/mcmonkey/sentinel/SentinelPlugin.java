@@ -23,6 +23,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 public class SentinelPlugin extends JavaPlugin implements Listener {
 
@@ -779,6 +780,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Set!");
             return true;
         }
+        else if (arg0.equals("squad") && sender.hasPermission("sentinel.squad") && args.length > 1) {
+            sentinel.squad = SentinelUtilities.concatWithSpaces(args, 1).toLowerCase(Locale.ENGLISH);
+            if (sentinel.squad.equals("null")) {
+                sentinel.squad = null;
+            }
+            sender.sendMessage(prefixGood + "Set!");
+            return true;
+        }
         else if (arg0.equals("targets") && sender.hasPermission("sentinel.info")) {
             sender.sendMessage(prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + ColorBasic
                     + ": owned by " + ChatColor.RESET + getOwner(sentinel.getNPC()));
@@ -924,6 +933,9 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             if (sender.hasPermission("sentinel.accuracy")) {
                 sender.sendMessage(prefixGood + "/sentinel accuracy OFFSET - Sets the accuracy of an NPC.");
+            }
+            if (sender.hasPermission("sentinel.squad")) {
+                sender.sendMessage(prefixGood + "/sentinel squad SQUAD - Sets the NPC's squad name (null for none).");
             }
             if (sender.hasPermission("sentinel.greet")) {
                 sender.sendMessage(prefixGood + "/sentinel greeting GREETING - Sets a greeting message for the NPC to say.");

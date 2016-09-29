@@ -76,6 +76,8 @@ permissions:
       sentinel.autoswitch: true
       # /sentinel accuracy
       sentinel.accuracy: true
+      # /sentinel squad SQUAD
+      sentinel.squad: true
       # /sentinel greeting GREETING, sentinel warning WARNING, sentinel greetrange RANGE
       sentinel.greet: true
       # /sentinel info, /sentinel targets, /sentinel stats

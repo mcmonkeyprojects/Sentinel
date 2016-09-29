@@ -4,6 +4,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Inventory;
@@ -199,6 +200,9 @@ public class SentinelTrait extends Trait {
 
     @Persist("autoswitch")
     public boolean autoswitch = false;
+
+    @Persist("squad")
+    public String squad = null;
 
     @Persist("accuracy")
     public double accuracy = 0;
@@ -1124,6 +1128,20 @@ public class SentinelTrait extends Trait {
     private HashSet<UUID> greetedAlready = new HashSet<UUID>();
 
     public void addTarget(UUID id) {
+        addTargetNoBounce(id);
+        if (squad != null) {
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                if (npc.hasTrait(SentinelTrait.class)) {
+                    SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
+                    if (sentinel.squad != null && sentinel.squad.equals(squad)) {
+                        sentinel.addTargetNoBounce(id);
+                    }
+                }
+            }
+        }
+    }
+
+    public void addTargetNoBounce(UUID id) {
         SentinelCurrentTarget target = new SentinelCurrentTarget();
         target.targetID = id;
         target.ticksLeft = enemyTargetTime;
@@ -1281,11 +1299,20 @@ public class SentinelTrait extends Trait {
                 currentTargets.remove(uuid);
                 continue;
             }
+            if (e instanceof Player && ((Player) e).getGameMode() == GameMode.CREATIVE) {
+                currentTargets.remove(uuid);
+                continue;
+            }
+            if (e.isDead()) {
+                currentTargets.remove(uuid);
+                continue;
+            }
             double d = e.getLocation().distanceSquared(getLivingEntity().getLocation());
             if (d > range * range * 4 && d > chaseRange * chaseRange * 4) {
                 currentTargets.remove(uuid);
+                continue;
             }
-            else if (uuid.ticksLeft > 0) {
+            if (uuid.ticksLeft > 0) {
                 uuid.ticksLeft -= SentinelPlugin.instance.tickRate;
                 if (uuid.ticksLeft <= 0) {
                     currentTargets.remove(uuid);
@@ -1307,12 +1334,12 @@ public class SentinelTrait extends Trait {
             getLivingEntity().setHealth(Math.min(getLivingEntity().getHealth() + 1.0, health));
             timeSinceHeal = 0;
         }
+        updateTargets();
         LivingEntity target = findBestTarget();
         chasing = target;
         if (target != null) {
             tryAttack(target);
         }
-        updateTargets();
         if (getGuarding() != null) {
             Player player = Bukkit.getPlayer(getGuarding());
             if (player != null) {
@@ -1330,7 +1357,7 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
-        else if (chaseRange > 0) {
+        else if (chaseRange > 0 && target == null) {
             Location near = nearestPathPoint();
             if (near != null && near.distanceSquared(getLivingEntity().getLocation()) > chaseRange * chaseRange) {
                 npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
