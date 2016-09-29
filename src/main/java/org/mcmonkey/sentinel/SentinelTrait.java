@@ -317,6 +317,12 @@ public class SentinelTrait extends Trait {
                 && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             isEventTarget = true;
         }
+        else if (eventTargets.contains("pvsentinel")
+                && event.getEntity() instanceof LivingEntity
+                && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
+                && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).hasTrait(SentinelTrait.class)) {
+            isEventTarget = true;
+        }
         if (isEventTarget && e != null && e instanceof LivingEntity && canSee((LivingEntity) e)) {
             addTarget(e.getUniqueId());
         }
@@ -1128,6 +1134,7 @@ public class SentinelTrait extends Trait {
     public boolean isRegexTargeted(String name, List<String> regexes) {
         for (String str : regexes) {
             Pattern pattern = Pattern.compile(str, Pattern.CASE_INSENSITIVE);
+            // TODO: Is this more efficient than .matches, or should we change it?
             if (pattern.matcher(name).matches()) {
                 return true;
             }
