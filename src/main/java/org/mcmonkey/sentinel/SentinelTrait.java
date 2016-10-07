@@ -457,8 +457,11 @@ public class SentinelTrait extends Trait {
     }
 
     public void fireArrow(ItemStack type, Location target, Vector lead) {
-        stats_arrowsFired++;
         HashMap.SimpleEntry<Location, Vector> start = getLaunchDetail(target, lead);
+        if (start == null || start.getKey() == null) {
+            return;
+        }
+        stats_arrowsFired++;
         Entity arrow = start.getKey().getWorld().spawnEntity(start.getKey(),
                 type.getType() == Material.SPECTRAL_ARROW ? EntityType.SPECTRAL_ARROW :
                         (type.getType() == Material.TIPPED_ARROW ? EntityType.TIPPED_ARROW : EntityType.ARROW));
