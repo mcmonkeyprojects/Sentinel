@@ -232,6 +232,9 @@ public class SentinelTrait extends Trait {
         if (!npc.isSpawned()) {
             return;
         }
+        if (event.isCancelled()) {
+            return;
+        }
         if (event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId())) {
             if (!event.isApplicable(EntityDamageEvent.DamageModifier.ARMOR)) {
                 event.setDamage(EntityDamageEvent.DamageModifier.BASE, (1.0 - getArmor(getLivingEntity())) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
@@ -257,18 +260,21 @@ public class SentinelTrait extends Trait {
         if (!npc.isSpawned()) {
             return;
         }
+        if (event.isCancelled()) {
+            return;
+        }
         boolean isMe = event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId());
         boolean isFriend = getGuarding() != null && event.getEntity().getUniqueId().equals(getGuarding());
         if (isMe || isFriend) {
             if (isMe) {
                 stats_damageTaken += event.getFinalDamage();
             }
-            if (fightback && (event.getDamager() instanceof LivingEntity)) {
+            if (fightback && (event.getDamager() instanceof LivingEntity) && !isIgnored((LivingEntity) event.getDamager())) {
                 addTarget(event.getDamager().getUniqueId());
             }
             else if (event.getDamager() instanceof Projectile) {
                 ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
-                if (fightback && (source instanceof LivingEntity)) {
+                if (fightback && (source instanceof LivingEntity) && !isIgnored((LivingEntity) source)) {
                     addTarget(((LivingEntity) source).getUniqueId());
                 }
             }
@@ -327,7 +333,7 @@ public class SentinelTrait extends Trait {
                 && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).hasTrait(SentinelTrait.class)) {
             isEventTarget = true;
         }
-        if (isEventTarget && e != null && e instanceof LivingEntity && canSee((LivingEntity) e)) {
+        if (isEventTarget && e != null && e instanceof LivingEntity && canSee((LivingEntity) e) && !isIgnored((LivingEntity) e)) {
             addTarget(e.getUniqueId());
         }
     }
@@ -1456,7 +1462,7 @@ public class SentinelTrait extends Trait {
         boolean known = greetedAlready.contains(event.getPlayer().getUniqueId());
         if (dist < greetRange && !known && canSee(event.getPlayer())) {
             greetedAlready.add(event.getPlayer().getUniqueId());
-            boolean enemy = isTargeted(event.getPlayer()) && !isIgnored(event.getPlayer());
+            boolean enemy = shouldTarget(event.getPlayer());
             if (enemy && warningText != null && warningText.length() > 0) {
                 sayTo(event.getPlayer(), warningText);
             }
