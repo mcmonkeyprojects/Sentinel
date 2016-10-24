@@ -1160,7 +1160,7 @@ public class SentinelTrait extends Trait {
 
     public boolean isRegexTargeted(String name, List<String> regexes) {
         for (String str : regexes) {
-            Pattern pattern = Pattern.compile(str, Pattern.CASE_INSENSITIVE);
+            Pattern pattern = Pattern.compile(".*" + str + ".*", Pattern.CASE_INSENSITIVE);
             // TODO: Is this more efficient than .matches, or should we change it?
             if (pattern.matcher(name).matches()) {
                 return true;
