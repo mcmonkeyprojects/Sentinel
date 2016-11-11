@@ -245,11 +245,21 @@ public class SentinelTrait extends Trait {
             return;
         }
         if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            if (SentinelPlugin.instance.getConfig().getBoolean("random.enforce damage", false)) {
+                ((LivingEntity) event.getEntity()).damage(getDamage());
+                event.setCancelled(true);
+                return;
+            }
             event.setDamage(EntityDamageEvent.DamageModifier.BASE, getDamage());
         }
         if (event.getDamager() instanceof Projectile) {
             ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
             if (source instanceof LivingEntity && ((LivingEntity) source).getUniqueId().equals(getLivingEntity().getUniqueId())) {
+                if (SentinelPlugin.instance.getConfig().getBoolean("random.enforce damage", false)) {
+                    ((LivingEntity) event.getEntity()).damage(getDamage());
+                    event.setCancelled(true);
+                    return;
+                }
                 event.setDamage(EntityDamageEvent.DamageModifier.BASE, getDamage());
             }
         }

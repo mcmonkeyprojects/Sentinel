@@ -48,6 +48,8 @@ random:
     death messages: true
     # How fast to try to shoot things (EG arrows).
     shoot speed minimum: 20
+    # Whether to force damage through (particularly for ranged attacks).
+    enforce damage: false
 
 # How fast to recalculate, in ticks.
 update rate: 10
