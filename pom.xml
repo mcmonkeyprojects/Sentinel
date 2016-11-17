@@ -7,14 +7,14 @@
     <groupId>org.mcmonkey</groupId>
     <artifactId>sentinel</artifactId>
     <packaging>jar</packaging>
-    <version>0.8</version>
+    <version>0.9</version>
     <name>Sentinel</name>
     <description>Combat NPCs for Spigot</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <craftbukkit.version>1.10-R0.1-SNAPSHOT</craftbukkit.version>
-        <citizens.version>2.0.20-SNAPSHOT</citizens.version>
+        <craftbukkit.version>1.11-R0.1-SNAPSHOT</craftbukkit.version>
+        <citizens.version>2.0.21-SNAPSHOT</citizens.version>
         <sentry.version>1.9.0</sentry.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
     </properties>
