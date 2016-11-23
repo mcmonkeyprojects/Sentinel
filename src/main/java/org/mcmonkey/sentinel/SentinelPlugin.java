@@ -522,8 +522,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             try {
                 int d = Integer.valueOf(args[1]);
                 if (d >= SentinelTrait.attackRateMin && d <= SentinelTrait.attackRateMax) {
-                    sentinel.attackRate = d;
-                    sender.sendMessage(prefixGood + "Attack rate set!");
+                    if (args.length > 2 && args[2].contains("ranged")) {
+                        sentinel.attackRateRanged = d;
+                        sender.sendMessage(prefixGood + "Ranged attack rate set!");
+                    }
+                    else {
+                        sentinel.attackRate = d;
+                        sender.sendMessage(prefixGood + "Attack rate set!");
+                    }
                 }
                 else {
                     throw new NumberFormatException("Number out of range.");
@@ -816,6 +822,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/" : "") + sentinel.health);
             sender.sendMessage(prefixGood + "Range: " + ChatColor.AQUA + sentinel.range);
             sender.sendMessage(prefixGood + "Attack Rate: " + ChatColor.AQUA + sentinel.attackRate);
+            sender.sendMessage(prefixGood + "Ranged Attack Rate: " + ChatColor.AQUA + sentinel.attackRateRanged);
             sender.sendMessage(prefixGood + "Heal Rate: " + ChatColor.AQUA + sentinel.healRate);
             sender.sendMessage(prefixGood + "Respawn Time: " + ChatColor.AQUA + sentinel.respawnTime);
             sender.sendMessage(prefixGood + "Accuracy: " + ChatColor.AQUA + sentinel.accuracy);
@@ -872,7 +879,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 sender.sendMessage(prefixGood + "/sentinel health HEALTH - Sets the NPC's health level.");
             }
             if (sender.hasPermission("sentinel.attackrate")) {
-                sender.sendMessage(prefixGood + "/sentinel attackrate RATE - Changes the rate at which the NPC attacks, in ticks.");
+                sender.sendMessage(prefixGood + "/sentinel attackrate RATE ['ranged'] - Changes the rate at which the NPC attacks, in ticks. Either ranged or close modes.");
             }
             if (sender.hasPermission("sentinel.healrate")) {
                 sender.sendMessage(prefixGood + "/sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.");

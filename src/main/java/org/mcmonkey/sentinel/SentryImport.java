@@ -31,7 +31,7 @@ public class SentryImport implements Listener {
                 npc.addTrait(SentinelTrait.class);
             }
             SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
-            sentinel.armor = sentry.Armor;
+            sentinel.armor = Math.min(sentry.Armor * 0.1, 1.0);
             sentinel.attackRate = (int) (sentry.AttackRateSeconds * 20);
             if (sentinel.attackRate < SentinelTrait.attackRateMin) {
                 sentinel.attackRate = SentinelTrait.attackRateMin;

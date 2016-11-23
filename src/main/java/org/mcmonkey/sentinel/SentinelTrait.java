@@ -153,6 +153,9 @@ public class SentinelTrait extends Trait {
     @Persist("attackRate")
     public int attackRate = 30;
 
+    @Persist("attackRateRanged")
+    public int attackRateRanged = 30;
+
     @Persist("healRate")
     public int healRate = 30;
 
@@ -905,7 +908,7 @@ public class SentinelTrait extends Trait {
         }
         if (usesBow()) {
             if (canSee(entity)) {
-                if (timeSinceAttack < attackRate) {
+                if (timeSinceAttack < attackRateRanged) {
                     if (rangedChase) {
                         rechase();
                     }
@@ -928,7 +931,7 @@ public class SentinelTrait extends Trait {
         }
         else if (usesSnowball()) {
             if (canSee(entity)) {
-                if (timeSinceAttack < attackRate) {
+                if (timeSinceAttack < attackRateRanged) {
                     if (rangedChase) {
                         rechase();
                     }
@@ -950,7 +953,7 @@ public class SentinelTrait extends Trait {
         }
         else if (usesPotion()) {
             if (canSee(entity)) {
-                if (timeSinceAttack < attackRate) {
+                if (timeSinceAttack < attackRateRanged) {
                     if (rangedChase) {
                         rechase();
                     }
@@ -970,7 +973,7 @@ public class SentinelTrait extends Trait {
         }
         else if (usesFireball()) {
             if (canSee(entity)) {
-                if (timeSinceAttack < attackRate) {
+                if (timeSinceAttack < attackRateRanged) {
                     if (rangedChase) {
                         rechase();
                     }
@@ -989,7 +992,7 @@ public class SentinelTrait extends Trait {
         }
         else if (usesLightning()) {
             if (canSee(entity)) {
-                if (timeSinceAttack < attackRate) {
+                if (timeSinceAttack < attackRateRanged) {
                     if (rangedChase) {
                         rechase();
                     }
@@ -1009,7 +1012,7 @@ public class SentinelTrait extends Trait {
         }
         else if (usesSpectral()) {
             if (canSee(entity)) {
-                if (timeSinceAttack < attackRate) {
+                if (timeSinceAttack < attackRateRanged) {
                     if (rangedChase) {
                         rechase();
                     }

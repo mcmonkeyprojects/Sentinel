@@ -44,7 +44,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - /sentinel damage DAMAGE - Sets the NPC's attack damage.
 - /sentinel armor ARMOR - Sets the NPC's armor level.
 - /sentinel health HEALTH - Sets the NPC's health level.
-- /sentinel attackrate RATE - Changes the rate at which the NPC attacks, in ticks.
+- /sentinel attackrate RATE ['ranged'] - Changes the rate at which the NPC attacks, in ticks. Either ranged or close modes.
 - /sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.
 - /sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in ticks.
 - /sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.
