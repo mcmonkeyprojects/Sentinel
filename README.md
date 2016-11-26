@@ -38,7 +38,8 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 Sentinel integrations with a few external plugins, including:
 
 - Vault, for permission group targets! (Use group:GROUP_HERE)
-- Towny, for towny targets! (Use towny:TOWN_HERE)
+- Towny, for town targets! (Use towny:TOWN_HERE)
+- Factions, for faction targets! (Use factions:FACTION_HERE)
 
 ### Commands
 
