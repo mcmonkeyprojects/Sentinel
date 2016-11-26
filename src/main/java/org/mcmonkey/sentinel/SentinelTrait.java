@@ -283,6 +283,10 @@ public class SentinelTrait extends Trait {
             return;
         }
         boolean isMe = event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId());
+        if (sentinelProtected && isMe && event.getDamager() instanceof LivingEntity && isIgnored((LivingEntity) event.getDamager())) {
+            event.setCancelled(true);
+            return;
+        }
         boolean isFriend = getGuarding() != null && event.getEntity().getUniqueId().equals(getGuarding());
         if (isMe || isFriend) {
             if (isMe) {
@@ -364,6 +368,8 @@ public class SentinelTrait extends Trait {
         currentTargets.remove(target);
     }
 
+    private boolean sentinelProtected;
+
     @Override
     public void onAttach() {
         FileConfiguration config = SentinelPlugin.instance.getConfig();
@@ -391,6 +397,7 @@ public class SentinelTrait extends Trait {
         }
         autoswitch = config.getBoolean("sentinel defaults.autoswitch", false);
         ignores.add(SentinelTarget.OWNER);
+        sentinelProtected = config.getBoolean("random.protected", false);
     }
 
     public void useItem() {
