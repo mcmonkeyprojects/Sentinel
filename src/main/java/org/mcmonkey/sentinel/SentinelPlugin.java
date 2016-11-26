@@ -19,11 +19,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.mcmonkey.sentinel.integration.SentinelTowny;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class SentinelPlugin extends JavaPlugin implements Listener {
 
@@ -63,6 +61,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
     }
 
+    public final static List<SentinelIntegration> integrations = new ArrayList<SentinelIntegration>();
+
     @Override
     public void onEnable() {
         getLogger().info("Sentinel loading...");
@@ -101,6 +101,15 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
         tryGetPerms();
+        if (Bukkit.getPluginManager().getPlugin("Towny") != null) {
+            try {
+                integrations.add(new SentinelTowny());
+                getLogger().info("Sentinel found Towny! Adding support for it !");
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
 
     }
 
@@ -167,7 +176,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 String[] info = args[1].split(":", 2);
                 if (info.length > 1) {
                     info[1] = ChatColor.translateAlternateColorCodes('&', info[1]);
-                    List<String> names = null;
+                    List<String> names;
+                    boolean doRegex = true;
                     if (info[0].equalsIgnoreCase("player")) {
                         names = sentinel.playerNameTargets;
                     }
@@ -195,8 +205,13 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                         info[1] = info[1].toLowerCase();
                         names = sentinel.eventTargets;
                     }
+                    else {
+                        doRegex = false;
+                        names = sentinel.otherTargets;
+                        info[1] = info[0].toLowerCase() + ":" + info[1];
+                    }
                     try {
-                        if ("Sentinel".matches(info[1])) {
+                        if (doRegex && "Sentinel".matches(info[1])) {
                             ignoreMe++;
                         }
                     }
@@ -206,7 +221,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     }
                     if (names != null) {
                         if (names.contains(info[1])) {
-                            sender.sendMessage(prefixBad + "Already tracking that name target!");
+                            sender.sendMessage(prefixBad + "Already tracking that target!");
                         }
                         else {
                             names.add(info[1]);
@@ -239,7 +254,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 String[] info = args[1].split(":", 2);
                 if (info.length > 1) {
                     info[1] = ChatColor.translateAlternateColorCodes('&', info[1]);
-                    List<String> names = null;
+                    List<String> names;
+                    boolean doRegex = true;
                     if (info[0].equalsIgnoreCase("player")) {
                         names = sentinel.playerNameTargets;
                     }
@@ -266,8 +282,13 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                         info[1] = info[1].toLowerCase();
                         names = sentinel.eventTargets;
                     }
+                    else {
+                        doRegex = false;
+                        names = sentinel.otherTargets;
+                        info[1] = info[0].toLowerCase() + ":" + info[1];
+                    }
                     try {
-                        if ("Sentinel".matches(info[1])) {
+                        if (doRegex && "Sentinel".matches(info[1])) {
                             ignoreMe++;
                         }
                     }
@@ -304,7 +325,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 String[] info = args[1].split(":", 2);
                 if (info.length > 1) {
                     info[1] = ChatColor.translateAlternateColorCodes('&', info[1]);
-                    List<String> names = null;
+                    List<String> names;
+                    boolean doRegex = true;
                     if (info[0].equalsIgnoreCase("player")) {
                         names = sentinel.playerNameIgnores;
                     }
@@ -328,8 +350,13 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                         }
                         return true;
                     }
+                    else {
+                        doRegex = false;
+                        names = sentinel.otherIgnores;
+                        info[1] = info[0].toLowerCase() + ":" + info[1];
+                    }
                     try {
-                        if ("Sentinel".matches(info[1])) {
+                        if (doRegex && "Sentinel".matches(info[1])) {
                             ignoreMe++;
                         }
                     }
@@ -367,7 +394,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 String[] info = args[1].split(":", 2);
                 if (info.length > 1) {
                     info[1] = ChatColor.translateAlternateColorCodes('&', info[1]);
-                    List<String> names = null;
+                    List<String> names;
+                    boolean doRegex = true;
                     if (info[0].equalsIgnoreCase("player")) {
                         names = sentinel.playerNameIgnores;
                     }
@@ -390,8 +418,13 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                         }
                         return true;
                     }
+                    else {
+                        doRegex = false;
+                        names = sentinel.otherIgnores;
+                        info[1] = info[0].toLowerCase() + ":" + info[1];
+                    }
                     try {
-                        if ("Sentinel".matches(info[1])) {
+                        if (doRegex && "Sentinel".matches(info[1])) {
                             ignoreMe++;
                         }
                     }
@@ -804,12 +837,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Held Item Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.heldItemTargets));
             sender.sendMessage(prefixGood + "Group Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.groupTargets));
             sender.sendMessage(prefixGood + "Event Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.eventTargets));
+            sender.sendMessage(prefixGood + "Other Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.otherTargets));
             sender.sendMessage(prefixGood + "Ignored Targets: " + ChatColor.AQUA + getTargetString(sentinel.ignores));
             sender.sendMessage(prefixGood + "Ignored Player Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.playerNameIgnores));
             sender.sendMessage(prefixGood + "Ignored NPC Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.npcNameIgnores));
             sender.sendMessage(prefixGood + "Ignored Entity Name Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.entityNameIgnores));
             sender.sendMessage(prefixGood + "Ignored Held Item Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.heldItemIgnores));
             sender.sendMessage(prefixGood + "Ignored Group Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.groupIgnores));
+            sender.sendMessage(prefixGood + "Ignored Other Targets: " + ChatColor.AQUA + getNameTargetString(sentinel.otherIgnores));
             return true;
         }
         else if (arg0.equals("info") && sender.hasPermission("sentinel.info")) {

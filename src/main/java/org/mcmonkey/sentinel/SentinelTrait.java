@@ -126,6 +126,12 @@ public class SentinelTrait extends Trait {
     @Persist("eventTargets")
     public List<String> eventTargets = new ArrayList<String>();
 
+    @Persist("otherTargets")
+    public List<String> otherTargets = new ArrayList<String>();
+
+    @Persist("otherIgnores")
+    public List<String> otherIgnores = new ArrayList<String>();
+
     @Persist("range")
     public double range = 20.0;
 
@@ -1224,6 +1230,13 @@ public class SentinelTrait extends Trait {
                 && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemIgnores)) {
             return true;
         }
+        for (SentinelIntegration integration : SentinelPlugin.integrations) {
+            for (String text : otherIgnores) {
+                if (integration.isTarget(entity, text)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -1270,6 +1283,13 @@ public class SentinelTrait extends Trait {
         if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
                 && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemTargets)) {
             return true;
+        }
+        for (SentinelIntegration integration : SentinelPlugin.integrations) {
+            for (String text : otherTargets) {
+                if (integration.isTarget(entity, text)) {
+                    return true;
+                }
+            }
         }
         return false;
     }

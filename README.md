@@ -5,9 +5,9 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 **Version 0.9 beta**: Compatible with Spigot 1.11
 
-**Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Sentinel/  
-**Download (Spigot releases)**: https://www.spigotmc.org/resources/sentinel.22017/  
-**Download (Bukkit releases)**: http://dev.bukkit.org/bukkit-plugins/sentinel/  
+- **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Sentinel/
+- **Download (Spigot releases)**: https://www.spigotmc.org/resources/sentinel.22017/
+- **Download (Bukkit releases)**: http://dev.bukkit.org/bukkit-plugins/sentinel/
 
 ### Info
 
@@ -32,6 +32,13 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 			- Play with them freely, just be careful if you have other players around!
 - Examples:
 	- To make your NPC attack sword wielders, use `/sentinel addtarget helditem:.*sword`
+
+### Integrations
+
+Sentinel integrations with a few external plugins, including:
+
+- Vault, for permission group targets! (Use group:GROUP_HERE)
+- Towny, for towny targets! (Use towny:TOWN_HERE)
 
 ### Commands
 
@@ -111,15 +118,15 @@ These are all valid targets and ignores:
 
 ### Need help using Sentinel? Try one of these places:
 
-**IRC** (Modern): http://webchat.esper.net/?channels=citizens  
-(irc.esper.net in the channel #citizens)  
-**Spigot Info Page** (Modern): (COMING SOON)  
+**IRC** (Modern): http://webchat.esper.net/?channels=citizens
+(irc.esper.net in the channel #citizens)
+**Spigot Info Page** (Modern): (COMING SOON)
 
 ### Dependencies
 
-**Spigot (Plugin-ready server mod)**: https://www.spigotmc.org/  
-**Citizens2 (NPC engine)**: https://github.com/CitizensDev/Citizens2/  
+**Spigot (Plugin-ready server mod)**: https://www.spigotmc.org/
+**Citizens2 (NPC engine)**: https://github.com/CitizensDev/Citizens2/
 
 #### Also check out:
 
-**Denizen (Powerful script engine)**: https://github.com/DenizenScript/Denizen-For-Bukkit  
+**Denizen (Powerful script engine)**: https://github.com/DenizenScript/Denizen-For-Bukkit
