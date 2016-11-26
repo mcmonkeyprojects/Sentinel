@@ -102,6 +102,7 @@ These are all valid targets and ignores:
 
 - Primary set: NPCS, OWNER, PASSIVE_MOB, MOBS, MONSTERS, PLAYERS, PIGS, OCELOTS, COWS, RABBITS, SHEEP, CHICKENS, HORSES, MUSHROOM_COW, IRON_GOLEMS, SQUIDS, VILLAGER, WOLF, SNOWMEN, WITCH, GUARDIANS, SHULKERS, CREERERS, SKELETONS, ZOMBIES, MAGMA_CUBES, ZOMBIE_PIGMEN, SILVERFISH, BATS, BLAZES, GHASTS, GIANTS, SLIME, SPIDER, CAVE_SPIDERS, ENDERMEN, ENDERMITES, WITHER, ENDERDRAGON
 - Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT), event:pvp/pvnpc/pve/pvsentinel
+- Also anything listed in the integrations section above!
 
 ### Some random supported things
 
@@ -122,15 +123,15 @@ These are all valid targets and ignores:
 
 ### Need help using Sentinel? Try one of these places:
 
-**IRC** (Modern): http://webchat.esper.net/?channels=citizens
-(irc.esper.net in the channel #citizens)
-**Spigot Info Page** (Modern): (COMING SOON)
+- **IRC** (Modern): http://webchat.esper.net/?channels=citizens
+	- (irc.esper.net in the channel #citizens)
+- **Spigot Info Page** (Modern): https://www.spigotmc.org/resources/sentinel.22017/
 
 ### Dependencies
 
-**Spigot (Plugin-ready server mod)**: https://www.spigotmc.org/
-**Citizens2 (NPC engine)**: https://github.com/CitizensDev/Citizens2/
+- **Spigot (Plugin-ready server mod)**: https://www.spigotmc.org/
+- **Citizens2 (NPC engine)**: https://github.com/CitizensDev/Citizens2/
 
 #### Also check out:
 
-**Denizen (Powerful script engine)**: https://github.com/DenizenScript/Denizen-For-Bukkit
+- **Denizen (Powerful script engine)**: https://github.com/DenizenScript/Denizen-For-Bukkit
