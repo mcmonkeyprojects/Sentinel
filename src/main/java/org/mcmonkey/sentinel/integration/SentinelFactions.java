@@ -11,6 +11,11 @@ import org.mcmonkey.sentinel.SentinelIntegration;
 public class SentinelFactions extends SentinelIntegration {
 
     @Override
+    public String getTargetHelp() {
+        return "factions:FACTION_NAME";
+    }
+
+    @Override
     public boolean isTarget(LivingEntity ent, String text) {
         try {
             if (text.startsWith("factions:") && ent instanceof Player) {

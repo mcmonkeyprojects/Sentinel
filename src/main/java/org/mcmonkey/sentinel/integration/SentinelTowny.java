@@ -9,6 +9,11 @@ import org.mcmonkey.sentinel.SentinelIntegration;
 public class SentinelTowny extends SentinelIntegration {
 
     @Override
+    public String getTargetHelp() {
+        return "towny:TOWN_NAME";
+    }
+
+    @Override
     public boolean isTarget(LivingEntity ent, String text) {
         try {
             if (text.startsWith("towny:") && ent instanceof Player) {

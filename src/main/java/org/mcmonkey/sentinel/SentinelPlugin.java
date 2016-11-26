@@ -20,6 +20,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mcmonkey.sentinel.integration.SentinelFactions;
+import org.mcmonkey.sentinel.integration.SentinelSBTeams;
 import org.mcmonkey.sentinel.integration.SentinelTowny;
 
 import java.util.*;
@@ -102,6 +103,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
         tryGetPerms();
+        integrations.add(new SentinelSBTeams());
         if (Bukkit.getPluginManager().getPlugin("Towny") != null) {
             try {
                 integrations.add(new SentinelTowny());
@@ -245,7 +247,11 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     valid.append(poss.name()).append(", ");
                 }
                 sender.sendMessage(prefixGood + "Valid targets: " + valid.substring(0, valid.length() - 2));
-                sender.sendMessage(prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT), event:pvp/pvnpc/pve");
+                sender.sendMessage(prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX),"
+                        + "helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT), event:pvp/pvnpc/pve");
+                for (SentinelIntegration si : integrations) {
+                    sender.sendMessage(prefixGood + "Also: " + si.getTargetHelp());
+                }
             }
             else {
                 if (sentinel.targets.add(target)) {
