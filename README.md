@@ -13,7 +13,9 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 
-**IMPORTANT:** NPC's won't do melee damage? In your config.yml file, toggle the setting that says "workaround damage" to true, and restart your server!
+- **IMPORTANT:**
+- NPC's won't do melee damage? In your config.yml file, toggle the setting that says "workaround damage" to true, and restart your server!
+- NPC's won't do ranged damaged, or protection plugins causing problems? In your config.yml file, toggle the setting that says "enforce damage" to true, and restart your server!
 
 ### Usage
 
@@ -22,14 +24,15 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - Third, start the server to generate a config, then close the server and edit the config to your liking and finally restart the server.
 - Now, to create your first Sentinel:
 	- Select or create an NPC (`/npc sel` or `/npc create Bob`)
-	- Run command: /trait Sentinel
-	- Run command: /npc equip
+	- Run command: `/trait Sentinel`
+	- Run command: `/npc equip`
 	- Give the NPC items as needed, by right click the NPC with the wanted item.
-	- Run command: /sentinel addtarget MONSTERS
+	- Run command: `/sentinel addtarget MONSTERS`
 	- Spawn a zombie via creative inventory eggs and watch it die!
-	- Run command: /sentinel help
+	- Run command: `/sentinel help`
 		- This will list all your options to edit the NPC's Sentinel settings.
 			- Play with them freely, just be careful if you have other players around!
+			- Do note, they won't attack you unless you run command: `/sentinel removeignore owner`.
 - Examples:
 	- To make your NPC attack sword wielders, use `/sentinel addtarget helditem:.*sword`
 
