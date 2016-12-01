@@ -1442,11 +1442,20 @@ public class SentinelTrait extends Trait {
         if (!(wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
             return null;
         }
+        Location cancelIfOn = null;
+        if (npc.getNavigator().isNavigating()) {
+            cancelIfOn = npc.getNavigator().getTargetAsLocation();
+        }
         Location baseloc = getLivingEntity().getLocation();
         Location nearest = null;
         double dist = MAX_DIST;
         for (Waypoint wayp : ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()) {
             Location l = wayp.getLocation();
+            if (cancelIfOn != null && cancelIfOn.getBlockX() == l.getBlockX()
+                    && Math.abs(cancelIfOn.getBlockY() - l.getBlockY()) < 3
+                    && cancelIfOn.getZ() == l.getBlockZ()) {
+                return null;
+            }
             if (!l.getWorld().equals(baseloc.getWorld())) {
                 continue;
             }
