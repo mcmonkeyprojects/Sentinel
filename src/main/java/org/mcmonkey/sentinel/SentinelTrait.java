@@ -1000,7 +1000,8 @@ public class SentinelTrait extends Trait {
                 }
                 timeSinceAttack = 0;
                 swingWeapon();
-                entity.getWorld().strikeLightning(entity.getLocation());
+                entity.getWorld().strikeLightningEffect(entity.getLocation());
+                entity.damage(getDamage());
                 if (needsAmmo) {
                     takeOne();
                     grabNextItem();
