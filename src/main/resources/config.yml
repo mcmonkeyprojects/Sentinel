@@ -50,9 +50,11 @@ random:
     shoot speed minimum: 20
     # Whether to force damage through (particularly for ranged attacks).
     enforce damage: false
+    # Whether NPCs are protected from damage by ignore targets.
+    protected: false
 
 # How fast to recalculate, in ticks.
 update rate: 10
 
-# Do not touch!
-config version: 6
+# Do not touch! (Unless you know what you're doing!)
+config version: 7

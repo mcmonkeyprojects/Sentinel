@@ -126,6 +126,12 @@ public class SentinelTrait extends Trait {
     @Persist("eventTargets")
     public List<String> eventTargets = new ArrayList<String>();
 
+    @Persist("otherTargets")
+    public List<String> otherTargets = new ArrayList<String>();
+
+    @Persist("otherIgnores")
+    public List<String> otherIgnores = new ArrayList<String>();
+
     @Persist("range")
     public double range = 20.0;
 
@@ -277,6 +283,10 @@ public class SentinelTrait extends Trait {
             return;
         }
         boolean isMe = event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId());
+        if (sentinelProtected && isMe && event.getDamager() instanceof LivingEntity && isIgnored((LivingEntity) event.getDamager())) {
+            event.setCancelled(true);
+            return;
+        }
         boolean isFriend = getGuarding() != null && event.getEntity().getUniqueId().equals(getGuarding());
         if (isMe || isFriend) {
             if (isMe) {
@@ -358,6 +368,8 @@ public class SentinelTrait extends Trait {
         currentTargets.remove(target);
     }
 
+    private boolean sentinelProtected;
+
     @Override
     public void onAttach() {
         FileConfiguration config = SentinelPlugin.instance.getConfig();
@@ -385,6 +397,7 @@ public class SentinelTrait extends Trait {
         }
         autoswitch = config.getBoolean("sentinel defaults.autoswitch", false);
         ignores.add(SentinelTarget.OWNER);
+        sentinelProtected = config.getBoolean("random.protected", false);
     }
 
     public void useItem() {
@@ -1225,6 +1238,13 @@ public class SentinelTrait extends Trait {
                 && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemIgnores)) {
             return true;
         }
+        for (SentinelIntegration integration : SentinelPlugin.integrations) {
+            for (String text : otherIgnores) {
+                if (integration.isTarget(entity, text)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -1271,6 +1291,13 @@ public class SentinelTrait extends Trait {
         if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
                 && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemTargets)) {
             return true;
+        }
+        for (SentinelIntegration integration : SentinelPlugin.integrations) {
+            for (String text : otherTargets) {
+                if (integration.isTarget(entity, text)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -1416,11 +1443,20 @@ public class SentinelTrait extends Trait {
         if (!(wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
             return null;
         }
+        Location cancelIfOn = null;
+        if (npc.getNavigator().isNavigating()) {
+            cancelIfOn = npc.getNavigator().getTargetAsLocation();
+        }
         Location baseloc = getLivingEntity().getLocation();
         Location nearest = null;
         double dist = MAX_DIST;
         for (Waypoint wayp : ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()) {
             Location l = wayp.getLocation();
+            if (cancelIfOn != null && cancelIfOn.getBlockX() == l.getBlockX()
+                    && Math.abs(cancelIfOn.getBlockY() - l.getBlockY()) < 3
+                    && cancelIfOn.getZ() == l.getBlockZ()) {
+                return null;
+            }
             if (!l.getWorld().equals(baseloc.getWorld())) {
                 continue;
             }

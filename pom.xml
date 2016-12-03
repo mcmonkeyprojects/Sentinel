@@ -65,6 +65,36 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.tommytony.war</groupId>
+            <artifactId>war</artifactId>
+            <version>1.9</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/war.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.palmergames.bukkit</groupId>
+            <artifactId>towny</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/towny.jar</systemPath>
+        </dependency>
+            <dependency>
+            <groupId>com.massivecraft</groupId>
+            <artifactId>factions</artifactId>
+            <version>2.8.21</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/Factions.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.massivecraft</groupId>
+            <artifactId>massivecore</artifactId>
+            <version>2.8.21</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/MassiveCore.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <ciManagement>
