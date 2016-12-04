@@ -20,6 +20,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mcmonkey.sentinel.integration.SentinelFactions;
+import org.mcmonkey.sentinel.integration.SentinelHealth;
 import org.mcmonkey.sentinel.integration.SentinelSBTeams;
 import org.mcmonkey.sentinel.integration.SentinelTowny;
 
@@ -103,6 +104,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
         tryGetPerms();
+        integrations.add(new SentinelHealth());
         integrations.add(new SentinelSBTeams());
         if (Bukkit.getPluginManager().getPlugin("Towny") != null) {
             try {
