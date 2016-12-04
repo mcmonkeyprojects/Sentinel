@@ -22,7 +22,8 @@ public class SentinelFactions extends SentinelIntegration {
                 String factionName = text.substring("factions:".length());
                 Faction faction = FactionColl.get().getByName(factionName);
                 for (MPlayer pl: faction.getMPlayers()) {
-                    if (pl.getPlayer().getUniqueId().equals(ent.getUniqueId())) {
+                    if (pl.getPlayer() != null & pl.getPlayer().getUniqueId() != null
+                            && pl.getPlayer().getUniqueId().equals(ent.getUniqueId())) {
                         return true;
                     }
                 }
