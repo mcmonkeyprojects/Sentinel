@@ -33,8 +33,8 @@ public class SentryImport implements Listener {
             SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
             sentinel.armor = Math.min(sentry.Armor * 0.1, 1.0);
             sentinel.attackRate = (int) (sentry.AttackRateSeconds * 20);
-            if (sentinel.attackRate < SentinelTrait.attackRateMin) {
-                sentinel.attackRate = SentinelTrait.attackRateMin;
+            if (sentinel.attackRate < SentinelPlugin.instance.tickRate) {
+                sentinel.attackRate = SentinelPlugin.instance.tickRate;
             }
             else if (sentinel.attackRate > SentinelTrait.attackRateMax) {
                 sentinel.attackRate = SentinelTrait.attackRateMax;
@@ -51,8 +51,8 @@ public class SentryImport implements Listener {
             }
             double secondsPerHpPoint = sentry.HealRate / hpHealedPerPeriod;
             sentinel.healRate = (int) (20 * secondsPerHpPoint);
-            if (sentinel.healRate < SentinelTrait.healRateMin) {
-                sentinel.healRate = SentinelTrait.healRateMin;
+            if (sentinel.healRate < SentinelPlugin.instance.tickRate) {
+                sentinel.healRate = SentinelPlugin.instance.tickRate;
             }
             else if (sentinel.healRate > SentinelTrait.healRateMax) {
                 sentinel.healRate = SentinelTrait.healRateMax;

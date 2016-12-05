@@ -571,7 +571,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("attackrate") && sender.hasPermission("sentinel.attackrate") && args.length > 1) {
             try {
                 int d = Integer.valueOf(args[1]);
-                if (d >= SentinelTrait.attackRateMin && d <= SentinelTrait.attackRateMax) {
+                if (d >= tickRate && d <= SentinelTrait.attackRateMax) {
                     if (args.length > 2 && args[2].contains("ranged")) {
                         sentinel.attackRateRanged = d;
                         sender.sendMessage(prefixGood + "Ranged attack rate set!");
@@ -593,7 +593,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("healrate") && sender.hasPermission("sentinel.healrate") && args.length > 1) {
             try {
                 int d = Integer.valueOf(args[1]);
-                if (d >= SentinelTrait.healRateMin && d <= SentinelTrait.healRateMax) {
+                if (d >= tickRate && d <= SentinelTrait.healRateMax) {
                     sentinel.healRate = d;
                     sender.sendMessage(prefixGood + "Heal rate set!");
                 }
