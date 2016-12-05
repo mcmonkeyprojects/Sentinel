@@ -75,6 +75,9 @@ public class SentinelTrait extends Trait {
     @Persist("stats_snowballsThrown")
     public long stats_snowballsThrown = 0;
 
+    @Persist("stats_eggsThrown")
+    public long stats_eggsThrown = 0;
+
     @Persist("stats_punches")
     public long stats_punches = 0;
 
@@ -524,6 +527,17 @@ public class SentinelTrait extends Trait {
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
         Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.SNOWBALL);
+        ((Projectile) ent).setShooter(getLivingEntity());
+        ent.setVelocity(fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(2.0))); // TODO: Fiddle with '2.0'.
+    }
+
+    public void fireEgg(Location target) {
+        swingWeapon();
+        stats_eggsThrown++;
+        npc.faceLocation(target);
+        Vector forward = getLivingEntity().getEyeLocation().getDirection();
+        Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
+        Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.EGG);
         ((Projectile) ent).setShooter(getLivingEntity());
         ent.setVelocity(fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(2.0))); // TODO: Fiddle with '2.0'.
     }
@@ -984,6 +998,25 @@ public class SentinelTrait extends Trait {
                 chase(entity);
             }
         }
+        else if (usesEgg()) {
+            if (canSee(entity)) {
+                if (timeSinceAttack < attackRateRanged) {
+                    if (rangedChase) {
+                        rechase();
+                    }
+                    return;
+                }
+                timeSinceAttack = 0;
+                fireEgg(entity.getEyeLocation());
+                if (needsAmmo) {
+                    takeOne();
+                    grabNextItem();
+                }
+            }
+            else if (rangedChase) {
+                chase(entity);
+            }
+        }
         else if (usesFireball()) {
             if (canSee(entity)) {
                 if (timeSinceAttack < attackRateRanged) {
@@ -1125,6 +1158,14 @@ public class SentinelTrait extends Trait {
         }
         ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
         return it != null && it.getType() == Material.NETHER_STAR;
+    }
+
+    public boolean usesEgg() {
+        if (!npc.hasTrait(Inventory.class)) {
+            return false;
+        }
+        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
+        return it != null && it.getType() == Material.EGG;
     }
 
     public boolean usesSpectral() {
