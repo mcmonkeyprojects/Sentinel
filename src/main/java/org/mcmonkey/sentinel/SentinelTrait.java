@@ -74,6 +74,12 @@ public class SentinelTrait extends Trait {
     @Persist("stats_eggsThrown")
     public long stats_eggsThrown = 0;
 
+    @Persist("stats_skullsThrown")
+    public long stats_skullsThrown = 0;
+
+    @Persist("stats_pearlsUsed")
+    public long stats_pearlsUsed = 0;
+
     @Persist("stats_punches")
     public long stats_punches = 0;
 
@@ -545,6 +551,17 @@ public class SentinelTrait extends Trait {
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
         Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.SMALL_FIREBALL);
+        ((Projectile) ent).setShooter(getLivingEntity());
+        ent.setVelocity(fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(4))); // TODO: Fiddle with '4'.
+    }
+
+    public void fireSkull(Location target) {
+        swingWeapon();
+        stats_skullsThrown++;
+        npc.faceLocation(target);
+        Vector forward = getLivingEntity().getEyeLocation().getDirection();
+        Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
+        Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.WITHER_SKULL);
         ((Projectile) ent).setShooter(getLivingEntity());
         ent.setVelocity(fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(4))); // TODO: Fiddle with '4'.
     }
@@ -1023,7 +1040,27 @@ public class SentinelTrait extends Trait {
                 }
                 timeSinceAttack = 0;
                 // TODO: Maybe require entity is-on-ground?
+                stats_pearlsUsed++;
                 entity.setVelocity(entity.getVelocity().add(new Vector(0, 2, 0)));
+                if (needsAmmo) {
+                    takeOne();
+                    grabNextItem();
+                }
+            }
+            else if (rangedChase) {
+                chase(entity);
+            }
+        }
+        else if (usesWitherSkull()) {
+            if (canSee(entity)) {
+                if (timeSinceAttack < attackRateRanged) {
+                    if (rangedChase) {
+                        rechase();
+                    }
+                    return;
+                }
+                timeSinceAttack = 0;
+                fireSkull(entity.getEyeLocation());
                 if (needsAmmo) {
                     takeOne();
                     grabNextItem();
@@ -1190,6 +1227,18 @@ public class SentinelTrait extends Trait {
         }
         ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
         return it != null && it.getType() == Material.ENDER_PEARL;
+    }
+
+    public boolean usesWitherSkull() {
+        if (!npc.hasTrait(Inventory.class)) {
+            return false;
+        }
+        if (!SentinelPlugin.instance.getConfig().getBoolean("random.skull allowed", true)) {
+            return false;
+        }
+        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
+        return it != null && (it.getType() == Material.SKULL_ITEM
+                || it.getType() == Material.SKULL);
     }
 
     public boolean usesSpectral() {

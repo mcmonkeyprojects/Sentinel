@@ -896,6 +896,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Fireballs launched: " + ChatColor.AQUA + sentinel.stats_fireballsFired);
             sender.sendMessage(prefixGood + "Snowballs thrown: " + ChatColor.AQUA + sentinel.stats_snowballsThrown);
             sender.sendMessage(prefixGood + "Eggs thrown: " + ChatColor.AQUA + sentinel.stats_eggsThrown);
+            sender.sendMessage(prefixGood + "Pearls used: " + ChatColor.AQUA + sentinel.stats_pearlsUsed);
+            sender.sendMessage(prefixGood + "Skulls thrown: " + ChatColor.AQUA + sentinel.stats_skullsThrown);
             sender.sendMessage(prefixGood + "Punches: " + ChatColor.AQUA + sentinel.stats_punches);
             sender.sendMessage(prefixGood + "Times spawned: " + ChatColor.AQUA + sentinel.stats_timesSpawned);
             sender.sendMessage(prefixGood + "Damage Given: " + ChatColor.AQUA + sentinel.stats_damageGiven);

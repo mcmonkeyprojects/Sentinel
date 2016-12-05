@@ -52,6 +52,8 @@ random:
     enforce damage: false
     # Whether NPCs are protected from damage by ignore targets.
     protected: false
+    # Whether skull attack is allowed.
+    skull allowed: true
 
 # How fast to recalculate, in ticks.
 update rate: 10
