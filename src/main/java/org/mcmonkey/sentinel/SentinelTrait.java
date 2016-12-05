@@ -1278,6 +1278,12 @@ public class SentinelTrait extends Trait {
     private HashSet<UUID> greetedAlready = new HashSet<UUID>();
 
     public void addTarget(UUID id) {
+        if (id.equals(getLivingEntity().getUniqueId())) {
+            return;
+        }
+        if (!(getEntityForID(id) instanceof LivingEntity)) {
+            return;
+        }
         addTargetNoBounce(id);
         if (squad != null) {
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
