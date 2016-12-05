@@ -293,7 +293,12 @@ public class SentinelTrait extends Trait {
             return;
         }
         boolean isFriend = getGuarding() != null && event.getEntity().getUniqueId().equals(getGuarding());
+        boolean attackerIsMe = event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId());
         if (isMe || isFriend) {
+            if (attackerIsMe) {
+                event.setCancelled(true);
+                return;
+            }
             if (isMe) {
                 stats_damageTaken += event.getFinalDamage();
             }
@@ -303,12 +308,16 @@ public class SentinelTrait extends Trait {
             else if (event.getDamager() instanceof Projectile) {
                 ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
                 if (fightback && (source instanceof LivingEntity) && !isIgnored((LivingEntity) source)) {
+                    if (((LivingEntity) source).getUniqueId().equals(getLivingEntity().getUniqueId())) {
+                        event.setCancelled(true);
+                        return;
+                    }
                     addTarget(((LivingEntity) source).getUniqueId());
                 }
             }
             return;
         }
-        if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
+        if (attackerIsMe) {
             if (safeShot && !shouldTarget((LivingEntity) event.getEntity())) {
                 event.setCancelled(true);
                 return;
