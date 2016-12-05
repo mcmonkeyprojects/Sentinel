@@ -120,6 +120,8 @@ These are all valid targets and ignores:
 	- Spectral arrow (makes the target glow, without damaging it.)
 		- (To make a target glow ++ damage it, equip a bow + arm it with spectral arrows!)
 	- Snowballs
+	- Eggs
+	- Ender Pearls (Causes the target to get flung into the air!)
 - Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
 - Sentinels will guard a point or path if either is set using the command "`/npc path`"
 - To make a ghast or blaze fire fireballs, give them a blazerod!

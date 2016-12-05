@@ -1013,6 +1013,26 @@ public class SentinelTrait extends Trait {
                 chase(entity);
             }
         }
+        else if (usesPearl()) {
+            if (canSee(entity)) {
+                if (timeSinceAttack < attackRateRanged) {
+                    if (rangedChase) {
+                        rechase();
+                    }
+                    return;
+                }
+                timeSinceAttack = 0;
+                // TODO: Maybe require entity is-on-ground?
+                entity.setVelocity(entity.getVelocity().add(new Vector(0, 2, 0)));
+                if (needsAmmo) {
+                    takeOne();
+                    grabNextItem();
+                }
+            }
+            else if (rangedChase) {
+                chase(entity);
+            }
+        }
         else if (usesFireball()) {
             if (canSee(entity)) {
                 if (timeSinceAttack < attackRateRanged) {
@@ -1162,6 +1182,14 @@ public class SentinelTrait extends Trait {
         }
         ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
         return it != null && it.getType() == Material.EGG;
+    }
+
+    public boolean usesPearl() {
+        if (!npc.hasTrait(Inventory.class)) {
+            return false;
+        }
+        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
+        return it != null && it.getType() == Material.ENDER_PEARL;
     }
 
     public boolean usesSpectral() {
