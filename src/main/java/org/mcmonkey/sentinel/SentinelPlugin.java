@@ -787,7 +787,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                     sender.sendMessage(prefixGood + "Spawn point removed!");
                 }
                 else {
-                    sentinel.spawnPoint = pos;
+                    sentinel.spawnPoint = pos.add(0.5, 0.0, 0.5);
                     sender.sendMessage(prefixGood + "Spawn point updated!");
                 }
             }
