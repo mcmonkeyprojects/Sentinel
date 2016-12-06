@@ -553,6 +553,14 @@ public class SentinelTrait extends Trait {
         ent.setVelocity(fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(2.0))); // TODO: Fiddle with '2.0'.
     }
 
+    public void firePearl(LivingEntity target) {
+        swingWeapon();
+        npc.faceLocation(target.getEyeLocation());
+        // TODO: Maybe require entity is-on-ground?
+        stats_pearlsUsed++;
+        target.setVelocity(target.getVelocity().add(new Vector(0, getDamage(), 0)));
+    }
+
     public void fireFireball(Location target) {
         swingWeapon();
         stats_fireballsFired++;
@@ -1048,9 +1056,7 @@ public class SentinelTrait extends Trait {
                     return;
                 }
                 timeSinceAttack = 0;
-                // TODO: Maybe require entity is-on-ground?
-                stats_pearlsUsed++;
-                entity.setVelocity(entity.getVelocity().add(new Vector(0, 2, 0)));
+                firePearl(entity);
                 if (needsAmmo) {
                     takeOne();
                     grabNextItem();
