@@ -35,6 +35,7 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.mcmonkey.sentinel.events.SentinelAttackEvent;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -962,6 +963,11 @@ public class SentinelTrait extends Trait {
         }
         else if (autoswitch && dist < 3 * 3) {
             swapToMelee();
+        }
+        SentinelAttackEvent sat = new SentinelAttackEvent(npc);
+        Bukkit.getPluginManager().callEvent(sat);
+        if (sat.isCancelled()) {
+            return;
         }
         if (usesBow()) {
             if (canSee(entity)) {
