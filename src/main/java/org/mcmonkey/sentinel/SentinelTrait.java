@@ -730,8 +730,12 @@ public class SentinelTrait extends Trait {
         }
         chasing = entity;
         npc.getNavigator().getDefaultParameters().stuckAction(null);
-        npc.getNavigator().setTarget(entity.getLocation());
-        bunny_goal = entity.getLocation();
+        /*
+        Location goal = entity.getLocation().clone().add(entity.getVelocity().clone());
+        npc.getNavigator().setTarget(goal);
+        bunny_goal = goal;
+        */
+        npc.getNavigator().setTarget(entity, false);
         npc.getNavigator().getLocalParameters().speedModifier((float) speed);
     }
 
@@ -1512,6 +1516,8 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    int cleverTicks = 0;
+
     public void runUpdate() {
         timeSinceAttack += SentinelPlugin.instance.tickRate;
         timeSinceHeal += SentinelPlugin.instance.tickRate;
@@ -1527,9 +1533,18 @@ public class SentinelTrait extends Trait {
         }
         updateTargets();
         LivingEntity target = findBestTarget();
-        chasing = target;
         if (target != null) {
+            chasing = target;
             tryAttack(target);
+        }
+        else if(chasing != null && chasing.isValid()) {
+            cleverTicks++;
+            if (cleverTicks >= SentinelPlugin.instance.getConfig().getInt("random.clever ticks", 10)) {
+                chasing = null;
+            }
+            else {
+                tryAttack(chasing);
+            }
         }
         if (getGuarding() != null) {
             Player player = Bukkit.getPlayer(getGuarding());

@@ -31,7 +31,7 @@ sentinel defaults:
     # How long to target temporary enemies for, in ticks. 0 means never-forget.
     enemy target time: 0
     # What movement (chase) speed should be used, as a multiple of the default speed.
-    speed: 1
+    speed: 1.5
     # Whether to automatically switch to the most appropriate available weapon. (Bow at range, or sword up close).
     autoswitch: false
     # Accuracy offset, 0 means perfectly accurate, 5 means pretty inaccurate.
@@ -54,9 +54,11 @@ random:
     protected: false
     # Whether skull attack is allowed.
     skull allowed: true
+    # How many calculation cycles before an NPC will give up on a good target.
+    clever ticks: 10
 
 # How fast to recalculate, in ticks.
 update rate: 10
 
 # Do not touch! (Unless you know what you're doing!)
-config version: 7
+config version: 8
