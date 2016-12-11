@@ -289,9 +289,18 @@ public class SentinelTrait extends Trait {
             return;
         }
         boolean isMe = event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId());
-        if (sentinelProtected && isMe && event.getDamager() instanceof LivingEntity && isIgnored((LivingEntity) event.getDamager())) {
-            event.setCancelled(true);
-            return;
+        if (sentinelProtected && isMe) {
+            if (event.getDamager() instanceof LivingEntity && isIgnored((LivingEntity) event.getDamager())) {
+                event.setCancelled(true);
+                return;
+            }
+            else if (event.getDamager() instanceof ProjectileSource) {
+                ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
+                if (source instanceof LivingEntity && isIgnored((LivingEntity) source)) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
         }
         boolean isFriend = getGuarding() != null && event.getEntity().getUniqueId().equals(getGuarding());
         boolean attackerIsMe = event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId());
