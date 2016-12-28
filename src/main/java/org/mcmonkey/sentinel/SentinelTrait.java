@@ -1540,11 +1540,17 @@ public class SentinelTrait extends Trait {
             getLivingEntity().setHealth(Math.min(getLivingEntity().getHealth() + 1.0, health));
             timeSinceHeal = 0;
         }
+        double crsq = chaseRange * chaseRange;
         updateTargets();
+        boolean goHome = true;
         LivingEntity target = findBestTarget();
         if (target != null) {
-            chasing = target;
-            tryAttack(target);
+            Location near = nearestPathPoint();
+            if (crsq <= 0 || near.distanceSquared(target.getLocation()) > crsq) {
+                chasing = target;
+                tryAttack(target);
+                goHome = false;
+            }
         }
         else if(chasing != null && chasing.isValid()) {
             cleverTicks++;
@@ -1552,7 +1558,11 @@ public class SentinelTrait extends Trait {
                 chasing = null;
             }
             else {
-                tryAttack(chasing);
+                Location near = nearestPathPoint();
+                if (crsq <= 0 || near.distanceSquared(chasing.getLocation()) > crsq) {
+                    tryAttack(chasing);
+                    goHome = false;
+                }
             }
         }
         if (getGuarding() != null) {
@@ -1570,11 +1580,13 @@ public class SentinelTrait extends Trait {
                     npc.getNavigator().setTarget(player.getLocation());
                     npc.getNavigator().getLocalParameters().speedModifier((float) speed);
                 }
+                goHome = false;
             }
         }
-        else if (chaseRange > 0 && target == null) {
+        if (goHome && chaseRange > 0 && target == null) {
             Location near = nearestPathPoint();
-            if (near != null && near.distanceSquared(getLivingEntity().getLocation()) > chaseRange * chaseRange) {
+            if (near != null && (near.distanceSquared(getLivingEntity().getLocation()) > crsq
+                    || (chasing != null && near.distanceSquared(chasing.getLocation()) > crsq))) {
                 npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
                 npc.getNavigator().setTarget(near);
                 npc.getNavigator().getLocalParameters().speedModifier((float) speed);
