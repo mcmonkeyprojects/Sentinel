@@ -294,7 +294,7 @@ public class SentinelTrait extends Trait {
                 event.setCancelled(true);
                 return;
             }
-            else if (event.getDamager() instanceof ProjectileSource) {
+            else if (event.getDamager() instanceof Projectile) {
                 ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
                 if (source instanceof LivingEntity && isIgnored((LivingEntity) source)) {
                     event.setCancelled(true);
