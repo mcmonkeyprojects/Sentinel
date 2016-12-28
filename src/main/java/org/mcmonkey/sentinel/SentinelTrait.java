@@ -1546,7 +1546,7 @@ public class SentinelTrait extends Trait {
         LivingEntity target = findBestTarget();
         if (target != null) {
             Location near = nearestPathPoint();
-            if (crsq <= 0 || near.distanceSquared(target.getLocation()) <= crsq) {
+            if (crsq <= 0 || near == null || near.distanceSquared(target.getLocation()) <= crsq) {
                 chasing = target;
                 tryAttack(target);
                 goHome = false;
@@ -1559,7 +1559,7 @@ public class SentinelTrait extends Trait {
             }
             else {
                 Location near = nearestPathPoint();
-                if (crsq <= 0 || near.distanceSquared(chasing.getLocation()) <= crsq) {
+                if (crsq <= 0 || near == null || near.distanceSquared(chasing.getLocation()) <= crsq) {
                     tryAttack(chasing);
                     goHome = false;
                 }
