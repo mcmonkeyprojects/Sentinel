@@ -261,7 +261,7 @@ public class SentinelTrait extends Trait {
         }
         if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
             if (SentinelPlugin.instance.getConfig().getBoolean("random.enforce damage", false)) {
-                ((LivingEntity) event.getEntity()).damage(getDamage());
+                ((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
                 event.setCancelled(true);
                 return;
             }
