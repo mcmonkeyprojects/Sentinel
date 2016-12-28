@@ -1475,7 +1475,7 @@ public class SentinelTrait extends Trait {
             double dist = ent.getEyeLocation().distanceSquared(pos);
             SentinelCurrentTarget sct = new SentinelCurrentTarget();
             sct.targetID = ent.getUniqueId();
-            if ((dist < rangesquared && shouldTarget(ent) && canSee(ent)) || (dist < crsq && currentTargets.contains(sct)) && canSee(ent)) {
+            if ((dist < rangesquared && shouldTarget(ent) && canSee(ent)) || (dist < crsq && currentTargets.contains(sct))) {
                 rangesquared = dist;
                 closest = ent;
             }
