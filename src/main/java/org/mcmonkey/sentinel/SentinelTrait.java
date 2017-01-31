@@ -737,6 +737,7 @@ public class SentinelTrait extends Trait {
                 && npc.getNavigator().getTargetAsLocation().distanceSquared(bunny_goal) < 2 * 2))) {
             return;
         }
+        cleverTicks = 0;
         chasing = entity;
         npc.getNavigator().getDefaultParameters().stuckAction(null);
         /*
@@ -1566,6 +1567,7 @@ public class SentinelTrait extends Trait {
             }
             if (crsq <= 0 || near == null || near.distanceSquared(target.getLocation()) <= crsq) {
                 chasing = target;
+                cleverTicks = 0;
                 tryAttack(target);
                 goHome = false;
             }
