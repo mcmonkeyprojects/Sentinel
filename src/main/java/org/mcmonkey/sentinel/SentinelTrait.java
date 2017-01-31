@@ -1566,10 +1566,22 @@ public class SentinelTrait extends Trait {
                 SentinelPlugin.instance.getLogger().info("Sentinel: target selected to be " + target.getName());
             }
             if (crsq <= 0 || near == null || near.distanceSquared(target.getLocation()) <= crsq) {
+                if (SentinelPlugin.debugMe) {
+                    SentinelPlugin.instance.getLogger().info("Sentinel: Attack target within range of safe zone: "
+                            + (near == null ? "Any" : near.distanceSquared(target.getLocation())));
+                }
                 chasing = target;
                 cleverTicks = 0;
                 tryAttack(target);
                 goHome = false;
+            }
+            else {
+                if (SentinelPlugin.debugMe) {
+                    SentinelPlugin.instance.getLogger().info("Sentinel: Actually, that target is bad!");
+                }
+                target = null;
+                chasing = null;
+                cleverTicks = 0;
             }
         }
         else if(chasing != null && chasing.isValid()) {
@@ -1607,7 +1619,9 @@ public class SentinelTrait extends Trait {
             Location near = nearestPathPoint();
             if (near != null && (chasing == null || near.distanceSquared(chasing.getLocation()) > crsq)) {
                 if (SentinelPlugin.debugMe) {
-                    SentinelPlugin.instance.getLogger().info("Sentinel: screw you guys, I'm going home!");
+                    if (near.distanceSquared(getLivingEntity().getLocation()) > 3 * 3) {
+                        SentinelPlugin.instance.getLogger().info("Sentinel: screw you guys, I'm going home!");
+                    }
                 }
                 npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
                 npc.getNavigator().setTarget(near);
@@ -1615,7 +1629,9 @@ public class SentinelTrait extends Trait {
             }
             else {
                 if (SentinelPlugin.debugMe) {
-                    SentinelPlugin.instance.getLogger().info("Sentinel: I'll just stand here and hope they come out...");
+                    if (near.distanceSquared(getLivingEntity().getLocation()) > 3 * 3) {
+                        SentinelPlugin.instance.getLogger().info("Sentinel: I'll just stand here and hope they come out...");
+                    }
                 }
             }
         }
@@ -1647,20 +1663,11 @@ public class SentinelTrait extends Trait {
         if (!(wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
             return null;
         }
-        Location cancelIfOn = null;
-        if (npc.getNavigator().isNavigating()) {
-            cancelIfOn = npc.getNavigator().getTargetAsLocation();
-        }
         Location baseloc = getLivingEntity().getLocation();
         Location nearest = null;
         double dist = MAX_DIST;
         for (Waypoint wayp : ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()) {
             Location l = wayp.getLocation();
-            if (cancelIfOn != null && cancelIfOn.getBlockX() == l.getBlockX()
-                    && Math.abs(cancelIfOn.getBlockY() - l.getBlockY()) < 3
-                    && cancelIfOn.getZ() == l.getBlockZ()) {
-                return null;
-            }
             if (!l.getWorld().equals(baseloc.getWorld())) {
                 continue;
             }
