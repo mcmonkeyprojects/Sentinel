@@ -971,6 +971,9 @@ public class SentinelTrait extends Trait {
         // TODO: Simplify this code!
         stats_attackAttempts++;
         double dist = getLivingEntity().getEyeLocation().distanceSquared(entity.getEyeLocation());
+        if (SentinelPlugin.debugMe) {
+            SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack at range " + dist);
+        }
         if (autoswitch && dist > 3 * 3) {
             swapToRanged();
         }
@@ -980,6 +983,9 @@ public class SentinelTrait extends Trait {
         SentinelAttackEvent sat = new SentinelAttackEvent(npc);
         Bukkit.getPluginManager().callEvent(sat);
         if (sat.isCancelled()) {
+            if (SentinelPlugin.debugMe) {
+                SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack refused, event cancellation");
+            }
             return;
         }
         if (usesBow()) {
@@ -1178,6 +1184,9 @@ public class SentinelTrait extends Trait {
         else {
             if (dist < 3 * 3) {
                 if (timeSinceAttack < attackRate) {
+                    if (SentinelPlugin.debugMe) {
+                        SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack refused, timeSinceAttack");
+                    }
                     if (closeChase) {
                         rechase();
                     }
@@ -1185,6 +1194,9 @@ public class SentinelTrait extends Trait {
                 }
                 timeSinceAttack = 0;
                 // TODO: Damage sword if needed!
+                if (SentinelPlugin.debugMe) {
+                    SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack passed!");
+                }
                 punch(entity);
                 if (needsAmmo && shouldTakeDura()) {
                     reduceDurability();
@@ -1192,6 +1204,9 @@ public class SentinelTrait extends Trait {
                 }
             }
             else if (closeChase) {
+                if (SentinelPlugin.debugMe) {
+                    SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack refused, range");
+                }
                 chase(entity);
             }
         }
@@ -1546,6 +1561,9 @@ public class SentinelTrait extends Trait {
         LivingEntity target = findBestTarget();
         if (target != null) {
             Location near = nearestPathPoint();
+            if (SentinelPlugin.debugMe) {
+                SentinelPlugin.instance.getLogger().info("Sentinel: target selected to be " + target.getName());
+            }
             if (crsq <= 0 || near == null || near.distanceSquared(target.getLocation()) <= crsq) {
                 chasing = target;
                 tryAttack(target);
@@ -1585,11 +1603,18 @@ public class SentinelTrait extends Trait {
         }
         if (goHome && chaseRange > 0 && target == null) {
             Location near = nearestPathPoint();
-            if (near != null && (near.distanceSquared(getLivingEntity().getLocation()) > crsq
-                    || (chasing != null && near.distanceSquared(chasing.getLocation()) > crsq))) {
+            if (near != null && (chasing == null || near.distanceSquared(chasing.getLocation()) > crsq)) {
+                if (SentinelPlugin.debugMe) {
+                    SentinelPlugin.instance.getLogger().info("Sentinel: screw you guys, I'm going home!");
+                }
                 npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
                 npc.getNavigator().setTarget(near);
                 npc.getNavigator().getLocalParameters().speedModifier((float) speed);
+            }
+            else {
+                if (SentinelPlugin.debugMe) {
+                    SentinelPlugin.instance.getLogger().info("Sentinel: I'll just stand here and hope they come out...");
+                }
             }
         }
     }

@@ -56,6 +56,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
     }
 
+    public static boolean debugMe = false;
+
     public int tickRate = 10;
 
     static {
@@ -842,6 +844,11 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 sentinel.squad = null;
             }
             sender.sendMessage(prefixGood + "Set!");
+            return true;
+        }
+        else if (arg0.equals("debug") && sender.hasPermission("sentinel.debug")) {
+            debugMe = !debugMe;
+            sender.sendMessage(prefixGood + "Toggled: " + debugMe + "!");
             return true;
         }
         else if (arg0.equals("targets") && sender.hasPermission("sentinel.info")) {
