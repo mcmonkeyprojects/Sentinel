@@ -1557,7 +1557,9 @@ public class SentinelTrait extends Trait {
             getLivingEntity().damage(1);
             if (!npc.isSpawned()) {
                 if (getGuarding() != null && Bukkit.getPlayer(getGuarding()) != null) {
-                    npc.spawn(Bukkit.getPlayer(getGuarding()).getLocation());
+                    if (respawnTime > 0 && respawnMe == null) {
+                        npc.spawn(Bukkit.getPlayer(getGuarding()).getLocation());
+                    }
                 }
                 return;
             }
@@ -1808,6 +1810,7 @@ public class SentinelTrait extends Trait {
                     if (CitizensAPI.getNPCRegistry().getById(npc.getId()) != null) {
                         if (npc.isSpawned()) {
                             this.cancel();
+                            respawnMe = null;
                             return;
                         }
                         if (timer >= rsT) {
@@ -1818,12 +1821,15 @@ public class SentinelTrait extends Trait {
                             }
                             npc.spawn(spawnPoint == null ? npc.getStoredLocation() : spawnPoint);
                             this.cancel();
+                            respawnMe = null;
                             return;
                         }
                         timer += 10;
                     }
                     else {
+                        respawnMe = null;
                         this.cancel();
+                        return;
                     }
                 }
             };
