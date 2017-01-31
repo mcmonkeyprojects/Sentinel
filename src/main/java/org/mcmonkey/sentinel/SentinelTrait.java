@@ -242,6 +242,8 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    private boolean canEnforce = false;
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void whenAttacksAreHappening(EntityDamageByEntityEvent event) {
         if (!npc.isSpawned()) {
@@ -261,7 +263,9 @@ public class SentinelTrait extends Trait {
         }
         if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
             if (SentinelPlugin.instance.getConfig().getBoolean("random.enforce damage", false)) {
-                ((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
+                if (canEnforce) {
+                    ((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
+                }
                 event.setCancelled(true);
                 return;
             }
@@ -271,7 +275,9 @@ public class SentinelTrait extends Trait {
             ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
             if (source instanceof LivingEntity && ((LivingEntity) source).getUniqueId().equals(getLivingEntity().getUniqueId())) {
                 if (SentinelPlugin.instance.getConfig().getBoolean("random.enforce damage", false)) {
-                    ((LivingEntity) event.getEntity()).damage(getDamage());
+                    if (canEnforce) {
+                        ((LivingEntity) event.getEntity()).damage(getDamage());
+                    }
                     event.setCancelled(true);
                     return;
                 }
@@ -1544,6 +1550,7 @@ public class SentinelTrait extends Trait {
     int cleverTicks = 0;
 
     public void runUpdate() {
+        canEnforce = true;
         timeSinceAttack += SentinelPlugin.instance.tickRate;
         timeSinceHeal += SentinelPlugin.instance.tickRate;
         if (getLivingEntity().getLocation().getY() <= 0) {
