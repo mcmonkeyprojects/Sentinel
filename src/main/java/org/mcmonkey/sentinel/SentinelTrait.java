@@ -1556,6 +1556,9 @@ public class SentinelTrait extends Trait {
         if (getLivingEntity().getLocation().getY() <= 0) {
             getLivingEntity().damage(1);
             if (!npc.isSpawned()) {
+                if (getGuarding() != null && Bukkit.getPlayer(getGuarding()) != null) {
+                    npc.spawn(Bukkit.getPlayer(getGuarding()).getLocation());
+                }
                 return;
             }
         }
