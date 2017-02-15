@@ -281,7 +281,15 @@ public class SentinelTrait extends Trait {
                     event.setCancelled(true);
                     return;
                 }
-                event.setDamage(EntityDamageEvent.DamageModifier.BASE, getDamage());
+                double dam = getDamage();
+                double modder = event.getDamage(EntityDamageEvent.DamageModifier.BASE);
+                double rel = modder == 0.0 ? 1.0 : dam / modder;
+                event.setDamage(EntityDamageEvent.DamageModifier.BASE, dam);
+                for (EntityDamageEvent.DamageModifier mod : EntityDamageEvent.DamageModifier.values()) {
+                    if (mod != EntityDamageEvent.DamageModifier.BASE && event.isApplicable(mod)) {
+                        event.setDamage(mod, event.getDamage(mod) * rel);
+                    }
+                }
             }
         }
     }
