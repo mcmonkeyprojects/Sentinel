@@ -790,6 +790,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
                 else {
                     sentinel.spawnPoint = pos.add(0.5, 0.0, 0.5);
+                    sentinel.spawnPoint.setYaw(sentinel.getLivingEntity().getLocation().getYaw());
                     sender.sendMessage(prefixGood + "Spawn point updated!");
                 }
             }
