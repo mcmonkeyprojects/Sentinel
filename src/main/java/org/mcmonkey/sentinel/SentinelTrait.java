@@ -759,6 +759,7 @@ public class SentinelTrait extends Trait {
         npc.getNavigator().setTarget(goal);
         bunny_goal = goal;
         */
+        chased = true;
         npc.getNavigator().setTarget(entity, false);
         npc.getNavigator().getLocalParameters().speedModifier((float) speed);
     }
@@ -1557,6 +1558,8 @@ public class SentinelTrait extends Trait {
 
     int cleverTicks = 0;
 
+    public boolean chased = false;
+
     public void runUpdate() {
         canEnforce = true;
         timeSinceAttack += SentinelPlugin.instance.tickRate;
@@ -1578,7 +1581,7 @@ public class SentinelTrait extends Trait {
         }
         double crsq = chaseRange * chaseRange;
         updateTargets();
-        boolean goHome = true;
+        boolean goHome = chased;
         LivingEntity target = findBestTarget();
         if (target != null) {
             Location near = nearestPathPoint();
@@ -1631,6 +1634,7 @@ public class SentinelTrait extends Trait {
                     npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
                     npc.getNavigator().setTarget(player.getLocation());
                     npc.getNavigator().getLocalParameters().speedModifier((float) speed);
+                    chased = true;
                 }
                 goHome = false;
             }
@@ -1646,6 +1650,7 @@ public class SentinelTrait extends Trait {
                 npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
                 npc.getNavigator().setTarget(near);
                 npc.getNavigator().getLocalParameters().speedModifier((float) speed);
+                chased = false;
             }
             else {
                 if (SentinelPlugin.debugMe) {
