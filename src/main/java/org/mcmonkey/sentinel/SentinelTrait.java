@@ -1649,7 +1649,7 @@ public class SentinelTrait extends Trait {
             }
             else {
                 if (SentinelPlugin.debugMe) {
-                    if (near.distanceSquared(getLivingEntity().getLocation()) > 3 * 3) {
+                    if (near != null && near.distanceSquared(getLivingEntity().getLocation()) > 3 * 3) {
                         SentinelPlugin.instance.getLogger().info("Sentinel: I'll just stand here and hope they come out...");
                     }
                 }
