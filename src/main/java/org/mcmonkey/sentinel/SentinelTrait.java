@@ -1498,6 +1498,11 @@ public class SentinelTrait extends Trait {
         double rangesquared = range * range;
         double crsq = chaseRange * chaseRange;
         Location pos = getGuardZone();
+        if (!getGuardZone().getWorld().equals(getLivingEntity().getWorld())) {
+            // Emergency corrective measures...
+            getLivingEntity().teleport(getGuardZone());
+            return null;
+        }
         LivingEntity closest = null;
         for (LivingEntity ent : getLivingEntity().getWorld().getLivingEntities()) {
             if ((ignoreGlow && ent.isGlowing()) || ent.isDead()) {
