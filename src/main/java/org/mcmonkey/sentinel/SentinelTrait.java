@@ -1500,6 +1500,7 @@ public class SentinelTrait extends Trait {
         Location pos = getGuardZone();
         if (!getGuardZone().getWorld().equals(getLivingEntity().getWorld())) {
             // Emergency corrective measures...
+            npc.getNavigator().cancelNavigation();
             getLivingEntity().teleport(getGuardZone());
             return null;
         }
