@@ -182,7 +182,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             return true;
         }
         else if (sentinel == null && !arg0.equals("help")) {
-            sender.sendMessage(prefixBad + "Must have an NPC selected!");
+            sender.sendMessage(prefixBad + "Must have a Sentinel NPC selected! Use /trait sentinel to ensure an NPC becomes a Sentinel.");
             return true;
         }
         else if (arg0.equals("addtarget") && sender.hasPermission("sentinel.addtarget") && args.length > 1) {
@@ -894,6 +894,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Safe-Shot Enabled: " + ChatColor.AQUA + sentinel.safeShot);
             sender.sendMessage(prefixGood + "Enemy-Drops Enabled: " + ChatColor.AQUA + sentinel.enemyDrops);
             sender.sendMessage(prefixGood + "Autoswitch Enabled: " + ChatColor.AQUA + sentinel.autoswitch);
+            sender.sendMessage(prefixGood + "Squad: " + ChatColor.AQUA + (sentinel.squad == null ? "None" : sentinel.squad));
             return true;
         }
         else if (arg0.equals("stats") && sender.hasPermission("sentinel.info")) {
