@@ -798,6 +798,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("forgive") && sender.hasPermission("sentinel.forgive")) {
             sentinel.currentTargets.clear();
+            sentinel.chasing = null;
             sender.sendMessage(prefixGood + "Targets forgiven.");
             return true;
         }
