@@ -105,6 +105,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         catch (Exception e) {
             e.printStackTrace();
         }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!getConfig().getBoolean("stats_opt_out", false)) {
+                    new StatsRecord().start();
+                }
+            }
+        }.runTaskTimer(this, 100, 20 * 60 * 60);
         tryGetPerms();
         integrations.add(new SentinelHealth());
         integrations.add(new SentinelSBTeams());
