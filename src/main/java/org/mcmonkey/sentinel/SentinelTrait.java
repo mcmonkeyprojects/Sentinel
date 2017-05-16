@@ -1508,7 +1508,7 @@ public class SentinelTrait extends Trait {
             return null;
         }
         if (!pos.getWorld().equals(getLivingEntity().getWorld())) {
-            return;
+            return null;
         }
         LivingEntity closest = null;
         for (LivingEntity ent : getLivingEntity().getWorld().getLivingEntities()) {
