@@ -1507,6 +1507,9 @@ public class SentinelTrait extends Trait {
             getLivingEntity().teleport(getGuardZone());
             return null;
         }
+        if (!pos.getWorld().equals(getLivingEntity().getWorld())) {
+            return;
+        }
         LivingEntity closest = null;
         for (LivingEntity ent : getLivingEntity().getWorld().getLivingEntities()) {
             if ((ignoreGlow && ent.isGlowing()) || ent.isDead()) {
