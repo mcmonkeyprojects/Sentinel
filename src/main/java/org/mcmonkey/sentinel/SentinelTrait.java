@@ -615,10 +615,12 @@ public class SentinelTrait extends Trait {
             }
             // TODO: Less randomness, more game-like calculations.
             double multiplier = 1;
-            multiplier += weapon.getItemMeta() == null ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
+            multiplier += weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.DAMAGE_ALL)
+                    ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
             switch (weapon.getType()) {
                 case BOW:
-                    return 6 * (1 + (weapon.getItemMeta() == null ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3));
+                    return 6 * (1 + (weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)
+                            ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3));
                 case DIAMOND_SWORD:
                     return 7 * multiplier;
                 case IRON_SWORD:
