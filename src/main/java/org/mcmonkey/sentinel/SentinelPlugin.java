@@ -603,7 +603,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("healrate") && sender.hasPermission("sentinel.healrate") && args.length > 1) {
             try {
                 int d = Integer.valueOf(args[1]);
-                if (d >= tickRate && d <= SentinelTrait.healRateMax) {
+                if ((d >= tickRate && d <= SentinelTrait.healRateMax) || d == 0) {
                     sentinel.healRate = d;
                     sender.sendMessage(prefixGood + "Heal rate set!");
                 }
