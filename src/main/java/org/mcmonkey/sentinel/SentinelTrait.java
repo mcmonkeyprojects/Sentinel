@@ -16,7 +16,6 @@ import net.citizensnpcs.trait.waypoint.Waypoints;
 import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -1533,12 +1532,7 @@ public class SentinelTrait extends Trait {
     public long timeSinceHeal = 0;
 
     private Entity getEntityForID(UUID id) {
-        // TODO: Remove NMS here!
-        net.minecraft.server.v1_11_R1.Entity nmsEntity = ((CraftWorld) getLivingEntity().getWorld()).getHandle().getEntity(id);
-        if (nmsEntity != null) {
-            return nmsEntity.getBukkitEntity();
-        }
-        return null;
+        return Bukkit.getServer().getEntity(id);
     }
 
     private void updateTargets() {

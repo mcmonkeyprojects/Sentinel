@@ -255,8 +255,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
                 sender.sendMessage(prefixBad + "Invalid target!");
                 StringBuilder valid = new StringBuilder();
-                for (SentinelTarget poss : SentinelTarget.values()) {
-                    valid.append(poss.name()).append(", ");
+                for (String poss : targetOptions.keySet()) {
+                    valid.append(poss).append(", ");
                 }
                 sender.sendMessage(prefixGood + "Valid targets: " + valid.substring(0, valid.length() - 2));
                 sender.sendMessage(prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX),"
