@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](http://i.imgur.com/VDwTzrs.gif)
 
-**Version 1.3**: Compatible with Spigot 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12
+**Version 1.3.1**: Compatible with Spigot 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12
 
 - **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Sentinel/
 - **Download (Spigot releases)**: https://www.spigotmc.org/resources/sentinel.22017/
@@ -123,6 +123,7 @@ These are all valid targets and ignores:
 	- Eggs
 	- Ender Pearls (Causes the target to get flung into the air!)
 	- Skulls (Dangerous wither skull explosions!)
+	- CrackShot guns!
 - Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
 - Sentinels will guard a point or path if either is set using the command "`/npc path`"
 - To make a ghast or blaze fire fireballs, give them a blazerod!
