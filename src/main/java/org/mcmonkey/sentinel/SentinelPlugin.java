@@ -19,10 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mcmonkey.sentinel.integration.SentinelFactions;
-import org.mcmonkey.sentinel.integration.SentinelHealth;
-import org.mcmonkey.sentinel.integration.SentinelSBTeams;
-import org.mcmonkey.sentinel.integration.SentinelTowny;
+import org.mcmonkey.sentinel.integration.*;
 
 import java.util.*;
 
@@ -129,6 +126,15 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             try {
                 integrations.add(new SentinelFactions());
                 getLogger().info("Sentinel found Factions! Adding support for it!");
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        if (Bukkit.getPluginManager().getPlugin("CrackShot") != null) {
+            try {
+                integrations.add(new SentinelCrackShot());
+                getLogger().info("Sentinel found CrackShot! Adding support for it!");
             }
             catch (Exception ex) {
                 ex.printStackTrace();

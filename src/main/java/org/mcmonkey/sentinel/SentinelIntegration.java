@@ -11,4 +11,8 @@ public class SentinelIntegration {
     public boolean isTarget(LivingEntity ent, String text) {
         return false;
     }
+
+    public boolean tryAttack(SentinelTrait st, LivingEntity ent) {
+        return false;
+    }
 }

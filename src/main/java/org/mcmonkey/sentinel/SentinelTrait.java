@@ -1044,6 +1044,11 @@ public class SentinelTrait extends Trait {
             }
             return;
         }
+        for (SentinelIntegration si : SentinelPlugin.integrations) {
+            if (si.tryAttack(this, entity)) {
+                return;
+            }
+        }
         if (usesBow()) {
             if (canSee(entity)) {
                 if (timeSinceAttack < attackRateRanged) {
