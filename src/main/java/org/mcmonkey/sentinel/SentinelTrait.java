@@ -533,21 +533,28 @@ public class SentinelTrait extends Trait {
             return;
         }
         stats_arrowsFired++;
-        Entity arrow = start.getKey().getWorld().spawnEntity(start.getKey(),
-                type.getType() == Material.SPECTRAL_ARROW ? EntityType.SPECTRAL_ARROW :
-                        (type.getType() == Material.TIPPED_ARROW ? EntityType.TIPPED_ARROW : EntityType.ARROW));
-        ((Projectile) arrow).setShooter(getLivingEntity());
-        if (arrow instanceof TippedArrow) {
-            PotionData data = ((PotionMeta) type.getItemMeta()).getBasePotionData();
-            if (data.getType() == null || data.getType() == PotionType.UNCRAFTABLE) {
-                // TODO: Perhaps a **single** warning?
-            }
-            else {
-                ((TippedArrow) arrow).setBasePotionData(data);
-                for (PotionEffect effect : ((PotionMeta) type.getItemMeta()).getCustomEffects()) {
-                    ((TippedArrow) arrow).addCustomEffect(effect, true);
+        Entity arrow;
+        if (SentinelTarget.v1_9) {
+            arrow = start.getKey().getWorld().spawnEntity(start.getKey(),
+                    type.getType() == Material.SPECTRAL_ARROW ? EntityType.SPECTRAL_ARROW :
+                            (type.getType() == Material.TIPPED_ARROW ? EntityType.TIPPED_ARROW : EntityType.ARROW));
+            ((Projectile) arrow).setShooter(getLivingEntity());
+            if (arrow instanceof TippedArrow) {
+                PotionData data = ((PotionMeta) type.getItemMeta()).getBasePotionData();
+                if (data.getType() == null || data.getType() == PotionType.UNCRAFTABLE) {
+                    // TODO: Perhaps a **single** warning?
+                }
+                else {
+                    ((TippedArrow) arrow).setBasePotionData(data);
+                    for (PotionEffect effect : ((PotionMeta) type.getItemMeta()).getCustomEffects()) {
+                        ((TippedArrow) arrow).addCustomEffect(effect, true);
+                    }
                 }
             }
+        }
+        else {
+             arrow = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.ARROW);
+            ((Projectile) arrow).setShooter(getLivingEntity());
         }
         arrow.setVelocity(fixForAcc(start.getValue()));
         if (npc.getTrait(Inventory.class).getContents()[0].containsEnchantment(Enchantment.ARROW_FIRE)) {
