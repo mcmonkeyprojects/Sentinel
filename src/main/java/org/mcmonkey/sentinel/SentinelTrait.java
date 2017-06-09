@@ -790,8 +790,15 @@ public class SentinelTrait extends Trait {
             ItemStack item = items[i];
             if (item != null) {
                 Material mat = item.getType();
-                if (mat == Material.ARROW || mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW) {
-                    return item.clone();
+                if (SentinelTarget.v1_9) {
+                    if (mat == Material.ARROW) {
+                        return item.clone();
+                    }
+                }
+                else {
+                    if (mat == Material.ARROW || mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW) {
+                        return item.clone();
+                    }
                 }
             }
         }
