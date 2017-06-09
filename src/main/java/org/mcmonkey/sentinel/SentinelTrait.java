@@ -93,10 +93,10 @@ public class SentinelTrait extends Trait {
     public double stats_damageGiven = 0;
 
     @Persist("targets")
-    public HashSet<SentinelTarget> targets = new HashSet<SentinelTarget>();
+    public HashSet<String> targets = new HashSet<String>();
 
     @Persist("ignores")
-    public HashSet<SentinelTarget> ignores = new HashSet<SentinelTarget>();
+    public HashSet<String> ignores = new HashSet<String>();
 
     @Persist("playerNameTargets")
     public List<String> playerNameTargets = new ArrayList<String>();
@@ -433,7 +433,7 @@ public class SentinelTrait extends Trait {
             speed = 1;
         }
         autoswitch = config.getBoolean("sentinel defaults.autoswitch", false);
-        ignores.add(SentinelTarget.OWNER);
+        ignores.add(SentinelTarget.OWNER.name());
         sentinelProtected = config.getBoolean("random.protected", false);
     }
 
@@ -1361,6 +1361,9 @@ public class SentinelTrait extends Trait {
         if (!npc.hasTrait(Inventory.class)) {
             return false;
         }
+        if (!SentinelTarget.v1_10) {
+            return false;
+        }
         ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
         return it != null && it.getType() == Material.SPECTRAL_ARROW;
     }
@@ -1440,7 +1443,7 @@ public class SentinelTrait extends Trait {
 
     public boolean isIgnored(LivingEntity entity) {
         if (entity.hasMetadata("NPC")) {
-            return ignores.contains(SentinelTarget.NPCS) ||
+            return ignores.contains(SentinelTarget.NPCS.name()) ||
                     isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), npcNameIgnores);
         }
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
@@ -1467,12 +1470,12 @@ public class SentinelTrait extends Trait {
         else if (isRegexTargeted(entity.getCustomName() == null ? entity.getType().name() : entity.getCustomName(), entityNameIgnores)) {
             return true;
         }
-        if (ignores.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(npc.getTrait(Owner.class).getOwnerId())) {
+        if (ignores.contains(SentinelTarget.OWNER.name()) && entity.getUniqueId().equals(npc.getTrait(Owner.class).getOwnerId())) {
             return true;
         }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
         for (SentinelTarget poss : possible) {
-            if (ignores.contains(poss)) {
+            if (ignores.contains(poss.name())) {
                 return true;
             }
         }
@@ -1511,7 +1514,7 @@ public class SentinelTrait extends Trait {
             return true;
         }
         if (entity.hasMetadata("NPC")) {
-            return targets.contains(SentinelTarget.NPCS) ||
+            return targets.contains(SentinelTarget.NPCS.name()) ||
                     isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), npcNameTargets);
         }
         if (entity instanceof Player) {
@@ -1529,12 +1532,12 @@ public class SentinelTrait extends Trait {
         else if (isRegexTargeted(entity.getCustomName() == null ? entity.getType().name() : entity.getCustomName(), entityNameTargets)) {
             return true;
         }
-        if (targets.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(npc.getTrait(Owner.class).getOwnerId())) {
+        if (targets.contains(SentinelTarget.OWNER.name()) && entity.getUniqueId().equals(npc.getTrait(Owner.class).getOwnerId())) {
             return true;
         }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
         for (SentinelTarget poss : possible) {
-            if (targets.contains(poss)) {
+            if (targets.contains(poss.name())) {
                 return true;
             }
         }

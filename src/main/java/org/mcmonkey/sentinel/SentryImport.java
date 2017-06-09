@@ -92,18 +92,18 @@ public class SentryImport implements Listener {
             sentinel.groupIgnores.clear();
             for (String t : sentry.validTargets) {
                 if (t.contains("ENTITY:ALL")) {
-                    sentinel.targets.add(SentinelTarget.forName("MOBS"));
-                    sentinel.targets.add(SentinelTarget.PLAYERS);
-                    sentinel.targets.add(SentinelTarget.NPCS);
+                    sentinel.targets.add(SentinelTarget.forName("MOBS").name());
+                    sentinel.targets.add(SentinelTarget.PLAYERS.name());
+                    sentinel.targets.add(SentinelTarget.NPCS.name());
                 }
                 else if (t.contains("ENTITY:MONSTER")) {
-                    sentinel.targets.add(SentinelTarget.forName("MONSTERS"));
+                    sentinel.targets.add(SentinelTarget.forName("MONSTERS").name());
                 }
                 else if (t.contains("ENTITY:PLAYER")) {
-                    sentinel.targets.add(SentinelTarget.PLAYERS);
+                    sentinel.targets.add(SentinelTarget.PLAYERS.name());
                 }
                 else if (t.contains("ENTITY:NPC")) {
-                    sentinel.targets.add(SentinelTarget.NPCS);
+                    sentinel.targets.add(SentinelTarget.NPCS.name());
                 }
                 else if (t.contains("EVENT:PVP")) {
                     sentinel.eventTargets.add("pvp");
@@ -133,28 +133,28 @@ public class SentryImport implements Listener {
                     else if (sections[0].equals("ENTITY")) {
                         SentinelTarget target = SentinelTarget.forName(sections[1]);
                         if (target != null) {
-                            sentinel.targets.add(target);
+                            sentinel.targets.add(target.name());
                         }
                     }
                 }
             }
             for (String t : sentry.ignoreTargets) {
                 if (t.contains("ENTITY:ALL")) {
-                    sentinel.ignores.add(SentinelTarget.forName("MOBS"));
-                    sentinel.ignores.add(SentinelTarget.PLAYERS);
-                    sentinel.ignores.add(SentinelTarget.NPCS);
+                    sentinel.ignores.add(SentinelTarget.forName("MOBS").name());
+                    sentinel.ignores.add(SentinelTarget.PLAYERS.name());
+                    sentinel.ignores.add(SentinelTarget.NPCS.name());
                 }
                 else if (t.contains("ENTITY:MONSTER")) {
-                    sentinel.ignores.add(SentinelTarget.forName("MONSTERS"));
+                    sentinel.ignores.add(SentinelTarget.forName("MONSTERS").name());
                 }
                 else if (t.contains("ENTITY:PLAYER")) {
-                    sentinel.ignores.add(SentinelTarget.PLAYERS);
+                    sentinel.ignores.add(SentinelTarget.PLAYERS.name());
                 }
                 else if (t.contains("ENTITY:NPC")) {
-                    sentinel.ignores.add(SentinelTarget.NPCS);
+                    sentinel.ignores.add(SentinelTarget.NPCS.name());
                 }
                 else if (t.contains("ENTITY:OWNER")) {
-                    sentinel.ignores.add(SentinelTarget.OWNER);
+                    sentinel.ignores.add(SentinelTarget.OWNER.name());
                 }
                 else {
                     String[] sections = t.split(":");
@@ -177,7 +177,7 @@ public class SentryImport implements Listener {
                     else if (sections[0].equals("ENTITY")) {
                         SentinelTarget target = SentinelTarget.forName(sections[1]);
                         if (target != null) {
-                            sentinel.ignores.add(target);
+                            sentinel.ignores.add(target.name());
                         }
                     }
                 }

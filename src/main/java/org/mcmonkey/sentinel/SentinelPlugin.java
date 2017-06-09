@@ -272,7 +272,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
             else {
-                if (sentinel.targets.add(target)) {
+                if (sentinel.targets.add(target.name())) {
                     sender.sendMessage(prefixGood + "Target added!");
                 }
                 else {
@@ -343,7 +343,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 sender.sendMessage(prefixGood + "See '/sentinel addtarget help' to view valid targets!");
             }
             else {
-                if (sentinel.targets.remove(target)) {
+                if (sentinel.targets.remove(target.name())) {
                     sender.sendMessage(prefixGood + "Target removed!");
                 }
                 else {
@@ -412,7 +412,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 sender.sendMessage(prefixGood + "See '/sentinel addtarget help' to view valid targets!");
             }
             else {
-                if (sentinel.ignores.add(target)) {
+                if (sentinel.ignores.add(target.name())) {
                     sender.sendMessage(prefixGood + "Ignore added!");
                 }
                 else {
@@ -479,7 +479,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 sender.sendMessage(prefixGood + "See '/sentinel addtarget help' to view valid targets!");
             }
             else {
-                if (sentinel.ignores.remove(target)) {
+                if (sentinel.ignores.remove(target.name())) {
                     sender.sendMessage(prefixGood + "Ignore removed!");
                 }
                 else {
@@ -1056,10 +1056,10 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         return targets.length() > 0 ? targets.substring(0, targets.length() - 2) : targets.toString();
     }
 
-    public String getTargetString(HashSet<SentinelTarget> sentinel) {
+    public String getTargetString(HashSet<String> sentinel) {
         StringBuilder targets = new StringBuilder();
-        for (SentinelTarget target : sentinel) {
-            targets.append(target.name()).append(", ");
+        for (String target : sentinel) {
+            targets.append(target).append(", ");
         }
         return targets.length() > 0 ? targets.substring(0, targets.length() - 2) : targets.toString();
     }
