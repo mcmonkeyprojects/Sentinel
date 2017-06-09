@@ -439,7 +439,9 @@ public class SentinelTrait extends Trait {
 
     public void useItem() {
         if (npc.isSpawned() && getLivingEntity() instanceof Player) {
-            PlayerAnimation.START_USE_MAINHAND_ITEM.play((Player) getLivingEntity());
+            if (SentinelTarget.v1_9) {
+                PlayerAnimation.START_USE_MAINHAND_ITEM.play((Player) getLivingEntity());
+            }
             BukkitRunnable runner = new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -608,7 +610,13 @@ public class SentinelTrait extends Trait {
 
     public double getDamage() {
         if (damage < 0) {
-            ItemStack weapon = getLivingEntity().getEquipment().getItemInMainHand();
+            ItemStack weapon;
+            if (SentinelTarget.v1_9) {
+                weapon = getLivingEntity().getEquipment().getItemInMainHand();
+            }
+            else {
+                weapon = getLivingEntity().getEquipment().getItemInHand();
+            }
             if (weapon == null) {
                 return 1;
             }
@@ -784,14 +792,28 @@ public class SentinelTrait extends Trait {
     }
 
     public void reduceDurability() {
-        ItemStack item = getLivingEntity().getEquipment().getItemInMainHand();
-        if (item != null && item.getType() != Material.AIR) {
-            if (item.getDurability() >= item.getType().getMaxDurability() - 1) {
-                getLivingEntity().getEquipment().setItemInMainHand(null);
+        if (SentinelTarget.v1_9) {
+            ItemStack item = getLivingEntity().getEquipment().getItemInMainHand();
+            if (item != null && item.getType() != Material.AIR) {
+                if (item.getDurability() >= item.getType().getMaxDurability() - 1) {
+                    getLivingEntity().getEquipment().setItemInMainHand(null);
+                }
+                else {
+                    item.setDurability((short) (item.getDurability() + 1));
+                    getLivingEntity().getEquipment().setItemInMainHand(item);
+                }
             }
-            else {
-                item.setDurability((short) (item.getDurability() + 1));
-                getLivingEntity().getEquipment().setItemInMainHand(item);
+        }
+        else {
+            ItemStack item = getLivingEntity().getEquipment().getItemInHand();
+            if (item != null && item.getType() != Material.AIR) {
+                if (item.getDurability() >= item.getType().getMaxDurability() - 1) {
+                    getLivingEntity().getEquipment().setItemInHand(null);
+                }
+                else {
+                    item.setDurability((short) (item.getDurability() + 1));
+                    getLivingEntity().getEquipment().setItemInHand(item);
+                }
             }
         }
     }
@@ -851,14 +873,28 @@ public class SentinelTrait extends Trait {
     }
 
     public void takeOne() {
-        ItemStack item = getLivingEntity().getEquipment().getItemInMainHand();
-        if (item != null && item.getType() != Material.AIR) {
-            if (item.getAmount() > 1) {
-                item.setAmount(item.getAmount() - 1);
-                getLivingEntity().getEquipment().setItemInMainHand(item);
+        if (SentinelTarget.v1_9) {
+            ItemStack item = getLivingEntity().getEquipment().getItemInMainHand();
+            if (item != null && item.getType() != Material.AIR) {
+                if (item.getAmount() > 1) {
+                    item.setAmount(item.getAmount() - 1);
+                    getLivingEntity().getEquipment().setItemInMainHand(item);
+                }
+                else {
+                    getLivingEntity().getEquipment().setItemInMainHand(null);
+                }
             }
-            else {
-                getLivingEntity().getEquipment().setItemInMainHand(null);
+        }
+        else {
+            ItemStack item = getLivingEntity().getEquipment().getItemInHand();
+            if (item != null && item.getType() != Material.AIR) {
+                if (item.getAmount() > 1) {
+                    item.setAmount(item.getAmount() - 1);
+                    getLivingEntity().getEquipment().setItemInHand(item);
+                }
+                else {
+                    getLivingEntity().getEquipment().setItemInHand(null);
+                }
             }
         }
     }
@@ -1062,8 +1098,14 @@ public class SentinelTrait extends Trait {
                     return;
                 }
                 timeSinceAttack = 0;
-                firePotion(getLivingEntity().getEquipment().getItemInMainHand(),
-                        entity.getEyeLocation(), entity.getVelocity());
+                if (SentinelTarget.v1_9) {
+                    firePotion(getLivingEntity().getEquipment().getItemInMainHand(),
+                            entity.getEyeLocation(), entity.getVelocity());
+                }
+                else {
+                    firePotion(getLivingEntity().getEquipment().getItemInHand(),
+                            entity.getEyeLocation(), entity.getVelocity());
+                }
                 if (needsAmmo) {
                     takeOne();
                     grabNextItem();
@@ -1330,7 +1372,13 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean shouldTakeDura() {
-        Material type = getLivingEntity().getEquipment().getItemInMainHand().getType();
+        Material type;
+        if (SentinelTarget.v1_9) {
+            type = getLivingEntity().getEquipment().getItemInMainHand().getType();
+        }
+        else {
+            type = getLivingEntity().getEquipment().getItemInHand().getType();
+        }
         return type == Material.BOW || type == Material.DIAMOND_SWORD || type == Material.GOLD_SWORD
                 || type == Material.IRON_SWORD || type == Material.WOOD_SWORD; // TODO: Tools?
     }
@@ -1423,9 +1471,17 @@ public class SentinelTrait extends Trait {
                 return true;
             }
         }
-        if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
-                && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemIgnores)) {
-            return true;
+        if (SentinelTarget.v1_9) {
+            if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
+                    && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemIgnores)) {
+                return true;
+            }
+        }
+        else {
+            if (entity.getEquipment() != null && entity.getEquipment().getItemInHand() != null
+                    && isRegexTargeted(entity.getEquipment().getItemInHand().getType().name(), heldItemIgnores)) {
+                return true;
+            }
         }
         for (SentinelIntegration integration : SentinelPlugin.integrations) {
             for (String text : otherIgnores) {
@@ -1477,9 +1533,17 @@ public class SentinelTrait extends Trait {
                 return true;
             }
         }
-        if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
-                && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemTargets)) {
-            return true;
+        if (SentinelTarget.v1_9) {
+            if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
+                    && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemTargets)) {
+                return true;
+            }
+        }
+        else {
+            if (entity.getEquipment() != null && entity.getEquipment().getItemInHand() != null
+                    && isRegexTargeted(entity.getEquipment().getItemInHand().getType().name(), heldItemTargets)) {
+                return true;
+            }
         }
         for (SentinelIntegration integration : SentinelPlugin.integrations) {
             for (String text : otherTargets) {

@@ -92,12 +92,12 @@ public class SentryImport implements Listener {
             sentinel.groupIgnores.clear();
             for (String t : sentry.validTargets) {
                 if (t.contains("ENTITY:ALL")) {
-                    sentinel.targets.add(SentinelTarget.MOBS);
+                    sentinel.targets.add(SentinelTarget.forName("MOBS"));
                     sentinel.targets.add(SentinelTarget.PLAYERS);
                     sentinel.targets.add(SentinelTarget.NPCS);
                 }
                 else if (t.contains("ENTITY:MONSTER")) {
-                    sentinel.targets.add(SentinelTarget.MONSTERS);
+                    sentinel.targets.add(SentinelTarget.forName("MONSTERS"));
                 }
                 else if (t.contains("ENTITY:PLAYER")) {
                     sentinel.targets.add(SentinelTarget.PLAYERS);
@@ -140,12 +140,12 @@ public class SentryImport implements Listener {
             }
             for (String t : sentry.ignoreTargets) {
                 if (t.contains("ENTITY:ALL")) {
-                    sentinel.ignores.add(SentinelTarget.MOBS);
+                    sentinel.ignores.add(SentinelTarget.forName("MOBS"));
                     sentinel.ignores.add(SentinelTarget.PLAYERS);
                     sentinel.ignores.add(SentinelTarget.NPCS);
                 }
                 else if (t.contains("ENTITY:MONSTER")) {
-                    sentinel.ignores.add(SentinelTarget.MONSTERS);
+                    sentinel.ignores.add(SentinelTarget.forName("MONSTERS"));
                 }
                 else if (t.contains("ENTITY:PLAYER")) {
                     sentinel.ignores.add(SentinelTarget.PLAYERS);
