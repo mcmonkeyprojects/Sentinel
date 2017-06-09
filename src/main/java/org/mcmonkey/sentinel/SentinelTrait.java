@@ -1775,6 +1775,9 @@ public class SentinelTrait extends Trait {
     }
 
     public Location nearestPathPoint() {
+        if (!SentinelTarget.v1_9) {
+            return null; // TODO: !!!
+        }
         if (!npc.hasTrait(Waypoints.class)) {
             return null;
         }
