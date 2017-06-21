@@ -80,6 +80,12 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (!npc.isSpawned() && npc.hasTrait(SentinelTrait.class)) {
                         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
+                        for (String target : sentinel.targets) {
+                            sentinel.targets.add(SentinelTarget.forName(target).name());
+                        }
+                        for (String target : sentinel.ignores) {
+                            sentinel.ignores.add(SentinelTarget.forName(target).name());
+                        }
                         if (sentinel.respawnTime > 0) {
                             if (sentinel.spawnPoint == null && npc.getStoredLocation() == null) {
                                 getLogger().warning("NPC " + npc.getId() + " has a null spawn point and can't be spawned. Perhaps the world was deleted?");
