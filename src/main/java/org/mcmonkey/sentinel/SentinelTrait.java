@@ -470,7 +470,7 @@ public class SentinelTrait extends Trait {
 
     public HashMap.SimpleEntry<Location, Vector> getLaunchDetail(Location target, Vector lead) {
         double speeda;
-        npc.faceLocation(target);
+        faceLocation(target);
         double angt = Double.POSITIVE_INFINITY;
         Location start = getLivingEntity().getEyeLocation().clone().add(getLivingEntity().getEyeLocation().getDirection().multiply(firingMinimumRange()));
         double sbase = SentinelPlugin.instance.getConfig().getDouble("random.shoot speed minimum", 20);
@@ -566,7 +566,7 @@ public class SentinelTrait extends Trait {
     public void fireSnowball(Location target) {
         swingWeapon();
         stats_snowballsThrown++;
-        npc.faceLocation(target);
+        faceLocation(target);
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
         Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.SNOWBALL);
@@ -577,7 +577,7 @@ public class SentinelTrait extends Trait {
     public void fireEgg(Location target) {
         swingWeapon();
         stats_eggsThrown++;
-        npc.faceLocation(target);
+        faceLocation(target);
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
         Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.EGG);
@@ -587,16 +587,20 @@ public class SentinelTrait extends Trait {
 
     public void firePearl(LivingEntity target) {
         swingWeapon();
-        npc.faceLocation(target.getEyeLocation());
+        faceLocation(target.getEyeLocation());
         // TODO: Maybe require entity is-on-ground?
         stats_pearlsUsed++;
         target.setVelocity(target.getVelocity().add(new Vector(0, getDamage(), 0)));
     }
 
+    public void faceLocation(Location l) {
+        npc.faceLocation(l.clone().subtract(0, getLivingEntity().getEyeHeight(), 0));
+    }
+
     public void fireFireball(Location target) {
         swingWeapon();
         stats_fireballsFired++;
-        npc.faceLocation(target);
+        faceLocation(target);
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
         Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.SMALL_FIREBALL);
@@ -607,7 +611,7 @@ public class SentinelTrait extends Trait {
     public void fireSkull(Location target) {
         swingWeapon();
         stats_skullsThrown++;
-        npc.faceLocation(target);
+        faceLocation(target);
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(firingMinimumRange()));
         Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.WITHER_SKULL);
@@ -737,7 +741,7 @@ public class SentinelTrait extends Trait {
     }
 
     public void punch(LivingEntity entity) {
-        npc.faceLocation(entity.getLocation());
+        faceLocation(entity.getLocation());
         swingWeapon();
         stats_punches++;
         if (SentinelPlugin.instance.getConfig().getBoolean("random.workaround damage", false)) {
