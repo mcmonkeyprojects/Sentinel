@@ -26,6 +26,9 @@ public class SentinelCrackShot extends SentinelIntegration {
         }
         st.faceLocation(ent.getEyeLocation());
         direc.csminion.weaponInteraction((Player) st.getLivingEntity(), node, false);
+        if (st.rangedChase) {
+            st.rechase();
+        }
         return true;
     }
 }
