@@ -1640,7 +1640,9 @@ public class SentinelTrait extends Trait {
                 currentTargets.remove(uuid);
                 continue;
             }
-            double d = e.getLocation().distanceSquared(getLivingEntity().getLocation());
+            double d = e.getWorld().equals(getLivingEntity().getWorld()) ?
+                    e.getLocation().distanceSquared(getLivingEntity().getLocation())
+                    : 10000.0 * 10000.0;
             if (d > range * range * 4 && d > chaseRange * chaseRange * 4) {
                 currentTargets.remove(uuid);
                 continue;
