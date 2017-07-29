@@ -30,6 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -1460,6 +1461,9 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isIgnored(LivingEntity entity) {
+        if (entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+            return true;
+        }
         if (entity.hasMetadata("NPC")) {
             return ignores.contains(SentinelTarget.NPCS.name()) ||
                     isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), npcNameIgnores);
@@ -1520,6 +1524,9 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isTargeted(LivingEntity entity) {
+        if (entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+            return false;
+        }
         SentinelCurrentTarget target = new SentinelCurrentTarget();
         target.targetID = entity.getUniqueId();
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
@@ -1636,6 +1643,10 @@ public class SentinelTrait extends Trait {
                 currentTargets.remove(uuid);
                 continue;
             }
+            if (e instanceof LivingEntity && ((LivingEntity) e).hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+                currentTargets.remove(uuid);
+                continue;
+            }
             if (e.isDead()) {
                 currentTargets.remove(uuid);
                 continue;
@@ -1652,6 +1663,14 @@ public class SentinelTrait extends Trait {
                 if (uuid.ticksLeft <= 0) {
                     currentTargets.remove(uuid);
                 }
+            }
+        }
+        if (chasing != null) {
+            SentinelCurrentTarget cte = new SentinelCurrentTarget();
+            cte.targetID = chasing.getUniqueId();
+            if (!currentTargets.contains(cte)) {
+                chasing = null;
+                npc.getNavigator().cancelNavigation();
             }
         }
     }
@@ -1753,12 +1772,18 @@ public class SentinelTrait extends Trait {
                 chased = false;
             }
             else {
+                if (npc.getNavigator().getEntityTarget() != null) {
+                    npc.getNavigator().cancelNavigation();
+                }
                 if (SentinelPlugin.debugMe) {
                     if (near != null && near.distanceSquared(getLivingEntity().getLocation()) > 3 * 3) {
                         SentinelPlugin.instance.getLogger().info("Sentinel: I'll just stand here and hope they come out...");
                     }
                 }
             }
+        }
+        else if (chasing == null && npc.getNavigator().getEntityTarget() != null) {
+            npc.getNavigator().cancelNavigation();
         }
     }
 
