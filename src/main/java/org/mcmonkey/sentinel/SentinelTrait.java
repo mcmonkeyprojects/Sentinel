@@ -1069,6 +1069,7 @@ public class SentinelTrait extends Trait {
             }
             return;
         }
+        addTarget(entity.getUniqueId());
         for (SentinelIntegration si : SentinelPlugin.integrations) {
             if (si.tryAttack(this, entity)) {
                 return;
