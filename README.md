@@ -55,9 +55,9 @@ Sentinel integrations with a few external plugins, including:
 - /sentinel damage DAMAGE - Sets the NPC's attack damage.
 - /sentinel armor ARMOR - Sets the NPC's armor level.
 - /sentinel health HEALTH - Sets the NPC's health level.
-- /sentinel attackrate RATE ['ranged'] - Changes the rate at which the NPC attacks, in ticks. Either ranged or close modes.
-- /sentinel healrate RATE - Changes the rate at which the NPC heals, in ticks.
-- /sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in ticks.
+- /sentinel attackrate RATE ['ranged'] - Changes the rate at which the NPC attacks, in seconds. Either ranged or close modes.
+- /sentinel healrate RATE - Changes the rate at which the NPC heals, in seconds.
+- /sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in seconds.
 - /sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.
 - /sentinel guard (PLAYERNAME) - Makes the NPC guard a specific player. Don't specify a player to stop guarding.
 - /sentinel invincible - Toggles whether the NPC is invincible.
@@ -75,10 +75,9 @@ Sentinel integrations with a few external plugins, including:
 - /sentinel targets - Shows the targets of the current NPC.
 - /sentinel kill - Kills the NPC.
 - /sentinel respawn - Respawns the NPC.
-- /sentinel targettime TIME - Sets the NPC's enemy target time limit.
+- /sentinel targettime TIME - Sets the NPC's enemy target time limit in seconds.
 - /sentinel speed - Sets the NPC's movement speed modifier.
 - /sentinel autoswitch - Toggles whether the NPC automatically switches items.
-- /sentinel targettime TIME - Sets the NPCs enemy target time limit.
 - /sentinel greeting GREETING - Sets a greeting message for the NPC to say.
 - /sentinel warning WARNING - Sets a warning message for the NPC to say.
 - /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
