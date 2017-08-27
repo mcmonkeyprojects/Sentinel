@@ -36,6 +36,8 @@ sentinel defaults:
     autoswitch: false
     # Accuracy offset, 0 means perfectly accurate, 5 means pretty inaccurate.
     accuracy: 0
+    # "Realistic" logic, don't attack targets we can't see, if enabled.
+    realistic: false
 
 random:
     # What sound to play when the "spectral" attack is used.

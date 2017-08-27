@@ -84,6 +84,7 @@ Sentinel integrations with a few external plugins, including:
 - /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
 - /sentinel accuracy OFFSET - Sets the accuracy of an NPC.
 - /sentinel squad SQUAD - Sets the NPC's squad name (null for none).
+- /sentinel realistic - Toggles whether the NPC should use "realistic" targetting logic (don't attack things you can't see.)
 
 ### Sentry user?
 

@@ -222,6 +222,9 @@ public class SentinelTrait extends Trait {
     @Persist("accuracy")
     public double accuracy = 0;
 
+    @Persist("realistic")
+    public boolean realistic = false;
+
     public LivingEntity chasing = null;
 
     public UUID getGuarding() {
@@ -1331,8 +1334,48 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    public float getYaw(Vector vector) {
+        double dx = vector.getX();
+        double dz = vector.getZ();
+        double yaw = 0;
+        // Set yaw
+        if (dx != 0) {
+            // Set yaw start value based on dx
+            if (dx < 0) {
+                yaw = 1.5 * Math.PI;
+            }
+            else {
+                yaw = 0.5 * Math.PI;
+            }
+            yaw -= Math.atan(dz / dx); // or atan2?
+        }
+        else if (dz < 0) {
+            yaw = Math.PI;
+        }
+        return (float) (-yaw * 180 / Math.PI);
+    }
+
     public boolean canSee(LivingEntity entity) {
-        return getLivingEntity().hasLineOfSight(entity);
+        if (!getLivingEntity().hasLineOfSight(entity)) {
+            return false;
+        }
+        if (realistic) {
+            float yaw = getLivingEntity().getEyeLocation().getYaw();
+            while (yaw < 0) {
+                yaw += 360;
+            }
+            while (yaw >= 360) {
+                yaw -= 360;
+            }
+            Vector rel = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector()).normalize();
+            float yawHelp = getYaw(rel);
+            if (!(Math.abs(yawHelp - yaw) < 90 ||
+                    Math.abs(yawHelp + 360 - yaw) < 90 ||
+                    Math.abs(yaw + 360 - yawHelp) < 90)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public LivingEntity getLivingEntity() {

@@ -710,6 +710,24 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             return true;
         }
+        else if (arg0.equals("realistic") && sender.hasPermission("sentinel.realistic")) {
+            boolean mode = !sentinel.realistic;
+            if (args.length > 1 && "true".equalsIgnoreCase(args[1])) {
+                mode = true;
+            }
+            if (args.length > 1 && "false".equalsIgnoreCase(args[1])) {
+                mode = false;
+            }
+            sentinel.realistic = mode;
+
+            if (sentinel.realistic) {
+                sender.sendMessage(prefixGood + "NPC now targets realistically!");
+            }
+            else {
+                sender.sendMessage(prefixGood + "NPC no longer targets realistically!");
+            }
+            return true;
+        }
         else if (arg0.equals("fightback") && sender.hasPermission("sentinel.fightback")) {
             boolean mode = !sentinel.fightback;
             if (args.length > 1 && "true".equalsIgnoreCase(args[1])) {
@@ -916,6 +934,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Safe-Shot Enabled: " + ChatColor.AQUA + sentinel.safeShot);
             sender.sendMessage(prefixGood + "Enemy-Drops Enabled: " + ChatColor.AQUA + sentinel.enemyDrops);
             sender.sendMessage(prefixGood + "Autoswitch Enabled: " + ChatColor.AQUA + sentinel.autoswitch);
+            sender.sendMessage(prefixGood + "Realistic Targetting Enabled: " + ChatColor.AQUA + sentinel.realistic);
             sender.sendMessage(prefixGood + "Squad: " + ChatColor.AQUA + (sentinel.squad == null ? "None" : sentinel.squad));
             return true;
         }
@@ -1029,6 +1048,9 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             if (sender.hasPermission("sentinel.squad")) {
                 sender.sendMessage(prefixGood + "/sentinel squad SQUAD - Sets the NPC's squad name (null for none).");
+            }
+            if (sender.hasPermission("sentinel.realistic")) {
+                sender.sendMessage(prefixGood + "/sentinel realistic - Toggles whether the NPC should use \"realistic\" targetting logic (don't attack things you can't see.)");
             }
             if (sender.hasPermission("sentinel.greet")) {
                 sender.sendMessage(prefixGood + "/sentinel greeting GREETING - Sets a greeting message for the NPC to say.");

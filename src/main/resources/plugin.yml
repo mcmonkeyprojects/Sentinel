@@ -78,6 +78,8 @@ permissions:
       sentinel.accuracy: true
       # /sentinel squad SQUAD
       sentinel.squad: true
+      # /sentinel realistic
+      sentinel.realistic: true
       # /sentinel debug
       sentinel.debug: true
       # /sentinel greeting GREETING, sentinel warning WARNING, sentinel greetrange RANGE
