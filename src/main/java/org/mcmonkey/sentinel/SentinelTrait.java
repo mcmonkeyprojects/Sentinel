@@ -802,13 +802,17 @@ public class SentinelTrait extends Trait {
         }
         cleverTicks = 0;
         chasing = entity;
+        chased = true;
+        if (npc.getNavigator().getTargetType() == TargetType.ENTITY
+                && npc.getNavigator().getEntityTarget().getTarget().getUniqueId().equals(entity.getUniqueId())) {
+            return;
+        }
         npc.getNavigator().getDefaultParameters().stuckAction(null);
         /*
         Location goal = entity.getLocation().clone().add(entity.getVelocity().clone());
         npc.getNavigator().setTarget(goal);
         bunny_goal = goal;
         */
-        chased = true;
         npc.getNavigator().setTarget(entity, false);
         npc.getNavigator().getLocalParameters().speedModifier((float) speed);
     }
