@@ -118,6 +118,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }.runTaskTimer(this, 100, 20 * 60 * 60);
         tryGetPerms();
         integrations.add(new SentinelHealth());
+        integrations.add(new SentinelPermissions());
         integrations.add(new SentinelSBTeams());
         if (Bukkit.getPluginManager().getPlugin("Towny") != null) {
             try {
@@ -201,7 +202,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             return true;
         }
-        else if (sentinel == null && !arg0.equals("help")) {
+        else if (sentinel == null && !arg0.equals("help") && !arg0.equals("debug")) {
             sender.sendMessage(prefixBad + "Must have a Sentinel NPC selected! Use /trait sentinel to ensure an NPC becomes a Sentinel.");
             return true;
         }
