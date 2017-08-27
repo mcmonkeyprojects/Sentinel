@@ -36,7 +36,9 @@ public class StatsRecord extends Thread {
             in.close();
         }
         catch (Exception e) {
-            System.out.println("Sentinel stat issue: " + e.getMessage());
+            if (SentinelPlugin.debugMe) {
+                System.out.println("Sentinel stat issue: " + e.getMessage());
+            }
         }
         finally {
             try {
@@ -45,7 +47,9 @@ public class StatsRecord extends Thread {
                 }
             }
             catch (Exception e) {
-                System.out.println("Sentinel stat issue (backup): " + e.getMessage());
+                if (SentinelPlugin.debugMe) {
+                    System.out.println("Sentinel stat issue (backup): " + e.getMessage());
+                }
             }
         }
     }
