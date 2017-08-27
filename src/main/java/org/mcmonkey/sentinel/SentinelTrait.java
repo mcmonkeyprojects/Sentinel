@@ -265,6 +265,15 @@ public class SentinelTrait extends Trait {
             if (SentinelPlugin.instance.getConfig().getBoolean("random.enforce damage", false)) {
                 if (canEnforce) {
                     ((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
+                    canEnforce = false;
+                    if (SentinelPlugin.debugMe) {
+                        SentinelPlugin.instance.getLogger().info("Sentinel: enforce damage value to " + event.getFinalDamage());
+                    }
+                }
+                else {
+                    if (SentinelPlugin.debugMe) {
+                        SentinelPlugin.instance.getLogger().info("Sentinel: refuse damage enforcement");
+                    }
                 }
                 event.setCancelled(true);
                 return;
@@ -277,6 +286,15 @@ public class SentinelTrait extends Trait {
                 if (SentinelPlugin.instance.getConfig().getBoolean("random.enforce damage", false)) {
                     if (canEnforce) {
                         ((LivingEntity) event.getEntity()).damage(getDamage());
+                        canEnforce = false;
+                        if (SentinelPlugin.debugMe) {
+                            SentinelPlugin.instance.getLogger().info("Sentinel: enforce damage value to " + getDamage());
+                        }
+                    }
+                    else {
+                        if (SentinelPlugin.debugMe) {
+                            SentinelPlugin.instance.getLogger().info("Sentinel: refuse damage enforcement");
+                        }
                     }
                     event.setCancelled(true);
                     return;
@@ -752,6 +770,10 @@ public class SentinelTrait extends Trait {
         swingWeapon();
         stats_punches++;
         if (SentinelPlugin.instance.getConfig().getBoolean("random.workaround damage", false)) {
+            if (SentinelPlugin.debugMe) {
+                SentinelPlugin.instance.getLogger().info("Sentinel: workaround damage value at " + getDamage() + " yields "
+                 + ((getDamage() * (1.0 - getArmor(entity)))));
+            }
             entity.damage(getDamage() * (1.0 - getArmor(entity)));
             Vector relative = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector());
             relative = relative.normalize();
