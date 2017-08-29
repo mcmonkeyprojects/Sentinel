@@ -309,6 +309,9 @@ public class SentinelTrait extends Trait {
                 for (EntityDamageEvent.DamageModifier mod : EntityDamageEvent.DamageModifier.values()) {
                     if (mod != EntityDamageEvent.DamageModifier.BASE && event.isApplicable(mod)) {
                         event.setDamage(mod, event.getDamage(mod) * rel);
+                        if (SentinelPlugin.debugMe) {
+                            SentinelPlugin.instance.getLogger().info("Sentinel: Set damage for " + mod + " to " + event.getDamage(mod));
+                        }
                     }
                 }
             }
@@ -788,6 +791,9 @@ public class SentinelTrait extends Trait {
             }
         }
         else {
+            if (SentinelPlugin.debugMe) {
+                SentinelPlugin.instance.getLogger().info("Sentinel: Punch/natural for " + getDamage());
+            }
             entity.damage(getDamage(), getLivingEntity());
         }
     }
@@ -1262,6 +1268,9 @@ public class SentinelTrait extends Trait {
                 timeSinceAttack = 0;
                 swingWeapon();
                 entity.getWorld().strikeLightningEffect(entity.getLocation());
+                if (SentinelPlugin.debugMe) {
+                    SentinelPlugin.instance.getLogger().info("Sentinel: Lightning hits for " + getDamage());
+                }
                 entity.damage(getDamage());
                 if (needsAmmo) {
                     takeOne();
@@ -1763,6 +1772,9 @@ public class SentinelTrait extends Trait {
         timeSinceAttack += SentinelPlugin.instance.tickRate;
         timeSinceHeal += SentinelPlugin.instance.tickRate;
         if (getLivingEntity().getLocation().getY() <= 0) {
+            if (SentinelPlugin.debugMe) {
+                SentinelPlugin.instance.getLogger().info("Sentinel: Injuring self, I'm below the map!");
+            }
             getLivingEntity().damage(1);
             if (!npc.isSpawned()) {
                 if (getGuarding() != null && Bukkit.getPlayer(getGuarding()) != null) {
