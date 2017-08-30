@@ -147,6 +147,15 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 ex.printStackTrace();
             }
         }
+        if (Bukkit.getPluginManager().getPlugin("SimpleClans") != null) {
+            try {
+                integrations.add(new SentinelSimpleClans());
+                getLogger().info("Sentinel found SimpleClans! Adding support for it!");
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     final static String InvPrefix = ChatColor.GREEN + "Sentinel ";
