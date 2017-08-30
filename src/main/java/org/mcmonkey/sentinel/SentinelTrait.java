@@ -278,6 +278,7 @@ public class SentinelTrait extends Trait {
                         SentinelPlugin.instance.getLogger().info("Sentinel: refuse damage enforcement");
                     }
                 }
+                event.setDamage(0);
                 event.setCancelled(true);
                 return;
             }
@@ -299,6 +300,7 @@ public class SentinelTrait extends Trait {
                             SentinelPlugin.instance.getLogger().info("Sentinel: refuse damage enforcement");
                         }
                     }
+                    event.setDamage(0);
                     event.setCancelled(true);
                     return;
                 }
