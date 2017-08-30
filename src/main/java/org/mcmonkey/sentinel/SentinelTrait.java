@@ -1767,6 +1767,24 @@ public class SentinelTrait extends Trait {
 
     public boolean chased = false;
 
+    public void specialMarkVision() {
+        if (SentinelPlugin.debugMe) {
+            SentinelPlugin.instance.getLogger().info("Sentinel: Player, I see you...");
+        }
+        if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
+            // TODO: Open Box
+        }
+    }
+
+    public void specialUnmarkVision() {
+        if (SentinelPlugin.debugMe) {
+            SentinelPlugin.instance.getLogger().info("Sentinel: Goodbye, player.");
+        }
+        if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
+            // TODO: Close box
+        }
+    }
+
     public void runUpdate() {
         canEnforce = true;
         timeSinceAttack += SentinelPlugin.instance.tickRate;
@@ -1803,6 +1821,9 @@ public class SentinelTrait extends Trait {
                     SentinelPlugin.instance.getLogger().info("Sentinel: Attack target within range of safe zone: "
                             + (near == null ? "Any" : near.distanceSquared(target.getLocation())));
                 }
+                if (chasing == null) {
+                    specialMarkVision();
+                }
                 chasing = target;
                 cleverTicks = 0;
                 tryAttack(target);
@@ -1812,6 +1833,9 @@ public class SentinelTrait extends Trait {
                 if (SentinelPlugin.debugMe) {
                     SentinelPlugin.instance.getLogger().info("Sentinel: Actually, that target is bad!");
                 }
+                if (chasing != null) {
+                    specialUnmarkVision();
+                }
                 target = null;
                 chasing = null;
                 cleverTicks = 0;
@@ -1820,6 +1844,7 @@ public class SentinelTrait extends Trait {
         else if(chasing != null && chasing.isValid()) {
             cleverTicks++;
             if (cleverTicks >= SentinelPlugin.instance.getConfig().getInt("random.clever ticks", 10)) {
+                specialUnmarkVision();
                 chasing = null;
             }
             else {
@@ -1829,6 +1854,9 @@ public class SentinelTrait extends Trait {
                     goHome = false;
                 }
             }
+        }
+        else if (chasing != null) {
+            specialUnmarkVision();
         }
         if (getGuarding() != null) {
             Player player = Bukkit.getPlayer(getGuarding());
