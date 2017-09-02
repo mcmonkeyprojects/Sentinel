@@ -1719,6 +1719,14 @@ public class SentinelTrait extends Trait {
     public long timeSinceHeal = 0;
 
     private Entity getEntityForID(UUID id) {
+        if (!SentinelTarget.v1_11) {
+            for (Entity e : getLivingEntity().getWorld().getEntities()) {
+                if (e.getUniqueId().equals(id)) {
+                    return e;
+                }
+            }
+            return null;
+        }
         return Bukkit.getServer().getEntity(id);
     }
 
