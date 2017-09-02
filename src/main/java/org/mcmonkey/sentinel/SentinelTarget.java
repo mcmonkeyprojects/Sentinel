@@ -50,7 +50,7 @@ public class SentinelTarget {
         v1_11 = vers.contains("1.11") || v1_12;
         v1_10 = vers.contains("1.10") || v1_11;
         v1_9 = vers.contains("1.9") || v1_10;
-        v1_8 = vers.contains("1.8") || v1_10;
+        v1_8 = vers.contains("1.8") || v1_9;
         if (v1_8 && !v1_9) {
             SentinelTarget PASSIVE_MOB = new SentinelTarget(new  EntityType[]{
                     EntityType.PIG, EntityType.OCELOT, EntityType.COW, EntityType.RABBIT, EntityType.SHEEP, EntityType.CHICKEN, EntityType.MUSHROOM_COW,
