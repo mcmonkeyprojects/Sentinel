@@ -80,10 +80,10 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (!npc.isSpawned() && npc.hasTrait(SentinelTrait.class)) {
                         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
-                        for (String target : sentinel.targets) {
+                        for (String target : new HashSet<String>(sentinel.targets)) {
                             sentinel.targets.add(SentinelTarget.forName(target).name());
                         }
-                        for (String target : sentinel.ignores) {
+                        for (String target : new HashSet<String>(sentinel.ignores)) {
                             sentinel.ignores.add(SentinelTarget.forName(target).name());
                         }
                         if (sentinel.respawnTime > 0) {
