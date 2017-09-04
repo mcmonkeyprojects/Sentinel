@@ -13,6 +13,7 @@ import net.citizensnpcs.api.trait.trait.Spawned;
 import net.citizensnpcs.trait.waypoint.Waypoint;
 import net.citizensnpcs.trait.waypoint.WaypointProvider;
 import net.citizensnpcs.trait.waypoint.Waypoints;
+import net.citizensnpcs.util.NMS;
 import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -1719,7 +1720,7 @@ public class SentinelTrait extends Trait {
     public long timeSinceHeal = 0;
 
     private Entity getEntityForID(UUID id) {
-        if (!SentinelTarget.v1_11) {
+        if (!SentinelTarget.v1_12) {
             for (Entity e : getLivingEntity().getWorld().getEntities()) {
                 if (e.getUniqueId().equals(id)) {
                     return e;
@@ -1782,7 +1783,7 @@ public class SentinelTrait extends Trait {
             SentinelPlugin.instance.getLogger().info("Sentinel: Player, I see you...");
         }
         if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
-            // TODO: Open Box
+            NMS.setShulkerPeek((Shulker) getLivingEntity(), 100);
         }
     }
 
@@ -1791,7 +1792,7 @@ public class SentinelTrait extends Trait {
             SentinelPlugin.instance.getLogger().info("Sentinel: Goodbye, player.");
         }
         if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
-            // TODO: Close box
+            NMS.setShulkerPeek((Shulker) getLivingEntity(), 0);
         }
     }
 
@@ -1843,9 +1844,7 @@ public class SentinelTrait extends Trait {
                 if (SentinelPlugin.debugMe) {
                     SentinelPlugin.instance.getLogger().info("Sentinel: Actually, that target is bad!");
                 }
-                if (chasing != null) {
-                    specialUnmarkVision();
-                }
+                specialUnmarkVision();
                 target = null;
                 chasing = null;
                 cleverTicks = 0;
@@ -1865,7 +1864,7 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
-        else if (chasing != null) {
+        else if (chasing == null) {
             specialUnmarkVision();
         }
         if (getGuarding() != null) {
