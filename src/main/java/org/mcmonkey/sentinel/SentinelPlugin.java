@@ -603,7 +603,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("attackrate") && sender.hasPermission("sentinel.attackrate") && args.length > 1) {
             try {
                 double da = Double.valueOf(args[1]);
-                int d = (int)(da * 0.05);
+                int d = (int)(da * 20);
                 if (d >= tickRate && d <= SentinelTrait.attackRateMax) {
                     if (args.length > 2 && args[2].contains("ranged")) {
                         sentinel.attackRateRanged = d;
@@ -626,7 +626,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("healrate") && sender.hasPermission("sentinel.healrate") && args.length > 1) {
             try {
                 double da = Double.valueOf(args[1]);
-                int d = (int)(da * 0.05);
+                int d = (int)(da * 20);
                 if ((d >= tickRate && d <= SentinelTrait.healRateMax) || d == 0) {
                     sentinel.healRate = d;
                     sender.sendMessage(prefixGood + "Heal rate set!");
@@ -644,7 +644,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             try {
                 double d = Double.valueOf(args[1]);
                 if (d >= 0) {
-                    sentinel.enemyTargetTime = (int)(d * 0.05);
+                    sentinel.enemyTargetTime = (int)(d * 20);
                     sender.sendMessage(prefixGood + "Target time set!");
                 }
                 else {
@@ -659,7 +659,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("respawntime") && sender.hasPermission("sentinel.respawntime") && args.length > 1) {
             try {
                 double d = Double.valueOf(args[1]);
-                sentinel.respawnTime = (long)(d * 0.05);
+                sentinel.respawnTime = (long)(d * 20);
                 sender.sendMessage(prefixGood + "Respawn time set!");
             }
             catch (NumberFormatException ex) {
