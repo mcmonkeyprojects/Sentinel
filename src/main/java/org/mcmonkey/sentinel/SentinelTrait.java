@@ -1,6 +1,7 @@
 package org.mcmonkey.sentinel;
 
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
@@ -38,6 +39,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.events.SentinelAttackEvent;
 
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -803,6 +805,20 @@ public class SentinelTrait extends Trait {
 
     Location bunny_goal = new Location(null, 0, 0, 0);
 
+    public Entity getTargetFor(EntityTarget targ) {
+        if (SentinelTarget.v1_9) {
+            return targ.getTarget();
+        }
+        try {
+            Method meth = EntityTarget.class.getMethod("getTarget");
+            meth.setAccessible(true);
+            return (LivingEntity) meth.invoke(targ);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void chase(LivingEntity entity) {
         if (npc.getNavigator().getTargetType() == TargetType.LOCATION
                 && npc.getNavigator().getTargetAsLocation() != null
@@ -816,7 +832,7 @@ public class SentinelTrait extends Trait {
         chasing = entity;
         chased = true;
         if (npc.getNavigator().getTargetType() == TargetType.ENTITY
-                && npc.getNavigator().getEntityTarget().getTarget().getUniqueId().equals(entity.getUniqueId())) {
+                && getTargetFor(npc.getNavigator().getEntityTarget()).getUniqueId().equals(entity.getUniqueId())) {
             return;
         }
         npc.getNavigator().getDefaultParameters().stuckAction(null);
