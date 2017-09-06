@@ -817,6 +817,7 @@ public class SentinelTrait extends Trait {
         catch (Exception ex) {
             ex.printStackTrace();
         }
+        return null;
     }
 
     public void chase(LivingEntity entity) {
