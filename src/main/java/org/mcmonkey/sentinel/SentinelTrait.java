@@ -543,6 +543,9 @@ public class SentinelTrait extends Trait {
     }
 
     public Vector fixForAcc(Vector input) {
+        if (Double.isInfinite(input.getX()) || Double.isNaN(input.getX())) {
+            return new Vector(0, 0, 0);
+        }
         return new Vector(input.getX() + randomAcc(), input.getY() + randomAcc(), input.getZ() + randomAcc());
     }
 
