@@ -30,8 +30,8 @@ public class SentinelFactions extends SentinelIntegration {
                     }
                 }
             }
-            if (text.startsWith("factionseneemy:") && ent instanceof Player) {
-                String factionName = text.substring("factionseneemy:".length());
+            if (text.startsWith("factionsenemy:") && ent instanceof Player) {
+                String factionName = text.substring("factionsenemy:".length());
                 Faction faction = FactionColl.get().getByName(factionName);
                 Faction plf = MPlayer.get(((Player) ent).getUniqueId()).getFaction();
                 if (faction.getRelationTo(plf).equals(Rel.ENEMY)) {
