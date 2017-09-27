@@ -1838,6 +1838,14 @@ public class SentinelTrait extends Trait {
             getLivingEntity().setHealth(Math.min(getLivingEntity().getHealth() + 1.0, health));
             timeSinceHeal = 0;
         }
+        if (getGuarding() != null && npc.hasTrait(Waypoints.class)) {
+            Waypoints wp = npc.getTrait(Waypoints.class);
+            wp.getCurrentProvider().setPaused(true);
+        }
+        else if (npc.hasTrait(Waypoints.class)) {
+            Waypoints wp = npc.getTrait(Waypoints.class);
+            wp.getCurrentProvider().setPaused(false);
+        }
         double crsq = chaseRange * chaseRange;
         updateTargets();
         boolean goHome = chased;
