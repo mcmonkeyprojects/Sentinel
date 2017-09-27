@@ -42,7 +42,7 @@ Sentinel integrations with a few external plugins, including:
 
 - Vault, for permission group targets! (Use group:GROUP_HERE)
 - Towny, for town targets! (Use towny:TOWN_HERE)
-- Factions, for faction targets! (Use factions:FACTION_HERE)
+- Factions, for faction targets! (Use factions:FACTION_HERE, factionsenemy:NAME, factionsally:NAME)
 - SimpleClans, for clan targets! (Use simpleclan:CLAN_NAME_HERE)
 
 ### Commands
