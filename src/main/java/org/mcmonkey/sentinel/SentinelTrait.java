@@ -1960,6 +1960,9 @@ public class SentinelTrait extends Trait {
         if (!npc.hasTrait(Waypoints.class)) {
             return null;
         }
+        if (getGuarding() != null) {
+            return null;
+        }
         Waypoints wp = npc.getTrait(Waypoints.class);
         if (!(wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
             return null;
