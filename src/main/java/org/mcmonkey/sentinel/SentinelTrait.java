@@ -1107,6 +1107,9 @@ public class SentinelTrait extends Trait {
         if (!entity.getWorld().equals(getLivingEntity().getWorld())) {
             return;
         }
+        if (!getLivingEntity().hasLineOfSight(entity)) {
+            return;
+        }
         // TODO: Simplify this code!
         stats_attackAttempts++;
         double dist = getLivingEntity().getEyeLocation().distanceSquared(entity.getEyeLocation());
