@@ -62,8 +62,8 @@ public class SentryImport implements Listener {
             if (health < SentinelTrait.healthMin) {
                 health = SentinelTrait.healthMin;
             }
-            else if (health > SentinelTrait.healthMax) {
-                health = SentinelTrait.healthMax;
+            else if (health > SentinelPlugin.instance.maxHealth) {
+                health = SentinelPlugin.instance.maxHealth;
             }
             sentinel.setHealth(health);
             sentinel.setInvincible(sentry.Invincible);

@@ -47,8 +47,6 @@ public class SentinelTrait extends Trait {
 
     public static final double healthMin = 0.01;
 
-    public static final double healthMax = 2000;
-
     public static final int attackRateMax = 2000;
 
     public static final int healRateMax = 2000;

@@ -39,6 +39,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
 
     public Permission vaultPerms;
 
+    public double maxHealth;
+
     public void tryGetPerms() {
         if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
             return;
@@ -97,6 +99,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
         };
+        maxHealth = getConfig().getDouble("random.max health", 2000);
         postLoad.runTaskLater(this, 40);
         tickRate = getConfig().getInt("update rate", 10);
         getLogger().info("Sentinel loaded!");
@@ -587,7 +590,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         else if (arg0.equals("health") && sender.hasPermission("sentinel.health") && args.length > 1) {
             try {
                 Double d = Double.valueOf(args[1]);
-                if ((d >= SentinelTrait.healthMin) && (d <= SentinelTrait.healthMax)) {
+                if ((d >= SentinelTrait.healthMin) && (d <= maxHealth)) {
                     sentinel.setHealth(d);
                     sender.sendMessage(prefixGood + "Health set!");
                 }

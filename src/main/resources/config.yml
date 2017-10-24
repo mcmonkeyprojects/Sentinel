@@ -58,6 +58,8 @@ random:
     skull allowed: true
     # How many calculation cycles before an NPC will give up on a good target.
     clever ticks: 10
+    # The maximum health value for any given Sentinel NPC.
+    max health: 2000
 
 # How fast to recalculate, in ticks.
 update rate: 10
