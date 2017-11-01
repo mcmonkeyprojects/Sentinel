@@ -28,6 +28,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -1572,8 +1573,26 @@ public class SentinelTrait extends Trait {
         return false;
     }
 
+    public boolean isAir(ItemStack its) {
+        return its == null || its.getType() == Material.AIR;
+    }
+
+    public boolean isInvisible(LivingEntity entity) {
+        SentinelCurrentTarget sct = new SentinelCurrentTarget();
+        sct.targetID = entity.getUniqueId();
+        EntityEquipment eq = entity.getEquipment();
+        return entity.hasPotionEffect(PotionEffectType.INVISIBILITY)
+                && !currentTargets.contains(sct)
+                && isAir(eq.getItemInHand())
+                && isAir(eq.getBoots())
+                && isAir(eq.getLeggings())
+                && isAir(eq.getChestplate())
+                && isAir(eq.getHelmet())
+                && SentinelPlugin.instance.getConfig().getBoolean("random.ignore invisible targets");
+    }
+
     public boolean isIgnored(LivingEntity entity) {
-        if (entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+        if (isInvisible(entity)) {
             return true;
         }
         if (entity.hasMetadata("NPC")) {
@@ -1636,7 +1655,7 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isTargeted(LivingEntity entity) {
-        if (entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+        if (isInvisible(entity)) {
             return false;
         }
         SentinelCurrentTarget target = new SentinelCurrentTarget();
@@ -1760,10 +1779,6 @@ public class SentinelTrait extends Trait {
                 continue;
             }
             if (e instanceof Player && ((Player) e).getGameMode() == GameMode.CREATIVE) {
-                currentTargets.remove(uuid);
-                continue;
-            }
-            if (e instanceof LivingEntity && ((LivingEntity) e).hasPotionEffect(PotionEffectType.INVISIBILITY)) {
                 currentTargets.remove(uuid);
                 continue;
             }
