@@ -2102,9 +2102,9 @@ public class SentinelTrait extends Trait {
     }
 
     public void onDeath() {
-        if (npc.hasTrait(Spawned.class)) {
+        /*if (npc.hasTrait(Spawned.class)) {
             npc.getTrait(Spawned.class).setSpawned(false);
-        }
+        }*/
         greetedAlready.clear();
         currentTargets.clear();
         if (respawnTime < 0) {
