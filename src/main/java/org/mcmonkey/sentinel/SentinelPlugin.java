@@ -733,7 +733,6 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 mode = false;
             }
             sentinel.realistic = mode;
-
             if (sentinel.realistic) {
                 sender.sendMessage(prefixGood + "NPC now targets realistically!");
             }
@@ -751,7 +750,6 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 mode = false;
             }
             sentinel.fightback = mode;
-
             if (sentinel.fightback) {
                 sender.sendMessage(prefixGood + "NPC now fights back!");
             }
@@ -761,7 +759,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             return true;
         }
         else if (arg0.equals("needammo") && sender.hasPermission("sentinel.needammo")) {
-            sentinel.needsAmmo = !sentinel.needsAmmo;
+            boolean mode = !sentinel.needsAmmo;
+            if (args.length > 1 && "true".equalsIgnoreCase(args[1])) {
+                mode = true;
+            }
+            if (args.length > 1 && "false".equalsIgnoreCase(args[1])) {
+                mode = false;
+            }
+            sentinel.needsAmmo = mode;
             if (sentinel.needsAmmo) {
                 sender.sendMessage(prefixGood + "NPC now needs ammo!");
             }
@@ -771,7 +776,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             return true;
         }
         else if (arg0.equals("safeshot") && sender.hasPermission("sentinel.safeshot")) {
-            sentinel.safeShot = !sentinel.safeShot;
+            boolean mode = !sentinel.safeShot;
+            if (args.length > 1 && "true".equalsIgnoreCase(args[1])) {
+                mode = true;
+            }
+            if (args.length > 1 && "false".equalsIgnoreCase(args[1])) {
+                mode = false;
+            }
+            sentinel.safeShot = mode;
             if (sentinel.safeShot) {
                 sender.sendMessage(prefixGood + "NPC now is a safe shot!");
             }
@@ -781,7 +793,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             return true;
         }
         else if (arg0.equals("chaseclose") && sender.hasPermission("sentinel.chase")) {
-            sentinel.closeChase = !sentinel.closeChase;
+            boolean mode = !sentinel.closeChase;
+            if (args.length > 1 && "true".equalsIgnoreCase(args[1])) {
+                mode = true;
+            }
+            if (args.length > 1 && "false".equalsIgnoreCase(args[1])) {
+                mode = false;
+            }
+            sentinel.closeChase = mode;
             if (sentinel.closeChase) {
                 sender.sendMessage(prefixGood + "NPC now will chase while close!");
             }
@@ -791,7 +810,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             return true;
         }
         else if (arg0.equals("chaseranged") && sender.hasPermission("sentinel.chase")) {
-            sentinel.rangedChase = !sentinel.rangedChase;
+            boolean mode = !sentinel.rangedChase;
+            if (args.length > 1 && "true".equalsIgnoreCase(args[1])) {
+                mode = true;
+            }
+            if (args.length > 1 && "false".equalsIgnoreCase(args[1])) {
+                mode = false;
+            }
+            sentinel.rangedChase = mode;
             if (sentinel.rangedChase) {
                 sender.sendMessage(prefixGood + "NPC now will chase while ranged!");
             }
@@ -856,7 +882,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             return true;
         }
         else if (arg0.equals("enemydrops") && sender.hasPermission("sentinel.enemydrops")) {
-            sentinel.enemyDrops = !sentinel.enemyDrops;
+            boolean mode = !sentinel.enemyDrops;
+            if (args.length > 1 && "true".equalsIgnoreCase(args[1])) {
+                mode = true;
+            }
+            if (args.length > 1 && "false".equalsIgnoreCase(args[1])) {
+                mode = false;
+            }
+            sentinel.enemyDrops = mode;
             if (sentinel.enemyDrops) {
                 sender.sendMessage(prefixGood + "NPC enemy mobs now drop items and XP!");
             }
