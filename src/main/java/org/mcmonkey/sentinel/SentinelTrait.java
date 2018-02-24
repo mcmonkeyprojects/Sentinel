@@ -269,8 +269,11 @@ public class SentinelTrait extends Trait {
         if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
             if (SentinelPlugin.instance.getConfig().getBoolean("random.enforce damage", false)) {
                 if (canEnforce) {
-                    ((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
                     canEnforce = false;
+                    whenAttacksHappened(event);
+                    if (!event.isCancelled()) {
+                        ((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
+                    }
                     if (SentinelPlugin.debugMe) {
                         SentinelPlugin.instance.getLogger().info("Sentinel: enforce damage value to " + event.getFinalDamage());
                     }
@@ -291,8 +294,11 @@ public class SentinelTrait extends Trait {
             if (source instanceof LivingEntity && ((LivingEntity) source).getUniqueId().equals(getLivingEntity().getUniqueId())) {
                 if (SentinelPlugin.instance.getConfig().getBoolean("random.enforce damage", false)) {
                     if (canEnforce) {
-                        ((LivingEntity) event.getEntity()).damage(getDamage());
                         canEnforce = false;
+                        whenAttacksHappened(event);
+                        if (!event.isCancelled()) {
+                            ((LivingEntity) event.getEntity()).damage(getDamage());
+                        }
                         if (SentinelPlugin.debugMe) {
                             SentinelPlugin.instance.getLogger().info("Sentinel: enforce damage value to " + getDamage());
                         }
