@@ -2045,6 +2045,16 @@ public class SentinelTrait extends Trait {
         npc.getDefaultSpeechController().speak(sc, "chat");
     }
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerTeleports(PlayerTeleportEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        if (getGuarding() != null && event.getPlayer().getUniqueId().equals(getGuarding())) {
+            npc.teleport(event.getTo(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        }
+    }
+
     @EventHandler
     public void onPlayerMovesInRange(PlayerMoveEvent event) {
         if (!npc.isSpawned()) {
