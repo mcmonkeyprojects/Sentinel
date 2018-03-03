@@ -1784,7 +1784,7 @@ public class SentinelTrait extends Trait {
                 currentTargets.remove(uuid);
                 continue;
             }
-            if (e instanceof Player && ((Player) e).getGameMode() == GameMode.CREATIVE) {
+            if (e instanceof Player && (((Player) e).getGameMode() == GameMode.CREATIVE || ((Player) e).getGameMode() == GameMode.SPECTATOR)) {
                 currentTargets.remove(uuid);
                 continue;
             }
