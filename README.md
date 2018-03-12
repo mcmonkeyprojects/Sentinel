@@ -51,7 +51,7 @@ Sentinel integrations with a few external plugins, including:
 - /sentinel addtarget TYPE - Adds a target.
 - /sentinel removetarget TYPE - Removes a target.
 - /sentinel addignore TYPE - Ignores a target.
-- /sentinel removeignore TYPE - Allows targetting a target.
+- /sentinel removeignore TYPE - Allows targeting a target.
 - /sentinel range RANGE - Sets the NPC's maximum attack range.
 - /sentinel damage DAMAGE - Sets the NPC's attack damage.
 - /sentinel armor ARMOR - Sets the NPC's armor level.
@@ -84,7 +84,8 @@ Sentinel integrations with a few external plugins, including:
 - /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
 - /sentinel accuracy OFFSET - Sets the accuracy of an NPC.
 - /sentinel squad SQUAD - Sets the NPC's squad name (null for none).
-- /sentinel realistic - Toggles whether the NPC should use "realistic" targetting logic (don't attack things you can't see.)
+- /sentinel realistic - Toggles whether the NPC should use "realistic" targeting logic (don't attack things you can't see.)
+- /sentinel reach REACH - Sets the NPC's reach (how far it can punch.)
 
 ### Sentry user?
 

@@ -509,7 +509,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("range") && sender.hasPermission("sentinel.range") && args.length > 1) {
             try {
-                Double d = Double.valueOf(args[1]);
+                Double d = Double.parseDouble(args[1]);
                 if (d > 0 && d < 200) {
                     sentinel.range = d;
                     sender.sendMessage(prefixGood + "Range set!");
@@ -525,7 +525,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("damage") && sender.hasPermission("sentinel.damage") && args.length > 1) {
             try {
-                Double d = Double.valueOf(args[1]);
+                Double d = Double.parseDouble(args[1]);
                 if (d < 1000) {
                     sentinel.damage = d;
                     sender.sendMessage(prefixGood + "Damage set!");
@@ -541,7 +541,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("speed") && sender.hasPermission("sentinel.speed") && args.length > 1) {
             try {
-                Double d = Double.valueOf(args[1]);
+                Double d = Double.parseDouble(args[1]);
                 if (d < 1000 && d >= 0) {
                     sentinel.speed = d;
                     sender.sendMessage(prefixGood + "Speed set!");
@@ -557,7 +557,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("greetrange") && sender.hasPermission("sentinel.speed") && args.length > 1) {
             try {
-                Double d = Double.valueOf(args[1]);
+                Double d = Double.parseDouble(args[1]);
                 if (d < 100) {
                     sentinel.greetRange = d;
                     sender.sendMessage(prefixGood + "Range set!");
@@ -573,7 +573,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("armor") && sender.hasPermission("sentinel.armor") && args.length > 1) {
             try {
-                Double d = Double.valueOf(args[1]);
+                Double d = Double.parseDouble(args[1]);
                 if (d <= 1) {
                     sentinel.armor = d;
                     sender.sendMessage(prefixGood + "Armor set!");
@@ -589,7 +589,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("health") && sender.hasPermission("sentinel.health") && args.length > 1) {
             try {
-                Double d = Double.valueOf(args[1]);
+                Double d = Double.parseDouble(args[1]);
                 if ((d >= SentinelTrait.healthMin) && (d <= maxHealth)) {
                     sentinel.setHealth(d);
                     sender.sendMessage(prefixGood + "Health set!");
@@ -605,7 +605,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("attackrate") && sender.hasPermission("sentinel.attackrate") && args.length > 1) {
             try {
-                double da = Double.valueOf(args[1]);
+                double da = Double.parseDouble(args[1]);
                 int d = (int)(da * 20);
                 if (d >= tickRate && d <= SentinelTrait.attackRateMax) {
                     if (args.length > 2 && args[2].contains("ranged")) {
@@ -628,7 +628,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("healrate") && sender.hasPermission("sentinel.healrate") && args.length > 1) {
             try {
-                double da = Double.valueOf(args[1]);
+                double da = Double.parseDouble(args[1]);
                 int d = (int)(da * 20);
                 if ((d >= tickRate && d <= SentinelTrait.healRateMax) || d == 0) {
                     sentinel.healRate = d;
@@ -645,7 +645,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("targettime") && sender.hasPermission("sentinel.targettime") && args.length > 1) {
             try {
-                double d = Double.valueOf(args[1]);
+                double d = Double.parseDouble(args[1]);
                 if (d >= 0) {
                     sentinel.enemyTargetTime = (int)(d * 20);
                     sender.sendMessage(prefixGood + "Target time set!");
@@ -661,7 +661,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("respawntime") && sender.hasPermission("sentinel.respawntime") && args.length > 1) {
             try {
-                double d = Double.valueOf(args[1]);
+                double d = Double.parseDouble(args[1]);
                 sentinel.respawnTime = (long)(d * 20);
                 sender.sendMessage(prefixGood + "Respawn time set!");
             }
@@ -672,7 +672,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("chaserange") && sender.hasPermission("sentinel.chaserange") && args.length > 1) {
             try {
-                double d = Double.valueOf(args[1]);
+                double d = Double.parseDouble(args[1]);
                 sentinel.chaseRange = d;
                 sender.sendMessage(prefixGood + "Chase range set!");
             }
@@ -683,7 +683,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         else if (arg0.equals("accuracy") && sender.hasPermission("sentinel.accuracy") && args.length > 1) {
             try {
-                double d = Double.valueOf(args[1]);
+                double d = Double.parseDouble(args[1]);
                 if (d < 0 || d > 10) {
                     throw new NumberFormatException("Number out of range!");
                 }
@@ -694,6 +694,22 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             catch (NumberFormatException ex) {
                 sender.sendMessage(prefixBad + "Invalid accuracy offset number: " + ex.getMessage());
+            }
+            return true;
+        }
+        else if (arg0.equals("reach") && sender.hasPermission("sentinel.reach") && args.length > 1) {
+            try {
+                double d = Double.parseDouble(args[1]);
+                if (d < 0) {
+                    throw new NumberFormatException("Number out of range!");
+                }
+                else {
+                    sentinel.reach = d;
+                    sender.sendMessage(prefixGood + "Reach set!");
+                }
+            }
+            catch (NumberFormatException ex) {
+                sender.sendMessage(prefixBad + "Invalid reach number: " + ex.getMessage());
             }
             return true;
         }
@@ -973,6 +989,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(prefixGood + "Heal Rate: " + ChatColor.AQUA + sentinel.healRate);
             sender.sendMessage(prefixGood + "Respawn Time: " + ChatColor.AQUA + sentinel.respawnTime);
             sender.sendMessage(prefixGood + "Accuracy: " + ChatColor.AQUA + sentinel.accuracy);
+            sender.sendMessage(prefixGood + "Reach: " + ChatColor.AQUA + sentinel.reach);
             sender.sendMessage(prefixGood + "Invincibility Enabled: " + ChatColor.AQUA + sentinel.invincible);
             sender.sendMessage(prefixGood + "Fightback Enabled: " + ChatColor.AQUA + sentinel.fightback);
             sender.sendMessage(prefixGood + "Ranged Chasing Enabled: " + ChatColor.AQUA + sentinel.rangedChase);
@@ -1016,7 +1033,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 sender.sendMessage(prefixGood + "/sentinel addignore TYPE - Ignores a target.");
             }
             if (sender.hasPermission("sentinel.removeignore")) {
-                sender.sendMessage(prefixGood + "/sentinel removeignore TYPE - Allows targetting a target.");
+                sender.sendMessage(prefixGood + "/sentinel removeignore TYPE - Allows targeting a target.");
             }
             if (sender.hasPermission("sentinel.range")) {
                 sender.sendMessage(prefixGood + "/sentinel range RANGE - Sets the NPC's maximum attack range.");
@@ -1097,7 +1114,10 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 sender.sendMessage(prefixGood + "/sentinel squad SQUAD - Sets the NPC's squad name (null for none).");
             }
             if (sender.hasPermission("sentinel.realistic")) {
-                sender.sendMessage(prefixGood + "/sentinel realistic - Toggles whether the NPC should use \"realistic\" targetting logic (don't attack things you can't see.)");
+                sender.sendMessage(prefixGood + "/sentinel realistic - Toggles whether the NPC should use \"realistic\" targeting logic (don't attack things you can't see.)");
+            }
+            if (sender.hasPermission("sentinel.reach")) {
+                sender.sendMessage(prefixGood + "/sentinel reach REACH - Sets the NPC's reach (how far it can punch.)");
             }
             if (sender.hasPermission("sentinel.greet")) {
                 sender.sendMessage(prefixGood + "/sentinel greeting GREETING - Sets a greeting message for the NPC to say.");

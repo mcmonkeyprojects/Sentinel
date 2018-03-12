@@ -227,6 +227,9 @@ public class SentinelTrait extends Trait {
     @Persist("realistic")
     public boolean realistic = false;
 
+    @Persist("reach")
+    public double reach = 3;
+
     public LivingEntity chasing = null;
 
     public UUID getGuarding() {
@@ -470,6 +473,7 @@ public class SentinelTrait extends Trait {
         autoswitch = config.getBoolean("sentinel defaults.autoswitch", false);
         ignores.add(SentinelTarget.OWNER.name());
         sentinelProtected = config.getBoolean("random.protected", false);
+        reach = config.getDouble("reach", 3);
     }
 
     public void useItem() {
@@ -497,7 +501,7 @@ public class SentinelTrait extends Trait {
 
     public double firingMinimumRange() {
         EntityType type = getLivingEntity().getType();
-        if (type == EntityType.WITHER || type == EntityType.WITHER) {
+        if (type == EntityType.WITHER || type == EntityType.GHAST) {
             return 8; // Yikes!
         }
         return 2;
@@ -1121,10 +1125,10 @@ public class SentinelTrait extends Trait {
         if (SentinelPlugin.debugMe) {
             SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack at range " + dist);
         }
-        if (autoswitch && dist > 3 * 3) {
+        if (autoswitch && dist > reach * reach) {
             swapToRanged();
         }
-        else if (autoswitch && dist < 3 * 3) {
+        else if (autoswitch && dist < reach * reach) {
             swapToMelee();
         }
         SentinelAttackEvent sat = new SentinelAttackEvent(npc);
@@ -1344,7 +1348,7 @@ public class SentinelTrait extends Trait {
             }
         }
         else {
-            if (dist < 3 * 3) {
+            if (dist < reach * reach) {
                 if (timeSinceAttack < attackRate) {
                     if (SentinelPlugin.debugMe) {
                         SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack refused, timeSinceAttack");

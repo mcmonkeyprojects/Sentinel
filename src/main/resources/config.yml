@@ -38,6 +38,8 @@ sentinel defaults:
     accuracy: 0
     # "Realistic" logic, don't attack targets we can't see, if enabled.
     realistic: false
+    # How far the NPC can reach.
+    reach: 3
 
 random:
     # What sound to play when the "spectral" attack is used.
@@ -67,4 +69,4 @@ random:
 update rate: 10
 
 # Do not touch! (Unless you know what you're doing!)
-config version: 8
+config version: 9

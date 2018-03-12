@@ -82,6 +82,8 @@ permissions:
       sentinel.realistic: true
       # /sentinel debug
       sentinel.debug: true
+      # /sentinel reach REACH
+      sentinel.reach: true
       # /sentinel greeting GREETING, sentinel warning WARNING, sentinel greetrange RANGE
       sentinel.greet: true
       # /sentinel info, /sentinel targets, /sentinel stats
