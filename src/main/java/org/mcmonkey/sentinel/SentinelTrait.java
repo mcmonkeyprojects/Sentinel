@@ -10,7 +10,6 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Inventory;
 import net.citizensnpcs.api.trait.trait.Owner;
-import net.citizensnpcs.api.trait.trait.Spawned;
 import net.citizensnpcs.trait.waypoint.Waypoint;
 import net.citizensnpcs.trait.waypoint.WaypointProvider;
 import net.citizensnpcs.trait.waypoint.Waypoints;
@@ -1859,6 +1858,9 @@ public class SentinelTrait extends Trait {
                 }
                 return;
             }
+        }
+        if (health != getLivingEntity().getMaxHealth()) {
+            getLivingEntity().setMaxHealth(health);
         }
         if (healRate > 0 && timeSinceHeal > healRate && getLivingEntity().getHealth() < health) {
             getLivingEntity().setHealth(Math.min(getLivingEntity().getHealth() + 1.0, health));
