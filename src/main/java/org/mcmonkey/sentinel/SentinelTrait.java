@@ -1828,7 +1828,7 @@ public class SentinelTrait extends Trait {
             SentinelPlugin.instance.getLogger().info("Sentinel: Player, I see you...");
         }
         if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
-            NMS.setShulkerPeek((Shulker) getLivingEntity(), 100);
+            NMS.setPeekShulker(getLivingEntity(), 100);
         }
     }
 
@@ -1837,7 +1837,7 @@ public class SentinelTrait extends Trait {
             SentinelPlugin.instance.getLogger().info("Sentinel: Goodbye, player.");
         }
         if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
-            NMS.setShulkerPeek((Shulker) getLivingEntity(), 0);
+            NMS.setPeekShulker(getLivingEntity(), 0);
         }
     }
 
