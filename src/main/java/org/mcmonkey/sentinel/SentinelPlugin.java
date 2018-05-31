@@ -128,7 +128,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 integrations.add(new SentinelTowny());
                 getLogger().info("Sentinel found Towny! Adding support for it!");
             }
-            catch (Exception ex) {
+            catch (Throwable ex) {
                 ex.printStackTrace();
             }
         }
@@ -137,7 +137,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 integrations.add(new SentinelFactions());
                 getLogger().info("Sentinel found Factions! Adding support for it!");
             }
-            catch (Exception ex) {
+            catch (Throwable ex) {
                 ex.printStackTrace();
             }
         }
@@ -146,7 +146,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 integrations.add(new SentinelCrackShot());
                 getLogger().info("Sentinel found CrackShot! Adding support for it!");
             }
-            catch (Exception ex) {
+            catch (Throwable ex) {
                 ex.printStackTrace();
             }
         }
@@ -155,7 +155,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 integrations.add(new SentinelSimpleClans());
                 getLogger().info("Sentinel found SimpleClans! Adding support for it!");
             }
-            catch (Exception ex) {
+            catch (Throwable ex) {
                 ex.printStackTrace();
             }
         }
