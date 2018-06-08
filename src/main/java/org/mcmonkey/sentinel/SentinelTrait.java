@@ -1749,6 +1749,7 @@ public class SentinelTrait extends Trait {
             return null;
         }
         LivingEntity closest = null;
+        boolean wasLos = false;
         for (LivingEntity ent : getLivingEntity().getWorld().getLivingEntities()) {
             if ((ignoreGlow && ent.isGlowing()) || ent.isDead()) {
                 continue;
@@ -1757,8 +1758,12 @@ public class SentinelTrait extends Trait {
             SentinelCurrentTarget sct = new SentinelCurrentTarget();
             sct.targetID = ent.getUniqueId();
             if ((dist < rangesquared && shouldTarget(ent) && canSee(ent)) || (dist < crsq && currentTargets.contains(sct))) {
-                rangesquared = dist;
-                closest = ent;
+                boolean hasLos = canSee(ent);
+                if (!wasLos || hasLos) {
+                    rangesquared = dist;
+                    closest = ent;
+                    wasLos = hasLos;
+                }
             }
         }
         return closest;
@@ -1825,7 +1830,7 @@ public class SentinelTrait extends Trait {
 
     public void specialMarkVision() {
         if (SentinelPlugin.debugMe) {
-            SentinelPlugin.instance.getLogger().info("Sentinel: Player, I see you...");
+            SentinelPlugin.instance.getLogger().info("Sentinel: Target! I see you, " + (chasing == null ? "(Unknown)" : chasing.getName()));
         }
         if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
             NMS.setPeekShulker(getLivingEntity(), 100);
@@ -1834,7 +1839,7 @@ public class SentinelTrait extends Trait {
 
     public void specialUnmarkVision() {
         if (SentinelPlugin.debugMe) {
-            SentinelPlugin.instance.getLogger().info("Sentinel: Goodbye, player.");
+            SentinelPlugin.instance.getLogger().info("Sentinel: Goodbye, visible target " + (chasing == null ? "(Unknown)" : chasing.getName()));
         }
         if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
             NMS.setPeekShulker(getLivingEntity(), 0);
@@ -1906,7 +1911,7 @@ public class SentinelTrait extends Trait {
                 cleverTicks = 0;
             }
         }
-        else if(chasing != null && chasing.isValid()) {
+        else if (chasing != null && chasing.isValid()) {
             cleverTicks++;
             if (cleverTicks >= SentinelPlugin.instance.getConfig().getInt("random.clever ticks", 10)) {
                 specialUnmarkVision();
