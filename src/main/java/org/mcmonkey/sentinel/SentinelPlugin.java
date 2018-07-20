@@ -67,13 +67,15 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
 
     public final static List<SentinelIntegration> integrations = new ArrayList<SentinelIntegration>();
 
+    public final static int CONFIG_VERSION = 9;
+
     @Override
     public void onEnable() {
         getLogger().info("Sentinel loading...");
         instance = this;
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SentinelTrait.class).withName("sentinel"));
         saveDefaultConfig();
-        if (getConfig().getInt("config version", 0) != 8) {
+        if (getConfig().getInt("config version", 0) != CONFIG_VERSION) {
             getLogger().warning("Outdated Sentinel config - please delete it to regenerate it!");
         }
         BukkitRunnable postLoad = new BukkitRunnable() {
