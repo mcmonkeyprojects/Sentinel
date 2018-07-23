@@ -701,22 +701,22 @@ public class SentinelTrait extends Trait {
             // TODO: Enchantments!
             double baseArmor = 0;
             ItemStack helmet = ent.getEquipment().getHelmet();
-            Double helmetAdder = SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(helmet.getType());
+            Double helmetAdder = helmet == null ? null : SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(helmet.getType());
             if (helmetAdder != null) {
                 baseArmor += helmetAdder;
             }
             ItemStack chestplate = ent.getEquipment().getChestplate();
-            Double chestplateAdder = SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(chestplate.getType());
+            Double chestplateAdder = chestplate == null ? null : SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(chestplate.getType());
             if (chestplateAdder != null) {
                 baseArmor += chestplateAdder;
             }
             ItemStack leggings = ent.getEquipment().getLeggings();
-            Double leggingsAdder = SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(leggings.getType());
+            Double leggingsAdder = leggings == null ? null : SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(leggings.getType());
             if (leggingsAdder != null) {
                 baseArmor += leggingsAdder;
             }
             ItemStack boots = ent.getEquipment().getBoots();
-            Double bootsAdder = SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(boots.getType());
+            Double bootsAdder = boots == null ? null : SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(boots.getType());
             if (bootsAdder != null) {
                 baseArmor += bootsAdder;
             }

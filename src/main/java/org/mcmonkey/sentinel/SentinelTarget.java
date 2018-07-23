@@ -242,17 +242,17 @@ public class SentinelTarget {
         // == Begin Materials ==
         if (v1_13) {
             // Sword
-            addAllMaterials(SWORD_MATERIALS, "DIAMOND_SWORD", "IRON_SWORD", "STONE_SWORD", "GOLDEN_SWORD", "WOOD_SWORD");
+            addAllMaterials(SWORD_MATERIALS, "DIAMOND_SWORD", "IRON_SWORD", "STONE_SWORD", "GOLDEN_SWORD", "WOODEN_SWORD");
             WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("DIAMOND_SWORD"), 7.0);
             WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("IRON_SWORD"), 6.0);
             WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("STONE_SWORD"), 5.0);
             WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("GOLDEN_SWORD"), 4.0);
-            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("WOOD_SWORD"), 4.0);
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("WOODEN_SWORD"), 4.0);
             // Pickaxe
-            addAllMaterials(PICKAXE_MATERIALS, "DIAMOND_PICKAXE", "IRON_PICKAXE", "STONE_PICKAXE", "GOLDEN_PICKAXE", "WOOD_PICKAXE");
+            addAllMaterials(PICKAXE_MATERIALS, "DIAMOND_PICKAXE", "IRON_PICKAXE", "STONE_PICKAXE", "GOLDEN_PICKAXE", "WOODEN_PICKAXE");
             allMaterialsTo(WEAPON_DAMAGE_MULTIPLIERS, PICKAXE_MATERIALS, 2.0);
             // Axe
-            addAllMaterials(AXE_MATERIALS, "DIAMOND_AXE", "IRON_AXE", "STONE_AXE", "GOLDEN_AXE", "WOOD_AXE");
+            addAllMaterials(AXE_MATERIALS, "DIAMOND_AXE", "IRON_AXE", "STONE_AXE", "GOLDEN_AXE", "WOODEN_AXE");
             allMaterialsTo(WEAPON_DAMAGE_MULTIPLIERS, AXE_MATERIALS, 3.0);
             // Bow
             BOW_MATERIALS.add(getMaterial("BOW"));
