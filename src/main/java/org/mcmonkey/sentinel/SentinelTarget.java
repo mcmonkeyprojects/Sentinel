@@ -1,9 +1,13 @@
 package org.mcmonkey.sentinel;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class SentinelTarget {
     public static SentinelTarget NPCS = new SentinelTarget(new EntityType[]{}, "NPC");
@@ -41,6 +45,22 @@ public class SentinelTarget {
     public static SentinelTarget ENDERMITES = new SentinelTarget(new  EntityType[]{EntityType.ENDERMITE}, "ENDERMITE", "ENDER_MITE");
     public static SentinelTarget WITHER = new SentinelTarget(new  EntityType[]{EntityType.WITHER}, "WITHER");
     public static SentinelTarget ENDERDRAGON = new SentinelTarget(new  EntityType[]{EntityType.ENDER_DRAGON}, "ENDERDRAGON", "ENDER_DRAGON");
+
+    public static final Set<Material> SWORD_MATERIALS = new HashSet<Material>();
+    public static final Set<Material> PICKAXE_MATERIALS = new HashSet<Material>();
+    public static final Set<Material> AXE_MATERIALS = new HashSet<Material>();
+    public static final Set<Material> HELMET_MATERIALS = new HashSet<Material>();
+    public static final Set<Material> CHESTPLATE_MATERIALS = new HashSet<Material>();
+    public static final Set<Material> LEGGINGS_MATERIALS = new HashSet<Material>();
+    public static final Set<Material> BOOTS_MATERIALS = new HashSet<Material>();
+    public static final Set<Material> BOW_MATERIALS = new HashSet<Material>();
+    public static final Set<Material> POTION_MATERIALS = new HashSet<Material>();
+    public static final Set<Material> SKULL_MATERIALS = new HashSet<Material>();
+
+    public static final Map<Material, Double> WEAPON_DAMAGE_MULTIPLIERS = new HashMap<Material, Double>();
+    public static final Map<Material, Double> ARMOR_PROTECTION_MULTIPLIERS = new HashMap<Material, Double>();
+
+    public static final Material MATERIAL_SNOW_BALL, MATERIAL_NETHER_STAR, MATERIAL_BLAZE_ROD;
 
     public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13;
 
@@ -193,7 +213,6 @@ public class SentinelTarget {
             SentinelTarget TURTLE = new SentinelTarget(new EntityType[]{EntityType.TURTLE}, "TURTLE");
         }
         if (v1_13) { // && !v1_14
-            // TODO: Full sets
             SentinelTarget PASSIVE_MOB = new SentinelTarget(new  EntityType[]{
                     EntityType.PIG, EntityType.OCELOT, EntityType.COW, EntityType.RABBIT, EntityType.SHEEP, EntityType.CHICKEN, EntityType.MUSHROOM_COW,
                     EntityType.HORSE, EntityType.IRON_GOLEM, EntityType.SQUID, EntityType.VILLAGER, EntityType.WOLF, EntityType.SNOWMAN, EntityType.POLAR_BEAR,
@@ -218,6 +237,141 @@ public class SentinelTarget {
                     EntityType.VEX, EntityType.HUSK, EntityType.ELDER_GUARDIAN, EntityType.EVOKER, EntityType.STRAY, EntityType.ZOMBIE_VILLAGER,
                     EntityType.WITHER_SKELETON, EntityType.VINDICATOR, EntityType.ILLUSIONER, EntityType.DROWNED, EntityType.PHANTOM
             }, "MONSTER");
+        }
+        // == End Entities ==
+        // == Begin Materials ==
+        if (v1_13) {
+            // Sword
+            addAllMaterials(SWORD_MATERIALS, "DIAMOND_SWORD", "IRON_SWORD", "STONE_SWORD", "GOLDEN_SWORD", "WOOD_SWORD");
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("DIAMOND_SWORD"), 7.0);
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("IRON_SWORD"), 6.0);
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("STONE_SWORD"), 5.0);
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("GOLDEN_SWORD"), 4.0);
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("WOOD_SWORD"), 4.0);
+            // Pickaxe
+            addAllMaterials(PICKAXE_MATERIALS, "DIAMOND_PICKAXE", "IRON_PICKAXE", "STONE_PICKAXE", "GOLDEN_PICKAXE", "WOOD_PICKAXE");
+            allMaterialsTo(WEAPON_DAMAGE_MULTIPLIERS, PICKAXE_MATERIALS, 2.0);
+            // Axe
+            addAllMaterials(AXE_MATERIALS, "DIAMOND_AXE", "IRON_AXE", "STONE_AXE", "GOLDEN_AXE", "WOOD_AXE");
+            allMaterialsTo(WEAPON_DAMAGE_MULTIPLIERS, AXE_MATERIALS, 3.0);
+            // Bow
+            BOW_MATERIALS.add(getMaterial("BOW"));
+            // Helmet
+            addAllMaterials(HELMET_MATERIALS, "DIAMOND_HELMET", "GOLDEN_HELMET", "IRON_HELMET", "LEATHER_HELMET", "CHAINMAIL_HELMET");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("DIAMOND_HELMET"), 0.12);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("GOLDEN_HELMET"), 0.08);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("IRON_HELMET"), 0.08);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("LEATHER_HELMET"), 0.04);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("CHAINMAIL_HELMET"), 0.08);
+            // Chestplate
+            addAllMaterials(CHESTPLATE_MATERIALS, "DIAMOND_CHESTPLATE", "GOLDEN_CHESTPLATE", "IRON_CHESTPLATE", "LEATHER_CHESTPLATE", "CHAINMAIL_CHESTPLATE");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("DIAMOND_CHESTPLATE"), 0.32);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("GOLDEN_CHESTPLATE"), 0.20);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("IRON_CHESTPLATE"), 0.24);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("LEATHER_CHESTPLATE"), 0.12);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("CHAINMAIL_CHESTPLATE"), 0.20);
+            // Leggings
+            addAllMaterials(LEGGINGS_MATERIALS, "DIAMOND_LEGGINGS", "GOLDEN_LEGGINGS", "IRON_LEGGINGS", "LEATHER_LEGGINGS", "CHAINMAIL_LEGGINGS");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("DIAMOND_LEGGINGS"), 0.24);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("GOLDEN_LEGGINGS"), 0.12);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("IRON_LEGGINGS"), 0.20);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("LEATHER_LEGGINGS"), 0.08);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("CHAINMAIL_LEGGINGS"), 0.16);
+            // Boots
+            addAllMaterials(BOOTS_MATERIALS, "DIAMOND_BOOTS", "GOLDEN_BOOTS", "IRON_BOOTS", "LEATHER_BOOTS", "CHAINMAIL_BOOTS");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("DIAMOND_BOOTS"), 0.12);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("GOLDEN_BOOTS"), 0.04);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("IRON_BOOTS"), 0.08);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("LEATHER_BOOTS"), 0.04);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("CHAINMAIL_BOOTS"), 0.04);
+            // Potions
+            addAllMaterials(POTION_MATERIALS, "POTION", "LINGERING_POTION", "SPLASH_POTION");
+            // Skulls
+            addAllMaterials(SKULL_MATERIALS, "WITHER_SKELETON_SKULL", "WITHER_SKELETON_WALL_SKULL");
+            // Weapons
+            MATERIAL_SNOW_BALL = getMaterial("SNOWBALL");
+            MATERIAL_NETHER_STAR = getMaterial("NETHER_STAR");
+            MATERIAL_BLAZE_ROD = getMaterial("BLAZE_ROD");
+        }
+        else { // v1_12 or lower
+            // Sword
+            addAllMaterials(SWORD_MATERIALS, "DIAMOND_SWORD", "IRON_SWORD", "STONE_SWORD", "GOLD_SWORD", "WOOD_SWORD");
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("DIAMOND_SWORD"), 7.0);
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("IRON_SWORD"), 6.0);
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("STONE_SWORD"), 5.0);
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("GOLD_SWORD"), 4.0);
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("WOOD_SWORD"), 4.0);
+            // Pickaxe
+            addAllMaterials(PICKAXE_MATERIALS, "DIAMOND_PICKAXE", "IRON_PICKAXE", "STONE_PICKAXE", "GOLD_PICKAXE", "WOOD_PICKAXE");
+            allMaterialsTo(WEAPON_DAMAGE_MULTIPLIERS, PICKAXE_MATERIALS, 2.0);
+            // Axe
+            addAllMaterials(AXE_MATERIALS, "DIAMOND_AXE", "IRON_AXE", "STONE_AXE", "GOLD_AXE", "WOOD_AXE");
+            allMaterialsTo(WEAPON_DAMAGE_MULTIPLIERS, AXE_MATERIALS, 3.0);
+            // Bow
+            BOW_MATERIALS.add(getMaterial("BOW"));
+            // Helmet
+            addAllMaterials(HELMET_MATERIALS, "DIAMOND_HELMET", "GOLD_HELMET", "IRON_HELMET", "LEATHER_HELMET", "CHAINMAIL_HELMET");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("DIAMOND_HELMET"), 0.12);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("GOLD_HELMET"), 0.08);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("IRON_HELMET"), 0.08);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("LEATHER_HELMET"), 0.04);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("CHAINMAIL_HELMET"), 0.08);
+            // Chestplate
+            addAllMaterials(CHESTPLATE_MATERIALS, "DIAMOND_CHESTPLATE", "GOLD_CHESTPLATE", "IRON_CHESTPLATE", "LEATHER_CHESTPLATE", "CHAINMAIL_CHESTPLATE");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("DIAMOND_CHESTPLATE"), 0.32);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("GOLD_CHESTPLATE"), 0.20);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("IRON_CHESTPLATE"), 0.24);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("LEATHER_CHESTPLATE"), 0.12);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("CHAINMAIL_CHESTPLATE"), 0.20);
+            // Leggings
+            addAllMaterials(LEGGINGS_MATERIALS, "DIAMOND_LEGGINGS", "GOLD_LEGGINGS", "IRON_LEGGINGS", "LEATHER_LEGGINGS", "CHAINMAIL_LEGGINGS");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("DIAMOND_LEGGINGS"), 0.24);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("GOLD_LEGGINGS"), 0.12);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("IRON_LEGGINGS"), 0.20);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("LEATHER_LEGGINGS"), 0.08);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("CHAINMAIL_LEGGINGS"), 0.16);
+            // Boots
+            addAllMaterials(BOOTS_MATERIALS, "DIAMOND_BOOTS", "GOLD_BOOTS", "IRON_BOOTS", "LEATHER_BOOTS", "CHAINMAIL_BOOTS");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("DIAMOND_BOOTS"), 0.12);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("GOLD_BOOTS"), 0.04);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("IRON_BOOTS"), 0.08);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("LEATHER_BOOTS"), 0.04);
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("CHAINMAIL_BOOTS"), 0.04);
+            // Potions
+            if (v1_9) {
+                addAllMaterials(POTION_MATERIALS, "POTION", "LINGERING_POTION", "SPLASH_POTION");
+            }
+            else {
+                addAllMaterials(POTION_MATERIALS, "POTION");
+            }
+            // Skulls
+            addAllMaterials(SKULL_MATERIALS, "SKULL", "SKULL_ITEM");
+            // Weapons
+            MATERIAL_SNOW_BALL = getMaterial("SNOW_BALL");
+            MATERIAL_NETHER_STAR = getMaterial("NETHER_STAR");
+            MATERIAL_BLAZE_ROD = getMaterial("BLAZE_ROD");
+        }
+    }
+
+    public static Material getMaterial(String name) {
+        try {
+            return Material.valueOf(name);
+        }
+        catch (IllegalArgumentException ex) {
+            SentinelPlugin.instance.getLogger().warning("Sentinel loader failed to handle material name '" + name + "', that material will not function (REPORT THIS ERROR!)");
+            return Material.valueOf("STICK");
+        }
+    }
+
+    public static void addAllMaterials(Set<Material> set, String... matNames) {
+        for (String mat : matNames) {
+            set.add(getMaterial(mat));
+        }
+    }
+
+    public static void allMaterialsTo(Map<Material, Double> map, Set<Material> set, Double val) {
+        for (Material mat : set) {
+            map.put(mat, val);
         }
     }
 

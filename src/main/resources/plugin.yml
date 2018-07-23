@@ -5,6 +5,8 @@ main: org.mcmonkey.sentinel.SentinelPlugin
 depend: [Citizens]
 softdepend: [Vault, Sentry, CrackShot, Factions, Towny, SimpleClans]
 
+api-version: 1.13
+
 commands:
   sentinel:
     description: Lists Sentinel commands.

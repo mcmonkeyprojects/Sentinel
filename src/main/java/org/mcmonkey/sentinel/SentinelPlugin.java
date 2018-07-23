@@ -43,6 +43,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
 
     public int cleverTicks;
 
+    public boolean canUseSkull;
+
     public void tryGetPerms() {
         if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
             return;
@@ -81,6 +83,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             getLogger().warning("Outdated Sentinel config - please delete it to regenerate it!");
         }
         cleverTicks = getConfig().getInt("random.clever ticks", 10);
+        canUseSkull = getConfig().getBoolean("random.skull allowed", true);
         BukkitRunnable postLoad = new BukkitRunnable() {
             @Override
             public void run() {

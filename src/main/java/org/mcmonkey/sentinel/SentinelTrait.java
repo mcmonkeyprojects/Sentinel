@@ -667,51 +667,33 @@ public class SentinelTrait extends Trait {
     }
 
     public double getDamage() {
-        if (damage < 0) {
-            ItemStack weapon;
-            if (SentinelTarget.v1_9) {
-                weapon = getLivingEntity().getEquipment().getItemInMainHand();
-            }
-            else {
-                weapon = getLivingEntity().getEquipment().getItemInHand();
-            }
-            if (weapon == null) {
-                return 1;
-            }
-            // TODO: Less randomness, more game-like calculations.
-            double multiplier = 1;
-            multiplier += weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.DAMAGE_ALL)
-                    ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
-            switch (weapon.getType()) {
-                case BOW:
-                    return 6 * (1 + (weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)
-                            ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3));
-                case DIAMOND_SWORD:
-                    return 7 * multiplier;
-                case IRON_SWORD:
-                    return 6 * multiplier;
-                case STONE_SWORD:
-                    return 5 * multiplier;
-                case GOLD_SWORD:
-                case WOOD_SWORD:
-                    return 4 * multiplier;
-                case DIAMOND_AXE:
-                case IRON_AXE:
-                case STONE_AXE:
-                case GOLD_AXE:
-                case WOOD_AXE:
-                    return 3 * multiplier;
-                case DIAMOND_PICKAXE:
-                case IRON_PICKAXE:
-                case STONE_PICKAXE:
-                case GOLD_PICKAXE:
-                case WOOD_PICKAXE:
-                    return 2 * multiplier;
-                default:
-                    return 1 * multiplier;
-            }
+        if (damage >= 0) {
+            return damage;
         }
-        return damage;
+        ItemStack weapon;
+        if (SentinelTarget.v1_9) {
+            weapon = getLivingEntity().getEquipment().getItemInMainHand();
+        }
+        else {
+            weapon = getLivingEntity().getEquipment().getItemInHand();
+        }
+        if (weapon == null) {
+            return 1;
+        }
+        // TODO: Less randomness, more game-like calculations.
+        double multiplier = 1;
+        multiplier += weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.DAMAGE_ALL)
+                ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
+        Material weaponType = weapon.getType();
+        if (SentinelTarget.BOW_MATERIALS.contains(weaponType)) {
+            return 6 * (1 + (weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)
+                    ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3));
+        }
+        Double damageMult = SentinelTarget.WEAPON_DAMAGE_MULTIPLIERS.get(weaponType);
+        if (damageMult == null) {
+            return multiplier;
+        }
+        return multiplier * damageMult;
     }
 
     public double getArmor(LivingEntity ent) {
@@ -719,68 +701,24 @@ public class SentinelTrait extends Trait {
             // TODO: Enchantments!
             double baseArmor = 0;
             ItemStack helmet = ent.getEquipment().getHelmet();
-            if (helmet != null && helmet.getType() == Material.DIAMOND_HELMET) {
-                baseArmor += 0.12;
-            }
-            if (helmet != null && helmet.getType() == Material.GOLD_HELMET) {
-                baseArmor += 0.08;
-            }
-            if (helmet != null && helmet.getType() == Material.IRON_HELMET) {
-                baseArmor += 0.08;
-            }
-            if (helmet != null && helmet.getType() == Material.LEATHER_HELMET) {
-                baseArmor += 0.04;
-            }
-            if (helmet != null && helmet.getType() == Material.CHAINMAIL_HELMET) {
-                baseArmor += 0.08;
+            Double helmetAdder = SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(helmet.getType());
+            if (helmetAdder != null) {
+                baseArmor += helmetAdder;
             }
             ItemStack chestplate = ent.getEquipment().getChestplate();
-            if (chestplate != null && chestplate.getType() == Material.DIAMOND_CHESTPLATE) {
-                baseArmor += 0.32;
-            }
-            if (chestplate != null && chestplate.getType() == Material.GOLD_CHESTPLATE) {
-                baseArmor += 0.20;
-            }
-            if (chestplate != null && chestplate.getType() == Material.IRON_CHESTPLATE) {
-                baseArmor += 0.24;
-            }
-            if (chestplate != null && chestplate.getType() == Material.LEATHER_CHESTPLATE) {
-                baseArmor += 0.12;
-            }
-            if (chestplate != null && chestplate.getType() == Material.CHAINMAIL_CHESTPLATE) {
-                baseArmor += 0.20;
+            Double chestplateAdder = SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(chestplate.getType());
+            if (chestplateAdder != null) {
+                baseArmor += chestplateAdder;
             }
             ItemStack leggings = ent.getEquipment().getLeggings();
-            if (leggings != null && leggings.getType() == Material.DIAMOND_LEGGINGS) {
-                baseArmor += 0.24;
-            }
-            if (leggings != null && leggings.getType() == Material.GOLD_LEGGINGS) {
-                baseArmor += 0.12;
-            }
-            if (leggings != null && leggings.getType() == Material.IRON_LEGGINGS) {
-                baseArmor += 0.20;
-            }
-            if (leggings != null && leggings.getType() == Material.LEATHER_LEGGINGS) {
-                baseArmor += 0.08;
-            }
-            if (leggings != null && leggings.getType() == Material.CHAINMAIL_LEGGINGS) {
-                baseArmor += 0.16;
+            Double leggingsAdder = SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(leggings.getType());
+            if (leggingsAdder != null) {
+                baseArmor += leggingsAdder;
             }
             ItemStack boots = ent.getEquipment().getBoots();
-            if (boots != null && boots.getType() == Material.DIAMOND_BOOTS) {
-                baseArmor += 0.12;
-            }
-            if (boots != null && boots.getType() == Material.GOLD_BOOTS) {
-                baseArmor += 0.04;
-            }
-            if (boots != null && boots.getType() == Material.IRON_BOOTS) {
-                baseArmor += 0.08;
-            }
-            if (boots != null && boots.getType() == Material.LEATHER_BOOTS) {
-                baseArmor += 0.04;
-            }
-            if (boots != null && boots.getType() == Material.CHAINMAIL_BOOTS) {
-                baseArmor += 0.04;
+            Double bootsAdder = SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(boots.getType());
+            if (bootsAdder != null) {
+                baseArmor += bootsAdder;
             }
             return Math.min(baseArmor, 0.80);
         }
@@ -946,7 +884,7 @@ public class SentinelTrait extends Trait {
             ItemStack item = items[i];
             if (item != null) {
                 Material mat = item.getType();
-                if (mat == Material.SNOW_BALL) {
+                if (mat == SentinelTarget.MATERIAL_SNOW_BALL) {
                     if (item.getAmount() > 1) {
                         item.setAmount(item.getAmount() - 1);
                         items[i] = item;
@@ -991,33 +929,13 @@ public class SentinelTrait extends Trait {
     }
 
     public boolean isWeapon(Material mat) {
-        switch (mat) {
-            case SPLASH_POTION:
-            case LINGERING_POTION:
-            case SNOW_BALL:
-            case BOW:
-            case NETHER_STAR:
-            case BLAZE_ROD:
-            case DIAMOND_SWORD:
-            case GOLD_SWORD:
-            case IRON_SWORD:
-            case WOOD_SWORD:
-            case DIAMOND_PICKAXE:
-            case GOLD_PICKAXE:
-            case IRON_PICKAXE:
-            case WOOD_PICKAXE:
-            case DIAMOND_AXE:
-            case GOLD_AXE:
-            case IRON_AXE:
-            case WOOD_AXE:
-            case DIAMOND_SPADE:
-            case GOLD_SPADE:
-            case IRON_SPADE:
-            case WOOD_SPADE:
-                return true;
-            default:
-                return false;
-        }
+        return SentinelTarget.WEAPON_DAMAGE_MULTIPLIERS.containsKey(mat)
+                || SentinelTarget.POTION_MATERIALS.contains(mat)
+                || SentinelTarget.BOW_MATERIALS.contains(mat)
+                || SentinelTarget.SKULL_MATERIALS.contains(mat)
+                || mat == SentinelTarget.MATERIAL_SNOW_BALL
+                || mat == SentinelTarget.MATERIAL_BLAZE_ROD
+                || mat == SentinelTarget.MATERIAL_NETHER_STAR;
     }
 
     public void grabNextItem() {
@@ -1448,7 +1366,7 @@ public class SentinelTrait extends Trait {
             return false;
         }
         ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
-        return it != null && it.getType() == Material.BLAZE_ROD;
+        return it != null && it.getType() == SentinelTarget.MATERIAL_BLAZE_ROD;
     }
 
     public boolean usesSnowball() {
@@ -1456,7 +1374,7 @@ public class SentinelTrait extends Trait {
             return false;
         }
         ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
-        return it != null && it.getType() == Material.SNOW_BALL;
+        return it != null && it.getType() == SentinelTarget.MATERIAL_SNOW_BALL;
     }
 
     public boolean usesLightning() {
@@ -1464,7 +1382,7 @@ public class SentinelTrait extends Trait {
             return false;
         }
         ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
-        return it != null && it.getType() == Material.NETHER_STAR;
+        return it != null && it.getType() == SentinelTarget.MATERIAL_NETHER_STAR;
     }
 
     public boolean usesEgg() {
@@ -1487,12 +1405,11 @@ public class SentinelTrait extends Trait {
         if (!npc.hasTrait(Inventory.class)) {
             return false;
         }
-        if (!SentinelPlugin.instance.getConfig().getBoolean("random.skull allowed", true)) {
+        if (!SentinelPlugin.instance.canUseSkull) {
             return false;
         }
         ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
-        return it != null && (it.getType() == Material.SKULL_ITEM
-                || it.getType() == Material.SKULL);
+        return it != null && SentinelTarget.SKULL_MATERIALS.contains(it.getType());
     }
 
     public boolean usesSpectral() {
@@ -1528,8 +1445,8 @@ public class SentinelTrait extends Trait {
         else {
             type = getLivingEntity().getEquipment().getItemInHand().getType();
         }
-        return type == Material.BOW || type == Material.DIAMOND_SWORD || type == Material.GOLD_SWORD
-                || type == Material.IRON_SWORD || type == Material.WOOD_SWORD; // TODO: Tools?
+        return SentinelTarget.BOW_MATERIALS.contains(type) || SentinelTarget.SWORD_MATERIALS.contains(type)
+                || SentinelTarget.PICKAXE_MATERIALS.contains(type) || SentinelTarget.AXE_MATERIALS.contains(type);
     }
 
     public boolean shouldTarget(LivingEntity entity) {
