@@ -42,15 +42,16 @@ public class SentinelTarget {
     public static SentinelTarget WITHER = new SentinelTarget(new  EntityType[]{EntityType.WITHER}, "WITHER");
     public static SentinelTarget ENDERDRAGON = new SentinelTarget(new  EntityType[]{EntityType.ENDER_DRAGON}, "ENDERDRAGON", "ENDER_DRAGON");
 
-    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12;
+    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13;
 
     static {
-        String vers = Bukkit.getServer().getVersion();
-        v1_12 = vers.contains("1.12");
-        v1_11 = vers.contains("1.11") || v1_12;
-        v1_10 = vers.contains("1.10") || v1_11;
-        v1_9 = vers.contains("1.9") || v1_10;
-        v1_8 = vers.contains("1.8") || v1_9;
+        String vers = Bukkit.getBukkitVersion(); // Returns in format like: 1.12.2-R0.1-SNAPSHOT
+        v1_13 = vers.startsWith("1.13");
+        v1_12 = vers.startsWith("1.12") || v1_13;
+        v1_11 = vers.startsWith("1.11") || v1_12;
+        v1_10 = vers.startsWith("1.10") || v1_11;
+        v1_9 = vers.startsWith("1.9") || v1_10;
+        v1_8 = vers.startsWith("1.8") || v1_9;
         if (v1_8 && !v1_9) {
             SentinelTarget PASSIVE_MOB = new SentinelTarget(new  EntityType[]{
                     EntityType.PIG, EntityType.OCELOT, EntityType.COW, EntityType.RABBIT, EntityType.SHEEP, EntityType.CHICKEN, EntityType.MUSHROOM_COW,
@@ -157,7 +158,7 @@ public class SentinelTarget {
             SentinelTarget PARROTS = new SentinelTarget(new EntityType[]{EntityType.PARROT}, "PARROT");
             SentinelTarget ILLUSIONERS = new SentinelTarget(new EntityType[]{EntityType.ILLUSIONER}, "ILLUSIONER");
         }
-        if (v1_12) { // && !v1_13
+        if (v1_12 && !v1_13) {
             SentinelTarget PASSIVE_MOB = new SentinelTarget(new  EntityType[]{
                     EntityType.PIG, EntityType.OCELOT, EntityType.COW, EntityType.RABBIT, EntityType.SHEEP, EntityType.CHICKEN, EntityType.MUSHROOM_COW,
                     EntityType.HORSE, EntityType.IRON_GOLEM, EntityType.SQUID, EntityType.VILLAGER, EntityType.WOLF, EntityType.SNOWMAN, EntityType.POLAR_BEAR,
@@ -179,6 +180,43 @@ public class SentinelTarget {
                     EntityType.ENDERMITE, EntityType.WITHER, EntityType.ENDER_DRAGON, EntityType.WITCH,
                     EntityType.VEX, EntityType.HUSK, EntityType.ELDER_GUARDIAN, EntityType.EVOKER, EntityType.STRAY, EntityType.ZOMBIE_VILLAGER,
                     EntityType.WITHER_SKELETON, EntityType.VINDICATOR, EntityType.ILLUSIONER
+            }, "MONSTER");
+        }
+        if (v1_13) {
+            SentinelTarget DOLPHIN = new SentinelTarget(new EntityType[]{EntityType.DOLPHIN}, "DOLPHIN");
+            SentinelTarget DROWNED = new SentinelTarget(new EntityType[]{EntityType.DROWNED}, "DROWNED");
+            SentinelTarget COD = new SentinelTarget(new EntityType[]{EntityType.COD}, "COD");
+            SentinelTarget SALMON = new SentinelTarget(new EntityType[]{EntityType.SALMON}, "SALMON");
+            SentinelTarget PUFFERFISH = new SentinelTarget(new EntityType[]{EntityType.PUFFERFISH}, "PUFFERFISH");
+            SentinelTarget TROPICAL_FISH = new SentinelTarget(new EntityType[]{EntityType.TROPICAL_FISH}, "TROPICAL_FISH", "TROPICALFISH");
+            SentinelTarget PHANTOM = new SentinelTarget(new EntityType[]{EntityType.PHANTOM}, "PHANTOM");
+            SentinelTarget TURTLE = new SentinelTarget(new EntityType[]{EntityType.TURTLE}, "TURTLE");
+        }
+        if (v1_13) { // && !v1_14
+            // TODO: Full sets
+            SentinelTarget PASSIVE_MOB = new SentinelTarget(new  EntityType[]{
+                    EntityType.PIG, EntityType.OCELOT, EntityType.COW, EntityType.RABBIT, EntityType.SHEEP, EntityType.CHICKEN, EntityType.MUSHROOM_COW,
+                    EntityType.HORSE, EntityType.IRON_GOLEM, EntityType.SQUID, EntityType.VILLAGER, EntityType.WOLF, EntityType.SNOWMAN, EntityType.POLAR_BEAR,
+                    EntityType.DONKEY, EntityType.LLAMA, EntityType.MULE, EntityType.ZOMBIE_HORSE, EntityType.SKELETON_HORSE, EntityType.PARROT,
+                    EntityType.DOLPHIN, EntityType.COD, EntityType.SALMON, EntityType.PUFFERFISH, EntityType.TROPICAL_FISH, EntityType.TURTLE
+            }, "PASSIVE_MOB", "PASSIVEMOB", "GOODMOB", "GOOD_MOB", "FRIENDLYMOB", "FRIENDLY_MOB");
+            SentinelTarget MOBS = new SentinelTarget(new  EntityType[]{EntityType.GUARDIAN, EntityType.SHULKER, EntityType.CREEPER, EntityType.SKELETON, EntityType.ZOMBIE,
+                    EntityType.MAGMA_CUBE, EntityType.PIG_ZOMBIE, EntityType.SILVERFISH, EntityType.BAT, EntityType.BLAZE,
+                    EntityType.GHAST, EntityType.GIANT, EntityType.SLIME, EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ENDERMAN,
+                    EntityType.ENDERMITE, EntityType.WITHER, EntityType.ENDER_DRAGON, EntityType.WITCH,
+                    EntityType.PIG, EntityType.OCELOT, EntityType.COW, EntityType.RABBIT, EntityType.SHEEP, EntityType.CHICKEN, EntityType.MUSHROOM_COW,
+                    EntityType.HORSE, EntityType.IRON_GOLEM, EntityType.SQUID, EntityType.VILLAGER, EntityType.WOLF, EntityType.SNOWMAN, EntityType.POLAR_BEAR,
+                    EntityType.DONKEY, EntityType.LLAMA, EntityType.MULE, EntityType.ZOMBIE_HORSE, EntityType.SKELETON_HORSE,
+                    EntityType.VEX, EntityType.HUSK, EntityType.ELDER_GUARDIAN, EntityType.EVOKER, EntityType.STRAY, EntityType.ZOMBIE_VILLAGER,
+                    EntityType.WITHER_SKELETON, EntityType.VINDICATOR, EntityType.PARROT, EntityType.ILLUSIONER, EntityType.DROWNED, EntityType.PHANTOM,
+                    EntityType.DOLPHIN, EntityType.COD, EntityType.SALMON, EntityType.PUFFERFISH, EntityType.TROPICAL_FISH, EntityType.TURTLE
+            }, "MOB");
+            SentinelTarget MONSTERS = new SentinelTarget(new  EntityType[]{EntityType.GUARDIAN, EntityType.SHULKER, EntityType.CREEPER, EntityType.SKELETON, EntityType.ZOMBIE,
+                    EntityType.MAGMA_CUBE, EntityType.PIG_ZOMBIE, EntityType.SILVERFISH, EntityType.BAT, EntityType.BLAZE,
+                    EntityType.GHAST, EntityType.GIANT, EntityType.SLIME, EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ENDERMAN,
+                    EntityType.ENDERMITE, EntityType.WITHER, EntityType.ENDER_DRAGON, EntityType.WITCH,
+                    EntityType.VEX, EntityType.HUSK, EntityType.ELDER_GUARDIAN, EntityType.EVOKER, EntityType.STRAY, EntityType.ZOMBIE_VILLAGER,
+                    EntityType.WITHER_SKELETON, EntityType.VINDICATOR, EntityType.ILLUSIONER, EntityType.DROWNED, EntityType.PHANTOM
             }, "MONSTER");
         }
     }
