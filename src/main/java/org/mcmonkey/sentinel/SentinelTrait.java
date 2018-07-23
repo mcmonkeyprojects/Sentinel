@@ -1913,7 +1913,7 @@ public class SentinelTrait extends Trait {
         }
         else if (chasing != null && chasing.isValid()) {
             cleverTicks++;
-            if (cleverTicks >= SentinelPlugin.instance.getConfig().getInt("random.clever ticks", 10)) {
+            if (cleverTicks >= SentinelPlugin.instance.cleverTicks) {
                 specialUnmarkVision();
                 chasing = null;
             }

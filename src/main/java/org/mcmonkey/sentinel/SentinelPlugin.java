@@ -41,6 +41,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
 
     public double maxHealth;
 
+    public int cleverTicks;
+
     public void tryGetPerms() {
         if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
             return;
@@ -78,6 +80,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         if (getConfig().getInt("config version", 0) != CONFIG_VERSION) {
             getLogger().warning("Outdated Sentinel config - please delete it to regenerate it!");
         }
+        cleverTicks = getConfig().getInt("random.clever ticks", 10);
         BukkitRunnable postLoad = new BukkitRunnable() {
             @Override
             public void run() {
