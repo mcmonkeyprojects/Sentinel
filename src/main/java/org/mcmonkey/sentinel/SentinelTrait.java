@@ -1521,15 +1521,34 @@ public class SentinelTrait extends Trait {
         if (isInvisible(entity)) {
             return true;
         }
-        if (entity.hasMetadata("NPC")) {
-            return ignores.contains(SentinelTarget.NPCS.name()) ||
-                    isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), npcNameIgnores);
-        }
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             return true;
         }
         if (getGuarding() != null && entity.getUniqueId().equals(getGuarding())) {
             return true;
+        }
+        if (SentinelTarget.v1_9) {
+            if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
+                    && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemIgnores)) {
+                return true;
+            }
+        }
+        else {
+            if (entity.getEquipment() != null && entity.getEquipment().getItemInHand() != null
+                    && isRegexTargeted(entity.getEquipment().getItemInHand().getType().name(), heldItemIgnores)) {
+                return true;
+            }
+        }
+        for (SentinelIntegration integration : SentinelPlugin.integrations) {
+            for (String text : otherIgnores) {
+                if (integration.isTarget(entity, text)) {
+                    return true;
+                }
+            }
+        }
+        if (entity.hasMetadata("NPC")) {
+            return ignores.contains(SentinelTarget.NPCS.name()) ||
+                    isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), npcNameIgnores);
         }
         else if (entity instanceof Player) {
             if (((Player) entity).getGameMode() == GameMode.CREATIVE || ((Player) entity).getGameMode() == GameMode.SPECTATOR) {
@@ -1558,25 +1577,6 @@ public class SentinelTrait extends Trait {
                 return true;
             }
         }
-        if (SentinelTarget.v1_9) {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
-                    && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemIgnores)) {
-                return true;
-            }
-        }
-        else {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInHand() != null
-                    && isRegexTargeted(entity.getEquipment().getItemInHand().getType().name(), heldItemIgnores)) {
-                return true;
-            }
-        }
-        for (SentinelIntegration integration : SentinelPlugin.integrations) {
-            for (String text : otherIgnores) {
-                if (integration.isTarget(entity, text)) {
-                    return true;
-                }
-            }
-        }
         return false;
     }
 
@@ -1594,6 +1594,25 @@ public class SentinelTrait extends Trait {
         }
         if (currentTargets.contains(target)) {
             return true;
+        }
+        if (SentinelTarget.v1_9) {
+            if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
+                    && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemTargets)) {
+                return true;
+            }
+        }
+        else {
+            if (entity.getEquipment() != null && entity.getEquipment().getItemInHand() != null
+                    && isRegexTargeted(entity.getEquipment().getItemInHand().getType().name(), heldItemTargets)) {
+                return true;
+            }
+        }
+        for (SentinelIntegration integration : SentinelPlugin.integrations) {
+            for (String text : otherTargets) {
+                if (integration.isTarget(entity, text)) {
+                    return true;
+                }
+            }
         }
         if (entity.hasMetadata("NPC")) {
             return targets.contains(SentinelTarget.NPCS.name()) ||
@@ -1621,25 +1640,6 @@ public class SentinelTrait extends Trait {
         for (SentinelTarget poss : possible) {
             if (targets.contains(poss.name())) {
                 return true;
-            }
-        }
-        if (SentinelTarget.v1_9) {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
-                    && isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), heldItemTargets)) {
-                return true;
-            }
-        }
-        else {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInHand() != null
-                    && isRegexTargeted(entity.getEquipment().getItemInHand().getType().name(), heldItemTargets)) {
-                return true;
-            }
-        }
-        for (SentinelIntegration integration : SentinelPlugin.integrations) {
-            for (String text : otherTargets) {
-                if (integration.isTarget(entity, text)) {
-                    return true;
-                }
             }
         }
         return false;
