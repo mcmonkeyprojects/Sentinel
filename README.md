@@ -130,6 +130,8 @@ These are all valid targets and ignores:
 - Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
 - Sentinels will guard a point or path if either is set using the command "`/npc path`"
 - To make a ghast or blaze fire fireballs, give them a blazerod!
+- Damage value for a Sentinel NPC can be set to "-1" to auto-calculate from held item (otherwise, it will used as a raw HP damage amount).
+- Armor value can be set to "-1" to auto-calculate from equipped armor (otherwise, set a value between 0.0 and 1.0 to indicate how much of any damage will be blocked).
 
 ### Need help using Sentinel? Try one of these places:
 
