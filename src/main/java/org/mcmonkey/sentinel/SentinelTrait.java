@@ -1974,12 +1974,36 @@ public class SentinelTrait extends Trait {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerTeleports(PlayerTeleportEvent event) {
+    public void onPlayerTeleports(final PlayerTeleportEvent event) {
         if (event.isCancelled()) {
             return;
         }
-        if (getGuarding() != null && event.getPlayer().getUniqueId().equals(getGuarding())) {
+        if (getGuarding() == null) {
+            return;
+        }
+        if (!event.getPlayer().getUniqueId().equals(getGuarding())) {
+            return;
+        }
+        if (!npc.isSpawned()) {
+            return;
+        }
+        if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             npc.teleport(event.getTo(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        }
+        else { // World loading up can cause glitches.
+            event.getFrom().getChunk().load();
+            event.getTo().getChunk().load();
+            Bukkit.getScheduler().runTaskLater(SentinelPlugin.instance, new Runnable() {
+                @Override
+                public void run() {
+                    if (!event.getPlayer().getWorld().equals(event.getTo().getWorld())) {
+                        return;
+                    }
+                    event.getFrom().getChunk().load();
+                    event.getTo().getChunk().load();
+                    npc.spawn(event.getTo());
+                }
+            }, 1);
         }
     }
 
