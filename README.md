@@ -108,6 +108,7 @@ These are all valid targets and ignores:
 - Also, sbteam:SCOREBOARD\_TEAM\_HERE
 - Also, healthabove:PERCENTAGE and healthbelow:PERCENTAGE
 - Also, permission:PERM.KEY
+- Also, squad:SENTINEL\_SQUAD\_NAME
 - Also anything listed in the integrations section above!
 
 ### Some random supported things

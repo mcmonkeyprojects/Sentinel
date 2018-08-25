@@ -131,6 +131,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         integrations.add(new SentinelHealth());
         integrations.add(new SentinelPermissions());
         integrations.add(new SentinelSBTeams());
+        integrations.add(new SentinelSquads());
         if (Bukkit.getPluginManager().getPlugin("Towny") != null) {
             try {
                 integrations.add(new SentinelTowny());
