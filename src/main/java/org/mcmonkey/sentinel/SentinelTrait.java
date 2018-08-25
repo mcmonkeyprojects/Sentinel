@@ -16,6 +16,7 @@ import net.citizensnpcs.trait.waypoint.Waypoints;
 import net.citizensnpcs.util.NMS;
 import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.*;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -1763,6 +1764,45 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    public static Random random = new Random();
+
+    public static double randomDecimal(double min, double max) {
+        return (random.nextDouble() * (max - min)) + min;
+    }
+
+    public int ticksCountGuard = 0;
+
+    public static Location rayTrace(Location start, Location end) {
+        double dSq = start.distanceSquared(end);
+        if (dSq < 1) {
+            if (end.getBlock().getType().isSolid()) {
+                return start.clone();
+            }
+            return end.clone();
+        }
+        double dist = Math.sqrt(dSq);
+        Vector move = end.toVector().subtract(start.toVector()).multiply(1.0 / dist);
+        int iters = (int) Math.ceil(dist);
+        Location cur = start.clone();
+        Location next = cur.clone().add(move);
+        for (int i = 0; i < iters; i++) {
+            if (next.getBlock().getType().isSolid()) {
+                return cur;
+            }
+            cur = cur.add(move);
+            next = next.add(move);
+        }
+        return cur;
+    }
+
+    public static Location pickNear(Location start, double range) {
+        Location hit = rayTrace(start.clone().add(0, 1.5, 0), start.clone().add(randomDecimal(-range, range), 1.5, randomDecimal(range, range)));
+        if (hit.subtract(0, 1, 0).getBlock().getType().isSolid()) {
+            return hit;
+        }
+        return hit.subtract(0, 1, 0);
+    }
+
     public void runUpdate() {
         canEnforce = true;
         timeSinceAttack += SentinelPlugin.instance.tickRate;
@@ -1855,11 +1895,17 @@ public class SentinelTrait extends Trait {
                     npc.teleport(player.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 }
                 if (dist > 7 * 7) {
-                    npc.getNavigator().getDefaultParameters().range(100);
-                    npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
-                    npc.getNavigator().setTarget(player.getLocation());
-                    npc.getNavigator().getLocalParameters().speedModifier((float) speed);
-                    chased = true;
+                    // TODO: distance margins (7 above, 2 below, 4 below) configuration options?
+                    ticksCountGuard += SentinelPlugin.instance.tickRate;
+                    if (ticksCountGuard >= 30) {
+                        ticksCountGuard = 0;
+                        npc.getNavigator().getDefaultParameters().distanceMargin(2);
+                        npc.getNavigator().getDefaultParameters().range(100);
+                        npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
+                        npc.getNavigator().setTarget(pickNear(player.getLocation(), 4));
+                        npc.getNavigator().getLocalParameters().speedModifier((float) speed);
+                        chased = true;
+                    }
                 }
                 goHome = false;
             }
