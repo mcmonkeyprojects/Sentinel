@@ -276,6 +276,9 @@ public class SentinelTrait extends Trait {
                     whenAttacksHappened(event);
                     if (!event.isCancelled()) {
                         ((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
+                        if (event.getEntity() instanceof LivingEntity) {
+                            knockback((LivingEntity) event.getEntity());
+                        }
                     }
                     if (SentinelPlugin.debugMe) {
                         SentinelPlugin.instance.getLogger().info("Sentinel: enforce damage value to " + event.getFinalDamage());
@@ -301,6 +304,9 @@ public class SentinelTrait extends Trait {
                         whenAttacksHappened(event);
                         if (!event.isCancelled()) {
                             ((LivingEntity) event.getEntity()).damage(getDamage());
+                            if (event.getEntity() instanceof LivingEntity) {
+                                knockback((LivingEntity) event.getEntity());
+                            }
                         }
                         if (SentinelPlugin.debugMe) {
                             SentinelPlugin.instance.getLogger().info("Sentinel: enforce damage value to " + getDamage());
@@ -736,6 +742,17 @@ public class SentinelTrait extends Trait {
         return armor;
     }
 
+    public void knockback(LivingEntity entity) {
+        Vector relative = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector());
+        relative = relative.normalize();
+        relative.setY(0.75);
+        relative.multiply(0.5);
+        entity.setVelocity(entity.getVelocity().add(relative));
+        if (SentinelPlugin.debugMe) {
+            SentinelPlugin.instance.getLogger().info("Sentinel: applied knockback velocity adder of " + relative);
+        }
+    }
+
     public void punch(LivingEntity entity) {
         faceLocation(entity.getLocation());
         swingWeapon();
@@ -746,11 +763,7 @@ public class SentinelTrait extends Trait {
                  + ((getDamage() * (1.0 - getArmor(entity)))));
             }
             entity.damage(getDamage() * (1.0 - getArmor(entity)));
-            Vector relative = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector());
-            relative = relative.normalize();
-            relative.setY(0.75);
-            relative.multiply(0.5);
-            entity.setVelocity(entity.getVelocity().add(relative));
+            knockback(entity);
             if (!enemyDrops) {
                 needsDropsClear.put(entity.getUniqueId(), true);
             }
