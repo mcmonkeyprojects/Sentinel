@@ -8,8 +8,11 @@ Please fill in the three slots below (with EXACT copy-pastes or screenshots!)...
 The output of command `/version` on my server is: **(PLEASE FILL IN)**
 The output of command `/version citizens` on my server is: **(PLEASE FILL IN)**
 The output of command `/version sentinel` on my server is: **(PLEASE FILL IN)**
+A pastebin.com link to my (full!) `Sentinel/config.yml` file is: **(PLEASE FILL IN)**
 
 <!--
 Now, describe your issue or feature request below.
 If you have any error messages or relevant server logs, please include them via pastebin.
+If an NPC is misbehaving in any way,
+please include the section of `Citizens/saves.yml` with the save details for that NPC via pastebin.
 -->
