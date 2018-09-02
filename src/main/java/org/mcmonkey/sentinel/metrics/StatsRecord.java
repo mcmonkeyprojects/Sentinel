@@ -1,7 +1,8 @@
-package org.mcmonkey.sentinel;
+package org.mcmonkey.sentinel.metrics;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.mcmonkey.sentinel.SentinelPlugin;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

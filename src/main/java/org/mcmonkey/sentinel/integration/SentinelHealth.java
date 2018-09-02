@@ -1,9 +1,6 @@
 package org.mcmonkey.sentinel.integration;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
 import org.mcmonkey.sentinel.SentinelIntegration;
 
 public class SentinelHealth extends SentinelIntegration {

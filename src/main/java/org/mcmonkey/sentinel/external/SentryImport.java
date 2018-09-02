@@ -1,4 +1,4 @@
-package org.mcmonkey.sentinel;
+package org.mcmonkey.sentinel.external;
 
 import java.util.UUID;
 
@@ -10,6 +10,9 @@ import net.aufdemrand.sentry.SentryInstance;
 import net.aufdemrand.sentry.SentryTrait;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import org.mcmonkey.sentinel.SentinelPlugin;
+import org.mcmonkey.sentinel.SentinelTarget;
+import org.mcmonkey.sentinel.SentinelTrait;
 
 public class SentryImport implements Listener {
 

@@ -46,19 +46,19 @@ public class SentinelTarget {
     public static SentinelTarget WITHER = new SentinelTarget(new  EntityType[]{EntityType.WITHER}, "WITHER");
     public static SentinelTarget ENDERDRAGON = new SentinelTarget(new  EntityType[]{EntityType.ENDER_DRAGON}, "ENDERDRAGON", "ENDER_DRAGON");
 
-    public static final Set<Material> SWORD_MATERIALS = new HashSet<Material>();
-    public static final Set<Material> PICKAXE_MATERIALS = new HashSet<Material>();
-    public static final Set<Material> AXE_MATERIALS = new HashSet<Material>();
-    public static final Set<Material> HELMET_MATERIALS = new HashSet<Material>();
-    public static final Set<Material> CHESTPLATE_MATERIALS = new HashSet<Material>();
-    public static final Set<Material> LEGGINGS_MATERIALS = new HashSet<Material>();
-    public static final Set<Material> BOOTS_MATERIALS = new HashSet<Material>();
-    public static final Set<Material> BOW_MATERIALS = new HashSet<Material>();
-    public static final Set<Material> POTION_MATERIALS = new HashSet<Material>();
-    public static final Set<Material> SKULL_MATERIALS = new HashSet<Material>();
+    public static final Set<Material> SWORD_MATERIALS = new HashSet<>();
+    public static final Set<Material> PICKAXE_MATERIALS = new HashSet<>();
+    public static final Set<Material> AXE_MATERIALS = new HashSet<>();
+    public static final Set<Material> HELMET_MATERIALS = new HashSet<>();
+    public static final Set<Material> CHESTPLATE_MATERIALS = new HashSet<>();
+    public static final Set<Material> LEGGINGS_MATERIALS = new HashSet<>();
+    public static final Set<Material> BOOTS_MATERIALS = new HashSet<>();
+    public static final Set<Material> BOW_MATERIALS = new HashSet<>();
+    public static final Set<Material> POTION_MATERIALS = new HashSet<>();
+    public static final Set<Material> SKULL_MATERIALS = new HashSet<>();
 
-    public static final Map<Material, Double> WEAPON_DAMAGE_MULTIPLIERS = new HashMap<Material, Double>();
-    public static final Map<Material, Double> ARMOR_PROTECTION_MULTIPLIERS = new HashMap<Material, Double>();
+    public static final Map<Material, Double> WEAPON_DAMAGE_MULTIPLIERS = new HashMap<>();
+    public static final Map<Material, Double> ARMOR_PROTECTION_MULTIPLIERS = new HashMap<>();
 
     public static final Material MATERIAL_SNOW_BALL, MATERIAL_NETHER_STAR, MATERIAL_BLAZE_ROD;
 

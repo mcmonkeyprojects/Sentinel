@@ -69,4 +69,4 @@ random:
 update rate: 10
 
 # Do not touch! (Unless you know what you're doing!)
-config version: 9
+config version: 10

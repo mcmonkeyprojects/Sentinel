@@ -16,7 +16,6 @@ import net.citizensnpcs.trait.waypoint.Waypoints;
 import net.citizensnpcs.util.NMS;
 import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.*;
-import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -96,49 +95,49 @@ public class SentinelTrait extends Trait {
     public double stats_damageGiven = 0;
 
     @Persist("targets")
-    public HashSet<String> targets = new HashSet<String>();
+    public HashSet<String> targets = new HashSet<>();
 
     @Persist("ignores")
-    public HashSet<String> ignores = new HashSet<String>();
+    public HashSet<String> ignores = new HashSet<>();
 
     @Persist("playerNameTargets")
-    public List<String> playerNameTargets = new ArrayList<String>();
+    public List<String> playerNameTargets = new ArrayList<>();
 
     @Persist("playerNameIgnores")
-    public List<String> playerNameIgnores = new ArrayList<String>();
+    public List<String> playerNameIgnores = new ArrayList<>();
 
     @Persist("npcNameTargets")
-    public List<String> npcNameTargets = new ArrayList<String>();
+    public List<String> npcNameTargets = new ArrayList<>();
 
     @Persist("npcNameIgnores")
-    public List<String> npcNameIgnores = new ArrayList<String>();
+    public List<String> npcNameIgnores = new ArrayList<>();
 
     @Persist("entityNameTargets")
-    public List<String> entityNameTargets = new ArrayList<String>();
+    public List<String> entityNameTargets = new ArrayList<>();
 
     @Persist("entityNameIgnores")
-    public List<String> entityNameIgnores = new ArrayList<String>();
+    public List<String> entityNameIgnores = new ArrayList<>();
 
     @Persist("heldItemTargets")
-    public List<String> heldItemTargets = new ArrayList<String>();
+    public List<String> heldItemTargets = new ArrayList<>();
 
     @Persist("heldItemIgnores")
-    public List<String> heldItemIgnores = new ArrayList<String>();
+    public List<String> heldItemIgnores = new ArrayList<>();
 
     @Persist("groupTargets")
-    public List<String> groupTargets = new ArrayList<String>();
+    public List<String> groupTargets = new ArrayList<>();
 
     @Persist("groupIgnores")
-    public List<String> groupIgnores = new ArrayList<String>();
+    public List<String> groupIgnores = new ArrayList<>();
 
     @Persist("eventTargets")
-    public List<String> eventTargets = new ArrayList<String>();
+    public List<String> eventTargets = new ArrayList<>();
 
     @Persist("otherTargets")
-    public List<String> otherTargets = new ArrayList<String>();
+    public List<String> otherTargets = new ArrayList<>();
 
     @Persist("otherIgnores")
-    public List<String> otherIgnores = new ArrayList<String>();
+    public List<String> otherIgnores = new ArrayList<>();
 
     @Persist("range")
     public double range = 20.0;
@@ -195,7 +194,7 @@ public class SentinelTrait extends Trait {
     public Location spawnPoint = null;
 
     @Persist("drops")
-    public List<ItemStack> drops = new ArrayList<ItemStack>();
+    public List<ItemStack> drops = new ArrayList<>();
 
     @Persist("enemyDrops")
     public boolean enemyDrops = false;
@@ -544,7 +543,7 @@ public class SentinelTrait extends Trait {
         speeda = speeda + (1.188 * hangT * hangT);
         relative = relative.multiply(speeda / 20.0);
         start.setDirection(normrel);
-        return new HashMap.SimpleEntry<Location, Vector>(start, relative);
+        return new HashMap.SimpleEntry<>(start, relative);
     }
 
     public double randomAcc() {
@@ -802,8 +801,7 @@ public class SentinelTrait extends Trait {
         }
         Inventory inv = npc.getTrait(Inventory.class);
         ItemStack[] items = inv.getContents();
-        for (int i = 0; i < items.length; i++) {
-            ItemStack item = items[i];
+        for (ItemStack item : items) {
             if (item != null) {
                 Material mat = item.getType();
                 if (SentinelTarget.v1_9) {
@@ -1457,9 +1455,9 @@ public class SentinelTrait extends Trait {
         return isTargeted(entity) && !isIgnored(entity);
     }
 
-    public HashSet<SentinelCurrentTarget> currentTargets = new HashSet<SentinelCurrentTarget>();
+    public HashSet<SentinelCurrentTarget> currentTargets = new HashSet<>();
 
-    private HashSet<UUID> greetedAlready = new HashSet<UUID>();
+    private HashSet<UUID> greetedAlready = new HashSet<>();
 
     public void addTarget(UUID id) {
         if (id.equals(getLivingEntity().getUniqueId())) {
@@ -1704,7 +1702,7 @@ public class SentinelTrait extends Trait {
     }
 
     private void updateTargets() {
-        for (SentinelCurrentTarget uuid : new HashSet<SentinelCurrentTarget>(currentTargets)) {
+        for (SentinelCurrentTarget uuid : new HashSet<>(currentTargets)) {
             Entity e = getEntityForID(uuid.targetID);
             if (e == null) {
                 currentTargets.remove(uuid);
@@ -2079,7 +2077,7 @@ public class SentinelTrait extends Trait {
         }
     }
 
-    public HashMap<UUID, Boolean> needsDropsClear = new HashMap<UUID, Boolean>();
+    public HashMap<UUID, Boolean> needsDropsClear = new HashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void whenSomethingMightDie(EntityDamageByEntityEvent event) {

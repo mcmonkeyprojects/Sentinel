@@ -8,6 +8,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,8 +20,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.mcmonkey.sentinel.external.SentryImport;
 import org.mcmonkey.sentinel.integration.*;
+import org.mcmonkey.sentinel.metrics.MetricsLite;
+import org.mcmonkey.sentinel.metrics.StatsRecord;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class SentinelPlugin extends JavaPlugin implements Listener {
@@ -31,9 +37,9 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
 
     public static final String prefixBad = ChatColor.DARK_GREEN + "[Sentinel] " + ChatColor.RED;
 
-    static HashMap<String, SentinelTarget> targetOptions = new HashMap<String, SentinelTarget>();
+    static HashMap<String, SentinelTarget> targetOptions = new HashMap<>();
 
-    static HashMap<EntityType, HashSet<SentinelTarget>> entityToTargets = new HashMap<EntityType, HashSet<SentinelTarget>>();
+    static HashMap<EntityType, HashSet<SentinelTarget>> entityToTargets = new HashMap<>();
 
     public static SentinelPlugin instance;
 
@@ -63,15 +69,29 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
 
     public int tickRate = 10;
 
+    public final static int CONFIG_VERSION;
+
     static {
         for (EntityType type : EntityType.values()) {
-            entityToTargets.put(type, new HashSet<SentinelTarget>());
+            entityToTargets.put(type, new HashSet<>());
         }
+        int confVer;
+        try {
+            InputStream inputConfigStream = SentinelPlugin.class.getResourceAsStream("/config.yml");
+            InputStreamReader inputConfigReader = new InputStreamReader(inputConfigStream);
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(inputConfigReader);
+            inputConfigReader.close();
+            inputConfigStream.close();
+            confVer = config.getInt("config version");
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+            confVer = -1;
+        }
+        CONFIG_VERSION = confVer;
     }
 
-    public final static List<SentinelIntegration> integrations = new ArrayList<SentinelIntegration>();
-
-    public final static int CONFIG_VERSION = 9;
+    public final static List<SentinelIntegration> integrations = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -79,8 +99,18 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         instance = this;
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SentinelTrait.class).withName("sentinel"));
         saveDefaultConfig();
-        if (getConfig().getInt("config version", 0) != CONFIG_VERSION) {
-            getLogger().warning("Outdated Sentinel config - please delete it to regenerate it!");
+        int confVer = getConfig().getInt("config version", -1);
+        if (confVer != CONFIG_VERSION) {
+            if (CONFIG_VERSION == -1) {
+                getLogger().warning("Default config data could not be found. May be a jar file issue?");
+            }
+            else if (confVer == -1) {
+                getLogger().warning("Config data could not be found. May be an issue with your server plugins folder? (Check file access permissions).");
+            }
+            else {
+                getLogger().warning("Outdated or invalid Sentinel config - please delete it to regenerate it (keep a backup copy of the original)!"
+                        + " Expected version " + CONFIG_VERSION + " but you have " + confVer + ".");
+            }
         }
         cleverTicks = getConfig().getInt("random.clever ticks", 10);
         canUseSkull = getConfig().getBoolean("random.skull allowed", true);
@@ -90,10 +120,10 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (!npc.isSpawned() && npc.hasTrait(SentinelTrait.class)) {
                         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
-                        for (String target : new HashSet<String>(sentinel.targets)) {
+                        for (String target : new HashSet<>(sentinel.targets)) {
                             sentinel.targets.add(SentinelTarget.forName(target).name());
                         }
-                        for (String target : new HashSet<String>(sentinel.ignores)) {
+                        for (String target : new HashSet<>(sentinel.ignores)) {
                             sentinel.ignores.add(SentinelTarget.forName(target).name());
                         }
                         if (sentinel.respawnTime > 0) {

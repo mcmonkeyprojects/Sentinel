@@ -3,6 +3,9 @@ package org.mcmonkey.sentinel;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Random;
 
 public class SentinelUtilities {
@@ -38,10 +41,37 @@ public class SentinelUtilities {
     }
 
     public static String concatWithSpaces(String[] strs, int start) {
-        String temp = "";
+        StringBuilder temp = new StringBuilder();
         for (int i = start; i < strs.length; i++) {
-            temp += strs[i] + " ";
+            temp.append(strs[i]).append(" ");
         }
-        return temp;
+        return temp.toString();
+    }
+
+    public final static String encoding = "UTF-8";
+
+    public final static int buff10k = 1024 * 10;
+
+    /**
+     * Welcome to "Java is bad at basic operations".
+     */
+    public static String streamToString(InputStream is) {
+        try {
+            final char[] buffer = new char[buff10k];
+            final StringBuilder out = new StringBuilder();
+            try (Reader in = new InputStreamReader(is, encoding)) {
+                while (true) {
+                    int rsz = in.read(buffer, 0, buffer.length);
+                    if (rsz < 0) {
+                        break;
+                    }
+                    out.append(buffer, 0, rsz);
+                }
+            }
+            return out.toString();
+        }
+        catch (Exception ex) {
+            return null;
+        }
     }
 }
