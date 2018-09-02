@@ -281,12 +281,12 @@ public class SentinelTrait extends Trait {
                         }
                     }
                     if (SentinelPlugin.debugMe) {
-                        SentinelPlugin.instance.getLogger().info("Sentinel: enforce damage value to " + event.getFinalDamage());
+                        debug("enforce damage value to " + event.getFinalDamage());
                     }
                 }
                 else {
                     if (SentinelPlugin.debugMe) {
-                        SentinelPlugin.instance.getLogger().info("Sentinel: refuse damage enforcement");
+                        debug("refuse damage enforcement");
                     }
                 }
                 event.setDamage(0);
@@ -309,12 +309,12 @@ public class SentinelTrait extends Trait {
                             }
                         }
                         if (SentinelPlugin.debugMe) {
-                            SentinelPlugin.instance.getLogger().info("Sentinel: enforce damage value to " + getDamage());
+                            debug("enforce damage value to " + getDamage());
                         }
                     }
                     else {
                         if (SentinelPlugin.debugMe) {
-                            SentinelPlugin.instance.getLogger().info("Sentinel: refuse damage enforcement");
+                            debug("refuse damage enforcement");
                         }
                     }
                     event.setDamage(0);
@@ -329,7 +329,7 @@ public class SentinelTrait extends Trait {
                     if (mod != EntityDamageEvent.DamageModifier.BASE && event.isApplicable(mod)) {
                         event.setDamage(mod, event.getDamage(mod) * rel);
                         if (SentinelPlugin.debugMe) {
-                            SentinelPlugin.instance.getLogger().info("Sentinel: Set damage for " + mod + " to " + event.getDamage(mod));
+                            debug("Set damage for " + mod + " to " + event.getDamage(mod));
                         }
                     }
                 }
@@ -359,7 +359,7 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
-        boolean isKilling = event.getEntity() instanceof LivingEntity && event.getFinalDamage() > ((LivingEntity) event.getEntity()).getHealth();
+        boolean isKilling = event.getEntity() instanceof LivingEntity && event.getFinalDamage() >= ((LivingEntity) event.getEntity()).getHealth();
         boolean isFriend = getGuarding() != null && event.getEntity().getUniqueId().equals(getGuarding());
         boolean attackerIsMe = event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId());
         if (isMe || isFriend) {
@@ -383,10 +383,16 @@ public class SentinelTrait extends Trait {
                     addTarget(((LivingEntity) source).getUniqueId());
                 }
             }
+            if (SentinelPlugin.debugMe && isMe) {
+                debug("Took damage of " + event.getFinalDamage() + " with currently remaining health " + getLivingEntity().getHealth());
+            }
             if (isKilling && isMe && SentinelPlugin.instance.blockEvents) {
                 // We're going to die but we've been requested to avoid letting a death event fire.
                 // The solution at this point is to fake our death: remove the NPC entity from existence and trigger our internal death handling sequence.
                 // We also mark the damage event cancelled to reduce trouble (ensure event doesn't try to apply damage to our now-gone entity).
+                if (SentinelPlugin.debugMe) {
+                    debug("Died! Applying death workaround (due to config setting)");
+                }
                 generalDeathHandler(getLivingEntity());
                 npc.despawn(DespawnReason.DEATH);
                 event.setCancelled(true);
@@ -749,7 +755,7 @@ public class SentinelTrait extends Trait {
         relative.multiply(0.5 / Math.max(1.0, entity.getVelocity().length()));
         entity.setVelocity(entity.getVelocity().multiply(0.25).add(relative));
         if (SentinelPlugin.debugMe) {
-            SentinelPlugin.instance.getLogger().info("Sentinel: applied knockback velocity adder of " + relative);
+            debug("applied knockback velocity adder of " + relative);
         }
     }
 
@@ -759,7 +765,7 @@ public class SentinelTrait extends Trait {
         stats_punches++;
         if (SentinelPlugin.instance.workaroundDamage) {
             if (SentinelPlugin.debugMe) {
-                SentinelPlugin.instance.getLogger().info("Sentinel: workaround damage value at " + getDamage() + " yields "
+                debug("workaround damage value at " + getDamage() + " yields "
                  + ((getDamage() * (1.0 - getArmor(entity)))));
             }
             entity.damage(getDamage() * (1.0 - getArmor(entity)));
@@ -770,7 +776,7 @@ public class SentinelTrait extends Trait {
         }
         else {
             if (SentinelPlugin.debugMe) {
-                SentinelPlugin.instance.getLogger().info("Sentinel: Punch/natural for " + getDamage());
+                debug("Punch/natural for " + getDamage());
             }
             entity.damage(getDamage(), getLivingEntity());
         }
@@ -1064,7 +1070,7 @@ public class SentinelTrait extends Trait {
         stats_attackAttempts++;
         double dist = getLivingEntity().getEyeLocation().distanceSquared(entity.getEyeLocation());
         if (SentinelPlugin.debugMe) {
-            SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack at range " + dist);
+            debug("tryAttack at range " + dist);
         }
         if (autoswitch && dist > reach * reach) {
             swapToRanged();
@@ -1076,7 +1082,7 @@ public class SentinelTrait extends Trait {
         Bukkit.getPluginManager().callEvent(sat);
         if (sat.isCancelled()) {
             if (SentinelPlugin.debugMe) {
-                SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack refused, event cancellation");
+                debug("tryAttack refused, event cancellation");
             }
             return;
         }
@@ -1245,7 +1251,7 @@ public class SentinelTrait extends Trait {
                 swingWeapon();
                 entity.getWorld().strikeLightningEffect(entity.getLocation());
                 if (SentinelPlugin.debugMe) {
-                    SentinelPlugin.instance.getLogger().info("Sentinel: Lightning hits for " + getDamage());
+                    debug("Lightning hits for " + getDamage());
                 }
                 entity.damage(getDamage());
                 if (needsAmmo) {
@@ -1292,7 +1298,7 @@ public class SentinelTrait extends Trait {
             if (dist < reach * reach) {
                 if (timeSinceAttack < attackRate) {
                     if (SentinelPlugin.debugMe) {
-                        SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack refused, timeSinceAttack");
+                        debug("tryAttack refused, timeSinceAttack");
                     }
                     if (closeChase) {
                         rechase();
@@ -1302,7 +1308,7 @@ public class SentinelTrait extends Trait {
                 timeSinceAttack = 0;
                 // TODO: Damage sword if needed!
                 if (SentinelPlugin.debugMe) {
-                    SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack passed!");
+                    debug("tryAttack passed!");
                 }
                 punch(entity);
                 if (needsAmmo && shouldTakeDura()) {
@@ -1312,7 +1318,7 @@ public class SentinelTrait extends Trait {
             }
             else if (closeChase) {
                 if (SentinelPlugin.debugMe) {
-                    SentinelPlugin.instance.getLogger().info("Sentinel: tryAttack refused, range");
+                    debug("tryAttack refused, range");
                 }
                 chase(entity);
             }
@@ -1771,7 +1777,7 @@ public class SentinelTrait extends Trait {
 
     public void specialMarkVision() {
         if (SentinelPlugin.debugMe) {
-            SentinelPlugin.instance.getLogger().info("Sentinel: Target! I see you, " + (chasing == null ? "(Unknown)" : chasing.getName()));
+            debug("Target! I see you, " + (chasing == null ? "(Unknown)" : chasing.getName()));
         }
         if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
             NMS.setPeekShulker(getLivingEntity(), 100);
@@ -1780,7 +1786,7 @@ public class SentinelTrait extends Trait {
 
     public void specialUnmarkVision() {
         if (SentinelPlugin.debugMe) {
-            SentinelPlugin.instance.getLogger().info("Sentinel: Goodbye, visible target " + (chasing == null ? "(Unknown)" : chasing.getName()));
+            debug("Goodbye, visible target " + (chasing == null ? "(Unknown)" : chasing.getName()));
         }
         if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
             NMS.setPeekShulker(getLivingEntity(), 0);
@@ -1832,7 +1838,7 @@ public class SentinelTrait extends Trait {
         timeSinceHeal += SentinelPlugin.instance.tickRate;
         if (getLivingEntity().getLocation().getY() <= 0) {
             if (SentinelPlugin.debugMe) {
-                SentinelPlugin.instance.getLogger().info("Sentinel: Injuring self, I'm below the map!");
+                debug("Injuring self, I'm below the map!");
             }
             getLivingEntity().damage(1);
             if (!npc.isSpawned()) {
@@ -1866,11 +1872,11 @@ public class SentinelTrait extends Trait {
         if (target != null) {
             Location near = nearestPathPoint();
             if (SentinelPlugin.debugMe) {
-                SentinelPlugin.instance.getLogger().info("Sentinel: target selected to be " + target.getName());
+                debug("target selected to be " + target.getName());
             }
             if (crsq <= 0 || near == null || near.distanceSquared(target.getLocation()) <= crsq) {
                 if (SentinelPlugin.debugMe) {
-                    SentinelPlugin.instance.getLogger().info("Sentinel: Attack target within range of safe zone: "
+                    debug("Attack target within range of safe zone: "
                             + (near == null ? "Any" : near.distanceSquared(target.getLocation())));
                 }
                 if (chasing == null) {
@@ -1883,7 +1889,7 @@ public class SentinelTrait extends Trait {
             }
             else {
                 if (SentinelPlugin.debugMe) {
-                    SentinelPlugin.instance.getLogger().info("Sentinel: Actually, that target is bad!");
+                    debug("Actually, that target is bad!");
                 }
                 specialUnmarkVision();
                 target = null;
@@ -1940,7 +1946,7 @@ public class SentinelTrait extends Trait {
             if (near != null && (chasing == null || near.distanceSquared(chasing.getLocation()) > crsq)) {
                 if (SentinelPlugin.debugMe) {
                     if (near.distanceSquared(getLivingEntity().getLocation()) > 3 * 3) {
-                        SentinelPlugin.instance.getLogger().info("Sentinel: screw you guys, I'm going home!");
+                        debug("screw you guys, I'm going home!");
                     }
                 }
                 npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
@@ -1954,7 +1960,7 @@ public class SentinelTrait extends Trait {
                 }
                 if (SentinelPlugin.debugMe) {
                     if (near != null && near.distanceSquared(getLivingEntity().getLocation()) > 3 * 3) {
-                        SentinelPlugin.instance.getLogger().info("Sentinel: I'll just stand here and hope they come out...");
+                        debug("I'll just stand here and hope they come out...");
                     }
                 }
             }
@@ -2111,10 +2117,19 @@ public class SentinelTrait extends Trait {
         needsDropsClear.remove(event.getEntity().getUniqueId());
     }
 
+    public void debug(String message) {
+        if (SentinelPlugin.debugMe) {
+            SentinelPlugin.instance.getLogger().info("Sentinel Debug: " + npc.getId() + "/" + npc.getName() + ": " + message);
+        }
+    }
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void whenWeDie(EntityDeathEvent event) {
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
                 && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getUniqueId().equals(npc.getUniqueId())) {
+            if (SentinelPlugin.debugMe) {
+                debug("Died! Death event received.");
+            }
             event.getDrops().clear();
             if (event instanceof PlayerDeathEvent && !SentinelPlugin.instance.deathMessages) {
                 ((PlayerDeathEvent) event).setDeathMessage("");
