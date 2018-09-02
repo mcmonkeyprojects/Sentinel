@@ -67,6 +67,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
 
     public boolean ignoreInvisible;
 
+    public int guardDistanceMinimum, guardDistanceSelectionRange, guardDistanceMargin;
+
     public void tryGetPerms() {
         if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
             return;
@@ -138,6 +140,9 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         deathMessages = getConfig().getBoolean("random.death messages", true);
         spectralSound = Sound.valueOf(getConfig().getString("random.spectral sound", "ENTITY_VILLAGER_YES"));
         ignoreInvisible = getConfig().getBoolean("random.ignore invisible targets");
+        guardDistanceMinimum = getConfig().getInt("random.guard follow distance.minimum", 7);
+        guardDistanceMargin = getConfig().getInt("random.guard follow distance.selction range", 4);
+        guardDistanceSelectionRange = getConfig().getInt("random.guard follow distance.margin", 2);
         BukkitRunnable postLoad = new BukkitRunnable() {
             @Override
             public void run() {

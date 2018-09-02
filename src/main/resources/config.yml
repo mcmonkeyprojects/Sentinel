@@ -67,6 +67,14 @@ random:
     max health: 2000
     # Whether to ignore targets that are invisible.
     ignore invisible targets: true
+    # Distances used for NPCs following their guarded player
+    guard follow distance:
+        # Maximum possible distance of point to choose (relative to the guarded player)
+        selction range: 4
+        # Minimum distance before choosing a new point (relative to guarded player)
+        minimum: 7
+        # Maximum distance an NPC must reach before being done walking (relative to the chosen point)
+        margin: 2
 
 # How fast to recalculate, in ticks.
 update rate: 10

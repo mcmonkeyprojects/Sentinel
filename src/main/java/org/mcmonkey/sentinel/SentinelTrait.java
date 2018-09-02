@@ -1916,15 +1916,14 @@ public class SentinelTrait extends Trait {
                 if (dist > 60 * 60) {
                     npc.teleport(player.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 }
-                if (dist > 7 * 7) {
-                    // TODO: distance margins (7 above, 2 below, 4 below) configuration options?
+                if (dist > SentinelPlugin.instance.guardDistanceMinimum * SentinelPlugin.instance.guardDistanceMinimum) {
                     ticksCountGuard += SentinelPlugin.instance.tickRate;
                     if (ticksCountGuard >= 30) {
                         ticksCountGuard = 0;
-                        npc.getNavigator().getDefaultParameters().distanceMargin(2);
+                        npc.getNavigator().getDefaultParameters().distanceMargin(SentinelPlugin.instance.guardDistanceMargin);
                         npc.getNavigator().getDefaultParameters().range(100);
                         npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
-                        npc.getNavigator().setTarget(pickNear(player.getLocation(), 4));
+                        npc.getNavigator().setTarget(pickNear(player.getLocation(), SentinelPlugin.instance.guardDistanceSelectionRange));
                         npc.getNavigator().getLocalParameters().speedModifier((float) speed);
                         chased = true;
                     }
