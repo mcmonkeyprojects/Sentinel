@@ -394,7 +394,7 @@ public class SentinelTrait extends Trait {
                     debug("Died! Applying death workaround (due to config setting)");
                 }
                 generalDeathHandler(getLivingEntity());
-                npc.despawn(DespawnReason.DEATH);
+                npc.despawn(DespawnReason.PLUGIN);
                 event.setCancelled(true);
                 return;
             }
