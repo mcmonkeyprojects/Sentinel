@@ -746,8 +746,8 @@ public class SentinelTrait extends Trait {
         Vector relative = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector());
         relative = relative.normalize();
         relative.setY(0.75);
-        relative.multiply(0.5);
-        entity.setVelocity(entity.getVelocity().add(relative));
+        relative.multiply(0.5 / Math.max(1.0, entity.getVelocity().length()));
+        entity.setVelocity(entity.getVelocity().multiply(0.25).add(relative));
         if (SentinelPlugin.debugMe) {
             SentinelPlugin.instance.getLogger().info("Sentinel: applied knockback velocity adder of " + relative);
         }
