@@ -51,6 +51,22 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
 
     public boolean canUseSkull;
 
+    public boolean blockEvents;
+
+    public boolean alternateDamage;
+
+    public boolean workaroundDamage;
+
+    public double minShootSpeed;
+
+    public boolean workaroundDrops;
+
+    public boolean deathMessages;
+
+    public Sound spectralSound;
+
+    public boolean ignoreInvisible;
+
     public void tryGetPerms() {
         if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
             return;
@@ -114,6 +130,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         cleverTicks = getConfig().getInt("random.clever ticks", 10);
         canUseSkull = getConfig().getBoolean("random.skull allowed", true);
+        blockEvents = getConfig().getBoolean("random.workaround bukkit events", false);
+        alternateDamage = getConfig().getBoolean("random.enforce damage", false);
+        workaroundDamage = getConfig().getBoolean("random.workaround damage", false);
+        minShootSpeed = getConfig().getDouble("random.shoot speed minimum", 20);
+        workaroundDrops = getConfig().getBoolean("random.workaround drops", false);
+        deathMessages = getConfig().getBoolean("random.death messages", true);
+        spectralSound = Sound.valueOf(getConfig().getString("random.spectral sound", "ENTITY_VILLAGER_YES"));
+        ignoreInvisible = getConfig().getBoolean("random.ignore invisible targets");
         BukkitRunnable postLoad = new BukkitRunnable() {
             @Override
             public void run() {

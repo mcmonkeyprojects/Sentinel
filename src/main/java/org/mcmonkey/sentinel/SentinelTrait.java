@@ -269,7 +269,7 @@ public class SentinelTrait extends Trait {
             return;
         }
         if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
-            if (SentinelPlugin.instance.getConfig().getBoolean("random.enforce damage", false)) {
+            if (SentinelPlugin.instance.alternateDamage) {
                 if (canEnforce) {
                     canEnforce = false;
                     whenAttacksHappened(event);
@@ -294,7 +294,7 @@ public class SentinelTrait extends Trait {
         if (event.getDamager() instanceof Projectile) {
             ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
             if (source instanceof LivingEntity && ((LivingEntity) source).getUniqueId().equals(getLivingEntity().getUniqueId())) {
-                if (SentinelPlugin.instance.getConfig().getBoolean("random.enforce damage", false)) {
+                if (SentinelPlugin.instance.alternateDamage) {
                     if (canEnforce) {
                         canEnforce = false;
                         whenAttacksHappened(event);
@@ -511,7 +511,7 @@ public class SentinelTrait extends Trait {
         faceLocation(target);
         double angt = Double.POSITIVE_INFINITY;
         Location start = getLivingEntity().getEyeLocation().clone().add(getLivingEntity().getEyeLocation().getDirection().multiply(firingMinimumRange()));
-        double sbase = SentinelPlugin.instance.getConfig().getDouble("random.shoot speed minimum", 20);
+        double sbase = SentinelPlugin.instance.minShootSpeed;
         for (speeda = sbase; speeda <= sbase + 15; speeda += 5) {
             angt = SentinelUtilities.getArrowAngle(start, target, speeda, 20);
             if (!Double.isInfinite(angt)) {
@@ -729,7 +729,7 @@ public class SentinelTrait extends Trait {
         faceLocation(entity.getLocation());
         swingWeapon();
         stats_punches++;
-        if (SentinelPlugin.instance.getConfig().getBoolean("random.workaround damage", false)) {
+        if (SentinelPlugin.instance.workaroundDamage) {
             if (SentinelPlugin.debugMe) {
                 SentinelPlugin.instance.getLogger().info("Sentinel: workaround damage value at " + getDamage() + " yields "
                  + ((getDamage() * (1.0 - getArmor(entity)))));
@@ -1244,7 +1244,7 @@ public class SentinelTrait extends Trait {
                 if (!entity.isGlowing()) {
                     swingWeapon();
                     try {
-                        Sound snd = Sound.valueOf(SentinelPlugin.instance.getConfig().getString("random.spectral sound", "ENTITY_VILLAGER_YES"));
+                        Sound snd = SentinelPlugin.instance.spectralSound;
                         if (snd != null) {
                             entity.getWorld().playSound(entity.getLocation(), snd, 1f, 1f);
                         }
@@ -1513,7 +1513,7 @@ public class SentinelTrait extends Trait {
                 && isAir(eq.getLeggings())
                 && isAir(eq.getChestplate())
                 && isAir(eq.getHelmet())
-                && SentinelPlugin.instance.getConfig().getBoolean("random.ignore invisible targets");
+                && SentinelPlugin.instance.ignoreInvisible;
     }
 
     public boolean isIgnored(LivingEntity entity) {
@@ -2089,10 +2089,10 @@ public class SentinelTrait extends Trait {
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
                 && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getUniqueId().equals(npc.getUniqueId())) {
             event.getDrops().clear();
-            if (event instanceof PlayerDeathEvent && !SentinelPlugin.instance.getConfig().getBoolean("random.death messages", true)) {
+            if (event instanceof PlayerDeathEvent && !SentinelPlugin.instance.deathMessages) {
                 ((PlayerDeathEvent) event).setDeathMessage("");
             }
-            if (!SentinelPlugin.instance.getConfig().getBoolean("random.workaround drops", false)) {
+            if (!SentinelPlugin.instance.workaroundDrops) {
                 event.getDrops().addAll(drops);
             }
             else {
