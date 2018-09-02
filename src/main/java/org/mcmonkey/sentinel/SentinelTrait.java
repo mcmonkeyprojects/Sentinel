@@ -5,6 +5,7 @@ import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
+import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -352,6 +353,7 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
+        boolean isKilling = event.getEntity() instanceof LivingEntity && event.getFinalDamage() > ((LivingEntity) event.getEntity()).getHealth();
         boolean isFriend = getGuarding() != null && event.getEntity().getUniqueId().equals(getGuarding());
         boolean attackerIsMe = event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId());
         if (isMe || isFriend) {
@@ -374,6 +376,15 @@ public class SentinelTrait extends Trait {
                     }
                     addTarget(((LivingEntity) source).getUniqueId());
                 }
+            }
+            if (isKilling && isMe && SentinelPlugin.instance.blockEvents) {
+                // We're going to die but we've been requested to avoid letting a death event fire.
+                // The solution at this point is to fake our death: remove the NPC entity from existence and trigger our internal death handling sequence.
+                // We also mark the damage event cancelled to reduce trouble (ensure event doesn't try to apply damage to our now-gone entity).
+                generalDeathHandler(getLivingEntity());
+                npc.despawn(DespawnReason.DEATH);
+                event.setCancelled(true);
+                return;
             }
             return;
         }
@@ -2095,14 +2106,18 @@ public class SentinelTrait extends Trait {
             if (!SentinelPlugin.instance.workaroundDrops) {
                 event.getDrops().addAll(drops);
             }
-            else {
-                for (ItemStack item : drops) {
-                    event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), item.clone());
-                }
-            }
             event.setDroppedExp(0);
-            onDeath();
+            generalDeathHandler(event.getEntity());
         }
+    }
+
+    public void generalDeathHandler(LivingEntity entity) {
+        if (SentinelPlugin.instance.workaroundDrops) {
+            for (ItemStack item : drops) {
+                entity.getWorld().dropItemNaturally(entity.getLocation(), item.clone());
+            }
+        }
+        onDeath();
     }
 
     @EventHandler(priority = EventPriority.LOW)

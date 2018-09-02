@@ -134,7 +134,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         alternateDamage = getConfig().getBoolean("random.enforce damage", false);
         workaroundDamage = getConfig().getBoolean("random.workaround damage", false);
         minShootSpeed = getConfig().getDouble("random.shoot speed minimum", 20);
-        workaroundDrops = getConfig().getBoolean("random.workaround drops", false);
+        workaroundDrops = getConfig().getBoolean("random.workaround drops", false) || blockEvents;
         deathMessages = getConfig().getBoolean("random.death messages", true);
         spectralSound = Sound.valueOf(getConfig().getString("random.spectral sound", "ENTITY_VILLAGER_YES"));
         ignoreInvisible = getConfig().getBoolean("random.ignore invisible targets");
