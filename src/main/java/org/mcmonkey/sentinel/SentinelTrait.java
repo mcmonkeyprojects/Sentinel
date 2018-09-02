@@ -776,8 +776,6 @@ public class SentinelTrait extends Trait {
         }
     }
 
-    Location bunny_goal = new Location(null, 0, 0, 0);
-
     public Entity getTargetFor(EntityTarget targ) {
         if (SentinelTarget.v1_9) {
             return targ.getTarget();
@@ -797,9 +795,7 @@ public class SentinelTrait extends Trait {
         if (npc.getNavigator().getTargetType() == TargetType.LOCATION
                 && npc.getNavigator().getTargetAsLocation() != null
                 && ((npc.getNavigator().getTargetAsLocation().getWorld().equals(entity.getWorld())
-                && npc.getNavigator().getTargetAsLocation().distanceSquared(entity.getLocation()) < 2 * 2)
-                || (npc.getNavigator().getTargetAsLocation().getWorld().equals(bunny_goal.getWorld())
-                && npc.getNavigator().getTargetAsLocation().distanceSquared(bunny_goal) < 2 * 2))) {
+                && npc.getNavigator().getTargetAsLocation().distanceSquared(entity.getLocation()) < 2 * 2))) {
             return;
         }
         cleverTicks = 0;
@@ -815,7 +811,12 @@ public class SentinelTrait extends Trait {
         npc.getNavigator().setTarget(goal);
         bunny_goal = goal;
         */
-        npc.getNavigator().setTarget(entity, false);
+        if (SentinelPlugin.instance.workaroundEntityChasePathfinder) {
+            npc.getNavigator().setTarget(entity.getLocation());
+        }
+        else {
+            npc.getNavigator().setTarget(entity, false);
+        }
         npc.getNavigator().getLocalParameters().speedModifier((float) speed);
     }
 
@@ -1891,6 +1892,9 @@ public class SentinelTrait extends Trait {
             }
         }
         else if (chasing != null && chasing.isValid()) {
+            if (SentinelPlugin.instance.workaroundEntityChasePathfinder) {
+                rechase();
+            }
             cleverTicks++;
             if (cleverTicks >= SentinelPlugin.instance.cleverTicks) {
                 specialUnmarkVision();
