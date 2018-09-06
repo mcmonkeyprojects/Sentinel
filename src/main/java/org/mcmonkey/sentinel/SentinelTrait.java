@@ -11,6 +11,8 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Inventory;
 import net.citizensnpcs.api.trait.trait.Owner;
+import net.citizensnpcs.api.trait.trait.Spawned;
+import net.citizensnpcs.trait.CurrentLocation;
 import net.citizensnpcs.trait.waypoint.Waypoint;
 import net.citizensnpcs.trait.waypoint.WaypointProvider;
 import net.citizensnpcs.trait.waypoint.Waypoints;
@@ -2143,6 +2145,9 @@ public class SentinelTrait extends Trait {
     }
 
     public void generalDeathHandler(LivingEntity entity) {
+        if (spawnPoint != null) {
+            npc.getTrait(CurrentLocation.class).setLocation(spawnPoint.clone());
+        }
         if (SentinelPlugin.instance.workaroundDrops) {
             for (ItemStack item : drops) {
                 entity.getWorld().dropItemNaturally(entity.getLocation(), item.clone());
@@ -2208,6 +2213,9 @@ public class SentinelTrait extends Trait {
                 }
             };
             respawnMe.runTaskTimer(SentinelPlugin.instance, 10, 10);
+        }
+        else { // respawnTime == 0
+            npc.getTrait(Spawned.class).setSpawned(false);
         }
     }
 
