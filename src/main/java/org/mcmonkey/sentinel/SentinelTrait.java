@@ -1080,6 +1080,7 @@ public class SentinelTrait extends Trait {
         else if (autoswitch && dist < reach * reach) {
             swapToMelee();
         }
+        chasing = entity;
         SentinelAttackEvent sat = new SentinelAttackEvent(npc);
         Bukkit.getPluginManager().callEvent(sat);
         if (sat.isCancelled()) {
