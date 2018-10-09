@@ -13,7 +13,8 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ### Donations
 
-**Support Sentinel on Patreon!**: https://www.patreon.com/denizenscript
+- **Support Sentinel on Patreon!**: https://www.patreon.com/denizenscript
+- **Join us on Discord!**: https://discord.gg/Q6pZGSR in the `#sentinel-lobby` channel.
 
 ### Info
 
@@ -141,11 +142,44 @@ These are all valid targets and ignores:
 - Damage value for a Sentinel NPC can be set to "-1" to auto-calculate from held item (otherwise, it will used as a raw HP damage amount).
 - Armor value can be set to "-1" to auto-calculate from equipped armor (otherwise, set a value between 0.0 and 1.0 to indicate how much of any damage will be blocked).
 
+### Integrating Your Plugin With Sentinel
+
+If you're building a separate plugin you would like to integrate into Sentinel, you should:
+
+- Use Maven to link the project properly...
+- Use the Citizens repository:
+```xml
+        <repository>
+            <id>citizens-repo</id>
+            <url>http://repo.citizensnpcs.co</url>
+        </repository>
+```
+- And add Sentinel as a `provided` dependency (be sure to change the version to match the current version available):
+```xml
+        <dependency>
+            <groupId>org.mcmonkey</groupId>
+            <artifactId>sentinel</artifactId>
+            <version>1.7.1-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+```
+- You may also want to link Citizens in Maven if you haven't already - see https://wiki.citizensnpcs.co/API for relevant information on that.
+
+----
+
+- Add a `depend` or `softdepend` (as relevant) on `Sentinel` to your `plugin.yml` file. See sample of how Sentinel does this to depend on other plugins here: https://github.com/mcmonkeyprojects/Sentinel/blob/master/src/main/resources/plugin.yml
+- When possible, take advantage of the `SentinelIntegration` class: http://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/SentinelIntegration.html
+    - Extend the class (with your own custom class) and implement whichever methods you need. See samples of integrations available here: https://github.com/mcmonkeyprojects/Sentinel/tree/master/src/main/java/org/mcmonkey/sentinel/integration
+    - Within your plugin's `onEnable`, Register the class by calling `SentinelPlugin.integrations.add(new YourIntegration());` where `YourIntegration` is the integration class you created.
+- You might also benefit from events like the `SentinelAttackEvent` http://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/events/SentinelAttackEvent.html
+- If you're lost, feel free to ask for help using the help channels listed below.
+
 ### Need help using Sentinel? Try one of these places:
 
-- **IRC** (Modern): http://webchat.esper.net/?channels=citizens
-	- (irc.esper.net in the channel #citizens)
+- **Discord** (Modern): https://discord.gg/Q6pZGSR in the `#sentinel-lobby` channel.
 - **Spigot Info Page** (Modern): https://www.spigotmc.org/resources/sentinel.22017/
+- The GitHub issues page
 
 ### Dependencies
 
