@@ -175,6 +175,9 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         CONFIG_VERSION = confVer;
     }
 
+    /**
+     * All current integrations available to Sentinel.
+     */
     public final static ArrayList<SentinelIntegration> integrations = new ArrayList<>();
 
     /**
