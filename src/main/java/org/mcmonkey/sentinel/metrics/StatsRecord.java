@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class StatsRecord extends Thread {
+
     @Override
     public void run() {
         BufferedReader in = null;

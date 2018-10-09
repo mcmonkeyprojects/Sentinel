@@ -36,7 +36,7 @@ public class SentinelCrackShot extends SentinelIntegration {
         direc.csminion.weaponInteraction((Player) st.getLivingEntity(), node, false);
         ((Player) st.getLivingEntity()).setItemInHand(itm);
         if (st.rangedChase) {
-            st.rechase();
+            st.attackHelper.rechase();
         }
         return true;
     }

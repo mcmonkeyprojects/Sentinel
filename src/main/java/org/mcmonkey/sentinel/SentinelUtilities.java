@@ -17,11 +17,55 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class SentinelUtilities {
+
+    /**
+     * A random object for reuse.
+     */
+    public static Random random = new Random();
+
+    /**
+     * Traces a ray from a start to an end, returning the end of the ray (stopped early if there are solid blocks in the way).
+     */
+    public static Location rayTrace(Location start, Location end) {
+        double dSq = start.distanceSquared(end);
+        if (dSq < 1) {
+            if (end.getBlock().getType().isSolid()) {
+                return start.clone();
+            }
+            return end.clone();
+        }
+        double dist = Math.sqrt(dSq);
+        Vector move = end.toVector().subtract(start.toVector()).multiply(1.0 / dist);
+        int iters = (int) Math.ceil(dist);
+        Location cur = start.clone();
+        Location next = cur.clone().add(move);
+        for (int i = 0; i < iters; i++) {
+            if (next.getBlock().getType().isSolid()) {
+                return cur;
+            }
+            cur = cur.add(move);
+            next = next.add(move);
+        }
+        return cur;
+    }
+
+    /**
+     * Picks an accessible location near the start location, within a range.
+     */
+    public static Location pickNear(Location start, double range) {
+        Location hit = rayTrace(start.clone().add(0, 1.5, 0), start.clone().add(
+                SentinelUtilities.randomDecimal(-range, range), 1.5, SentinelUtilities.randomDecimal(range, range)));
+        if (hit.subtract(0, 1, 0).getBlock().getType().isSolid()) {
+            return hit;
+        }
+        return hit.subtract(0, 1, 0);
+    }
 
     /**
      * Look up table for pre-compiled regex values.
@@ -43,9 +87,41 @@ public class SentinelUtilities {
     }
 
     /**
-     * A random object for reuse.
+     * Returns whether a list of regex values match the a string.
      */
-    public static Random random = new Random();
+    public static boolean isRegexTargeted(String name, List<String> regexes) {
+        for (String str : regexes) {
+            Pattern pattern = SentinelUtilities.regexFor(".*" + str + ".*");
+            if (pattern.matcher(name).matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Gets the yaw angle value (in degrees) for a vector.
+     */
+    public static float getYaw(Vector vector) {
+        double dx = vector.getX();
+        double dz = vector.getZ();
+        double yaw = 0;
+        // Set yaw
+        if (dx != 0) {
+            // Set yaw start value based on dx
+            if (dx < 0) {
+                yaw = 1.5 * Math.PI;
+            }
+            else {
+                yaw = 0.5 * Math.PI;
+            }
+            yaw -= Math.atan(dz / dx); // or atan2?
+        }
+        else if (dz < 0) {
+            yaw = Math.PI;
+        }
+        return (float) (-yaw * (180.0 / Math.PI));
+    }
 
     /**
      * Gets a random decimal from a minimum value to a maximum value.
