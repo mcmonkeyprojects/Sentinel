@@ -71,6 +71,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
 
     public boolean workaroundEntityChasePathfinder;
 
+    public boolean protectFromIgnores;
+
     public void tryGetPerms() {
         if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
             return;
@@ -146,6 +148,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         guardDistanceMargin = getConfig().getInt("random.guard follow distance.selction range", 4);
         guardDistanceSelectionRange = getConfig().getInt("random.guard follow distance.margin", 2);
         workaroundEntityChasePathfinder = getConfig().getBoolean("random.workaround entity chase pathfinder", false);
+        protectFromIgnores = getConfig().getBoolean("random.protected", false);
         BukkitRunnable postLoad = new BukkitRunnable() {
             @Override
             public void run() {

@@ -64,6 +64,19 @@ public class SentinelTarget {
 
     public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13;
 
+    /**
+     * Returns whether an item material is a valid weapon type.
+     */
+    public static boolean isWeapon(Material mat) {
+        return SentinelTarget.WEAPON_DAMAGE_MULTIPLIERS.containsKey(mat)
+                || SentinelTarget.POTION_MATERIALS.contains(mat)
+                || SentinelTarget.BOW_MATERIALS.contains(mat)
+                || SentinelTarget.SKULL_MATERIALS.contains(mat)
+                || mat == SentinelTarget.MATERIAL_SNOW_BALL
+                || mat == SentinelTarget.MATERIAL_BLAZE_ROD
+                || mat == SentinelTarget.MATERIAL_NETHER_STAR;
+    }
+
     static {
         String vers = Bukkit.getBukkitVersion(); // Returns in format like: 1.12.2-R0.1-SNAPSHOT
         v1_13 = vers.startsWith("1.13");

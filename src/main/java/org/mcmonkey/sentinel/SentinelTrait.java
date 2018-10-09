@@ -46,194 +46,388 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Pattern;
 
+/**
+ * The main Sentinel trait.
+ */
 public class SentinelTrait extends Trait {
 
+    /**
+     * Constant: the smallest health value that can be given to an NPC.
+     */
     public static final double healthMin = 0.01;
 
+    /**
+     * Constant: the maximum attack rate value (in ticks).
+     */
     public static final int attackRateMax = 2000;
 
+    /**
+     * Constant: the maximum heal rate value (in ticks).
+     */
     public static final int healRateMax = 2000;
 
+    /**
+     * Constructs the Sentinel Trait object - should only be called by the Citizens API internal functionality.
+     * To add Sentinel to an NPC, use {@code npc.addTrait(SentinelTrait.class)}.
+     */
     public SentinelTrait() {
         super("sentinel");
     }
 
+    /**
+     * Statistics value: how long (in ticks) this NPC has ever been in the world, in total.
+     */
     @Persist("stats_ticksSpawned")
     public long stats_ticksSpawned = 0;
 
+    /**
+     * Statistics value: how many times this NPC has spawned into the world.
+     */
     @Persist("stats_timesSpawned")
     public long stats_timesSpawned = 0;
 
+    /**
+     * Statistics value: how many arrows this NPC has fired.
+     */
     @Persist("stats_arrowsFired")
     public long stats_arrowsFired = 0;
 
+    /**
+     * Statistics value: how many potions this NPC has thrown.
+     */
     @Persist("stats_potionsThrow")
     public long stats_potionsThrown = 0;
 
+    /**
+     * Statistics value: how many fireballs this NPC has fired.
+     */
     @Persist("stats_fireballsFired")
     public long stats_fireballsFired = 0;
 
+    /**
+     * Statistics value: how many snowballs this NPC has thrown.
+     */
     @Persist("stats_snowballsThrown")
     public long stats_snowballsThrown = 0;
 
+    /**
+     * Statistics value: how many eggs this NPC has thrown.
+     */
     @Persist("stats_eggsThrown")
     public long stats_eggsThrown = 0;
 
+    /**
+     * Statistics value: how many skulls this NPC has thrown.
+     */
     @Persist("stats_skullsThrown")
     public long stats_skullsThrown = 0;
 
+    /**
+     * Statistics value: how many pearls this NPC has used.
+     */
     @Persist("stats_pearlsUsed")
     public long stats_pearlsUsed = 0;
 
+    /**
+     * Statistics value: how many times this NPC has punched a target.
+     */
     @Persist("stats_punches")
     public long stats_punches = 0;
 
+    /**
+     * Statistics value: how many attacks this NPC has attempted.
+     */
     @Persist("stats_attackAttempts")
     public long stats_attackAttempts = 0;
 
+    /**
+     * Statistics value: how much damage this NPC has taken.
+     */
     @Persist("stats_damageTaken")
     public double stats_damageTaken = 0;
 
+    /**
+     * Statistics value: how much damage this NPC has given.
+     */
     @Persist("stats_damageGiven")
     public double stats_damageGiven = 0;
 
+    /**
+     * List of target-type-based targets.
+     */
     @Persist("targets")
     public HashSet<String> targets = new HashSet<>();
 
+    /**
+     * List of target-type-based ignores.
+     */
     @Persist("ignores")
     public HashSet<String> ignores = new HashSet<>();
 
+    /**
+     * List of player-name-based targets.
+     */
     @Persist("playerNameTargets")
     public List<String> playerNameTargets = new ArrayList<>();
 
+    /**
+     * List of player-name-based ignores.
+     */
     @Persist("playerNameIgnores")
     public List<String> playerNameIgnores = new ArrayList<>();
 
+    /**
+     * List of NPC-name-based targets.
+     */
     @Persist("npcNameTargets")
     public List<String> npcNameTargets = new ArrayList<>();
 
+    /**
+     * List of NPC-name-based ignores.
+     */
     @Persist("npcNameIgnores")
     public List<String> npcNameIgnores = new ArrayList<>();
 
+    /**
+     * List of entity-name-based targets.
+     */
     @Persist("entityNameTargets")
     public List<String> entityNameTargets = new ArrayList<>();
 
+    /**
+     * List of entity-name-based ignores.
+     */
     @Persist("entityNameIgnores")
     public List<String> entityNameIgnores = new ArrayList<>();
 
+    /**
+     * List of held-item-based targets.
+     */
     @Persist("heldItemTargets")
     public List<String> heldItemTargets = new ArrayList<>();
 
+    /**
+     * List of held-item-based ignores.
+     */
     @Persist("heldItemIgnores")
     public List<String> heldItemIgnores = new ArrayList<>();
 
+    /**
+     * List of event-based targets.
+     */
     @Persist("groupTargets")
     public List<String> groupTargets = new ArrayList<>();
 
+    /**
+     * List of group-based ignores.
+     */
     @Persist("groupIgnores")
     public List<String> groupIgnores = new ArrayList<>();
 
+    /**
+     * List of event-based targets.
+     */
     @Persist("eventTargets")
     public List<String> eventTargets = new ArrayList<>();
 
+    /**
+     * List of targets not handled by any other target type list.
+     */
     @Persist("otherTargets")
     public List<String> otherTargets = new ArrayList<>();
 
+    /**
+     * List of ignores not handled by any other target type list.
+     */
     @Persist("otherIgnores")
     public List<String> otherIgnores = new ArrayList<>();
 
     @Persist("range")
     public double range = 20.0;
 
+    /**
+     * The NPC's damage value (-1 means automatically calculated from weapon, anything else is equal to the HP lost by an unarmored target).
+     */
     @Persist("damage")
     public double damage = -1.0;
 
+    /**
+     * The NPC's armor value (-1 means automatically calculated from equipment, 0 means no armor and 1 means invincible armor... decimals between 0 and 1 are normal).
+     */
     @Persist("armor")
     public double armor = -1.0;
 
+    /**
+     * The NPC's maximum health (NOT its current health when the NPC is spawned and injured).
+     */
     @Persist("health")
     public double health = 20.0;
 
+    /**
+     * Whether the NPC chases targets when using ranged weapons.
+     */
     @Persist("ranged_chase")
     public boolean rangedChase = false;
 
+    /**
+     * Whether the NPC chases targets when using melee weapons.
+     */
     @Persist("close_chase")
     public boolean closeChase = true;
 
+    /**
+     * Whether the NPC cannot be harmed (true = no harm, false = receives damage normally).
+     */
     @Persist("invincible")
     public boolean invincible = false;
 
+    /**
+     * Whether the NPC "fights back" against attacks (targets anyone that damages it).
+     */
     @Persist("fightback")
     public boolean fightback = true;
 
+    /**
+     * How long (in ticks) between using melee attacks.
+     */
     @Persist("attackRate")
     public int attackRate = 30;
 
+    /**
+     * How long (in ticks) between firing ranged shots.
+     */
     @Persist("attackRateRanged")
     public int attackRateRanged = 30;
 
+    /**
+     * How long (in ticks) before the NPC heals by 1 HP (when damaged).
+     */
     @Persist("healRate")
     public int healRate = 30;
 
+    /**
+     * Upper 64 bits of the guarded player's UUID.
+     */
     @Persist("guardingUpper")
     public long guardingUpper = 0;
 
+    /**
+     * Lower 64 bits of the guarded player's UUID.
+     */
     @Persist("guardingLower")
     public long guardingLower = 0;
 
+    /**
+     * Whether the NPC needs ammo to fire ranged weapons (otherwise, infinite ammo).
+     */
     @Persist("needsAmmo")
     public boolean needsAmmo = false;
 
+    /**
+     * Whether to protect NPC arrow shots from damaging targets that weren't meant to be hit.
+     */
     @Persist("safeShot")
     public boolean safeShot = true;
 
+    /**
+     * How long (in ticks) after death before the NPC respawns.
+     */
     @Persist("respawnTime")
     public long respawnTime = 100;
 
+    /**
+     * The maximum distance from a guard point the NPC can run (when chasing a target).
+     */
     @Persist("chaseRange")
     public double chaseRange = 100;
 
+    /**
+     * The NPC's respawn location (null = respawn where the NPC died at).
+     */
     @Persist("spawnPoint")
     public Location spawnPoint = null;
 
+    /**
+     * What the NPC drops when dead.
+     */
     @Persist("drops")
     public List<ItemStack> drops = new ArrayList<>();
 
+    /**
+     * Whether mob targets killed by the NPC can drop items.
+     */
     @Persist("enemyDrops")
     public boolean enemyDrops = false;
 
+    /**
+     * How long (in ticks) to retain an enemy target when out-of-view.
+     */
     @Persist("enemyTargetTime")
     public long enemyTargetTime = 0;
 
+    /**
+     * How fast the NPC moves when chasing (1 = normal speed).
+     */
     @Persist("speed")
     public double speed = 1;
 
+    /**
+     * The text to warn enemy players with (empty string = no greeting).
+     */
     @Persist("warning_text")
     public String warningText = "";
 
+    /**
+     * The text to greet friendly players with (empty string = no greeting).
+     */
     @Persist("greeting_text")
     public String greetingText = "";
 
+    /**
+     * The range this NPC gives greetings or warnings at.
+     */
     @Persist("greet_range")
     public double greetRange = 10;
 
+    /**
+     * Whether this NPC automatically switches weapons.
+     */
     @Persist("autoswitch")
     public boolean autoswitch = false;
 
+    /**
+     * The name of the squad this NPC is in (null for no squad).
+     */
     @Persist("squad")
     public String squad = null;
 
+    /**
+     * The NPC's accuracy value (0 = perfectly accurate).
+     */
     @Persist("accuracy")
     public double accuracy = 0;
 
+    /**
+     * Whether this NPC should have 'realistic' targeting.
+     */
     @Persist("realistic")
     public boolean realistic = false;
 
+    /**
+     * How far this NPC's punches can reach.
+     */
     @Persist("reach")
     public double reach = 3;
 
+    /**
+     * The target entity this NPC is chasing (if any).
+     */
     public LivingEntity chasing = null;
 
+    /**
+     * Gets the UUID of the player this Sentinel is set to be guarding.
+     * Null indicates not guarding anyone.
+     */
     public UUID getGuarding() {
         if (guardingLower == 0 && guardingUpper == 0) {
             return null;
@@ -241,6 +435,10 @@ public class SentinelTrait extends Trait {
         return new UUID(guardingUpper, guardingLower);
     }
 
+    /**
+     * Sets the NPC to be guarding a player.
+     * Null indicates not guarding anyone.
+     */
     public void setGuarding(UUID uuid) {
         if (uuid == null) {
             guardingUpper = 0;
@@ -252,8 +450,17 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Internally tracks whether the damage enforcement system can be used (protects against infinite loops).
+     */
     private boolean canEnforce = false;
 
+    /**
+     * Called when combat occurs in the world (and has not yet been processed by other plugins),
+     * to handle things like cancelling invalid damage to/from a Sentinel NPC,
+     * changing damage values given to or received from an NPC,
+     * and if relevant handling config options that require overriding damage events.
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     public void whenAttacksAreHappening(EntityDamageByEntityEvent event) {
         if (!npc.isSpawned()) {
@@ -339,6 +546,10 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Called when combat has occurred in the world (and has been processed by all other plugins), to handle things like cancelling invalid damage to/from a Sentinel NPC,
+     * adding targets (if combat occurs near an NPC), and if relevant handling config options that require overriding damage events.
+     */
     @EventHandler(priority = EventPriority.MONITOR)
     public void whenAttacksHappened(EntityDamageByEntityEvent event) {
         if (!npc.isSpawned()) {
@@ -348,7 +559,7 @@ public class SentinelTrait extends Trait {
             return;
         }
         boolean isMe = event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId());
-        if (sentinelProtected && isMe) {
+        if (SentinelPlugin.instance.protectFromIgnores && isMe) {
             if (event.getDamager() instanceof LivingEntity && isIgnored((LivingEntity) event.getDamager())) {
                 event.setCancelled(true);
                 return;
@@ -460,6 +671,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Called when a target dies to remove them from the target list.
+     */
     @EventHandler
     public void whenAnEnemyDies(EntityDeathEvent event) {
         SentinelCurrentTarget target = new SentinelCurrentTarget();
@@ -467,8 +681,9 @@ public class SentinelTrait extends Trait {
         currentTargets.remove(target);
     }
 
-    private boolean sentinelProtected;
-
+    /**
+     * Called when the Sentinel trait is attached to the NPC - fills all default values from config.
+     */
     @Override
     public void onAttach() {
         FileConfiguration config = SentinelPlugin.instance.getConfig();
@@ -496,10 +711,12 @@ public class SentinelTrait extends Trait {
         }
         autoswitch = config.getBoolean("sentinel defaults.autoswitch", false);
         ignores.add(SentinelTarget.OWNER.name());
-        sentinelProtected = config.getBoolean("random.protected", false);
         reach = config.getDouble("reach", 3);
     }
 
+    /**
+     * Animates the NPC using their item, and stops the animation 10 ticks later (useful for replicating bow draws, etc).
+     */
     public void useItem() {
         if (npc.isSpawned() && getLivingEntity() instanceof Player) {
             if (SentinelTarget.v1_9) {
@@ -517,12 +734,18 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Swings the NPC's weapon (plays an ARM_SWING animation if possible - otherwise, does nothing).
+     */
     public void swingWeapon() {
         if (npc.isSpawned() && getLivingEntity() instanceof Player) {
             PlayerAnimation.ARM_SWING.play((Player) getLivingEntity());
         }
     }
 
+    /**
+     * Gets the minimum distance from the NPC's head to launch a projectile from (to avoid it colliding with the NPC's own collision box).
+     */
     public double firingMinimumRange() {
         EntityType type = getLivingEntity().getType();
         if (type == EntityType.WITHER || type == EntityType.GHAST) {
@@ -531,50 +754,25 @@ public class SentinelTrait extends Trait {
         return 2;
     }
 
+    /**
+     * Gets a 'launch detail' (starting location for the projectile position, and a vector holding the exact launch vector, scaled to the correct speed).
+     */
     public HashMap.SimpleEntry<Location, Vector> getLaunchDetail(Location target, Vector lead) {
-        double speeda;
         faceLocation(target);
-        double angt = Double.POSITIVE_INFINITY;
         Location start = getLivingEntity().getEyeLocation().clone().add(getLivingEntity().getEyeLocation().getDirection().multiply(firingMinimumRange()));
-        double sbase = SentinelPlugin.instance.minShootSpeed;
-        for (speeda = sbase; speeda <= sbase + 15; speeda += 5) {
-            angt = SentinelUtilities.getArrowAngle(start, target, speeda, 20);
-            if (!Double.isInfinite(angt)) {
-                break;
-            }
-        }
-        if (Double.isInfinite(angt)) {
-            return null;
-        }
-        double hangT = SentinelUtilities.hangtime(angt, speeda, target.getY() - start.getY(), 20);
-        Location to = target.clone().add(lead.clone().multiply(hangT));
-        Vector relative = to.clone().subtract(start.toVector()).toVector();
-        double deltaXZ = Math.sqrt(relative.getX() * relative.getX() + relative.getZ() * relative.getZ());
-        if (deltaXZ == 0) {
-            deltaXZ = 0.1;
-        }
-        for (speeda = sbase; speeda <= sbase + 15; speeda += 5) {
-            angt = SentinelUtilities.getArrowAngle(start, to, speeda, 20);
-            if (!Double.isInfinite(angt)) {
-                break;
-            }
-        }
-        if (Double.isInfinite(angt)) {
-            return null;
-        }
-        relative.setY(Math.tan(angt) * deltaXZ);
-        relative = relative.normalize();
-        Vector normrel = relative.clone();
-        speeda = speeda + (1.188 * hangT * hangT);
-        relative = relative.multiply(speeda / 20.0);
-        start.setDirection(normrel);
-        return new HashMap.SimpleEntry<>(start, relative);
+        return SentinelUtilities.getLaunchDetail(start, target, lead);
     }
 
+    /**
+     * Returns a random decimal number within acceptable accuracy range (can be negative).
+     */
     public double randomAcc() {
         return SentinelUtilities.random.nextDouble() * accuracy * 2 - accuracy;
     }
 
+    /**
+     * Alters a vector per accuracy potential (makes the vector less accurate).
+     */
     public Vector fixForAcc(Vector input) {
         if (Double.isInfinite(input.getX()) || Double.isNaN(input.getX())) {
             return new Vector(0, 0, 0);
@@ -582,6 +780,9 @@ public class SentinelTrait extends Trait {
         return new Vector(input.getX() + randomAcc(), input.getY() + randomAcc(), input.getZ() + randomAcc());
     }
 
+    /**
+     * Fires a potion from the NPC at a target.
+     */
     public void firePotion(ItemStack potion, Location target, Vector lead) {
         stats_potionsThrown++;
         HashMap.SimpleEntry<Location, Vector> start = getLaunchDetail(target, lead);
@@ -599,6 +800,9 @@ public class SentinelTrait extends Trait {
         swingWeapon();
     }
 
+    /**
+     * Fires an arrow from the NPC at a target.
+     */
     public void fireArrow(ItemStack type, Location target, Vector lead) {
         HashMap.SimpleEntry<Location, Vector> start = getLaunchDetail(target, lead);
         if (start == null || start.getKey() == null) {
@@ -635,6 +839,9 @@ public class SentinelTrait extends Trait {
         useItem();
     }
 
+    /**
+     * Fires a snowball from the NPC at a target.
+     */
     public void fireSnowball(Location target) {
         swingWeapon();
         stats_snowballsThrown++;
@@ -646,6 +853,9 @@ public class SentinelTrait extends Trait {
         ent.setVelocity(fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(2.0))); // TODO: Fiddle with '2.0'.
     }
 
+    /**
+     * Fires an egg from the NPC at a target.
+     */
     public void fireEgg(Location target) {
         swingWeapon();
         stats_eggsThrown++;
@@ -657,6 +867,9 @@ public class SentinelTrait extends Trait {
         ent.setVelocity(fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(2.0))); // TODO: Fiddle with '2.0'.
     }
 
+    /**
+     * Fires a pearl from the NPC at a target.
+     */
     public void firePearl(LivingEntity target) {
         swingWeapon();
         faceLocation(target.getEyeLocation());
@@ -665,10 +878,9 @@ public class SentinelTrait extends Trait {
         target.setVelocity(target.getVelocity().add(new Vector(0, getDamage(), 0)));
     }
 
-    public void faceLocation(Location l) {
-        npc.faceLocation(l.clone().subtract(0, getLivingEntity().getEyeHeight(), 0));
-    }
-
+    /**
+     * Fires a fireballs from the NPC at a target.
+     */
     public void fireFireball(Location target) {
         swingWeapon();
         stats_fireballsFired++;
@@ -680,6 +892,9 @@ public class SentinelTrait extends Trait {
         ent.setVelocity(fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(4))); // TODO: Fiddle with '4'.
     }
 
+    /**
+     * Fires a skull from the NPC at a target.
+     */
     public void fireSkull(Location target) {
         swingWeapon();
         stats_skullsThrown++;
@@ -691,6 +906,42 @@ public class SentinelTrait extends Trait {
         ent.setVelocity(fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(4))); // TODO: Fiddle with '4'.
     }
 
+    /**
+     * Makes an NPC punch a target.
+     */
+    public void punch(LivingEntity entity) {
+        faceLocation(entity.getLocation());
+        swingWeapon();
+        stats_punches++;
+        if (SentinelPlugin.instance.workaroundDamage) {
+            if (SentinelPlugin.debugMe) {
+                debug("workaround damage value at " + getDamage() + " yields "
+                        + ((getDamage() * (1.0 - getArmor(entity)))));
+            }
+            entity.damage(getDamage() * (1.0 - getArmor(entity)));
+            knockback(entity);
+            if (!enemyDrops) {
+                needsDropsClear.put(entity.getUniqueId(), true);
+            }
+        }
+        else {
+            if (SentinelPlugin.debugMe) {
+                debug("Punch/natural for " + getDamage());
+            }
+            entity.damage(getDamage(), getLivingEntity());
+        }
+    }
+
+    /**
+     * Rotates an NPC to face a target location.
+     */
+    public void faceLocation(Location l) {
+        npc.faceLocation(l.clone().subtract(0, getLivingEntity().getEyeHeight(), 0));
+    }
+
+    /**
+     * Gets the NPC's current damage value (based on held weapon if calculation is required).
+     */
     public double getDamage() {
         if (damage >= 0) {
             return damage;
@@ -721,6 +972,9 @@ public class SentinelTrait extends Trait {
         return multiplier * damageMult;
     }
 
+    /**
+     * Gets the NPC's current armor value (based on worn armor if calculation is required).
+     */
     public double getArmor(LivingEntity ent) {
         if (armor < 0) {
             // TODO: Enchantments!
@@ -750,6 +1004,9 @@ public class SentinelTrait extends Trait {
         return armor;
     }
 
+    /**
+     * Knocks a target back from damage received (for hacked-in damage applications when required by config).
+     */
     public void knockback(LivingEntity entity) {
         Vector relative = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector());
         relative = relative.normalize();
@@ -761,44 +1018,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
-    public void punch(LivingEntity entity) {
-        faceLocation(entity.getLocation());
-        swingWeapon();
-        stats_punches++;
-        if (SentinelPlugin.instance.workaroundDamage) {
-            if (SentinelPlugin.debugMe) {
-                debug("workaround damage value at " + getDamage() + " yields "
-                 + ((getDamage() * (1.0 - getArmor(entity)))));
-            }
-            entity.damage(getDamage() * (1.0 - getArmor(entity)));
-            knockback(entity);
-            if (!enemyDrops) {
-                needsDropsClear.put(entity.getUniqueId(), true);
-            }
-        }
-        else {
-            if (SentinelPlugin.debugMe) {
-                debug("Punch/natural for " + getDamage());
-            }
-            entity.damage(getDamage(), getLivingEntity());
-        }
-    }
-
-    public Entity getTargetFor(EntityTarget targ) {
-        if (SentinelTarget.v1_9) {
-            return targ.getTarget();
-        }
-        try {
-            Method meth = EntityTarget.class.getMethod("getTarget");
-            meth.setAccessible(true);
-            return (LivingEntity) meth.invoke(targ);
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
-
+    /**
+     * Causes the NPC to chase a target.
+     */
     public void chase(LivingEntity entity) {
         if (npc.getNavigator().getTargetType() == TargetType.LOCATION
                 && npc.getNavigator().getTargetAsLocation() != null
@@ -810,7 +1032,7 @@ public class SentinelTrait extends Trait {
         chasing = entity;
         chased = true;
         if (npc.getNavigator().getTargetType() == TargetType.ENTITY
-                && getTargetFor(npc.getNavigator().getEntityTarget()).getUniqueId().equals(entity.getUniqueId())) {
+                && SentinelUtilities.getTargetFor(npc.getNavigator().getEntityTarget()).getUniqueId().equals(entity.getUniqueId())) {
             return;
         }
         npc.getNavigator().getDefaultParameters().stuckAction(null);
@@ -828,6 +1050,9 @@ public class SentinelTrait extends Trait {
         npc.getNavigator().getLocalParameters().speedModifier((float) speed);
     }
 
+    /**
+     * Gets the correct ArrowItem type for the NPC based on inventory items (can be null if the NPC needs ammo but has none).
+     */
     public ItemStack getArrow() {
         if (!npc.hasTrait(Inventory.class)) {
             return needsAmmo ? null : new ItemStack(Material.ARROW, 1);
@@ -852,6 +1077,9 @@ public class SentinelTrait extends Trait {
         return needsAmmo ? null : new ItemStack(Material.ARROW, 1);
     }
 
+    /**
+     * Reduces the durability of the NPC's held item.
+     */
     public void reduceDurability() {
         if (SentinelTarget.v1_9) {
             ItemStack item = getLivingEntity().getEquipment().getItemInMainHand();
@@ -879,6 +1107,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Takes an arrow from the NPC's inventory.
+     */
     public void takeArrow() {
         if (!npc.hasTrait(Inventory.class)) {
             return;
@@ -906,6 +1137,10 @@ public class SentinelTrait extends Trait {
         }
     }
 
+
+    /**
+     * Takes a snowball from the NPC's inventory.
+     */
     public void takeSnowball() {
         if (!npc.hasTrait(Inventory.class)) {
             return;
@@ -933,6 +1168,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Takes one item from the NPC's held items (for consumables).
+     */
     public void takeOne() {
         if (SentinelTarget.v1_9) {
             ItemStack item = getLivingEntity().getEquipment().getItemInMainHand();
@@ -960,16 +1198,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
-    public boolean isWeapon(Material mat) {
-        return SentinelTarget.WEAPON_DAMAGE_MULTIPLIERS.containsKey(mat)
-                || SentinelTarget.POTION_MATERIALS.contains(mat)
-                || SentinelTarget.BOW_MATERIALS.contains(mat)
-                || SentinelTarget.SKULL_MATERIALS.contains(mat)
-                || mat == SentinelTarget.MATERIAL_SNOW_BALL
-                || mat == SentinelTarget.MATERIAL_BLAZE_ROD
-                || mat == SentinelTarget.MATERIAL_NETHER_STAR;
-    }
-
+    /**
+     * Grabs the next item for an NPC to use and moves it into the NPC's hand.
+     */
     public void grabNextItem() {
         if (!npc.hasTrait(Inventory.class)) {
             return;
@@ -985,7 +1216,7 @@ public class SentinelTrait extends Trait {
             if (item != null) {
                 item = item.clone();
                 Material mat = item.getType();
-                if (isWeapon(mat)) {
+                if (SentinelTarget.isWeapon(mat)) {
                     if (item.getAmount() > 1) {
                         item.setAmount(item.getAmount() - 1);
                         items[i] = item;
@@ -1007,12 +1238,18 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Repeats the last chase instruction (to ensure the NPC keeps going for a target).
+     */
     public void rechase() {
         if (chasing != null) {
             chase(chasing);
         }
     }
 
+    /**
+     * Swaps the NPC to a ranged weapon if possible.
+     */
     public void swapToRanged() {
         if (!npc.hasTrait(Inventory.class)) {
             return;
@@ -1037,6 +1274,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Swaps the NPC to a melee weapon if possible.
+     */
     public void swapToMelee() {
         if (!npc.hasTrait(Inventory.class)) {
             return;
@@ -1061,6 +1301,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Causes the NPC to attempt an attack on a target.
+     */
     public void tryAttack(LivingEntity entity) {
         if (!entity.getWorld().equals(getLivingEntity().getWorld())) {
             return;
@@ -1328,6 +1571,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Gets the yaw angle value (in degrees) for a vector.
+     */
     public float getYaw(Vector vector) {
         double dx = vector.getX();
         double dz = vector.getZ();
@@ -1346,9 +1592,12 @@ public class SentinelTrait extends Trait {
         else if (dz < 0) {
             yaw = Math.PI;
         }
-        return (float) (-yaw * 180 / Math.PI);
+        return (float) (-yaw * (180.0 / Math.PI));
     }
 
+    /**
+     * Returns whether the NPC can see the target entity.
+     */
     public boolean canSee(LivingEntity entity) {
         if (!getLivingEntity().hasLineOfSight(entity)) {
             return false;
@@ -1372,11 +1621,17 @@ public class SentinelTrait extends Trait {
         return true;
     }
 
+    /**
+     * Gets the living entity for the NPC.
+     */
     public LivingEntity getLivingEntity() {
         // Not a good idea to turn a non-living NPC into a Sentinel for now.
         return (LivingEntity) npc.getEntity();
     }
 
+    /**
+     * Returns whether the NPC is holding a ranged weapon.
+     */
     public boolean isRanged() {
         return usesBow()
                 || usesFireball()
@@ -1386,102 +1641,115 @@ public class SentinelTrait extends Trait {
                 || usesPotion();
     }
 
-    public boolean usesBow() {
+    /**
+     * Returns the item held by an NPC.
+     */
+    public ItemStack getHeldItem() {
         if (!npc.hasTrait(Inventory.class)) {
-            return false;
+            if (!npc.isSpawned()) {
+                return null;
+            }
+            // TODO: Just only use this (instead of Inventory trait)?
+            if (SentinelTarget.v1_9) {
+                return getLivingEntity().getEquipment().getItemInMainHand();
+            }
+            else {
+                return getLivingEntity().getEquipment().getItemInHand();
+            }
         }
-        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
+        return npc.getTrait(Inventory.class).getContents()[0];
+    }
+
+    /**
+     * Returns whether the NPC is using a bow item.
+     */
+    public boolean usesBow() {
+        ItemStack it = getHeldItem();
         return it != null && it.getType() == Material.BOW && getArrow() != null;
     }
 
+    /**
+     * Returns whether the NPC is using a fireball item.
+     */
     public boolean usesFireball() {
-        if (!npc.hasTrait(Inventory.class)) {
-            return false;
-        }
-        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
+        ItemStack it = getHeldItem();
         return it != null && it.getType() == SentinelTarget.MATERIAL_BLAZE_ROD;
     }
 
+    /**
+     * Returns whether the NPC is using a snowball item.
+     */
     public boolean usesSnowball() {
-        if (!npc.hasTrait(Inventory.class)) {
-            return false;
-        }
-        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
+        ItemStack it = getHeldItem();
         return it != null && it.getType() == SentinelTarget.MATERIAL_SNOW_BALL;
     }
 
+    /**
+     * Returns whether the NPC is using a lightning-attack item.
+     */
     public boolean usesLightning() {
-        if (!npc.hasTrait(Inventory.class)) {
-            return false;
-        }
-        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
+        ItemStack it = getHeldItem();
         return it != null && it.getType() == SentinelTarget.MATERIAL_NETHER_STAR;
     }
 
+    /**
+     * Returns whether the NPC is using an egg item.
+     */
     public boolean usesEgg() {
-        if (!npc.hasTrait(Inventory.class)) {
-            return false;
-        }
-        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
+        ItemStack it = getHeldItem();
         return it != null && it.getType() == Material.EGG;
     }
 
+    /**
+     * Returns whether the NPC is using a peal item.
+     */
     public boolean usesPearl() {
-        if (!npc.hasTrait(Inventory.class)) {
-            return false;
-        }
-        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
+        ItemStack it = getHeldItem();
         return it != null && it.getType() == Material.ENDER_PEARL;
     }
 
+    /**
+     * Returns whether the NPC is using a wither-skull item.
+     */
     public boolean usesWitherSkull() {
-        if (!npc.hasTrait(Inventory.class)) {
-            return false;
-        }
         if (!SentinelPlugin.instance.canUseSkull) {
             return false;
         }
-        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
+        ItemStack it = getHeldItem();
         return it != null && SentinelTarget.SKULL_MATERIALS.contains(it.getType());
     }
 
+    /**
+     * Returns whether the NPC is using a spectral-effect-attack item.
+     */
     public boolean usesSpectral() {
-        if (!npc.hasTrait(Inventory.class)) {
-            return false;
-        }
         if (!SentinelTarget.v1_10) {
             return false;
         }
-        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
+        ItemStack it = getHeldItem();
         return it != null && it.getType() == Material.SPECTRAL_ARROW;
     }
 
+    /**
+     * Returns whether the NPC is using a potion item.
+     */
     public boolean usesPotion() {
-        if (!npc.hasTrait(Inventory.class)) {
-            return false;
-        }
-        ItemStack it = npc.getTrait(Inventory.class).getContents()[0];
-        if (it == null) {
-            return false;
-        }
-        if (!SentinelTarget.v1_9) {
-            return it.getType() == Material.POTION;
-        }
-        return it.getType() == Material.SPLASH_POTION || it.getType() == Material.LINGERING_POTION;
+        ItemStack it = getHeldItem();
+        return it != null && SentinelTarget.POTION_MATERIALS.contains(it.getType());
     }
 
+    /**
+     * Returns whether the NPC can take durability from the held item.
+     */
     public boolean shouldTakeDura() {
-        Material type;
-        if (SentinelTarget.v1_9) {
-            type = getLivingEntity().getEquipment().getItemInMainHand().getType();
-        }
-        else {
-            type = getLivingEntity().getEquipment().getItemInHand().getType();
-        }
+        Material type = getHeldItem().getType();
         return SentinelTarget.BOW_MATERIALS.contains(type) || SentinelTarget.SWORD_MATERIALS.contains(type)
                 || SentinelTarget.PICKAXE_MATERIALS.contains(type) || SentinelTarget.AXE_MATERIALS.contains(type);
     }
 
+    /**
+     * Returns whether the NPC is using a potion item.
+     */
     public boolean shouldTarget(LivingEntity entity) {
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             return false;
@@ -1489,15 +1757,24 @@ public class SentinelTrait extends Trait {
         return isTargeted(entity) && !isIgnored(entity);
     }
 
+    /**
+     * The set of all current targets for this NPC.
+     */
     public HashSet<SentinelCurrentTarget> currentTargets = new HashSet<>();
 
+    /**
+     * Players in range of the NPC that have already been greeted.
+     */
     private HashSet<UUID> greetedAlready = new HashSet<>();
 
+    /**
+     * Adds a temporary target to this NPC (and squadmates if relevant).
+     */
     public void addTarget(UUID id) {
         if (id.equals(getLivingEntity().getUniqueId())) {
             return;
         }
-        if (!(getEntityForID(id) instanceof LivingEntity)) {
+        if (!(SentinelUtilities.getEntityForID(id) instanceof LivingEntity)) {
             return;
         }
         addTargetNoBounce(id);
@@ -1513,6 +1790,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Adds a target directly to the NPC. Prefer {@code addTarget} over this in most cases.
+     */
     public void addTargetNoBounce(UUID id) {
         SentinelCurrentTarget target = new SentinelCurrentTarget();
         target.targetID = id;
@@ -1521,10 +1801,12 @@ public class SentinelTrait extends Trait {
         currentTargets.add(target);
     }
 
+    /**
+     * Returns whether a list of regex values match the a string.
+     */
     public boolean isRegexTargeted(String name, List<String> regexes) {
         for (String str : regexes) {
-            Pattern pattern = Pattern.compile(".*" + str + ".*", Pattern.CASE_INSENSITIVE);
-            // TODO: Is this more efficient than .matches, or should we change it?
+            Pattern pattern = SentinelUtilities.regexFor(".*" + str + ".*");
             if (pattern.matcher(name).matches()) {
                 return true;
             }
@@ -1532,24 +1814,18 @@ public class SentinelTrait extends Trait {
         return false;
     }
 
-    public boolean isAir(ItemStack its) {
-        return its == null || its.getType() == Material.AIR;
-    }
-
+    /**
+     * Returns whether an entity is invisible to this NPC.
+     */
     public boolean isInvisible(LivingEntity entity) {
         SentinelCurrentTarget sct = new SentinelCurrentTarget();
         sct.targetID = entity.getUniqueId();
-        EntityEquipment eq = entity.getEquipment();
-        return entity.hasPotionEffect(PotionEffectType.INVISIBILITY)
-                && !currentTargets.contains(sct)
-                && isAir(eq.getItemInHand())
-                && isAir(eq.getBoots())
-                && isAir(eq.getLeggings())
-                && isAir(eq.getChestplate())
-                && isAir(eq.getHelmet())
-                && SentinelPlugin.instance.ignoreInvisible;
+        return !currentTargets.contains(sct) && SentinelUtilities.isInvisible(entity);
     }
 
+    /**
+     * Returns whether an entity is ignored by this NPC's ignore lists.
+     */
     public boolean isIgnored(LivingEntity entity) {
         if (isInvisible(entity)) {
             return true;
@@ -1613,6 +1889,9 @@ public class SentinelTrait extends Trait {
         return false;
     }
 
+    /**
+     * Returns whether an entity is targeted by this NPC's ignore lists.
+     */
     public boolean isTargeted(LivingEntity entity) {
         if (isInvisible(entity)) {
             return false;
@@ -1678,8 +1957,6 @@ public class SentinelTrait extends Trait {
         return false;
     }
 
-    public int cTick = 0;
-
     /**
      * This method searches for the nearest targetable entity with direct line-of-sight.
      * Failing a direct line of sight, the nearest entity in range at all will be chosen.
@@ -1719,25 +1996,22 @@ public class SentinelTrait extends Trait {
         return closest;
     }
 
+    /**
+     * Time since the last attack.
+     */
     public long timeSinceAttack = 0;
 
+    /**
+     * Time since the last heal.
+     */
     public long timeSinceHeal = 0;
 
-    private Entity getEntityForID(UUID id) {
-        if (!SentinelTarget.v1_12) {
-            for (Entity e : getLivingEntity().getWorld().getEntities()) {
-                if (e.getUniqueId().equals(id)) {
-                    return e;
-                }
-            }
-            return null;
-        }
-        return Bukkit.getServer().getEntity(id);
-    }
-
+    /**
+     * Updates the current targets set for the NPC.
+     */
     private void updateTargets() {
         for (SentinelCurrentTarget uuid : new HashSet<>(currentTargets)) {
-            Entity e = getEntityForID(uuid.targetID);
+            Entity e = SentinelUtilities.getEntityForID(uuid.targetID);
             if (e == null) {
                 currentTargets.remove(uuid);
                 continue;
@@ -1774,10 +2048,20 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Tick counter for use with giving up on targets that can't be seen
+     * (to avoid being overly 'clever' and chasing a target the NPC shouldn't be able to locate).
+     */
     int cleverTicks = 0;
 
+    /**
+     * Whether the NPC has chased a target during the most recent update.
+     */
     public boolean chased = false;
 
+    /**
+     * Marks that the NPC can see a target (Changes the state of som entity types, eg opening a shulker box).
+     */
     public void specialMarkVision() {
         if (SentinelPlugin.debugMe) {
             debug("Target! I see you, " + (chasing == null ? "(Unknown)" : chasing.getName()));
@@ -1787,6 +2071,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Marks that the NPC can no longer a target (Changes the state of som entity types, eg closing a shulker box).
+     */
     public void specialUnmarkVision() {
         if (SentinelPlugin.debugMe) {
             debug("Goodbye, visible target " + (chasing == null ? "(Unknown)" : chasing.getName()));
@@ -1796,14 +2083,14 @@ public class SentinelTrait extends Trait {
         }
     }
 
-    public static Random random = new Random();
-
-    public static double randomDecimal(double min, double max) {
-        return (random.nextDouble() * (max - min)) + min;
-    }
-
+    /**
+     * Tick counter for the NPC guarding a player (to avoid updating positions too quickly).
+     */
     public int ticksCountGuard = 0;
 
+    /**
+     * Traces a ray from a start to an end, returning the end of the ray (stopped early if there are solid blocks in the way).
+     */
     public static Location rayTrace(Location start, Location end) {
         double dSq = start.distanceSquared(end);
         if (dSq < 1) {
@@ -1827,8 +2114,12 @@ public class SentinelTrait extends Trait {
         return cur;
     }
 
+    /**
+     * Picks an accessible location near the start location, within a range.
+     */
     public static Location pickNear(Location start, double range) {
-        Location hit = rayTrace(start.clone().add(0, 1.5, 0), start.clone().add(randomDecimal(-range, range), 1.5, randomDecimal(range, range)));
+        Location hit = rayTrace(start.clone().add(0, 1.5, 0), start.clone().add(
+                SentinelUtilities.randomDecimal(-range, range), 1.5, SentinelUtilities.randomDecimal(range, range)));
         if (hit.subtract(0, 1, 0).getBlock().getType().isSolid()) {
             return hit;
         }
@@ -1841,6 +2132,9 @@ public class SentinelTrait extends Trait {
      */
     public boolean needsToUnpause = false;
 
+    /**
+     * Runs a full update cycle on the NPC.
+     */
     public void runUpdate() {
         canEnforce = true;
         timeSinceAttack += SentinelPlugin.instance.tickRate;
@@ -1983,8 +2277,14 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * The maximum distance value (squared) for some distance calculations. Equal to ten-thousand (10000) blocks, squared (so: 100000000).
+     */
     private final static double MAX_DIST = 100000000;
 
+    /**
+     * Gets the location this NPC is guarding (the NPC's own location if nothing else to guard).
+     */
     public Location getGuardZone() {
         if (getGuarding() != null) {
             Player player = Bukkit.getPlayer(getGuarding());
@@ -2001,9 +2301,29 @@ public class SentinelTrait extends Trait {
         return getLivingEntity().getLocation();
     }
 
+    /**
+     * Whether the waypoints helper (up-to-date Citizens) is available.
+     */
+    private Boolean waypointHelperAvailable = null;
+
+    /**
+     * Gets the nearest pathing point to this NPC.
+     */
     public Location nearestPathPoint() {
         if (!SentinelTarget.v1_9) {
-            return null; // TODO: !!!
+            if (waypointHelperAvailable == null) {
+                try {
+                    Class.forName("net.citizensnpcs.trait.waypoint.WaypointProvider.EnumerableWaypointProvider");
+                    waypointHelperAvailable = true;
+                }
+                catch (ClassNotFoundException ex) {
+                    waypointHelperAvailable = false;
+                    SentinelPlugin.instance.getLogger().warning("Citizens installation is **very outdated** and does not contain newer useful APIs. Please update your installation of the Citizens plugin!");
+                }
+            }
+            if (!waypointHelperAvailable) {
+                return null;
+            }
         }
         if (!npc.hasTrait(Waypoints.class)) {
             return null;
@@ -2032,6 +2352,14 @@ public class SentinelTrait extends Trait {
         return nearest;
     }
 
+    /**
+     * Tick counter for the {@code run} method.
+     */
+    public int cTick = 0;
+
+    /**
+     * Called every tick to run Sentinel updates if needed.
+     */
     @Override
     public void run() {
         if (!npc.isSpawned()) {
@@ -2045,8 +2373,14 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Runnable for respawning, if needed.
+     */
     public BukkitRunnable respawnMe;
 
+    /**
+     * Called when the NPC spawns in.
+     */
     @Override
     public void onSpawn() {
         stats_timesSpawned++;
@@ -2058,11 +2392,17 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Causes the NPC to speak a message to a player.
+     */
     public void sayTo(Player player, String message) {
         SpeechContext sc = new SpeechContext(npc, message, player);
         npc.getDefaultSpeechController().speak(sc, "chat");
     }
 
+    /**
+     * Called whenever a player teleports, for use with NPC guarding logic.
+     */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerTeleports(final PlayerTeleportEvent event) {
         if (event.isCancelled()) {
@@ -2097,12 +2437,18 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Called every time a player moves at all, for use with monitoring if players move into range of an NPC.
+     */
     @EventHandler
     public void onPlayerMovesInRange(PlayerMoveEvent event) {
         if (!npc.isSpawned()) {
             return;
         }
         if (!event.getTo().getWorld().equals(getLivingEntity().getLocation().getWorld())) {
+            return;
+        }
+        if (event.getTo().toVector().equals(event.getFrom().toVector())) {
             return;
         }
         double dist = event.getTo().distanceSquared(getLivingEntity().getLocation());
@@ -2123,19 +2469,31 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Entities that will need their drops cleared if they die soon (because they were killed by this NPC).
+     */
     public HashMap<UUID, Boolean> needsDropsClear = new HashMap<>();
 
+    /**
+     * Called when an entity might die from damage (called before Sentinel detects that an NPC might have killed an entity).
+     */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void whenSomethingMightDie(EntityDamageByEntityEvent event) {
         needsDropsClear.remove(event.getEntity().getUniqueId());
     }
 
+    /**
+     * Outputs a debug message (if debug is enabled).
+     */
     public void debug(String message) {
         if (SentinelPlugin.debugMe) {
             SentinelPlugin.instance.getLogger().info("Sentinel Debug: " + npc.getId() + "/" + npc.getName() + ": " + message);
         }
     }
 
+    /**
+     * Called when the NPC dies.
+     */
     @EventHandler(priority = EventPriority.MONITOR)
     public void whenWeDie(EntityDeathEvent event) {
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
@@ -2155,6 +2513,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Handles some basics for when the NPC died.
+     */
     public void generalDeathHandler(LivingEntity entity) {
         if (spawnPoint != null) {
             npc.getTrait(CurrentLocation.class).setLocation(spawnPoint.clone());
@@ -2167,6 +2528,9 @@ public class SentinelTrait extends Trait {
         onDeath();
     }
 
+    /**
+     * Called when any entity dies.
+     */
     @EventHandler(priority = EventPriority.LOW)
     public void whenSomethingDies(EntityDeathEvent event) {
         if (event.getEntity().getType() != EntityType.PLAYER && needsDropsClear.containsKey(event.getEntity().getUniqueId())) {
@@ -2175,6 +2539,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Handler for when the NPC died.
+     */
     public void onDeath() {
         /*if (npc.hasTrait(Spawned.class)) {
             npc.getTrait(Spawned.class).setSpawned(false);
@@ -2230,11 +2597,17 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Called when the NPC despawns.
+     */
     @Override
     public void onDespawn() {
         currentTargets.clear();
     }
 
+    /**
+     * Sets the NPC's maximum health.
+     */
     public void setHealth(double heal) {
         health = heal;
         if (npc.isSpawned()) {
@@ -2243,6 +2616,9 @@ public class SentinelTrait extends Trait {
         }
     }
 
+    /**
+     * Sets whether the NPC is invincible.
+     */
     public void setInvincible(boolean inv) {
         invincible = inv;
         npc.setProtected(invincible);
