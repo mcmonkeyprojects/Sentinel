@@ -3,15 +3,15 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](http://i.imgur.com/VDwTzrs.gif)
 
-**Version 1.7.0**: Compatible with Spigot 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, and 1.13.1
+**Version 1.7.0**: Compatible with Spigot 1.8.8(see Info section below), 1.9.4, 1.10.2, 1.11.2, 1.12.2, and 1.13.1
 
-## Downloads
+### Downloads
 
 - **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Sentinel/
 - **Download (Spigot releases)**: https://www.spigotmc.org/resources/sentinel.22017/
 - **Download (Bukkit releases)**: http://dev.bukkit.org/bukkit-plugins/sentinel/
 
-## Donations
+### Donations
 
 **Support Sentinel on Patreon!**: https://www.patreon.com/denizenscript
 
@@ -22,6 +22,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - **IMPORTANT:**
 - NPC's won't do melee damage? In your config.yml file, toggle the setting that says "workaround damage" to true, and restart your server!
 - NPC's won't do ranged damaged, or protection plugins causing problems? In your config.yml file, toggle the setting that says "enforce damage" to true, and restart your server!
+- Note that back-support for older versions is sometimes limited. Compatibility is tested mainly on the most recent one or two versions. 1.8.8 servers are supported as the oldest option, but not fully functional. See notes here: https://wiki.citizensnpcs.co/Minecraft_1.8
 
 ### Usage
 
