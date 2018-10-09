@@ -18,6 +18,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mcmonkey.sentinel.integration.*;
+import org.mcmonkey.sentinel.metrics.BStatsMetricsLite;
 import org.mcmonkey.sentinel.metrics.MetricsLite;
 import org.mcmonkey.sentinel.metrics.StatsRecord;
 
@@ -241,13 +242,22 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         tickRate = getConfig().getInt("update rate", 10);
         getLogger().info("Sentinel loaded!");
         getServer().getPluginManager().registerEvents(this, this);
+        // mcstats.org
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
         }
-        catch (Exception e) {
+        catch (Throwable e) {
             e.printStackTrace();
         }
+        // bstats.org
+        try {
+            BStatsMetricsLite metrics = new BStatsMetricsLite(this);
+        }
+        catch (Throwable e) {
+            e.printStackTrace();
+        }
+        // neo.mcmonkey.org
         new BukkitRunnable() {
             @Override
             public void run() {
