@@ -9,7 +9,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Helper for target types.
+ */
 public class SentinelTarget {
+
     public static SentinelTarget NPCS = new SentinelTarget(new EntityType[]{}, "NPC");
     public static SentinelTarget OWNER = new SentinelTarget(new  EntityType[]{}, "OWNER");
     public static SentinelTarget PLAYERS = new SentinelTarget(new  EntityType[]{EntityType.PLAYER}, "PLAYER");
@@ -46,22 +50,38 @@ public class SentinelTarget {
     public static SentinelTarget WITHER = new SentinelTarget(new  EntityType[]{EntityType.WITHER}, "WITHER");
     public static SentinelTarget ENDERDRAGON = new SentinelTarget(new  EntityType[]{EntityType.ENDER_DRAGON}, "ENDERDRAGON", "ENDER_DRAGON");
 
-    public static final Set<Material> SWORD_MATERIALS = new HashSet<>();
-    public static final Set<Material> PICKAXE_MATERIALS = new HashSet<>();
-    public static final Set<Material> AXE_MATERIALS = new HashSet<>();
-    public static final Set<Material> HELMET_MATERIALS = new HashSet<>();
-    public static final Set<Material> CHESTPLATE_MATERIALS = new HashSet<>();
-    public static final Set<Material> LEGGINGS_MATERIALS = new HashSet<>();
-    public static final Set<Material> BOOTS_MATERIALS = new HashSet<>();
-    public static final Set<Material> BOW_MATERIALS = new HashSet<>();
-    public static final Set<Material> POTION_MATERIALS = new HashSet<>();
-    public static final Set<Material> SKULL_MATERIALS = new HashSet<>();
+    /**
+     * HashSets of Materials within a category (for multi-version support).
+     */
+    public static final HashSet<Material> SWORD_MATERIALS = new HashSet<>(),
+                                      PICKAXE_MATERIALS = new HashSet<>(),
+                                      AXE_MATERIALS = new HashSet<>(),
+                                      HELMET_MATERIALS = new HashSet<>(),
+                                      CHESTPLATE_MATERIALS = new HashSet<>(),
+                                      LEGGINGS_MATERIALS = new HashSet<>(),
+                                      BOOTS_MATERIALS = new HashSet<>(),
+                                      BOW_MATERIALS = new HashSet<>(),
+                                      POTION_MATERIALS = new HashSet<>(),
+                                      SKULL_MATERIALS = new HashSet<>();
 
+    /**
+     * A map of weapon materials to their damage multipliers.
+     */
     public static final Map<Material, Double> WEAPON_DAMAGE_MULTIPLIERS = new HashMap<>();
+
+    /**
+     * A map of armor materials to their protection multipliers.
+     */
     public static final Map<Material, Double> ARMOR_PROTECTION_MULTIPLIERS = new HashMap<>();
 
+    /**
+     * A specific material (for multi-version support).
+     */
     public static final Material MATERIAL_SNOW_BALL, MATERIAL_NETHER_STAR, MATERIAL_BLAZE_ROD;
 
+    /**
+     * Boolean indicating if the server version is >= theh named version.
+     */
     public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13;
 
     /**
@@ -366,6 +386,9 @@ public class SentinelTarget {
         }
     }
 
+    /**
+     * Gets the Material instance for a name (multi-version support).
+     */
     public static Material getMaterial(String name) {
         try {
             return Material.valueOf(name);
@@ -376,32 +399,53 @@ public class SentinelTarget {
         }
     }
 
+    /**
+     * Adds a a list of named Materials to a set.
+     */
     public static void addAllMaterials(Set<Material> set, String... matNames) {
         for (String mat : matNames) {
             set.add(getMaterial(mat));
         }
     }
 
+    /**
+     * Adds a set of materials to a map as keys with a specific value.
+     */
     public static void allMaterialsTo(Map<Material, Double> map, Set<Material> set, Double val) {
         for (Material mat : set) {
             map.put(mat, val);
         }
     }
 
+    /**
+     * Gets the set of targets that include an entity type.
+     */
     public static HashSet<SentinelTarget> forEntityType(EntityType type) {
         return SentinelPlugin.entityToTargets.get(type);
     }
 
+    /**
+     * Gets the Sentinel target that matches a name.
+     */
     public static SentinelTarget forName(String name) {
         return SentinelPlugin.targetOptions.get(name.toUpperCase());
     }
 
-    private String[] names;
+    /**
+     * The array of valid names for this target type.
+     */
+    public String[] names;
 
+    /**
+     * The name of this target type.
+     */
     public String name() {
         return names[0];
     }
 
+    /**
+     * Constructs the target type instance.
+     */
     SentinelTarget(EntityType[] types, String... names) {
         this.names = names;
         for (String name : names) {
