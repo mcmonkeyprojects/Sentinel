@@ -1835,6 +1835,12 @@ public class SentinelTrait extends Trait {
         return hit.subtract(0, 1, 0);
     }
 
+    /**
+     * Set true when waypoints are paused by Sentinel, to indicate that an unpause is needed
+     * (to avoid over-doing the unpause call, which can disrupt unrelated unpauses).
+     */
+    public boolean needsToUnpause = false;
+
     public void runUpdate() {
         canEnforce = true;
         timeSinceAttack += SentinelPlugin.instance.tickRate;
@@ -1862,11 +1868,15 @@ public class SentinelTrait extends Trait {
         }
         if (getGuarding() != null && npc.hasTrait(Waypoints.class)) {
             Waypoints wp = npc.getTrait(Waypoints.class);
-            wp.getCurrentProvider().setPaused(true);
+            if (!wp.getCurrentProvider().isPaused()) {
+                wp.getCurrentProvider().setPaused(true);
+            }
+            needsToUnpause = true;
         }
-        else if (npc.hasTrait(Waypoints.class)) {
+        else if (needsToUnpause && npc.hasTrait(Waypoints.class)) {
             Waypoints wp = npc.getTrait(Waypoints.class);
             wp.getCurrentProvider().setPaused(false);
+            needsToUnpause = false;
         }
         double crsq = chaseRange * chaseRange;
         updateTargets();
