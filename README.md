@@ -13,12 +13,13 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ### Donations
 
-- **Support Sentinel on Patreon!**: https://www.patreon.com/denizenscript
-- **Join us on Discord!**: https://discord.gg/Q6pZGSR in the `#sentinel-lobby` channel.
+**Support Sentinel on Patreon!**: https://www.patreon.com/denizenscript
 
 ### Info
 
 Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
+
+**Join us on Discord!**: https://discord.gg/Q6pZGSR in the `#sentinel-lobby` channel.
 
 - **IMPORTANT:**
 - NPC's won't do melee damage? In your config.yml file, toggle the setting that says "workaround damage" to true, and restart your server!
