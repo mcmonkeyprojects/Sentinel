@@ -13,7 +13,8 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ### Donations
 
-**Support Sentinel on Patreon!**: https://www.patreon.com/denizenscript
+- **Support Sentinel on Patreon!**: https://www.patreon.com/denizenscript
+- Or, give a one-time donation via PayPal: https://one.denizenscript.com/donate
 
 ### Info
 
