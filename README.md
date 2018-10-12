@@ -48,12 +48,19 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 
 ### Integrations
 
-Sentinel integrations with a few external plugins, including:
+Sentinel integrates with a few external plugins, including:
 
 - Vault, for permission group targets! (Use group:GROUP_HERE)
 - Towny, for town targets! (Use towny:TOWN_HERE)
 - Factions, for faction targets! (Use factions:FACTION_HERE, factionsenemy:NAME, factionsally:NAME)
 - SimpleClans, for clan targets! (Use simpleclan:CLAN_NAME_HERE)
+- CrackShot, to allow NPCs to fire CrackShot weapons.
+
+Sentinel is integrated into by external plugins as well, including:
+
+- Denizen (using Depenizen as a bridge), for scriptable targeting!
+    - Use held_denizen_item:DENIZEN_ITEM_NAME for targeting based on targets holding a Denizen item
+    - or use denizen_proc:PROCEDURE_SCRIPT_NAME to fire a procedure script with first procedure context (named 'entity' by default) being the entity that might be a target. Determine 'true' or 'false' to indicate whether the entity is a target.
 
 ### Commands
 
