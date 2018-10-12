@@ -30,6 +30,18 @@ public class SentinelUtilities {
     public static Random random = new Random();
 
     /**
+     * Returns the item held in an entity's hand.
+     */
+    public static ItemStack getHeldItem(LivingEntity entity) {
+        if (SentinelTarget.v1_9) {
+            return entity.getEquipment().getItemInMainHand();
+        }
+        else {
+            return entity.getEquipment().getItemInHand();
+        }
+    }
+
+    /**
      * Traces a ray from a start to an end, returning the end of the ray (stopped early if there are solid blocks in the way).
      */
     public static Location rayTrace(Location start, Location end) {

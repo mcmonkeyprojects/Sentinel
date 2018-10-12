@@ -272,12 +272,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
                 return null;
             }
             // TODO: Just only use this (instead of Inventory trait)?
-            if (SentinelTarget.v1_9) {
-                return getLivingEntity().getEquipment().getItemInMainHand();
-            }
-            else {
-                return getLivingEntity().getEquipment().getItemInHand();
-            }
+            return SentinelUtilities.getHeldItem(getLivingEntity());
         }
         return getNPC().getTrait(Inventory.class).getContents()[0];
     }
