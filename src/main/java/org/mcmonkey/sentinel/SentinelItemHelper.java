@@ -271,9 +271,9 @@ public class SentinelItemHelper extends SentinelHelperObject {
             if (!getNPC().isSpawned()) {
                 return null;
             }
-            // TODO: Just only use this (instead of Inventory trait)?
             return SentinelUtilities.getHeldItem(getLivingEntity());
         }
+        // Note: this allows entities that don't normally have equipment to still 'hold' weapons (eg a cow can hold a bow)
         return getNPC().getTrait(Inventory.class).getContents()[0];
     }
 
