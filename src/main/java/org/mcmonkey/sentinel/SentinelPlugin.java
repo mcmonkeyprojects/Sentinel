@@ -210,7 +210,12 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         minShootSpeed = getConfig().getDouble("random.shoot speed minimum", 20);
         workaroundDrops = getConfig().getBoolean("random.workaround drops", false) || blockEvents;
         deathMessages = getConfig().getBoolean("random.death messages", true);
-        spectralSound = Sound.valueOf(getConfig().getString("random.spectral sound", "ENTITY_VILLAGER_YES"));
+        try {
+            spectralSound = Sound.valueOf(getConfig().getString("random.spectral sound", "ENTITY_VILLAGER_YES"));
+        }
+        catch (Throwable e) {
+            getLogger().warning("Sentinel Configuration value 'random.spectral sound' is set to an invalid sound name. This is usually an ignorable issue.");
+        }
         ignoreInvisible = getConfig().getBoolean("random.ignore invisible targets");
         guardDistanceMinimum = getConfig().getInt("random.guard follow distance.minimum", 7);
         guardDistanceMargin = getConfig().getInt("random.guard follow distance.selction range", 4);
