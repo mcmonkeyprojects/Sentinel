@@ -82,6 +82,27 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
     }
 
     /**
+     * Removes a temporary target from this NPC (and squadmates if relevant).
+     * Returns whether anything was removed.
+     */
+    public boolean removeTarget(UUID id) {
+        SentinelCurrentTarget target = new SentinelCurrentTarget();
+        target.targetID = id;
+        boolean removed = currentTargets.remove(target);
+        if (removed && sentinel.squad != null) {
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                if (npc.hasTrait(SentinelTrait.class)) {
+                    SentinelTrait squadMade = npc.getTrait(SentinelTrait.class);
+                    if (squadMade.squad != null && squadMade.squad.equals(sentinel.squad)) {
+                        sentinel.targetingHelper.currentTargets.remove(target);
+                    }
+                }
+            }
+        }
+        return removed;
+    }
+
+    /**
      * Adds a target directly to the NPC. Prefer {@code addTarget} over this in most cases.
      */
     public void addTargetNoBounce(UUID id) {
@@ -174,14 +195,14 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (isInvisible(entity)) {
             return false;
         }
-        SentinelCurrentTarget target = new SentinelCurrentTarget();
-        target.targetID = entity.getUniqueId();
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             return false;
         }
         if (sentinel.getGuarding() != null && entity.getUniqueId().equals(sentinel.getGuarding())) {
             return false;
         }
+        SentinelCurrentTarget target = new SentinelCurrentTarget();
+        target.targetID = entity.getUniqueId();
         if (currentTargets.contains(target)) {
             return true;
         }

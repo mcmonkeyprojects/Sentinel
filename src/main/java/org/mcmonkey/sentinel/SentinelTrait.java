@@ -1337,6 +1337,7 @@ public class SentinelTrait extends Trait {
             event.getDrops().clear();
             event.setDroppedExp(0);
         }
+        targetingHelper.removeTarget(event.getEntity().getUniqueId());
     }
 
     /**
