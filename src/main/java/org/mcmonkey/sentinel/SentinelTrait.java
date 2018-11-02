@@ -960,7 +960,7 @@ public class SentinelTrait extends Trait {
             getLivingEntity().setHealth(Math.min(getLivingEntity().getHealth() + 1.0, health));
             timeSinceHeal = 0;
         }
-        if (getGuarding() != null && npc.hasTrait(Waypoints.class)) {
+        if ((getGuarding() != null || chasing != null) && npc.hasTrait(Waypoints.class)) {
             Waypoints wp = npc.getTrait(Waypoints.class);
             if (!wp.getCurrentProvider().isPaused()) {
                 wp.getCurrentProvider().setPaused(true);
