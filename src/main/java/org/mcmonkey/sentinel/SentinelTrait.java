@@ -738,16 +738,16 @@ public class SentinelTrait extends Trait {
         if (npc.isSpawned() && getLivingEntity() instanceof Player) {
             if (SentinelTarget.v1_9) {
                 PlayerAnimation.START_USE_MAINHAND_ITEM.play((Player) getLivingEntity());
-            }
-            BukkitRunnable runner = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (npc.isSpawned() && getLivingEntity() instanceof Player) {
-                        PlayerAnimation.STOP_USE_ITEM.play((Player) getLivingEntity());
+                BukkitRunnable runner = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (npc.isSpawned() && getLivingEntity() instanceof Player) {
+                            PlayerAnimation.STOP_USE_ITEM.play((Player) getLivingEntity());
+                        }
                     }
-                }
-            };
-            runner.runTaskLater(SentinelPlugin.instance, 10);
+                };
+                runner.runTaskLater(SentinelPlugin.instance, 10);
+            }
         }
     }
 
