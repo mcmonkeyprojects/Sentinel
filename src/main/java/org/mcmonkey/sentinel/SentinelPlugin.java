@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.mcmonkey.sentinel.commands.SentinelCommand;
 import org.mcmonkey.sentinel.integration.*;
 import org.mcmonkey.sentinel.metrics.BStatsMetricsLite;
 import org.mcmonkey.sentinel.metrics.MetricsLite;
@@ -245,6 +246,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         tickRate = getConfig().getInt("update rate", 10);
         getLogger().info("Sentinel loaded!");
         getServer().getPluginManager().registerEvents(this, this);
+        SentinelCommand.buildCommandHandler();
         // mcstats.org
         try {
             MetricsLite metrics = new MetricsLite(this);
@@ -315,7 +317,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     /**
      * Prefix string for an inventory title.
      */
-    final static String InvPrefix = ChatColor.GREEN + "Sentinel ";
+    public final static String InvPrefix = ChatColor.GREEN + "Sentinel ";
 
     /**
      * Called when an inventory is closed.

@@ -84,32 +84,33 @@ Sentinel is integrated into by external plugins as well, including:
 - /sentinel healrate RATE - Changes the rate at which the NPC heals, in seconds.
 - /sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in seconds.
 - /sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.
-- /sentinel guard (PLAYERNAME) - Makes the NPC guard a specific player. Don't specify a player to stop guarding.
-- /sentinel invincible - Toggles whether the NPC is invincible.
-- /sentinel fightback - Toggles whether the NPC will fight back.
-- /sentinel needammo - Toggles whether the NPC will need ammo.
-- /sentinel safeshot - Toggles whether the NPC will avoid damaging non-targets.
-- /sentinel chaseclose - Toggles whether the NPC will chase while in 'close quarters' fights.
-- /sentinel chaseranged - Toggles whether the NPC will chase while in ranged fights.
+- /sentinel guard [PLAYERNAME] - Makes the NPC guard a specific player. Don't specify a player to stop guarding.
+- /sentinel invincible ['true'/'false'] - Toggles whether the NPC is invincible.
+- /sentinel fightback ['true'/'false'] - Toggles whether the NPC will fight back.
+- /sentinel needammo ['true'/'false'] - Toggles whether the NPC will need ammo.
+- /sentinel safeshot ['true'/'false'] - Toggles whether the NPC will avoid damaging non-targets.
+- /sentinel chaseclose ['true'/'false'] - Toggles whether the NPC will chase while in 'close quarters' fights.
+- /sentinel chaseranged ['true'/'false'] - Toggles whether the NPC will chase while in ranged fights.
 - /sentinel drops - Changes the drops of the current NPC.
 - /sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.
 - /sentinel forgive - Forgives all current targets.
-- /sentinel enemydrops - Toggles whether enemy mobs of this NPC drop items.
+- /sentinel enemydrops ['true'/'false'] - Toggles whether enemy mobs of this NPC drop items.
 - /sentinel info - Shows info on the current NPC.
 - /sentinel stats - Shows statistics about the current NPC.
 - /sentinel targets - Shows the targets of the current NPC.
+- /sentinel ignores - Shows the ignore targets of the current NPC.
 - /sentinel kill - Kills the NPC.
 - /sentinel respawn - Respawns the NPC.
 - /sentinel targettime TIME - Sets the NPC's enemy target time limit in seconds.
-- /sentinel speed - Sets the NPC's movement speed modifier.
-- /sentinel autoswitch - Toggles whether the NPC automatically switches items.
+- /sentinel speed SPEED - Sets the NPC's movement speed modifier.
+- /sentinel autoswitch ['true'/'false'] - Toggles whether the NPC automatically switches items.
 - /sentinel greeting GREETING - Sets a greeting message for the NPC to say.
 - /sentinel warning WARNING - Sets a warning message for the NPC to say.
 - /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
 - /sentinel accuracy OFFSET - Sets the accuracy of an NPC.
 - /sentinel squad SQUAD - Sets the NPC's squad name (null for none).
-- /sentinel realistic - Toggles whether the NPC should use "realistic" targeting logic (don't attack things you can't see.)
-- /sentinel reach REACH - Sets the NPC's reach (how far it can punch.)
+- /sentinel realistic ['true'/'false'] - Toggles whether the NPC should use "realistic" targeting logic (don't attack things you can't see).
+- /sentinel reach REACH - Sets the NPC's reach (how far it can punch).
 
 ### Sentry user?
 
