@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](http://i.imgur.com/VDwTzrs.gif)
 
-**Version 1.7.2**: Compatible with Spigot 1.8.8(see Info section below), 1.9.4, 1.10.2, 1.11.2, 1.12.2, and 1.13.1
+**Version 1.7.5**: Compatible with Spigot 1.8.8(see Info section below), 1.9.4, 1.10.2, 1.11.2, 1.12.2, and 1.13.2
 
 ### Downloads
 
@@ -15,6 +15,13 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 - **Support Sentinel on Patreon!**: https://www.patreon.com/denizenscript
 - Or, give a one-time donation via PayPal: https://one.denizenscript.com/donate
+
+### Warnings
+
+- Sentinel 1.7 **changes the API** structure of Sentinel - and adds documentation and **JavaDocs**, which can be found here: http://ci.citizensnpcs.co/job/Sentinel/javadoc/
+    - If you need a pre-API rewrite version of Sentinel, you can get the last version of Sentinel (1.6.2) here: http://ci.citizensnpcs.co/job/Sentinel/191/
+- Sentinel 1.7.2 is the last version that contained the **Sentry importer**. If you need to import old Sentry data, you must use a 1.7.2 build.
+    - You can get that build here: http://ci.citizensnpcs.co/job/Sentinel/201/
 
 ### Info
 

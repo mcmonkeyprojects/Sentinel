@@ -7,7 +7,7 @@
     <groupId>org.mcmonkey</groupId>
     <artifactId>sentinel</artifactId>
     <packaging>jar</packaging>
-    <version>1.7.2</version>
+    <version>1.7.5</version>
     <name>Sentinel</name>
     <description>Combat NPCs for Spigot</description>
 
@@ -15,7 +15,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <craftbukkit.version>1.13.1-R0.1-SNAPSHOT</craftbukkit.version>
         <citizens.version>2.0.24-SNAPSHOT</citizens.version>
-        <sentry.version>1.9.0</sentry.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
     </properties>
 
@@ -47,13 +46,6 @@
             <version>1.5.6</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/Vault.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>net.aufdemrand</groupId>
-            <artifactId>sentry</artifactId>
-            <version>${sentry.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.tommytony.war</groupId>

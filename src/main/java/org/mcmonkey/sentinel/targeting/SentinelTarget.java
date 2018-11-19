@@ -1,8 +1,9 @@
-package org.mcmonkey.sentinel;
+package org.mcmonkey.sentinel.targeting;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.mcmonkey.sentinel.SentinelPlugin;
 
 import java.util.HashMap;
 import java.util.HashSet;

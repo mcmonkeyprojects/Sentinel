@@ -11,6 +11,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import org.mcmonkey.sentinel.targeting.SentinelTarget;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

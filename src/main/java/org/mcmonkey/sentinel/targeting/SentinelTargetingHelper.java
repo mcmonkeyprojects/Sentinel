@@ -1,4 +1,4 @@
-package org.mcmonkey.sentinel;
+package org.mcmonkey.sentinel.targeting;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -9,6 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.mcmonkey.sentinel.*;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -135,57 +136,11 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (sentinel.getGuarding() != null && entity.getUniqueId().equals(sentinel.getGuarding())) {
             return true;
         }
-        if (SentinelTarget.v1_9) {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
-                    && SentinelUtilities.isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), sentinel.heldItemIgnores)) {
-                return true;
-            }
-        }
-        else {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInHand() != null
-                    && SentinelUtilities.isRegexTargeted(entity.getEquipment().getItemInHand().getType().name(), sentinel.heldItemIgnores)) {
-                return true;
-            }
-        }
-        for (SentinelIntegration integration : SentinelPlugin.integrations) {
-            for (String text : sentinel.otherIgnores) {
-                if (integration.isTarget(entity, text)) {
-                    return true;
-                }
-            }
-        }
-        if (entity.hasMetadata("NPC")) {
-            return sentinel.ignores.contains(SentinelTarget.NPCS.name()) ||
-                    SentinelUtilities.isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), sentinel.npcNameIgnores);
-        }
-        else if (entity instanceof Player) {
-            if (((Player) entity).getGameMode() == GameMode.CREATIVE || ((Player) entity).getGameMode() == GameMode.SPECTATOR) {
-                return true;
-            }
-            if (SentinelUtilities.isRegexTargeted(((Player) entity).getName(), sentinel.playerNameIgnores)) {
-                return true;
-            }
-            if (SentinelPlugin.instance.vaultPerms != null) {
-                for (String group : sentinel.groupIgnores) {
-                    if (SentinelPlugin.instance.vaultPerms.playerInGroup((Player) entity, group)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        else if (SentinelUtilities.isRegexTargeted(entity.getCustomName() == null ? entity.getType().name() : entity.getCustomName(), sentinel.entityNameIgnores)) {
+        sentinel.allIgnores.checkRecalculateTargetsCache();
+        if (sentinel.allIgnores.targetsProcessed.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(getNPC().getTrait(Owner.class).getOwnerId())) {
             return true;
         }
-        if (sentinel.ignores.contains(SentinelTarget.OWNER.name()) && entity.getUniqueId().equals(getNPC().getTrait(Owner.class).getOwnerId())) {
-            return true;
-        }
-        HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
-        for (SentinelTarget poss : possible) {
-            if (sentinel.ignores.contains(poss.name())) {
-                return true;
-            }
-        }
-        return false;
+        return sentinel.allIgnores.isTarget(entity);
     }
 
     /**
@@ -206,54 +161,11 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (currentTargets.contains(target)) {
             return true;
         }
-        if (SentinelTarget.v1_9) {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
-                    && SentinelUtilities.isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), sentinel.heldItemTargets)) {
-                return true;
-            }
-        }
-        else {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInHand() != null
-                    && SentinelUtilities.isRegexTargeted(entity.getEquipment().getItemInHand().getType().name(), sentinel.heldItemTargets)) {
-                return true;
-            }
-        }
-        for (SentinelIntegration integration : SentinelPlugin.integrations) {
-            for (String text : sentinel.otherTargets) {
-                if (integration.isTarget(entity, text)) {
-                    return true;
-                }
-            }
-        }
-        if (entity.hasMetadata("NPC")) {
-            return sentinel.targets.contains(SentinelTarget.NPCS.name()) ||
-                    SentinelUtilities.isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), sentinel.npcNameTargets);
-        }
-        if (entity instanceof Player) {
-            if (SentinelUtilities.isRegexTargeted(((Player) entity).getName(), sentinel.playerNameTargets)) {
-                return true;
-            }
-            if (SentinelPlugin.instance.vaultPerms != null) {
-                for (String group : sentinel.groupTargets) {
-                    if (SentinelPlugin.instance.vaultPerms.playerInGroup((Player) entity, group)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        else if (SentinelUtilities.isRegexTargeted(entity.getCustomName() == null ? entity.getType().name() : entity.getCustomName(), sentinel.entityNameTargets)) {
+        sentinel.allTargets.checkRecalculateTargetsCache();
+        if (sentinel.allTargets.targetsProcessed.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(getNPC().getTrait(Owner.class).getOwnerId())) {
             return true;
         }
-        if (sentinel.targets.contains(SentinelTarget.OWNER.name()) && entity.getUniqueId().equals(getNPC().getTrait(Owner.class).getOwnerId())) {
-            return true;
-        }
-        HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
-        for (SentinelTarget poss : possible) {
-            if (sentinel.targets.contains(poss.name())) {
-                return true;
-            }
-        }
-        return false;
+        return sentinel.allTargets.isTarget(entity);
     }
 
     /**

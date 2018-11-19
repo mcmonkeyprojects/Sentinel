@@ -2,6 +2,7 @@ package org.mcmonkey.sentinel;
 
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.LivingEntity;
+import org.mcmonkey.sentinel.targeting.SentinelTargetingHelper;
 
 /**
  * Base class for Sentinel helper objects.

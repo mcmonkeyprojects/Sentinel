@@ -21,6 +21,7 @@ import org.mcmonkey.sentinel.integration.*;
 import org.mcmonkey.sentinel.metrics.BStatsMetricsLite;
 import org.mcmonkey.sentinel.metrics.MetricsLite;
 import org.mcmonkey.sentinel.metrics.StatsRecord;
+import org.mcmonkey.sentinel.targeting.SentinelTarget;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -228,12 +229,6 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (!npc.isSpawned() && npc.hasTrait(SentinelTrait.class)) {
                         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
-                        for (String target : new HashSet<>(sentinel.targets)) {
-                            sentinel.targets.add(SentinelTarget.forName(target).name());
-                        }
-                        for (String target : new HashSet<>(sentinel.ignores)) {
-                            sentinel.ignores.add(SentinelTarget.forName(target).name());
-                        }
                         if (sentinel.respawnTime > 0) {
                             if (sentinel.spawnPoint == null && npc.getStoredLocation() == null) {
                                 getLogger().warning("NPC " + npc.getId() + " has a null spawn point and can't be spawned. Perhaps the world was deleted?");
@@ -245,8 +240,8 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 }
             }
         };
-        maxHealth = getConfig().getDouble("random.max health", 2000);
         postLoad.runTaskLater(this, 40);
+        maxHealth = getConfig().getDouble("random.max health", 2000);
         tickRate = getConfig().getInt("update rate", 10);
         getLogger().info("Sentinel loaded!");
         getServer().getPluginManager().registerEvents(this, this);

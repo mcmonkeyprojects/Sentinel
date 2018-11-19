@@ -5,8 +5,11 @@ import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.persistence.Persist;
+import net.citizensnpcs.api.persistence.PersistenceLoader;
+import net.citizensnpcs.api.persistence.Persister;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Spawned;
+import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.trait.CurrentLocation;
 import net.citizensnpcs.trait.waypoint.Waypoint;
 import net.citizensnpcs.trait.waypoint.WaypointProvider;
@@ -29,6 +32,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.mcmonkey.sentinel.targeting.SentinelTarget;
+import org.mcmonkey.sentinel.targeting.SentinelTargetList;
+import org.mcmonkey.sentinel.targeting.SentinelTargetingHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -170,94 +176,77 @@ public class SentinelTrait extends Trait {
     public double stats_damageGiven = 0;
 
     /**
-     * List of target-type-based targets.
+     * Updater for older Sentinel saves (up to 1.7.2)
      */
-    @Persist("targets")
-    public HashSet<String> targets = new HashSet<>();
+    @Override
+    public void load(final DataKey key) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                updateOld(key);
+            }
+        }.runTaskLater(SentinelPlugin.instance, 1);
+    }
+
+    @Override
+    public void save(DataKey key) {
+        for (DataKey subkey : key.getSubKeys()) {
+            if (subkey.name().equals("targets")
+                    || subkey.name().equals("ignores")
+                    || subkey.name().endsWith("Targets")
+                    || subkey.name().endsWith("Ignores")) {
+                key.removeKey(subkey.name());
+            }
+        }
+    }
 
     /**
-     * List of target-type-based ignores.
+     * Updater for older Sentinel saves (up to 1.7.2)
      */
-    @Persist("ignores")
-    public HashSet<String> ignores = new HashSet<>();
+    public void updateOld(DataKey key) {
+        for (DataKey subkey : key.getSubKeys()) {
+            if (subkey.name().equals("targets")) {
+                for (DataKey listEntry : subkey.getSubKeys()) {
+                    allTargets.targets.add(listEntry.getRaw("").toString());
+                }
+                allTargets.recalculateTargetsCache();
+            }
+            else if (subkey.name().equals("ignores")) {
+                for (DataKey listEntry : subkey.getSubKeys()) {
+                    allIgnores.targets.add(listEntry.getRaw("").toString());
+                }
+                allIgnores.recalculateTargetsCache();
+            }
+            if (subkey.name().endsWith("Targets")) {
+                allTargets.updateOld(subkey, subkey.name().substring(0, subkey.name().length() - "Targets".length()));
+            }
+            else if (subkey.name().endsWith("Ignores")) {
+                allIgnores.updateOld(subkey, subkey.name().substring(0, subkey.name().length() - "Ignores".length()));
+            }
+        }
+    }
 
-    /**
-     * List of player-name-based targets.
-     */
-    @Persist("playerNameTargets")
-    public ArrayList<String> playerNameTargets = new ArrayList<>();
+    @Persist("allTargets")
+    public SentinelTargetList allTargets = new SentinelTargetList();
 
-    /**
-     * List of player-name-based ignores.
-     */
-    @Persist("playerNameIgnores")
-    public ArrayList<String> playerNameIgnores = new ArrayList<>();
+    @Persist("allIgnores")
+    public SentinelTargetList allIgnores = new SentinelTargetList();
 
-    /**
-     * List of NPC-name-based targets.
-     */
-    @Persist("npcNameTargets")
-    public ArrayList<String> npcNameTargets = new ArrayList<>();
+    public static class SentinelTargetListPersister implements Persister<SentinelTargetList> {
+        @Override
+        public SentinelTargetList create(DataKey dataKey) {
+            return PersistenceLoader.load(new SentinelTargetList(), dataKey);
+        }
 
-    /**
-     * List of NPC-name-based ignores.
-     */
-    @Persist("npcNameIgnores")
-    public ArrayList<String> npcNameIgnores = new ArrayList<>();
+        @Override
+        public void save(SentinelTargetList o, DataKey dataKey) {
+            PersistenceLoader.save(o, dataKey);
+        }
+    }
 
-    /**
-     * List of entity-name-based targets.
-     */
-    @Persist("entityNameTargets")
-    public ArrayList<String> entityNameTargets = new ArrayList<>();
-
-    /**
-     * List of entity-name-based ignores.
-     */
-    @Persist("entityNameIgnores")
-    public ArrayList<String> entityNameIgnores = new ArrayList<>();
-
-    /**
-     * List of held-item-based targets.
-     */
-    @Persist("heldItemTargets")
-    public ArrayList<String> heldItemTargets = new ArrayList<>();
-
-    /**
-     * List of held-item-based ignores.
-     */
-    @Persist("heldItemIgnores")
-    public ArrayList<String> heldItemIgnores = new ArrayList<>();
-
-    /**
-     * List of event-based targets.
-     */
-    @Persist("groupTargets")
-    public ArrayList<String> groupTargets = new ArrayList<>();
-
-    /**
-     * List of group-based ignores.
-     */
-    @Persist("groupIgnores")
-    public ArrayList<String> groupIgnores = new ArrayList<>();
-
-    /**
-     * List of event-based targets.
-     */
-    @Persist("eventTargets")
-    public ArrayList<String> eventTargets = new ArrayList<>();
-
-    /**
-     * List of targets not handled by any other target type list.
-     */
-    @Persist("otherTargets")
-    public ArrayList<String> otherTargets = new ArrayList<>();
-
-    /**
-     * List of ignores not handled by any other target type list.
-     */
-    @Persist("otherIgnores")
-    public ArrayList<String> otherIgnores = new ArrayList<>();
+    static {
+        PersistenceLoader.registerPersistDelegate(SentinelTargetList.class, SentinelTargetListPersister.class);
+    }
 
     @Persist("range")
     public double range = 20.0;
@@ -662,22 +651,22 @@ public class SentinelTrait extends Trait {
             }
         }
         boolean isEventTarget = false;
-        if (eventTargets.contains("pvp")
+        if (allTargets.byEvent.contains("pvp")
                 && event.getEntity() instanceof Player
                 && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             isEventTarget = true;
         }
-        else if (eventTargets.contains("pve")
+        else if (allTargets.byEvent.contains("pve")
                 && !(event.getEntity() instanceof Player)
                 && event.getEntity() instanceof LivingEntity) {
             isEventTarget = true;
         }
-        else if (eventTargets.contains("pvnpc")
+        else if (allTargets.byEvent.contains("pvnpc")
                 && event.getEntity() instanceof LivingEntity
                 && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             isEventTarget = true;
         }
-        else if (eventTargets.contains("pvsentinel")
+        else if (allTargets.byEvent.contains("pvsentinel")
                 && event.getEntity() instanceof LivingEntity
                 && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
                 && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).hasTrait(SentinelTrait.class)) {
@@ -727,7 +716,8 @@ public class SentinelTrait extends Trait {
             speed = 1;
         }
         autoswitch = config.getBoolean("sentinel defaults.autoswitch", false);
-        ignores.add(SentinelTarget.OWNER.name());
+        allIgnores.targets.add(SentinelTarget.OWNER.name());
+        allIgnores.recalculateTargetsCache();
         reach = config.getDouble("reach", 3);
     }
 

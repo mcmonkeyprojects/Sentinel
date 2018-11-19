@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.mcmonkey.sentinel.events.SentinelAttackEvent;
+import org.mcmonkey.sentinel.targeting.SentinelTarget;
 
 /**
  * Helper for Sentinel NPCs attacking targets.

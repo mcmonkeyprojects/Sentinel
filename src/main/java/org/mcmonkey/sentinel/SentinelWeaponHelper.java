@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
+import org.mcmonkey.sentinel.targeting.SentinelTarget;
 
 import java.util.HashMap;
 

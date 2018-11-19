@@ -3,6 +3,7 @@ package org.mcmonkey.sentinel;
 import net.citizensnpcs.api.trait.trait.Inventory;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.mcmonkey.sentinel.targeting.SentinelTarget;
 
 /**
  * Helper for item management.
