@@ -2,11 +2,14 @@ package org.mcmonkey.sentinel.targeting;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.persistence.Persist;
+import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.api.util.DataKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.mcmonkey.sentinel.SentinelIntegration;
 import org.mcmonkey.sentinel.SentinelPlugin;
+import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.SentinelUtilities;
 
 import java.util.ArrayList;
@@ -15,7 +18,21 @@ import java.util.HashSet;
 public class SentinelTargetList {
 
     /**
+     * Returns whether an entity is targeted by this target list on a specific Sentinel NPC.
+     * Does not include target-list-specific handling, such as current temporary targets.
+     */
+    public boolean isTarget(LivingEntity entity, SentinelTrait sentinel) {
+        checkRecalculateTargetsCache();
+        if (targetsProcessed.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(sentinel.getNPC().getTrait(Owner.class).getOwnerId())) {
+            return true;
+        }
+        return isTarget(entity);
+    }
+
+    /**
      * Returns whether an entity is targeted by this target list.
+     * Does not account for NPC-specific target handlers, like 'owner' (which requires knowledge of who that owner is, based on which NPC is checking).
+     * To include that, use isTarget(LivingEntity, SentinelTrait)
      */
     public boolean isTarget(LivingEntity entity) {
         checkRecalculateTargetsCache();
@@ -66,12 +83,18 @@ public class SentinelTargetList {
         return false;
     }
 
+    /**
+     * Fills the target list from a Citizens data key, during load time.
+     */
     public void fillListFromKey(ArrayList<String> list, DataKey key) {
         for (DataKey listEntry : key.getSubKeys()) {
             list.add(listEntry.getRaw("").toString());
         }
     }
 
+    /**
+     * Updates old (Sentinel 1.6 or lower) saves to new (Sentinel 1.7 or higher) saves.
+     */
     public void updateOld(DataKey key, String name) {
         if (name.equals("playerName")) {
             fillListFromKey(byPlayerName, key);
@@ -94,6 +117,34 @@ public class SentinelTargetList {
         else if (name.equals("other")) {
             fillListFromKey(byOther, key);
         }
+    }
+
+    /**
+     * Returns whether a damage event is targeted by this list.
+     */
+    public boolean isEventTarget(EntityDamageByEntityEvent event) {
+        if (byEvent.contains("pvp")
+                && event.getEntity() instanceof Player
+                && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+            return true;
+        }
+        else if (byEvent.contains("pve")
+                && !(event.getEntity() instanceof Player)
+                && event.getEntity() instanceof LivingEntity) {
+            return true;
+        }
+        else if (byEvent.contains("pvnpc")
+                && event.getEntity() instanceof LivingEntity
+                && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+            return true;
+        }
+        else if (byEvent.contains("pvsentinel")
+                && event.getEntity() instanceof LivingEntity
+                && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
+                && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).hasTrait(SentinelTrait.class)) {
+            return true;
+        }
+        return false;
     }
 
     /**

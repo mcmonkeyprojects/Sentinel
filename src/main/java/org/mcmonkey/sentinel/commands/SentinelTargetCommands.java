@@ -159,6 +159,71 @@ public class SentinelTargetCommands {
         }
     }
 
+    @Command(aliases = {"sentinel"}, usage = "addavoid TYPE",
+            desc = "Avoids a target.",
+            modifiers = {"addavoid"}, permission = "sentinel.addavoid", min = 2, max = 2)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void addAvoid(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        SentinelTargetLabel targetLabel = new SentinelTargetLabel(args.getString(1));
+        if (!targetLabel.isValidTarget()) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid target!");
+            listValidTargets(sender);
+            return;
+        }
+        if (!targetLabel.isValidRegex()) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
+            return;
+        }
+        if (targetLabel.addToList(sentinel.allAvoids)) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Avoiding a new target!");
+        }
+        else {
+            sender.sendMessage(SentinelCommand.prefixBad + "Already avoiding that target!");
+        }
+    }
+
+    @Command(aliases = {"sentinel"}, usage = "removeavoid TYPE",
+            desc = "Stops avoding a target.",
+            modifiers = {"removeavoid"}, permission = "sentinel.removeavoid", min = 2, max = 2)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void removeAvoid(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        SentinelTargetLabel targetLabel = new SentinelTargetLabel(args.getString(1));
+        if (!targetLabel.isValidTarget()) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid target!");
+            return;
+        }
+        if (!targetLabel.isValidRegex()) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
+            return;
+        }
+        if (targetLabel.addToList(sentinel.allAvoids)) {
+            sender.sendMessage(SentinelCommand.prefixGood + "No longer tracking that target!");
+        }
+        else {
+            sender.sendMessage(SentinelCommand.prefixBad + "Was already not tracking that target!");
+        }
+    }
+
+    @Command(aliases = {"sentinel"}, usage = "avoidrange RANGE",
+            desc = "Sets the distance to try to keep from threats.",
+            modifiers = {"avoidrange"}, permission = "sentinel.avoidrange", min = 2, max = 2)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void avoidRange(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        try {
+            double d = Double.parseDouble(args.getString(1));
+            if (d >= 4 && d < 100) {
+                sentinel.avoidRange = d;
+                sender.sendMessage(SentinelCommand.prefixGood + "Avoidance range set!");
+            }
+            else {
+                throw new NumberFormatException("Number out of range (must be >= 4 and < 100).");
+            }
+        }
+        catch (NumberFormatException ex) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid range number: " + ex.getMessage());
+        }
+    }
+
     @Command(aliases = {"sentinel"}, usage = "targettime TIME",
             desc = "Sets the NPC's enemy target time limit in seconds.",
             modifiers = {"targettime"}, permission = "sentinel.targettime", min = 2, max = 2)
@@ -176,6 +241,27 @@ public class SentinelTargetCommands {
         }
         catch (NumberFormatException ex) {
             sender.sendMessage(SentinelCommand.prefixBad + "Invalid time number: " + ex.getMessage());
+        }
+    }
+
+    @Command(aliases = {"sentinel"}, usage = "runaway ['true'/'false']",
+            desc = "Toggles whether the NPC will run away when attacked.",
+            modifiers = {"runaway"}, permission = "sentinel.runaway", min = 1, max = 2)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void runaway(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        boolean mode = !sentinel.runaway;
+        if (args.argsLength() > 1 && "true".equalsIgnoreCase(args.getString(1))) {
+            mode = true;
+        }
+        if (args.argsLength() > 1 && "false".equalsIgnoreCase(args.getString(1))) {
+            mode = false;
+        }
+        sentinel.runaway = mode;
+        if (sentinel.runaway) {
+            sender.sendMessage(SentinelCommand.prefixGood + "NPC now runs away!");
+        }
+        else {
+            sender.sendMessage(SentinelCommand.prefixGood + "NPC no longer runs away!");
         }
     }
 
@@ -206,6 +292,7 @@ public class SentinelTargetCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void forgive(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         sentinel.targetingHelper.currentTargets.clear();
+        sentinel.targetingHelper.currentAvoids.clear();
         sentinel.chasing = null;
         sender.sendMessage(SentinelCommand.prefixGood + "Targets forgiven.");
     }
@@ -228,5 +315,15 @@ public class SentinelTargetCommands {
         sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.ColorBasic
                 + ": owned by " + ChatColor.RESET + SentinelPlugin.instance.getOwner(sentinel.getNPC()));
         outputEntireTargetsList(sender, sentinel.allIgnores, "Ignored");
+    }
+
+    @Command(aliases = {"sentinel"}, usage = "avoids",
+            desc = "Shows the avoid targets of the current NPC.",
+            modifiers = {"avoids"}, permission = "sentinel.info", min = 1, max = 1)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void avoids(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.ColorBasic
+                + ": owned by " + ChatColor.RESET + SentinelPlugin.instance.getOwner(sentinel.getNPC()));
+        outputEntireTargetsList(sender, sentinel.allAvoids, "Avoided");
     }
 }

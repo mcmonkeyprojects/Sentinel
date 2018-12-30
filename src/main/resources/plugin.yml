@@ -28,6 +28,10 @@ permissions:
       sentinel.addignore: true
       # /sentinel removeignore TYPE
       sentinel.removeignore: true
+      # /sentinel addavoid TYPE
+      sentinel.addavoid: true
+      # /sentinel removeavoid TYPE
+      sentinel.removeavoid: true
       # /sentinel range RANGE
       sentinel.range: true
       # /sentinel damage DAMAGE
@@ -50,6 +54,8 @@ permissions:
       sentinel.invincible: true
       # /sentinel fightback
       sentinel.fightback: true
+      # /sentinel runaway
+      sentinel.runaway: true
       # /sentinel needammo
       sentinel.needammo: true
       # /sentinel safeshot

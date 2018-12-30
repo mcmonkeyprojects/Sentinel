@@ -36,10 +36,7 @@ import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.targeting.SentinelTargetList;
 import org.mcmonkey.sentinel.targeting.SentinelTargetingHelper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The main Sentinel trait.
@@ -232,6 +229,9 @@ public class SentinelTrait extends Trait {
     @Persist("allIgnores")
     public SentinelTargetList allIgnores = new SentinelTargetList();
 
+    @Persist("allAvoids")
+    public SentinelTargetList allAvoids = new SentinelTargetList();
+
     public static class SentinelTargetListPersister implements Persister<SentinelTargetList> {
         @Override
         public SentinelTargetList create(DataKey dataKey) {
@@ -248,6 +248,15 @@ public class SentinelTrait extends Trait {
         PersistenceLoader.registerPersistDelegate(SentinelTargetList.class, SentinelTargetListPersister.class);
     }
 
+    /**
+     * How far to stay from avoid targets.
+     */
+    @Persist
+    public double avoidRange = 10.0;
+
+    /**
+     * Maximum range to trigger attacks from.
+     */
     @Persist("range")
     public double range = 20.0;
 
@@ -292,6 +301,12 @@ public class SentinelTrait extends Trait {
      */
     @Persist("fightback")
     public boolean fightback = true;
+
+    /**
+     * Whether the NPC runs away when attacked.
+     */
+    @Persist("runaway")
+    public boolean runaway = false;
 
     /**
      * How long (in ticks) between using melee attacks.
@@ -564,46 +579,67 @@ public class SentinelTrait extends Trait {
         if (event.isCancelled()) {
             return;
         }
+        Entity damager = event.getDamager();
+        LivingEntity projectileSource = null;
+        if (event.getDamager() instanceof Projectile) {
+            ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
+            if (source instanceof LivingEntity) {
+                projectileSource = (LivingEntity) source;
+                damager = projectileSource;
+            }
+        }
         boolean isMe = event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId());
         if (SentinelPlugin.instance.protectFromIgnores && isMe) {
             if (event.getDamager() instanceof LivingEntity && targetingHelper.isIgnored((LivingEntity) event.getDamager())) {
                 event.setCancelled(true);
                 return;
             }
-            else if (event.getDamager() instanceof Projectile) {
-                ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
-                if (source instanceof LivingEntity && targetingHelper.isIgnored((LivingEntity) source)) {
-                    event.setCancelled(true);
-                    return;
-                }
+            else if (projectileSource != null && targetingHelper.isIgnored(projectileSource)) {
+                event.setCancelled(true);
+                return;
             }
         }
         boolean isKilling = event.getEntity() instanceof LivingEntity && event.getFinalDamage() >= ((LivingEntity) event.getEntity()).getHealth();
         boolean isFriend = getGuarding() != null && event.getEntity().getUniqueId().equals(getGuarding());
         boolean attackerIsMe = event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId());
+        if (projectileSource != null && projectileSource.getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            attackerIsMe = true;
+        }
         if (isMe || isFriend) {
             if (attackerIsMe) {
+                if (SentinelPlugin.debugMe) {
+                    debug("Ignoring damage I did to " + (isMe ? "myself." : "my friend."));
+                }
                 event.setCancelled(true);
+                return;
+            }
+            if (getGuarding() != null && damager.getUniqueId().equals(getGuarding())) {
+                if (isMe) {
+                    if (SentinelPlugin.debugMe) {
+                        debug("Ignoring damage from the player we're guarding.");
+                    }
+                    event.setCancelled(true);
+                }
                 return;
             }
             if (isMe) {
                 stats_damageTaken += event.getFinalDamage();
-            }
-            if (fightback && (event.getDamager() instanceof LivingEntity) && !targetingHelper.isIgnored((LivingEntity) event.getDamager())) {
-                targetingHelper.addTarget(event.getDamager().getUniqueId());
-            }
-            else if (event.getDamager() instanceof Projectile) {
-                ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
-                if (fightback && (source instanceof LivingEntity) && !targetingHelper.isIgnored((LivingEntity) source)) {
-                    if (((LivingEntity) source).getUniqueId().equals(getLivingEntity().getUniqueId())) {
-                        event.setCancelled(true);
-                        return;
+                if (runaway) {
+                    if (SentinelPlugin.debugMe) {
+                        debug("Ow! They hit me! Run!");
                     }
-                    targetingHelper.addTarget(((LivingEntity) source).getUniqueId());
+                    targetingHelper.addAvoid(event.getDamager().getUniqueId());
                 }
             }
+            if (fightback && (damager instanceof LivingEntity) && !targetingHelper.isIgnored((LivingEntity) damager)) {
+                if (SentinelPlugin.debugMe) {
+                    debug("Fighting back against attacker: " + event.getDamager().getUniqueId() + "! They hurt " + (isMe ? "me!" : "my friend!"));
+                }
+                targetingHelper.addTarget(event.getDamager().getUniqueId());
+            }
             if (SentinelPlugin.debugMe && isMe) {
-                debug("Took damage of " + event.getFinalDamage() + " with currently remaining health " + getLivingEntity().getHealth());
+                debug("Took damage of " + event.getFinalDamage() + " with currently remaining health " + getLivingEntity().getHealth()
+                    + (isKilling ? ". This will kill me." : "."));
             }
             if (isKilling && isMe && SentinelPlugin.instance.blockEvents) {
                 // We're going to die but we've been requested to avoid letting a death event fire.
@@ -630,61 +666,26 @@ public class SentinelTrait extends Trait {
             }
             return;
         }
-        Entity e = event.getDamager();
-        if (!(e instanceof LivingEntity)) {
-            if (e instanceof Projectile) {
-                ProjectileSource source = ((Projectile) e).getShooter();
-                if (source instanceof LivingEntity) {
-                    e = (LivingEntity) source;
-                    if (e.getUniqueId().equals(getLivingEntity().getUniqueId())) {
-                        if (safeShot && !targetingHelper.shouldTarget((LivingEntity) event.getEntity())) {
-                            event.setCancelled(true);
-                            return;
-                        }
-                        stats_damageGiven += event.getFinalDamage();
-                        if (!enemyDrops) {
-                            needsDropsClear.put(event.getEntity().getUniqueId(), true);
-                        }
-                        return;
-                    }
-                }
-            }
+        if (allTargets.isEventTarget(event) && damager instanceof LivingEntity
+                && targetingHelper.canSee((LivingEntity) damager) && !targetingHelper.isIgnored((LivingEntity) damager)) {
+            targetingHelper.addTarget(damager.getUniqueId());
         }
-        boolean isEventTarget = false;
-        if (allTargets.byEvent.contains("pvp")
-                && event.getEntity() instanceof Player
-                && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
-            isEventTarget = true;
-        }
-        else if (allTargets.byEvent.contains("pve")
-                && !(event.getEntity() instanceof Player)
-                && event.getEntity() instanceof LivingEntity) {
-            isEventTarget = true;
-        }
-        else if (allTargets.byEvent.contains("pvnpc")
-                && event.getEntity() instanceof LivingEntity
-                && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
-            isEventTarget = true;
-        }
-        else if (allTargets.byEvent.contains("pvsentinel")
-                && event.getEntity() instanceof LivingEntity
-                && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
-                && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).hasTrait(SentinelTrait.class)) {
-            isEventTarget = true;
-        }
-        if (isEventTarget && e != null && e instanceof LivingEntity && targetingHelper.canSee((LivingEntity) e) && !targetingHelper.isIgnored((LivingEntity) e)) {
-            targetingHelper.addTarget(e.getUniqueId());
+        if (allAvoids.isEventTarget(event) && damager instanceof LivingEntity
+                && targetingHelper.canSee((LivingEntity) damager) && !targetingHelper.isIgnored((LivingEntity) damager)) {
+            targetingHelper.addTarget(damager.getUniqueId());
         }
     }
+
+    private SentinelCurrentTarget tempTarget = new SentinelCurrentTarget();
 
     /**
      * Called when a target dies to remove them from the target list.
      */
     @EventHandler
     public void whenAnEnemyDies(EntityDeathEvent event) {
-        SentinelCurrentTarget target = new SentinelCurrentTarget();
-        target.targetID = event.getEntity().getUniqueId();
-        targetingHelper.currentTargets.remove(target);
+        tempTarget.targetID = event.getEntity().getUniqueId();
+        targetingHelper.currentTargets.remove(tempTarget);
+        targetingHelper.currentAvoids.remove(tempTarget);
     }
 
     /**
@@ -718,7 +719,9 @@ public class SentinelTrait extends Trait {
         autoswitch = config.getBoolean("sentinel defaults.autoswitch", false);
         allIgnores.targets.add(SentinelTarget.OWNER.name());
         allIgnores.recalculateTargetsCache();
-        reach = config.getDouble("reach", 3);
+        reach = config.getDouble("sentinel defaults.reach", 3);
+        avoidRange = config.getDouble("sentinel defaults.avoid range", 10);
+        runaway = config.getBoolean("sentinel defaults.runaway", false);
     }
 
     /**
@@ -891,24 +894,28 @@ public class SentinelTrait extends Trait {
      * Marks that the NPC can see a target (Changes the state of som entity types, eg opening a shulker box).
      */
     public void specialMarkVision() {
-        if (SentinelPlugin.debugMe) {
+        if (SentinelPlugin.debugMe && !visionMarked) {
             debug("Target! I see you, " + (chasing == null ? "(Unknown)" : chasing.getName()));
         }
         if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
             NMS.setPeekShulker(getLivingEntity(), 100);
         }
+        visionMarked = true;
     }
 
+    private boolean visionMarked;
+
     /**
-     * Marks that the NPC can no longer a target (Changes the state of som entity types, eg closing a shulker box).
+     * Marks that the NPC can no longer see a target (Changes the state of som entity types, eg closing a shulker box).
      */
     public void specialUnmarkVision() {
-        if (SentinelPlugin.debugMe) {
+        if (SentinelPlugin.debugMe && visionMarked) {
             debug("Goodbye, visible target " + (chasing == null ? "(Unknown)" : chasing.getName()));
         }
         if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
             NMS.setPeekShulker(getLivingEntity(), 0);
         }
+        visionMarked = false;
     }
 
     /**
@@ -923,12 +930,41 @@ public class SentinelTrait extends Trait {
     public boolean needsToUnpause = false;
 
     /**
+     * Special case for where the NPC has been forced to run to in certain situations.
+     */
+    public Location pathingTo = null;
+
+    /**
+     * Causes the NPC to immediately path over to a position.
+     */
+    public void pathTo(Location target) {
+        pauseWaypoints();
+        pathingTo = target;
+        npc.getNavigator().getDefaultParameters().distanceMargin(1.5);
+        getNPC().getNavigator().setTarget(target);
+        chasing = null;
+    }
+
+    /**
+     * Pauses waypoint navigation if currrently navigating.
+     */
+    public void pauseWaypoints() {
+        Waypoints wp = npc.getTrait(Waypoints.class);
+        if (!wp.getCurrentProvider().isPaused()) {
+            wp.getCurrentProvider().setPaused(true);
+        }
+        needsToUnpause = true;
+    }
+
+    /**
      * Runs a full update cycle on the NPC.
      */
     public void runUpdate() {
+        // Basic prep and tracking
         canEnforce = true;
         timeSinceAttack += SentinelPlugin.instance.tickRate;
         timeSinceHeal += SentinelPlugin.instance.tickRate;
+        // Protection against falling below the world
         if (getLivingEntity().getLocation().getY() <= 0) {
             if (SentinelPlugin.debugMe) {
                 debug("Injuring self, I'm below the map!");
@@ -943,27 +979,31 @@ public class SentinelTrait extends Trait {
                 return;
             }
         }
+        // Settings enforcement
         if (health != getLivingEntity().getMaxHealth()) {
             getLivingEntity().setMaxHealth(health);
         }
+        // Healing
         if (healRate > 0 && timeSinceHeal > healRate && getLivingEntity().getHealth() < health) {
             getLivingEntity().setHealth(Math.min(getLivingEntity().getHealth() + 1.0, health));
             timeSinceHeal = 0;
         }
-        if ((getGuarding() != null || chasing != null) && npc.hasTrait(Waypoints.class)) {
-            Waypoints wp = npc.getTrait(Waypoints.class);
-            if (!wp.getCurrentProvider().isPaused()) {
-                wp.getCurrentProvider().setPaused(true);
-            }
-            needsToUnpause = true;
+        // Pathing and waypoints management
+        if (!npc.getNavigator().isNavigating()) {
+            pathingTo = null;
+        }
+        if ((getGuarding() != null || chasing != null || pathingTo != null) && npc.hasTrait(Waypoints.class)) {
+            pauseWaypoints();
         }
         else if (needsToUnpause && npc.hasTrait(Waypoints.class)) {
             Waypoints wp = npc.getTrait(Waypoints.class);
             wp.getCurrentProvider().setPaused(false);
             needsToUnpause = false;
         }
-        double crsq = chaseRange * chaseRange;
+        // Targets updating
         targetingHelper.updateTargets();
+        targetingHelper.updateAvoids();
+        double crsq = chaseRange * chaseRange;
         boolean goHome = chased;
         LivingEntity target = targetingHelper.findBestTarget();
         if (target != null) {
@@ -1014,6 +1054,7 @@ public class SentinelTrait extends Trait {
         else if (chasing == null) {
             specialUnmarkVision();
         }
+        // Special guarding handling
         if (getGuarding() != null) {
             Player player = Bukkit.getPlayer(getGuarding());
             if (player != null) {
@@ -1038,6 +1079,12 @@ public class SentinelTrait extends Trait {
                 goHome = false;
             }
         }
+        // Avoidance handling
+        targetingHelper.processAvoidance();
+        if (pathingTo != null) {
+            goHome = false;
+        }
+        // Handling for when NPC has no targets
         if (goHome && chaseRange > 0 && target == null) {
             Location near = nearestPathPoint();
             if (near != null && (chasing == null || near.distanceSquared(chasing.getLocation()) > crsq)) {
@@ -1052,7 +1099,7 @@ public class SentinelTrait extends Trait {
                 chased = false;
             }
             else {
-                if (npc.getNavigator().getEntityTarget() != null) {
+                if (pathingTo == null && npc.getNavigator().isNavigating()) {
                     npc.getNavigator().cancelNavigation();
                 }
                 if (SentinelPlugin.debugMe) {
@@ -1062,7 +1109,7 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
-        else if (chasing == null && npc.getNavigator().getEntityTarget() != null) {
+        else if (chasing == null && pathingTo == null && npc.getNavigator().isNavigating()) {
             npc.getNavigator().cancelNavigation();
         }
     }
@@ -1339,6 +1386,7 @@ public class SentinelTrait extends Trait {
         }*/
         greetedAlready.clear();
         targetingHelper.currentTargets.clear();
+        targetingHelper.currentAvoids.clear();
         if (respawnTime < 0) {
             BukkitRunnable removeMe = new BukkitRunnable() {
                 @Override
@@ -1394,6 +1442,7 @@ public class SentinelTrait extends Trait {
     @Override
     public void onDespawn() {
         targetingHelper.currentTargets.clear();
+        targetingHelper.currentAvoids.clear();
     }
 
     /**

@@ -113,6 +113,18 @@ public class SentinelUtilities {
     }
 
     /**
+     * Normalizes Mincraft's yaws (which can be negative or can exceed 360)
+     * by turning them into proper yaw values that only go from 0 to 359.
+     */
+    public static float normalizeYaw(float yaw) {
+        yaw = yaw % 360;
+        if (yaw < 0) {
+            yaw += 360.0;
+        }
+        return yaw;
+    }
+
+    /**
      * Gets the yaw angle value (in degrees) for a vector.
      */
     public static float getYaw(Vector vector) {

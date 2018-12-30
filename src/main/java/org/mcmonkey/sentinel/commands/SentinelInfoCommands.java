@@ -25,6 +25,7 @@ public class SentinelInfoCommands {
         sender.sendMessage(SentinelCommand.prefixGood + "Health: " + ChatColor.AQUA +
                 (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/" : "") + sentinel.health);
         sender.sendMessage(SentinelCommand.prefixGood + "Range: " + ChatColor.AQUA + sentinel.range);
+        sender.sendMessage(SentinelCommand.prefixGood + "Avoidance Range: " + ChatColor.AQUA + sentinel.avoidRange);
         sender.sendMessage(SentinelCommand.prefixGood + "Attack Rate: " + ChatColor.AQUA + sentinel.attackRate);
         sender.sendMessage(SentinelCommand.prefixGood + "Ranged Attack Rate: " + ChatColor.AQUA + sentinel.attackRateRanged);
         sender.sendMessage(SentinelCommand.prefixGood + "Heal Rate: " + ChatColor.AQUA + sentinel.healRate);
@@ -40,6 +41,7 @@ public class SentinelInfoCommands {
         sender.sendMessage(SentinelCommand.prefixGood + "Enemy-Drops Enabled: " + ChatColor.AQUA + sentinel.enemyDrops);
         sender.sendMessage(SentinelCommand.prefixGood + "Autoswitch Enabled: " + ChatColor.AQUA + sentinel.autoswitch);
         sender.sendMessage(SentinelCommand.prefixGood + "Realistic Targetting Enabled: " + ChatColor.AQUA + sentinel.realistic);
+        sender.sendMessage(SentinelCommand.prefixGood + "Run-Away Enabled: " + ChatColor.AQUA + sentinel.runaway);
         sender.sendMessage(SentinelCommand.prefixGood + "Squad: " + ChatColor.AQUA + (sentinel.squad == null ? "None" : sentinel.squad));
     }
 

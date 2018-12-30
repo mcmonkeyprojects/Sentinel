@@ -68,7 +68,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         sentinel.stats_attackAttempts++;
         double dist = getLivingEntity().getEyeLocation().distanceSquared(entity.getEyeLocation());
         if (SentinelPlugin.debugMe) {
-            debug("tryAttack at range " + dist);
+            debug("tryAttack at range " + (((int) (Math.sqrt(dist) * 0.1)) * 10));
         }
         if (sentinel.autoswitch && dist > sentinel.reach * sentinel.reach) {
             itemHelper.swapToRanged();

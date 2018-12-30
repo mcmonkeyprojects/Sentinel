@@ -40,8 +40,14 @@ sentinel defaults:
     realistic: false
     # How far the NPC can reach.
     reach: 3
+    # How far the NPC should stay away from threats (listed by 'addavoid' command).
+    avoid range: 10
+    # Whether the NPC should run away when attacked.
+    runaway: false
 
 random:
+    # How long (in ticks) NPCs should run away for (when hit or told to avoid threats).
+    run away time: 1200
     # What sound to play when the "spectral" attack is used.
     spectral sound: ENTITY_VILLAGER_YES
     # Whether to use 'workaround' mode of fist damage.
@@ -82,4 +88,4 @@ random:
 update rate: 10
 
 # Do not touch! (Unless you know what you're doing!)
-config version: 10
+config version: 11

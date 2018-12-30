@@ -126,9 +126,14 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     public boolean protectFromIgnores;
 
     /**
-     * Configuration option: Standard tick-rate for NPC updates.
+     * Configuration option: standard tick-rate for NPC updates.
      */
     public int tickRate = 10;
+
+    /**
+     * Configuration option: time to keep running away for.
+     */
+    public int runAwayTime;
 
     /**
      * Fills the {@code vaultPerms} object if possible.
@@ -224,6 +229,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         guardDistanceSelectionRange = getConfig().getInt("random.guard follow distance.margin", 2);
         workaroundEntityChasePathfinder = getConfig().getBoolean("random.workaround entity chase pathfinder", false);
         protectFromIgnores = getConfig().getBoolean("random.protected", false);
+        runAwayTime = getConfig().getInt("random.run away time");
         BukkitRunnable postLoad = new BukkitRunnable() {
             @Override
             public void run() {
