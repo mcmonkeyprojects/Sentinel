@@ -107,8 +107,8 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         SentinelCurrentTarget target = new SentinelCurrentTarget();
         target.targetID = id;
         target.ticksLeft = sentinel.enemyTargetTime;
-        currentAvoids.remove(target);
-        currentAvoids.add(target);
+        currentTargets.remove(target);
+        currentTargets.add(target);
     }
 
     /**
