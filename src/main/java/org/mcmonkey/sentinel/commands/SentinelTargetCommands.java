@@ -106,7 +106,7 @@ public class SentinelTargetCommands {
             sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
             return;
         }
-        if (targetLabel.addToList(sentinel.allTargets)) {
+        if (targetLabel.removeFromList(sentinel.allTargets)) {
             sender.sendMessage(SentinelCommand.prefixGood + "No longer tracking that target!");
         }
         else {
@@ -151,7 +151,7 @@ public class SentinelTargetCommands {
             sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
             return;
         }
-        if (targetLabel.addToList(sentinel.allTargets)) {
+        if (targetLabel.removeFromList(sentinel.allIgnores)) {
             sender.sendMessage(SentinelCommand.prefixGood + "No longer ignoring that target!");
         }
         else {
@@ -196,8 +196,8 @@ public class SentinelTargetCommands {
             sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
             return;
         }
-        if (targetLabel.addToList(sentinel.allAvoids)) {
-            sender.sendMessage(SentinelCommand.prefixGood + "No longer tracking that target!");
+        if (targetLabel.removeFromList(sentinel.allAvoids)) {
+            sender.sendMessage(SentinelCommand.prefixGood + "No longer avoiding that target!");
         }
         else {
             sender.sendMessage(SentinelCommand.prefixBad + "Was already not tracking that target!");
