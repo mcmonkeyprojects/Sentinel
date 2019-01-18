@@ -11,6 +11,7 @@ import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Spawned;
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.trait.CurrentLocation;
+import net.citizensnpcs.trait.waypoint.WanderWaypointProvider;
 import net.citizensnpcs.trait.waypoint.Waypoint;
 import net.citizensnpcs.trait.waypoint.WaypointProvider;
 import net.citizensnpcs.trait.waypoint.Waypoints;
@@ -1168,23 +1169,37 @@ public class SentinelTrait extends Trait {
         if (getGuarding() != null) {
             return null;
         }
-        Waypoints wp = npc.getTrait(Waypoints.class);
-        if (!(wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
-            return null;
-        }
         Location baseloc = getLivingEntity().getLocation();
         Location nearest = null;
         double dist = MAX_DIST;
-        for (Waypoint wayp : ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()) {
-            Location l = wayp.getLocation();
-            if (!l.getWorld().equals(baseloc.getWorld())) {
-                continue;
+        Waypoints wp = npc.getTrait(Waypoints.class);
+        if (wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider) {
+            for (Waypoint wayp : ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()) {
+                Location l = wayp.getLocation();
+                if (!l.getWorld().equals(baseloc.getWorld())) {
+                    continue;
+                }
+                double d = baseloc.distanceSquared(l);
+                if (d < dist) {
+                    dist = d;
+                    nearest = l;
+                }
             }
-            double d = baseloc.distanceSquared(l);
-            if (d < dist) {
-                dist = d;
-                nearest = l;
+        }
+        else if (wp.getCurrentProvider() instanceof WanderWaypointProvider) {
+            for (Location loc : ((WanderWaypointProvider) wp.getCurrentProvider()).getRegionCentres()) {
+                if (!loc.getWorld().equals(baseloc.getWorld())) {
+                    continue;
+                }
+                double d = baseloc.distanceSquared(loc);
+                if (d < dist) {
+                    dist = d;
+                    nearest = loc;
+                }
             }
+        }
+        else {
+            return null;
         }
         return nearest;
     }
