@@ -183,7 +183,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (sentinel.getGuarding() != null && entity.getUniqueId().equals(sentinel.getGuarding())) {
             return false;
         }
-        if (!isTargetable(entity)) {
+        if (isUntargetable(entity)) {
             return false;
         }
         tempTarget.targetID = entity.getUniqueId();
@@ -420,9 +420,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
     }
 
     /**
-     * Returns whether an entity is even able to be targeted.
+     * Returns whether an entity is not able to be targeted at all.
      */
-    public static boolean isTargetable(Entity e) {
+    public static boolean isUntargetable(Entity e) {
         return e == null ||
                 (e instanceof Player && (((Player) e).getGameMode() == GameMode.CREATIVE || ((Player) e).getGameMode() == GameMode.SPECTATOR)) ||
                 e.isDead();
@@ -434,7 +434,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
     public void updateTargets() {
         for (SentinelCurrentTarget uuid : new HashSet<>(currentTargets)) {
             Entity e = SentinelUtilities.getEntityForID(uuid.targetID);
-            if (!isTargetable(e)) {
+            if (isUntargetable(e)) {
                 currentTargets.remove(uuid);
                 continue;
             }
