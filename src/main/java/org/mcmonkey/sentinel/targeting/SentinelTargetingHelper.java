@@ -183,6 +183,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (sentinel.getGuarding() != null && entity.getUniqueId().equals(sentinel.getGuarding())) {
             return false;
         }
+        if (!isTargetable(entity)) {
+            return false;
+        }
         tempTarget.targetID = entity.getUniqueId();
         if (currentTargets.contains(tempTarget)) {
             return true;
@@ -417,20 +420,21 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
     }
 
     /**
+     * Returns whether an entity is even able to be targeted.
+     */
+    public static boolean isTargetable(Entity e) {
+        return e == null ||
+                (e instanceof Player && (((Player) e).getGameMode() == GameMode.CREATIVE || ((Player) e).getGameMode() == GameMode.SPECTATOR)) ||
+                e.isDead();
+    }
+
+    /**
      * Updates the current targets set for the NPC.
      */
     public void updateTargets() {
         for (SentinelCurrentTarget uuid : new HashSet<>(currentTargets)) {
             Entity e = SentinelUtilities.getEntityForID(uuid.targetID);
-            if (e == null) {
-                currentTargets.remove(uuid);
-                continue;
-            }
-            if (e instanceof Player && (((Player) e).getGameMode() == GameMode.CREATIVE || ((Player) e).getGameMode() == GameMode.SPECTATOR)) {
-                currentTargets.remove(uuid);
-                continue;
-            }
-            if (e.isDead()) {
+            if (!isTargetable(e)) {
                 currentTargets.remove(uuid);
                 continue;
             }
