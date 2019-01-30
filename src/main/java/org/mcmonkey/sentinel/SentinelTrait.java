@@ -1114,6 +1114,7 @@ public class SentinelTrait extends Trait {
             else {
                 if (pathingTo == null && npc.getNavigator().isNavigating()) {
                     npc.getNavigator().cancelNavigation();
+                    needsSafeReturn = false;
                 }
                 if (SentinelPlugin.debugMe) {
                     if (near != null && near.distanceSquared(getLivingEntity().getLocation()) > 3 * 3) {
@@ -1122,8 +1123,9 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
-        else if (chasing == null && pathingTo == null && npc.getNavigator().isNavigating()) {
+        else if (chasing == null && pathingTo == null && npc.getNavigator().isNavigating() && needsSafeReturn) {
             npc.getNavigator().cancelNavigation();
+            needsSafeReturn = false;
         }
     }
 
