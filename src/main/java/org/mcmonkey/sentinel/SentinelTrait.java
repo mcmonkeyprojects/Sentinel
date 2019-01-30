@@ -944,6 +944,7 @@ public class SentinelTrait extends Trait {
         npc.getNavigator().getDefaultParameters().distanceMargin(1.5);
         getNPC().getNavigator().setTarget(target);
         chasing = null;
+        needsSafeReturn = true;
     }
 
     /**
@@ -955,7 +956,13 @@ public class SentinelTrait extends Trait {
             wp.getCurrentProvider().setPaused(true);
         }
         needsToUnpause = true;
+        needsSafeReturn = true;
     }
+
+    /**
+     * Indicates that the NPC needs to return to safety when next possible.
+     */
+    public boolean needsSafeReturn = true;
 
     /**
      * Runs a full update cycle on the NPC.
@@ -1021,6 +1028,7 @@ public class SentinelTrait extends Trait {
                     specialMarkVision();
                 }
                 chasing = target;
+                needsSafeReturn = true;
                 cleverTicks = 0;
                 attackHelper.tryAttack(target);
                 goHome = false;
@@ -1036,6 +1044,7 @@ public class SentinelTrait extends Trait {
             }
         }
         else if (chasing != null && chasing.isValid()) {
+            needsSafeReturn = true;
             if (SentinelPlugin.instance.workaroundEntityChasePathfinder) {
                 attackHelper.rechase();
             }
@@ -1077,6 +1086,7 @@ public class SentinelTrait extends Trait {
                         chased = true;
                     }
                 }
+                needsSafeReturn = true;
                 goHome = false;
             }
         }
@@ -1084,9 +1094,10 @@ public class SentinelTrait extends Trait {
         targetingHelper.processAvoidance();
         if (pathingTo != null) {
             goHome = false;
+            needsSafeReturn = true;
         }
         // Handling for when NPC has no targets
-        if (goHome && chaseRange > 0 && target == null) {
+        if (goHome && chaseRange > 0 && target == null && needsSafeReturn) {
             Location near = nearestPathPoint();
             if (near != null && (chasing == null || near.distanceSquared(chasing.getLocation()) > crsq)) {
                 if (SentinelPlugin.debugMe) {
@@ -1097,6 +1108,7 @@ public class SentinelTrait extends Trait {
                 npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
                 npc.getNavigator().setTarget(near);
                 npc.getNavigator().getLocalParameters().speedModifier((float) speed);
+                needsSafeReturn = false;
                 chased = false;
             }
             else {

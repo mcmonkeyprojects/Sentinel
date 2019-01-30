@@ -26,6 +26,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         sentinel.cleverTicks = 0;
         sentinel.chasing = entity;
         sentinel.chased = true;
+        sentinel.needsSafeReturn = true;
         if (getNPC().getNavigator().getTargetType() == TargetType.ENTITY
                 && SentinelUtilities.getTargetFor(getNPC().getNavigator().getEntityTarget()).getUniqueId().equals(entity.getUniqueId())) {
             return;
