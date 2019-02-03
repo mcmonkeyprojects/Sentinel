@@ -1319,7 +1319,7 @@ public class SentinelTrait extends Trait {
         }
         double dist = event.getTo().distanceSquared(getLivingEntity().getLocation());
         boolean known = greetedAlready.contains(event.getPlayer().getUniqueId());
-        if (dist < greetRange && !known && targetingHelper.canSee(event.getPlayer())) {
+        if (dist < greetRange * greetRange && !known && targetingHelper.canSee(event.getPlayer())) {
             greetedAlready.add(event.getPlayer().getUniqueId());
             boolean enemy = targetingHelper.shouldTarget(event.getPlayer());
             if (enemy && warningText != null && warningText.length() > 0) {
@@ -1329,7 +1329,7 @@ public class SentinelTrait extends Trait {
                 sayTo(event.getPlayer(), greetingText);
             }
         }
-        else if (dist >= greetRange + 1 && known) {
+        else if (dist >= greetRange * greetRange + 1 && known) {
             greetedAlready.remove(event.getPlayer().getUniqueId());
             // TODO: Farewell text perhaps?
         }
