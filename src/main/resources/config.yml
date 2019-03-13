@@ -86,6 +86,3 @@ random:
 
 # How fast to recalculate, in ticks.
 update rate: 10
-
-# Do not touch! (Unless you know what you're doing!)
-config version: 11

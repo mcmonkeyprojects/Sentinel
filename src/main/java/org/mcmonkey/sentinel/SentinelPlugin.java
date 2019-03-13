@@ -8,7 +8,6 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,9 +22,9 @@ import org.mcmonkey.sentinel.metrics.BStatsMetricsLite;
 import org.mcmonkey.sentinel.metrics.MetricsLite;
 import org.mcmonkey.sentinel.metrics.StatsRecord;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
+import org.mcmonkey.sentinel.utilities.ConfigUpdater;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -157,29 +156,10 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
      */
     public static boolean debugMe = false;
 
-    /**
-     * Expected configuration file version.
-     */
-    public final static int CONFIG_VERSION;
-
     static {
         for (EntityType type : EntityType.values()) {
             entityToTargets.put(type, new HashSet<>());
         }
-        int confVer;
-        try {
-            InputStream inputConfigStream = SentinelPlugin.class.getResourceAsStream("/config.yml");
-            InputStreamReader inputConfigReader = new InputStreamReader(inputConfigStream);
-            YamlConfiguration config = YamlConfiguration.loadConfiguration(inputConfigReader);
-            inputConfigReader.close();
-            inputConfigStream.close();
-            confVer = config.getInt("config version");
-        }
-        catch (Throwable ex) {
-            ex.printStackTrace();
-            confVer = -1;
-        }
-        CONFIG_VERSION = confVer;
     }
 
     /**
@@ -196,18 +176,26 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         instance = this;
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SentinelTrait.class).withName("sentinel"));
         saveDefaultConfig();
-        int confVer = getConfig().getInt("config version", -1);
-        if (confVer != CONFIG_VERSION) {
-            if (CONFIG_VERSION == -1) {
-                getLogger().warning("Default config data could not be found. May be a jar file issue?");
+        try {
+            // Automatic config file update
+            InputStream properConfig = SentinelPlugin.class.getResourceAsStream("/config.yml");
+            String properConfigString = SentinelUtilities.streamToString(properConfig);
+            properConfig.close();
+            FileInputStream currentConfig = new FileInputStream(getDataFolder() + "/config.yml");
+            String currentConfigString = SentinelUtilities.streamToString(currentConfig);
+            currentConfig.close();
+            String updated = ConfigUpdater.updateConfig(currentConfigString, properConfigString);
+            if (updated != null) {
+                getLogger().info("Your config file is outdated. Automatically updating it...");
+                FileOutputStream configOutput = new FileOutputStream(getDataFolder() + "/config.yml");
+                OutputStreamWriter writer = new OutputStreamWriter(configOutput);
+                writer.write(updated);
+                writer.close();
+                configOutput.close();
             }
-            else if (confVer == -1) {
-                getLogger().warning("Config data could not be found. May be an issue with your server plugins folder? (Check file access permissions).");
-            }
-            else {
-                getLogger().warning("Outdated or invalid Sentinel config - please delete it to regenerate it (keep a backup copy of the original)!"
-                        + " Expected version " + CONFIG_VERSION + " but you have " + confVer + ".");
-            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
         cleverTicks = getConfig().getInt("random.clever ticks", 10);
         canUseSkull = getConfig().getBoolean("random.skull allowed", true);

@@ -23,9 +23,15 @@
             <id>citizens-repo</id>
             <url>http://repo.citizensnpcs.co</url>
         </repository>
+        <repository>
+            <id>FreneticLLC-public</id>
+            <name>FreneticLLC Maven Server</name>
+            <url>https://maven.freneticllc.com/</url>
+        </repository>
     </repositories>
 
     <dependencies>
+        <!-- Basic Requirements -->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
@@ -41,12 +47,20 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.freneticllc.freneticutilities</groupId>
+            <artifactId>freneticdatasyntax</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Primary Support -->
+        <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
             <version>1.5.6</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/Vault.jar</systemPath>
         </dependency>
+        <!-- Also Supported -->
         <dependency>
             <groupId>com.tommytony.war</groupId>
             <artifactId>war</artifactId>
@@ -122,6 +136,27 @@
                 <configuration>
                     <finalName>Sentinel-${version}-b${BUILD_NUMBER}</finalName>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>false</minimizeJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.freneticllc.freneticutilities:freneticdatasyntax</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
