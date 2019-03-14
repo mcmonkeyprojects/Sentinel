@@ -4,6 +4,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.astar.AStarMachine;
 import net.citizensnpcs.api.astar.pathfinder.*;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -11,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.*;
+import org.mcmonkey.sentinel.events.SentinelNoMoreTargetsEvent;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -118,18 +120,35 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
     public boolean removeTarget(UUID id) {
         SentinelCurrentTarget target = new SentinelCurrentTarget();
         target.targetID = id;
-        boolean removed = currentTargets.remove(target);
+        boolean removed = removeTargetNoBounce(target);
         if (removed && sentinel.squad != null) {
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 if (npc.hasTrait(SentinelTrait.class)) {
                     SentinelTrait squadMade = npc.getTrait(SentinelTrait.class);
                     if (squadMade.squad != null && squadMade.squad.equals(sentinel.squad)) {
-                        sentinel.targetingHelper.currentTargets.remove(target);
+                        sentinel.targetingHelper.removeTargetNoBounce(target);
                     }
                 }
             }
         }
         return removed;
+    }
+
+    /**
+     * Removes a target directly from the NPC. Prefer {@code removeTarget} over this in most cases.
+     * Returns whether anything was removed.
+     */
+    public boolean removeTargetNoBounce(SentinelCurrentTarget target) {
+        if (currentTargets.isEmpty()) {
+            return false;
+        }
+        if (currentTargets.remove(target)) {
+            if (currentTargets.isEmpty()) {
+                Bukkit.getPluginManager().callEvent(new SentinelNoMoreTargetsEvent(getNPC()));
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
