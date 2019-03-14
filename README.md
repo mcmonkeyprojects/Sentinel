@@ -72,29 +72,29 @@ Sentinel is integrated into by external plugins as well, including:
 
 ### Commands
 
-- Informational commands...
+- **Informational commands...**
     - /sentinel help - Shows help info.
     - /sentinel info - Shows info on the current NPC.
     - /sentinel stats - Shows statistics about the current NPC.
     - /sentinel targets - Shows the targets of the current NPC.
     - /sentinel ignores - Shows the ignore targets of the current NPC.
     - /sentinel avoids - Shows the avoid targets of the current NPC.
-- Administrative commands...
+- **Administrative commands...**
     - /sentinel debug - Toggles debug output to console.
     - /sentinel reload - Reloads the configuration file.
-- NPC control commands...
+- **NPC control commands...**
     - /sentinel kill - Kills the NPC.
     - /sentinel respawn - Respawns the NPC.
     - /sentinel forgive - Forgives all current targets.
     - /sentinel guard [PLAYERNAME] - Makes the NPC guard a specific player. Don't specify a player to stop guarding.
-- NPC targeting commands...
+- **NPC targeting commands...**
     - /sentinel addtarget TYPE - Adds a target.
     - /sentinel removetarget TYPE - Removes a target.
     - /sentinel addignore TYPE - Ignores a target.
     - /sentinel removeignore TYPE - Allows targeting a target.
     - /sentinel addavoid TYPE - Avoids a target.
     - /sentinel removeavoid TYPE - Stops avoiding a target.
-- NPC configuration commands...
+- **NPC configuration commands...**
     - /sentinel avoidrange RANGE - Sets the distance to try to keep from threats.
     - /sentinel range RANGE - Sets the NPC's maximum attack range.
     - /sentinel damage DAMAGE - Sets the NPC's attack damage.
@@ -115,7 +115,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel accuracy OFFSET - Sets the accuracy of an NPC.
     - /sentinel squad SQUAD - Sets the NPC's squad name (null for none).
     - /sentinel reach REACH - Sets the NPC's reach (how far it can punch).
-- Toggleable NPC configuration commands...
+- **Toggleable NPC configuration commands...**
     - /sentinel invincible ['true'/'false'] - Toggles whether the NPC is invincible.
     - /sentinel fightback ['true'/'false'] - Toggles whether the NPC will fight back.
     - /sentinel runaway ['true'/'false'] - Toggles whether the NPC will run away when attacked.
