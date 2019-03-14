@@ -6,6 +6,7 @@ import net.citizensnpcs.api.command.Requirements;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.SentinelUtilities;
 
@@ -105,6 +106,34 @@ public class SentinelIntelligenceCommands {
         }
         else {
             sender.sendMessage(SentinelCommand.prefixGood + "NPC no longer targets realistically!");
+        }
+    }
+
+    @Command(aliases = {"sentinel"}, usage = "guarddistance MINIMUM_DISTANCE [SELECTION_RANGE]",
+            desc = "Sets the NPC's minimum guard distance (how far you must go before the NPC moves to keep up) and selection range (how close it will try to get to you).",
+            modifiers = {"guarddistance"}, permission = "sentinel.guarddistance", min = 2, max = 3)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void guardDistance(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        try {
+            double dist = Double.parseDouble(args.getString(1));
+            double selDist = dist * 0.5;
+            if (args.argsLength() > 1) {
+                selDist = Double.parseDouble(args.getString(2));
+                if ((selDist < 1) || (selDist > 25)) {
+                    throw new NumberFormatException("Selection_Range number out of range (must be >= 1 and <= 25).");
+                }
+            }
+            if ((dist >= 1) && (dist <= 100)) {
+                sentinel.guardDistanceMinimum = dist;
+                sentinel.guardSelectionRange = selDist;
+                sender.sendMessage(SentinelCommand.prefixGood + "guard distance set!");
+            }
+            else {
+                throw new NumberFormatException("Minimum_Distance number out of range (must be >= 1 and <= 100).");
+            }
+        }
+        catch (NumberFormatException ex) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid distance number: " + ex.getMessage());
         }
     }
 }

@@ -107,10 +107,14 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel drops - Changes the drops of the current NPC.
     - /sentinel targettime TIME - Sets the NPC's enemy target time limit in seconds.
     - /sentinel speed SPEED - Sets the NPC's movement speed modifier.
-    - /sentinel enemydrops ['true'/'false'] - Toggles whether enemy mobs of this NPC drop items.
-    - /sentinel autoswitch ['true'/'false'] - Toggles whether the NPC automatically switches items.
-    - /sentinel realistic ['true'/'false'] - Toggles whether the NPC should use "realistic" targeting logic (don't attack things you can't see).
+    - /sentinel guarddistance MINIMUM_DISTANCE [SELECTION_RANGE] - Sets the NPC's minimum guard distance (how far you must go before the NPC moves to keep up) and selection range (how close it will try to get to you).
     - /sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.
+    - /sentinel greeting GREETING - Sets a greeting message for the NPC to say.
+    - /sentinel warning WARNING - Sets a warning message for the NPC to say.
+    - /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
+    - /sentinel accuracy OFFSET - Sets the accuracy of an NPC.
+    - /sentinel squad SQUAD - Sets the NPC's squad name (null for none).
+    - /sentinel reach REACH - Sets the NPC's reach (how far it can punch).
 - Toggleable NPC configuration commands...
     - /sentinel invincible ['true'/'false'] - Toggles whether the NPC is invincible.
     - /sentinel fightback ['true'/'false'] - Toggles whether the NPC will fight back.
@@ -119,12 +123,9 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel safeshot ['true'/'false'] - Toggles whether the NPC will avoid damaging non-targets.
     - /sentinel chaseclose ['true'/'false'] - Toggles whether the NPC will chase while in 'close quarters' fights.
     - /sentinel chaseranged ['true'/'false'] - Toggles whether the NPC will chase while in ranged fights.
-    - /sentinel greeting GREETING - Sets a greeting message for the NPC to say.
-    - /sentinel warning WARNING - Sets a warning message for the NPC to say.
-    - /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
-    - /sentinel accuracy OFFSET - Sets the accuracy of an NPC.
-    - /sentinel squad SQUAD - Sets the NPC's squad name (null for none).
-    - /sentinel reach REACH - Sets the NPC's reach (how far it can punch).
+    - /sentinel enemydrops ['true'/'false'] - Toggles whether enemy mobs of this NPC drop items.
+    - /sentinel autoswitch ['true'/'false'] - Toggles whether the NPC automatically switches items.
+    - /sentinel realistic ['true'/'false'] - Toggles whether the NPC should use "realistic" targeting logic (don't attack things you can't see).
 
 ### Sentry user?
 

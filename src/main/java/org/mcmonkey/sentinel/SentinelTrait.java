@@ -442,6 +442,18 @@ public class SentinelTrait extends Trait {
     public double reach = 3;
 
     /**
+     * Minimum distance before choosing a new point (relative to guarded player).
+     */
+    @Persist("guard_distance_minimum")
+    public double guardDistanceMinimum = 7;
+
+    /**
+     * Maximum possible distance of point to choose (relative to the guarded player).
+     */
+    @Persist("guard_selection_range")
+    public double guardSelectionRange = 4;
+
+    /**
      * The target entity this NPC is chasing (if any).
      */
     public LivingEntity chasing = null;
@@ -723,6 +735,8 @@ public class SentinelTrait extends Trait {
         reach = config.getDouble("sentinel defaults.reach", 3);
         avoidRange = config.getDouble("sentinel defaults.avoid range", 10);
         runaway = config.getBoolean("sentinel defaults.runaway", false);
+        guardDistanceMinimum = SentinelPlugin.instance.guardDistanceMinimum;
+        guardSelectionRange = SentinelPlugin.instance.guardDistanceSelectionRange;
     }
 
     /**
@@ -1074,14 +1088,14 @@ public class SentinelTrait extends Trait {
                 if (dist > 60 * 60) {
                     npc.teleport(player.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 }
-                if (dist > SentinelPlugin.instance.guardDistanceMinimum * SentinelPlugin.instance.guardDistanceMinimum) {
+                if (dist > guardDistanceMinimum * guardDistanceMinimum) {
                     ticksCountGuard += SentinelPlugin.instance.tickRate;
                     if (ticksCountGuard >= 30) {
                         ticksCountGuard = 0;
                         npc.getNavigator().getDefaultParameters().distanceMargin(SentinelPlugin.instance.guardDistanceMargin);
                         npc.getNavigator().getDefaultParameters().range(100);
                         npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
-                        npc.getNavigator().setTarget(SentinelUtilities.pickNear(player.getLocation(), SentinelPlugin.instance.guardDistanceSelectionRange));
+                        npc.getNavigator().setTarget(SentinelUtilities.pickNear(player.getLocation(), guardSelectionRange));
                         npc.getNavigator().getLocalParameters().speedModifier((float) speed);
                         chased = true;
                     }

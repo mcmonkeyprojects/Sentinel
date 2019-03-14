@@ -21,7 +21,7 @@ public class SentinelHealthCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void armor(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         try {
-            Double d = Double.parseDouble(args.getString(1));
+            double d = Double.parseDouble(args.getString(1));
             if (d <= 1) {
                 sentinel.armor = d;
                 sender.sendMessage(SentinelCommand.prefixGood + "Armor set!");
@@ -41,7 +41,7 @@ public class SentinelHealthCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void health(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         try {
-            Double d = Double.parseDouble(args.getString(1));
+            double d = Double.parseDouble(args.getString(1));
             if ((d >= SentinelTrait.healthMin) && (d <= SentinelPlugin.instance.maxHealth)) {
                 sentinel.setHealth(d);
                 sender.sendMessage(SentinelCommand.prefixGood + "Health set!");

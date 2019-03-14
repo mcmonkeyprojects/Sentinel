@@ -48,6 +48,8 @@ permissions:
       sentinel.chaserange: true
       # /sentinel chaserange RANGE
       sentinel.respawntime: true
+      # /sentinel guarddistance MINIMUM_DISTANCE [SELECTION_RANGE]
+      sentinel.guarddistance: true
       # /sentinel guard PLAYER
       sentinel.guard: true
       # /sentinel invincible
