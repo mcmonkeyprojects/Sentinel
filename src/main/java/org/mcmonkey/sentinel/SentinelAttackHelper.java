@@ -57,13 +57,41 @@ public class SentinelAttackHelper extends SentinelHelperObject {
 
     /**
      * Causes the NPC to attempt an attack on a target.
+     * Returns whether any attack occurred.
      */
-    public void tryAttack(LivingEntity entity) {
+    public boolean tryAttack(LivingEntity target) {
+        if (tryAttackInternal(target)) {
+            return true;
+        }
+        LivingEntity quickTarget = targetingHelper.findQuickMeleeTarget();
+        if (quickTarget != null) {
+            if (itemHelper.isRanged()) {
+                if (!sentinel.autoswitch) {
+                    return false;
+                }
+                itemHelper.swapToMelee();
+                if (itemHelper.isRanged()) {
+                    return false;
+                }
+            }
+            if (tryAttackInternal(quickTarget)) {
+                chase(target);
+                return true;
+            }
+            chase(target);
+        }
+        return false;
+    }
+
+    /**
+     * Internal attack attempt logic.
+     */
+    public boolean tryAttackInternal(LivingEntity entity) {
         if (!entity.getWorld().equals(getLivingEntity().getWorld())) {
-            return;
+            return false;
         }
         if (!getLivingEntity().hasLineOfSight(entity)) {
-            return;
+            return false;
         }
         // TODO: Simplify this code!
         sentinel.stats_attackAttempts++;
@@ -84,12 +112,12 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             if (SentinelPlugin.debugMe) {
                 debug("tryAttack refused, event cancellation");
             }
-            return;
+            return false;
         }
         targetingHelper.addTarget(entity.getUniqueId());
         for (SentinelIntegration si : SentinelPlugin.integrations) {
             if (si.tryAttack(sentinel, entity)) {
-                return;
+                return true;
             }
         }
         if (itemHelper.usesBow()) {
@@ -98,7 +126,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     if (sentinel.rangedChase) {
                         rechase();
                     }
-                    return;
+                    return false;
                 }
                 sentinel.timeSinceAttack = 0;
                 ItemStack item = itemHelper.getArrow();
@@ -109,10 +137,12 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                         itemHelper.takeArrow();
                         itemHelper.grabNextItem();
                     }
+                    return true;
                 }
             }
             else if (sentinel.rangedChase) {
                 chase(entity);
+                return false;
             }
         }
         else if (itemHelper.usesSnowball()) {
@@ -121,7 +151,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     if (sentinel.rangedChase) {
                         rechase();
                     }
-                    return;
+                    return false;
                 }
                 sentinel.timeSinceAttack = 0;
                 ItemStack item = itemHelper.getArrow();
@@ -131,10 +161,12 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                         itemHelper.takeSnowball();
                         itemHelper.grabNextItem();
                     }
+                    return true;
                 }
             }
             else if (sentinel.rangedChase) {
                 chase(entity);
+                return false;
             }
         }
         else if (itemHelper.usesPotion()) {
@@ -143,7 +175,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     if (sentinel.rangedChase) {
                         rechase();
                     }
-                    return;
+                    return false;
                 }
                 sentinel.timeSinceAttack = 0;
                 if (SentinelTarget.v1_9) {
@@ -158,9 +190,11 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     itemHelper.takeOne();
                     itemHelper.grabNextItem();
                 }
+                return true;
             }
             else if (sentinel.rangedChase) {
                 chase(entity);
+                return false;
             }
         }
         else if (itemHelper.usesEgg()) {
@@ -169,7 +203,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     if (sentinel.rangedChase) {
                         rechase();
                     }
-                    return;
+                    return false;
                 }
                 sentinel.timeSinceAttack = 0;
                 weaponHelper.fireEgg(entity.getEyeLocation());
@@ -177,9 +211,11 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     itemHelper.takeOne();
                     itemHelper.grabNextItem();
                 }
+                return true;
             }
             else if (sentinel.rangedChase) {
                 chase(entity);
+                return false;
             }
         }
         else if (itemHelper.usesPearl()) {
@@ -188,7 +224,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     if (sentinel.rangedChase) {
                         rechase();
                     }
-                    return;
+                    return false;
                 }
                 sentinel.timeSinceAttack = 0;
                 weaponHelper.firePearl(entity);
@@ -196,9 +232,11 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     itemHelper.takeOne();
                     itemHelper.grabNextItem();
                 }
+                return true;
             }
             else if (sentinel.rangedChase) {
                 chase(entity);
+                return false;
             }
         }
         else if (itemHelper.usesWitherSkull()) {
@@ -207,7 +245,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     if (sentinel.rangedChase) {
                         rechase();
                     }
-                    return;
+                    return false;
                 }
                 sentinel.timeSinceAttack = 0;
                 weaponHelper.fireSkull(entity.getEyeLocation());
@@ -215,9 +253,11 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     itemHelper.takeOne();
                     itemHelper.grabNextItem();
                 }
+                return true;
             }
             else if (sentinel.rangedChase) {
                 chase(entity);
+                return false;
             }
         }
         else if (itemHelper.usesFireball()) {
@@ -226,7 +266,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     if (sentinel.rangedChase) {
                         rechase();
                     }
-                    return;
+                    return false;
                 }
                 sentinel.timeSinceAttack = 0;
                 weaponHelper.fireFireball(entity.getEyeLocation());
@@ -234,9 +274,11 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     itemHelper.takeOne();
                     itemHelper.grabNextItem();
                 }
+                return true;
             }
             else if (sentinel.rangedChase) {
                 chase(entity);
+                return false;
             }
         }
         else if (itemHelper.usesLightning()) {
@@ -245,7 +287,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     if (sentinel.rangedChase) {
                         rechase();
                     }
-                    return;
+                    return false;
                 }
                 sentinel.timeSinceAttack = 0;
                 sentinel.swingWeapon();
@@ -258,9 +300,11 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     itemHelper.takeOne();
                     itemHelper.grabNextItem();
                 }
+                return true;
             }
             else if (sentinel.rangedChase) {
                 chase(entity);
+                return false;
             }
         }
         else if (itemHelper.usesSpectral()) {
@@ -269,7 +313,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     if (sentinel.rangedChase) {
                         rechase();
                     }
-                    return;
+                    return false;
                 }
                 sentinel.timeSinceAttack = 0;
                 if (!entity.isGlowing()) {
@@ -288,10 +332,12 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                         itemHelper.takeOne();
                         itemHelper.grabNextItem();
                     }
+                    return true;
                 }
             }
             else if (sentinel.rangedChase) {
                 chase(entity);
+                return false;
             }
         }
         else {
@@ -303,7 +349,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     if (sentinel.closeChase) {
                         rechase();
                     }
-                    return;
+                    return false;
                 }
                 sentinel.timeSinceAttack = 0;
                 // TODO: Damage sword if needed!
@@ -315,13 +361,16 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     itemHelper.reduceDurability();
                     itemHelper.grabNextItem();
                 }
+                return true;
             }
             else if (sentinel.closeChase) {
                 if (SentinelPlugin.debugMe) {
                     debug("tryAttack refused, range");
                 }
                 chase(entity);
+                return false;
             }
         }
+        return false;
     }
 }

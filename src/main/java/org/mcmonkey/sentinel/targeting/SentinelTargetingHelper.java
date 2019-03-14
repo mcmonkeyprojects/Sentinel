@@ -416,6 +416,21 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
     }
 
     /**
+     * Finds a nearby target that can be hit with a melee attack.
+     */
+    public LivingEntity findQuickMeleeTarget() {
+        double range = sentinel.reach * 0.75;
+        Location pos = getLivingEntity().getEyeLocation();
+        for (Entity loopEnt : getLivingEntity().getWorld().getNearbyEntities(pos, range, range, range)) {
+            if (loopEnt instanceof LivingEntity && shouldTarget((LivingEntity) loopEnt)
+                    && canSee((LivingEntity) loopEnt)) {
+                return (LivingEntity) loopEnt;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Updates the current avoids set for the NPC.
      */
     public void updateAvoids() {
