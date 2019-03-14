@@ -3,7 +3,7 @@ authors: ['mcmonkey']
 version: ${project.version} (build ${BUILD_NUMBER})
 main: org.mcmonkey.sentinel.SentinelPlugin
 depend: [Citizens]
-softdepend: [Vault, Sentry, CrackShot, Factions, Towny, SimpleClans]
+softdepend: [Vault, Sentry, CrackShot, Factions, Towny, SimpleClans, War]
 
 api-version: 1.13
 
