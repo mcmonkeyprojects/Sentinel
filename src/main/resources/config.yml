@@ -75,6 +75,8 @@ random:
     max health: 2000
     # Whether to ignore targets that are invisible.
     ignore invisible targets: true
+    # Whether to prevent players from damaging NPCs that are guarding them.
+    no guard damage: true
     # Distances used for NPCs following their guarded player
     guard follow distance:
         # Maximum possible distance of point to choose (relative to the guarded player)

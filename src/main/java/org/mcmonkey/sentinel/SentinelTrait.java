@@ -615,7 +615,7 @@ public class SentinelTrait extends Trait {
                 return;
             }
             if (getGuarding() != null && damager.getUniqueId().equals(getGuarding())) {
-                if (isMe) {
+                if (isMe && SentinelPlugin.instance.noGuardDamage) {
                     if (SentinelPlugin.debugMe) {
                         debug("Ignoring damage from the player we're guarding.");
                     }

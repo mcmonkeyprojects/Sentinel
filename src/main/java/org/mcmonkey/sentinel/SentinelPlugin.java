@@ -135,6 +135,11 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     public int runAwayTime;
 
     /**
+     * Configuration option: whether block players from damaging their own guards.
+     */
+    public boolean noGuardDamage;
+
+    /**
      * Fills the {@code vaultPerms} object if possible.
      */
     public void tryGetPerms() {
@@ -189,6 +194,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         protectFromIgnores = getConfig().getBoolean("random.protected", false);
         runAwayTime = getConfig().getInt("random.run away time");
         maxHealth = getConfig().getDouble("random.max health", 2000);
+        noGuardDamage = getConfig().getBoolean("random.no guard damage", true);
         tickRate = getConfig().getInt("update rate", 10);
     }
 
