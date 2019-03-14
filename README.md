@@ -79,19 +79,22 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel targets - Shows the targets of the current NPC.
     - /sentinel ignores - Shows the ignore targets of the current NPC.
     - /sentinel avoids - Shows the avoid targets of the current NPC.
+- Administrative commands...
+    - /sentinel debug - Toggles debug output to console.
+    - /sentinel reload - Reloads the configuration file.
 - NPC control commands...
     - /sentinel kill - Kills the NPC.
     - /sentinel respawn - Respawns the NPC.
     - /sentinel forgive - Forgives all current targets.
     - /sentinel guard [PLAYERNAME] - Makes the NPC guard a specific player. Don't specify a player to stop guarding.
-- Targeting commands...
+- NPC targeting commands...
     - /sentinel addtarget TYPE - Adds a target.
     - /sentinel removetarget TYPE - Removes a target.
     - /sentinel addignore TYPE - Ignores a target.
     - /sentinel removeignore TYPE - Allows targeting a target.
     - /sentinel addavoid TYPE - Avoids a target.
     - /sentinel removeavoid TYPE - Stops avoiding a target.
-- Configuration commands...
+- NPC configuration commands...
     - /sentinel avoidrange RANGE - Sets the distance to try to keep from threats.
     - /sentinel range RANGE - Sets the NPC's maximum attack range.
     - /sentinel damage DAMAGE - Sets the NPC's attack damage.
@@ -108,7 +111,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel autoswitch ['true'/'false'] - Toggles whether the NPC automatically switches items.
     - /sentinel realistic ['true'/'false'] - Toggles whether the NPC should use "realistic" targeting logic (don't attack things you can't see).
     - /sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.
-- Toggleable configuration commands...
+- Toggleable NPC configuration commands...
     - /sentinel invincible ['true'/'false'] - Toggles whether the NPC is invincible.
     - /sentinel fightback ['true'/'false'] - Toggles whether the NPC will fight back.
     - /sentinel runaway ['true'/'false'] - Toggles whether the NPC will run away when attacked.

@@ -163,6 +163,36 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     }
 
     /**
+     * Reloads the config and updates settings fields accordingly.
+     */
+    public void loadConfigSettings() {
+        reloadConfig();
+        cleverTicks = getConfig().getInt("random.clever ticks", 10);
+        canUseSkull = getConfig().getBoolean("random.skull allowed", true);
+        blockEvents = getConfig().getBoolean("random.workaround bukkit events", false);
+        alternateDamage = getConfig().getBoolean("random.enforce damage", false);
+        workaroundDamage = getConfig().getBoolean("random.workaround damage", false);
+        minShootSpeed = getConfig().getDouble("random.shoot speed minimum", 20);
+        workaroundDrops = getConfig().getBoolean("random.workaround drops", false) || blockEvents;
+        deathMessages = getConfig().getBoolean("random.death messages", true);
+        try {
+            spectralSound = Sound.valueOf(getConfig().getString("random.spectral sound", "ENTITY_VILLAGER_YES"));
+        }
+        catch (Throwable e) {
+            getLogger().warning("Sentinel Configuration value 'random.spectral sound' is set to an invalid sound name. This is usually an ignorable issue.");
+        }
+        ignoreInvisible = getConfig().getBoolean("random.ignore invisible targets");
+        guardDistanceMinimum = getConfig().getInt("random.guard follow distance.minimum", 7);
+        guardDistanceMargin = getConfig().getInt("random.guard follow distance.selection range", 4);
+        guardDistanceSelectionRange = getConfig().getInt("random.guard follow distance.margin", 2);
+        workaroundEntityChasePathfinder = getConfig().getBoolean("random.workaround entity chase pathfinder", false);
+        protectFromIgnores = getConfig().getBoolean("random.protected", false);
+        runAwayTime = getConfig().getInt("random.run away time");
+        maxHealth = getConfig().getDouble("random.max health", 2000);
+        tickRate = getConfig().getInt("update rate", 10);
+    }
+
+    /**
      * All current integrations available to Sentinel.
      */
     public final static ArrayList<SentinelIntegration> integrations = new ArrayList<>();
@@ -197,27 +227,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         catch (Exception e) {
             e.printStackTrace();
         }
-        cleverTicks = getConfig().getInt("random.clever ticks", 10);
-        canUseSkull = getConfig().getBoolean("random.skull allowed", true);
-        blockEvents = getConfig().getBoolean("random.workaround bukkit events", false);
-        alternateDamage = getConfig().getBoolean("random.enforce damage", false);
-        workaroundDamage = getConfig().getBoolean("random.workaround damage", false);
-        minShootSpeed = getConfig().getDouble("random.shoot speed minimum", 20);
-        workaroundDrops = getConfig().getBoolean("random.workaround drops", false) || blockEvents;
-        deathMessages = getConfig().getBoolean("random.death messages", true);
-        try {
-            spectralSound = Sound.valueOf(getConfig().getString("random.spectral sound", "ENTITY_VILLAGER_YES"));
-        }
-        catch (Throwable e) {
-            getLogger().warning("Sentinel Configuration value 'random.spectral sound' is set to an invalid sound name. This is usually an ignorable issue.");
-        }
-        ignoreInvisible = getConfig().getBoolean("random.ignore invisible targets");
-        guardDistanceMinimum = getConfig().getInt("random.guard follow distance.minimum", 7);
-        guardDistanceMargin = getConfig().getInt("random.guard follow distance.selection range", 4);
-        guardDistanceSelectionRange = getConfig().getInt("random.guard follow distance.margin", 2);
-        workaroundEntityChasePathfinder = getConfig().getBoolean("random.workaround entity chase pathfinder", false);
-        protectFromIgnores = getConfig().getBoolean("random.protected", false);
-        runAwayTime = getConfig().getInt("random.run away time");
+        loadConfigSettings();
         BukkitRunnable postLoad = new BukkitRunnable() {
             @Override
             public void run() {
@@ -236,8 +246,6 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
         };
         postLoad.runTaskLater(this, 40);
-        maxHealth = getConfig().getDouble("random.max health", 2000);
-        tickRate = getConfig().getInt("update rate", 10);
         getLogger().info("Sentinel loaded!");
         getServer().getPluginManager().registerEvents(this, this);
         SentinelCommand.buildCommandHandler();

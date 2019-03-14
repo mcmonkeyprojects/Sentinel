@@ -73,4 +73,12 @@ public class SentinelInfoCommands {
         SentinelPlugin.debugMe = !SentinelPlugin.debugMe;
         sender.sendMessage(SentinelCommand.prefixGood + "Toggled: " + SentinelPlugin.debugMe + "!");
     }
+
+    @Command(aliases = {"sentinel"}, usage = "reload",
+            desc = "Reloads the configuration file.",
+            modifiers = {"reload"}, permission = "sentinel.reload", min = 1, max = 1)
+    public void reload(CommandContext args, CommandSender sender) {
+        SentinelPlugin.instance.loadConfigSettings();
+        sender.sendMessage(SentinelCommand.prefixGood + "Reload the config file.");
+    }
 }
