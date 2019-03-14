@@ -320,6 +320,15 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
                 ex.printStackTrace();
             }
         }
+        if (Bukkit.getPluginManager().getPlugin("War") != null) {
+            try {
+                integrations.add(new SentinelWar());
+                getLogger().info("Sentinel found War! Adding support for it!");
+            }
+            catch (Throwable ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     /**

@@ -62,6 +62,7 @@ Sentinel integrates with a few external plugins, including:
 - Towny, for town targets! (Use towny:TOWN_HERE)
 - Factions, for faction targets! (Use factions:FACTION_HERE, factionsenemy:NAME, factionsally:NAME)
 - SimpleClans, for clan targets! (Use simpleclan:CLAN_NAME_HERE)
+- War, for war team targets! (Use war_team:WAR_TEAM_NAME)
 - CrackShot, to allow NPCs to fire CrackShot weapons.
 
 Sentinel is integrated into by external plugins as well, including:

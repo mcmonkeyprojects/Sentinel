@@ -62,9 +62,9 @@
         </dependency>
         <!-- Also Supported -->
         <dependency>
-            <groupId>com.tommytony.war</groupId>
+            <groupId>com.tommytony</groupId>
             <artifactId>war</artifactId>
-            <version>1.9</version>
+            <version>2.0.0-RC1</version>
             <type>jar</type>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/war.jar</systemPath>
