@@ -1027,6 +1027,11 @@ public class SentinelTrait extends Trait {
         targetingHelper.updateAvoids();
         double crsq = chaseRange * chaseRange;
         boolean goHome = chased;
+        if (chasing != null) {
+            if (!chasing.isValid() || !targetingHelper.isTargeted(chasing)) {
+                chasing = null;
+            }
+        }
         LivingEntity target = targetingHelper.findBestTarget();
         if (target != null) {
             Location near = nearestPathPoint();
