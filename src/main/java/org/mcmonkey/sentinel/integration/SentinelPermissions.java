@@ -12,13 +12,17 @@ public class SentinelPermissions extends SentinelIntegration {
     }
 
     @Override
-    public boolean isTarget(LivingEntity ent, String text) {
+    public String[] getTargetPrefixes() {
+        return new String[] { "permission" };
+    }
+
+    @Override
+    public boolean isTarget(LivingEntity ent, String prefix, String value) {
         if (!(ent instanceof Player)) {
             return false;
         }
-        if (text.startsWith("permission:")) {
-            String pText = text.substring("permission:".length());
-            if (((Player) ent).hasPermission(pText)) {
+        if (prefix.equals("permission")) {
+            if (((Player) ent).hasPermission(value)) {
                 return true;
             }
         }

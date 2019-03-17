@@ -13,12 +13,16 @@ public class SentinelWar extends SentinelIntegration {
     }
 
     @Override
-    public boolean isTarget(LivingEntity ent, String text) {
+    public String[] getTargetPrefixes() {
+        return new String[] { "war_team" };
+    }
+
+    @Override
+    public boolean isTarget(LivingEntity ent, String prefix, String value) {
         try {
-            if (text.startsWith("war_team:") && ent instanceof Player) {
+            if (prefix.equals("war_team") && ent instanceof Player) {
                 Team team = Team.getTeamByPlayerName(ent.getName());
-                String teamName = text.substring("war_team:".length());
-                if (team.getName().equalsIgnoreCase(teamName)) {
+                if (team.getName().equalsIgnoreCase(value)) {
                     return true;
                 }
                 else {

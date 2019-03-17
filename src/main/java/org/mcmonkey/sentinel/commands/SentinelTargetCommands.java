@@ -58,6 +58,23 @@ public class SentinelTargetCommands {
         return false;
     }
 
+    public static boolean testLabel(CommandSender sender, SentinelTargetLabel label) {
+        if (!label.isValidTarget()) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid target!");
+            listValidTargets(sender);
+            return false;
+        }
+        if (!label.isValidRegex()) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
+            return false;
+        }
+        if (!label.isValidPrefix()) {
+            sender.sendMessage(SentinelCommand.prefixBad + "The target prefix '" + label.prefix + "' is unknown!");
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Gets a string holding all name targets.
      */
@@ -75,13 +92,7 @@ public class SentinelTargetCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void addTarget(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         SentinelTargetLabel targetLabel = new SentinelTargetLabel(args.getString(1));
-        if (!targetLabel.isValidTarget()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Invalid target!");
-            listValidTargets(sender);
-            return;
-        }
-        if (!targetLabel.isValidRegex()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
+        if (!testLabel(sender, targetLabel)) {
             return;
         }
         if (targetLabel.addToList(sentinel.allTargets)) {
@@ -98,12 +109,7 @@ public class SentinelTargetCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void removeTarget(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         SentinelTargetLabel targetLabel = new SentinelTargetLabel(args.getString(1));
-        if (!targetLabel.isValidTarget()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Invalid target!");
-            return;
-        }
-        if (!targetLabel.isValidRegex()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
+        if (!testLabel(sender, targetLabel)) {
             return;
         }
         if (targetLabel.removeFromList(sentinel.allTargets)) {
@@ -120,13 +126,7 @@ public class SentinelTargetCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void addIgnore(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         SentinelTargetLabel targetLabel = new SentinelTargetLabel(args.getString(1));
-        if (!targetLabel.isValidTarget()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Invalid target!");
-            listValidTargets(sender);
-            return;
-        }
-        if (!targetLabel.isValidRegex()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
+        if (!testLabel(sender, targetLabel)) {
             return;
         }
         if (targetLabel.addToList(sentinel.allIgnores)) {
@@ -143,12 +143,7 @@ public class SentinelTargetCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void removeIgnore(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         SentinelTargetLabel targetLabel = new SentinelTargetLabel(args.getString(1));
-        if (!targetLabel.isValidTarget()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Invalid target!");
-            return;
-        }
-        if (!targetLabel.isValidRegex()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
+        if (!testLabel(sender, targetLabel)) {
             return;
         }
         if (targetLabel.removeFromList(sentinel.allIgnores)) {
@@ -165,13 +160,7 @@ public class SentinelTargetCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void addAvoid(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         SentinelTargetLabel targetLabel = new SentinelTargetLabel(args.getString(1));
-        if (!targetLabel.isValidTarget()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Invalid target!");
-            listValidTargets(sender);
-            return;
-        }
-        if (!targetLabel.isValidRegex()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
+        if (!testLabel(sender, targetLabel)) {
             return;
         }
         if (targetLabel.addToList(sentinel.allAvoids)) {
@@ -188,12 +177,7 @@ public class SentinelTargetCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void removeAvoid(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         SentinelTargetLabel targetLabel = new SentinelTargetLabel(args.getString(1));
-        if (!targetLabel.isValidTarget()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Invalid target!");
-            return;
-        }
-        if (!targetLabel.isValidRegex()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Bad regular expression!");
+        if (!testLabel(sender, targetLabel)) {
             return;
         }
         if (targetLabel.removeFromList(sentinel.allAvoids)) {

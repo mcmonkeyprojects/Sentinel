@@ -1028,7 +1028,7 @@ public class SentinelTrait extends Trait {
         double crsq = chaseRange * chaseRange;
         boolean goHome = chased;
         if (chasing != null) {
-            if (!chasing.isValid() || !targetingHelper.isTargeted(chasing)) {
+            if (!chasing.isValid() || !targetingHelper.shouldTarget(chasing)) {
                 chasing = null;
             }
         }

@@ -1,6 +1,7 @@
 package org.mcmonkey.sentinel.targeting;
 
 import org.bukkit.ChatColor;
+import org.mcmonkey.sentinel.SentinelPlugin;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,6 +34,13 @@ public class SentinelTargetLabel {
             Arrays.asList("player", "npc", "entityname", "helditem"));
 
     /**
+     * All default prefixes (anything else handled by an integration object).
+     */
+    public static HashSet<String> corePrefixes = new HashSet<>(
+            Arrays.asList("player", "npc", "entityname", "helditem", "group", "event")
+    );
+
+    /**
      * Helper to ensure code won't be optimized away (Java isn't likely to do this anyway, but just in case).
      */
     public static long ignoreMe = 0;
@@ -61,6 +69,22 @@ public class SentinelTargetLabel {
             return true;
         }
         return SentinelTarget.forName(value) != null;
+    }
+
+    /**
+     * Returns whether the prefix is valid - if 'false', the prefix doesn't exist.
+     */
+    public boolean isValidPrefix() {
+        if (prefix == null) {
+            return true;
+        }
+        if (corePrefixes.contains(prefix)) {
+            return true;
+        }
+        if (SentinelPlugin.integrationPrefixMap.containsKey(prefix)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -115,7 +139,7 @@ public class SentinelTargetLabel {
             return false;
         }
         getTargetsList(listSet).add(addable());
-        if (list == listSet.targets) {
+        if (list == listSet.targets || list == listSet.byOther) {
             listSet.recalculateTargetsCache();
         }
         return true;
@@ -131,7 +155,7 @@ public class SentinelTargetLabel {
             return false;
         }
         getTargetsList(listSet).remove(addable());
-        if (list == listSet.targets) {
+        if (list == listSet.targets || list == listSet.byOther) {
             listSet.recalculateTargetsCache();
         }
         return true;

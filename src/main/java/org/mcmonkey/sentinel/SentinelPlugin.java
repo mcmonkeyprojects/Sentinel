@@ -45,6 +45,16 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     public static HashMap<EntityType, HashSet<SentinelTarget>> entityToTargets = new HashMap<>();
 
     /**
+     * A map of target prefixes to the integration object.
+     */
+    public final static HashMap<String, SentinelIntegration> integrationPrefixMap = new HashMap<>();
+
+    /**
+     * All current integrations available to Sentinel.
+     */
+    public final static ArrayList<SentinelIntegration> integrations = new ArrayList<>();
+
+    /**
      * Current plugin instance.
      */
     public static SentinelPlugin instance;
@@ -168,6 +178,16 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     }
 
     /**
+     * Registers a new integration to Sentinel.
+     */
+    public void registerIntegration(SentinelIntegration integration) {
+        integrations.add(integration);
+        for (String prefix : integration.getTargetPrefixes()) {
+            integrationPrefixMap.put(prefix, integration);
+        }
+    }
+
+    /**
      * Reloads the config and updates settings fields accordingly.
      */
     public void loadConfigSettings() {
@@ -197,11 +217,6 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         noGuardDamage = getConfig().getBoolean("random.no guard damage", true);
         tickRate = getConfig().getInt("update rate", 10);
     }
-
-    /**
-     * All current integrations available to Sentinel.
-     */
-    public final static ArrayList<SentinelIntegration> integrations = new ArrayList<>();
 
     /**
      * Called when the plugin is enabled at server startup.
@@ -280,13 +295,13 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
         }.runTaskTimer(this, 100, 20 * 60 * 60);
         tryGetPerms();
-        integrations.add(new SentinelHealth());
-        integrations.add(new SentinelPermissions());
-        integrations.add(new SentinelSBTeams());
-        integrations.add(new SentinelSquads());
+        registerIntegration(new SentinelHealth());
+        registerIntegration(new SentinelPermissions());
+        registerIntegration(new SentinelSBTeams());
+        registerIntegration(new SentinelSquads());
         if (Bukkit.getPluginManager().getPlugin("Towny") != null) {
             try {
-                integrations.add(new SentinelTowny());
+                registerIntegration(new SentinelTowny());
                 getLogger().info("Sentinel found Towny! Adding support for it!");
             }
             catch (Throwable ex) {
@@ -295,7 +310,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         if (Bukkit.getPluginManager().getPlugin("Factions") != null) {
             try {
-                integrations.add(new SentinelFactions());
+                registerIntegration(new SentinelFactions());
                 getLogger().info("Sentinel found Factions! Adding support for it!");
             }
             catch (Throwable ex) {
@@ -304,7 +319,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         if (Bukkit.getPluginManager().getPlugin("CrackShot") != null) {
             try {
-                integrations.add(new SentinelCrackShot());
+                registerIntegration(new SentinelCrackShot());
                 getLogger().info("Sentinel found CrackShot! Adding support for it!");
             }
             catch (Throwable ex) {
@@ -313,7 +328,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         if (Bukkit.getPluginManager().getPlugin("SimpleClans") != null) {
             try {
-                integrations.add(new SentinelSimpleClans());
+                registerIntegration(new SentinelSimpleClans());
                 getLogger().info("Sentinel found SimpleClans! Adding support for it!");
             }
             catch (Throwable ex) {
@@ -322,7 +337,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         if (Bukkit.getPluginManager().getPlugin("War") != null) {
             try {
-                integrations.add(new SentinelWar());
+                registerIntegration(new SentinelWar());
                 getLogger().info("Sentinel found War! Adding support for it!");
             }
             catch (Throwable ex) {

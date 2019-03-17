@@ -15,13 +15,18 @@ public class SentinelSquads extends SentinelIntegration {
     }
 
     @Override
-    public boolean isTarget(LivingEntity ent, String text) {
+    public String[] getTargetPrefixes() {
+        return new String[] { "squad" };
+    }
+
+    @Override
+    public boolean isTarget(LivingEntity ent, String prefix, String value) {
         try {
-            if (text.startsWith("squad:") && CitizensAPI.getNPCRegistry().isNPC(ent)
+            if (prefix.equals("squad") && CitizensAPI.getNPCRegistry().isNPC(ent)
                     && CitizensAPI.getNPCRegistry().getNPC(ent).hasTrait(SentinelTrait.class)) {
                 SentinelTrait sentinel = CitizensAPI.getNPCRegistry().getNPC(ent).getTrait(SentinelTrait.class);
                 if (sentinel.squad != null) {
-                    String squadName = text.substring("squad:".length()).toLowerCase(Locale.ENGLISH);
+                    String squadName = value.toLowerCase(Locale.ENGLISH);
                     if (squadName.equals(sentinel.squad)) {
                         return true;
                     }

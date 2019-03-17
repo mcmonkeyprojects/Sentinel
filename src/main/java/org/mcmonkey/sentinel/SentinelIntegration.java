@@ -16,8 +16,24 @@ public class SentinelIntegration {
     }
 
     /**
+     * Gets the list of target prefixes that this integration handles.
+     * For a "squad:SQUAD_NAME" target, this should return: new String[] { "squad" }
+     */
+    public String[] getTargetPrefixes() {
+        return new String[0];
+    }
+
+    /**
      * Returns whether an entity is a target of the integration label.
      */
+    public boolean isTarget(LivingEntity ent, String prefix, String value) {
+        return isTarget(ent, prefix + ":" + value);
+    }
+
+    /**
+     * Returns whether an entity is a target of the integration label.
+     */
+    @Deprecated
     public boolean isTarget(LivingEntity ent, String text) {
         return false;
     }

@@ -13,6 +13,7 @@ import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.SentinelUtilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class SentinelTargetList {
@@ -48,9 +49,9 @@ public class SentinelTargetList {
                 return true;
             }
         }
-        for (SentinelIntegration integration : SentinelPlugin.integrations) {
-            for (String text : byOther) {
-                if (integration.isTarget(entity, text)) {
+        for (ArrayList<CachedOtherTarget> targets : otherTargetCache.values()) {
+            for (CachedOtherTarget target : targets) {
+                if (target.integration.isTarget(entity, target.prefix, target.value)) {
                     return true;
                 }
             }
@@ -153,16 +154,45 @@ public class SentinelTargetList {
     public HashSet<SentinelTarget> targetsProcessed = new HashSet<>();
 
     /**
+     * Represents an "other target" for use with caching.
+     */
+    public static class CachedOtherTarget {
+
+        /**
+         * The integration object.
+         */
+        public SentinelIntegration integration;
+
+        /**
+         * The "other" target prefix.
+         */
+        public String prefix;
+
+        /**
+         * The "other" target value.
+         */
+        public String value;
+    }
+
+    /**
+     * Cache of "other" targets.
+     */
+    public HashMap<String, ArrayList<CachedOtherTarget>> otherTargetCache = new HashMap<>();
+
+    private int otherTargetSize = 0;
+
+    /**
      * Checks if the targets cache ('targetsProcessed') needs to be reprocessed, and refills it if so.
      */
     public void checkRecalculateTargetsCache() {
-        if (targets.size() != targetsProcessed.size()) {
+        if (targets.size() != targetsProcessed.size() || byOther.size() != otherTargetSize) {
             recalculateTargetsCache();
         }
     }
 
     /**
      * Fills the cache 'targetsProcessed' set then uses that set to deduplicate the source 'targets' set.
+     * Also fills the 'otherTargetCache'.
      */
     public void recalculateTargetsCache() {
         targetsProcessed.clear();
@@ -173,6 +203,26 @@ public class SentinelTargetList {
         for (SentinelTarget target : targetsProcessed) {
             targets.add(target.name());
         }
+        otherTargetCache.clear();
+        for (String otherTarget : byOther) {
+            int colon = otherTarget.indexOf(':');
+            String before = otherTarget.substring(0, colon);
+            String after = otherTarget.substring(colon + 1);
+            SentinelIntegration integration = SentinelPlugin.integrationPrefixMap.get(before);
+            if (integration != null) {
+                ArrayList<CachedOtherTarget> subList = otherTargetCache.get(before);
+                if (subList == null) {
+                    subList = new ArrayList<>();
+                    otherTargetCache.put(before, subList);
+                }
+                CachedOtherTarget targ = new CachedOtherTarget();
+                targ.integration = integration;
+                targ.prefix = before;
+                targ.value = after;
+                subList.add(targ);
+            }
+        }
+        otherTargetSize = byOther.size();
     }
 
     /**

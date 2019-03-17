@@ -196,7 +196,8 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
     private SentinelCurrentTarget tempTarget = new SentinelCurrentTarget();
 
     /**
-     * Returns whether an entity is targeted by this NPC's ignore lists.
+     * Returns whether an entity is targeted by this NPC's target lists.
+     * Consider calling 'shouldTarget' instead.
      */
     public boolean isTargeted(LivingEntity entity) {
         if (isInvisible(entity)) {
@@ -254,7 +255,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             if (!canSee((LivingEntity) entity) && !targetingHelper.currentAvoids.contains(tempTarget)) {
                 continue;
             }
-            if (targetingHelper.currentAvoids.contains(tempTarget) || sentinel.allAvoids.isTarget((LivingEntity) entity, sentinel)) {
+            if (targetingHelper.currentAvoids.contains(tempTarget) || isAvoided((LivingEntity) entity)) {
                 avoidanceList.add((LivingEntity) entity);
                 targetingHelper.addAvoid(entity.getUniqueId());
             }

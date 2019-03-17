@@ -16,11 +16,15 @@ public class SentinelFactions extends SentinelIntegration {
     }
 
     @Override
-    public boolean isTarget(LivingEntity ent, String text) {
+    public String[] getTargetPrefixes() {
+        return new String[] { "factions", "factionsenemy", "factionsally" };
+    }
+
+    @Override
+    public boolean isTarget(LivingEntity ent, String prefix, String value) {
         try {
-            if (text.startsWith("factions:") && ent instanceof Player) {
-                String factionName = text.substring("factions:".length());
-                Faction faction = FactionColl.get().getByName(factionName);
+            if (prefix.equals("factions") && ent instanceof Player) {
+                Faction faction = FactionColl.get().getByName(value);
                 for (MPlayer pl: faction.getMPlayers()) {
                     if (pl.getPlayer() != null && pl.getPlayer().getUniqueId() != null
                             && pl.getPlayer().getUniqueId().equals(ent.getUniqueId())) {
@@ -28,17 +32,15 @@ public class SentinelFactions extends SentinelIntegration {
                     }
                 }
             }
-            if (text.startsWith("factionsenemy:") && ent instanceof Player) {
-                String factionName = text.substring("factionsenemy:".length());
-                Faction faction = FactionColl.get().getByName(factionName);
+            else if (prefix.equals("factionsenemy") && ent instanceof Player) {
+                Faction faction = FactionColl.get().getByName(value);
                 Faction plf = MPlayer.get(((Player) ent).getUniqueId()).getFaction();
                 if (faction.getRelationTo(plf).equals(Rel.ENEMY)) {
                     return true;
                 }
             }
-            if (text.startsWith("factionsally:") && ent instanceof Player) {
-                String factionName = text.substring("factionsally:".length());
-                Faction faction = FactionColl.get().getByName(factionName);
+            else if (prefix.equals("factionsally") && ent instanceof Player) {
+                Faction faction = FactionColl.get().getByName(value);
                 Faction plf = MPlayer.get(((Player) ent).getUniqueId()).getFaction();
                 if (faction.getRelationTo(plf).equals(Rel.ALLY)) {
                     return true;

@@ -14,12 +14,16 @@ public class SentinelSimpleClans extends SentinelIntegration {
     }
 
     @Override
-    public boolean isTarget(LivingEntity ent, String text) {
+    public String[] getTargetPrefixes() {
+        return new String[] { "simpleclan" };
+    }
+
+    @Override
+    public boolean isTarget(LivingEntity ent, String prefix, String value) {
         try {
-            if (text.startsWith("simpleclan:") && ent instanceof Player) {
-                String clanName = text.substring("simpleclan:".length());
+            if (prefix.equals("simpleclan") && ent instanceof Player) {
                 Clan clan = SimpleClans.getInstance().getClanManager().getClanByPlayerUniqueId(ent.getUniqueId());
-                if (clan.getName().equalsIgnoreCase(clanName)) {
+                if (clan.getName().equalsIgnoreCase(value)) {
                     return true;
                 }
                 else {

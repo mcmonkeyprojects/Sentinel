@@ -14,12 +14,16 @@ public class SentinelTowny extends SentinelIntegration {
     }
 
     @Override
-    public boolean isTarget(LivingEntity ent, String text) {
+    public String[] getTargetPrefixes() {
+        return new String[] { "towny" };
+    }
+
+    @Override
+    public boolean isTarget(LivingEntity ent, String prefix, String value) {
         try {
-            if (text.startsWith("towny:") && ent instanceof Player) {
-                String town = text.substring("towny:".length());
-                if (TownyUniverse.getDataSource().hasTown(town)) {
-                    Town t = TownyUniverse.getDataSource().getTown(town);
+            if (prefix.equals("towny") && ent instanceof Player) {
+                if (TownyUniverse.getDataSource().hasTown(value)) {
+                    Town t = TownyUniverse.getDataSource().getTown(value);
                     if (t.hasResident(ent.getName())) { // TODO: Why no UUID support?!
                         return true;
                     }

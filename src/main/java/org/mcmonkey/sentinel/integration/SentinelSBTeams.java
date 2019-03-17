@@ -14,11 +14,15 @@ public class SentinelSBTeams extends SentinelIntegration {
     }
 
     @Override
-    public boolean isTarget(LivingEntity ent, String text) {
+    public String[] getTargetPrefixes() {
+        return new String[] { "sbteam" };
+    }
+
+    @Override
+    public boolean isTarget(LivingEntity ent, String prefix, String value) {
         try {
-            if (text.startsWith("sbteam:") && ent instanceof Player) {
-                String sbteamName = text.substring("sbteam:".length());
-                Team t = Bukkit.getScoreboardManager().getMainScoreboard().getTeam(sbteamName);
+            if (prefix.equals("sbteam") && ent instanceof Player) {
+                Team t = Bukkit.getScoreboardManager().getMainScoreboard().getTeam(value);
                 if (t != null) {
                     if (t.hasEntry(((Player) ent).getName())) {
                         return true;

@@ -11,18 +11,21 @@ public class SentinelHealth extends SentinelIntegration {
     }
 
     @Override
-    public boolean isTarget(LivingEntity ent, String text) {
+    public String[] getTargetPrefixes() {
+        return new String[] { "healthabove", "healthbelow" };
+    }
+
+    @Override
+    public boolean isTarget(LivingEntity ent, String prefix, String value) {
         try {
-            if (text.startsWith("healthabove:")) {
-                String haText = text.substring("healthabove:".length());
-                double haVal = Double.parseDouble(haText);
+            if (prefix.equals("healthabove")) {
+                double haVal = Double.parseDouble(value);
                 if (ent.getHealth() / ent.getMaxHealth() > haVal * 0.01) {
                     return true;
                 }
             }
-            else if (text.startsWith("healthbelow:")) {
-                String haText = text.substring("healthbelow:".length());
-                double haVal = Double.parseDouble(haText);
+            else if (prefix.equals("healthbelow")) {
+                double haVal = Double.parseDouble(value);
                 if (ent.getHealth() / ent.getMaxHealth() < haVal * 0.01) {
                     return true;
                 }
