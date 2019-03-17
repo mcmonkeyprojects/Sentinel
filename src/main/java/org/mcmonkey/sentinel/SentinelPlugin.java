@@ -122,7 +122,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     /**
      * Configuration option: guarding distance values.
      */
-    public int guardDistanceMinimum, guardDistanceSelectionRange, guardDistanceMargin;
+    public int guardDistanceMinimum, guardDistanceSelectionRange;
 
     /**
      * Configuration option: whether to work-around a pathfinder issue.
@@ -208,7 +208,6 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         }
         ignoreInvisible = getConfig().getBoolean("random.ignore invisible targets");
         guardDistanceMinimum = getConfig().getInt("random.guard follow distance.minimum", 7);
-        guardDistanceMargin = getConfig().getInt("random.guard follow distance.margin", 2);
         guardDistanceSelectionRange = getConfig().getInt("random.guard follow distance.selection range", 4);
         workaroundEntityChasePathfinder = getConfig().getBoolean("random.workaround entity chase pathfinder", false);
         protectFromIgnores = getConfig().getBoolean("random.protected", false);

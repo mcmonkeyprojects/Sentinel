@@ -83,8 +83,6 @@ random:
         selection range: 4
         # Minimum distance before choosing a new point (relative to guarded player)
         minimum: 7
-        # Maximum distance an NPC must reach before being done walking (relative to the chosen point)
-        margin: 2
 
 # How fast to recalculate, in ticks.
 update rate: 10

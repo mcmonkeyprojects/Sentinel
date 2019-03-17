@@ -1097,7 +1097,6 @@ public class SentinelTrait extends Trait {
                     ticksCountGuard += SentinelPlugin.instance.tickRate;
                     if (ticksCountGuard >= 30) {
                         ticksCountGuard = 0;
-                        npc.getNavigator().getDefaultParameters().distanceMargin(SentinelPlugin.instance.guardDistanceMargin);
                         npc.getNavigator().getDefaultParameters().range(100);
                         npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
                         Location picked = SentinelUtilities.pickNear(player.getLocation(), guardSelectionRange);
@@ -1106,6 +1105,7 @@ public class SentinelTrait extends Trait {
                         }
                         npc.getNavigator().setTarget(picked);
                         npc.getNavigator().getLocalParameters().speedModifier((float) speed);
+                        npc.getNavigator().getLocalParameters().distanceMargin(guardDistanceMinimum * 0.75);
                         chased = true;
                     }
                 }
