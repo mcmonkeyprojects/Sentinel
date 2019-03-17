@@ -73,7 +73,7 @@ public class SentinelUtilities {
      */
     public static Location pickNear(Location start, double range) {
         Location hit = rayTrace(start.clone().add(0, 1.5, 0), start.clone().add(
-                SentinelUtilities.randomDecimal(-range, range), 1.5, SentinelUtilities.randomDecimal(range, range)));
+                SentinelUtilities.randomDecimal(-range, range), 1.5, SentinelUtilities.randomDecimal(-range, range)));
         if (hit.subtract(0, 1, 0).getBlock().getType().isSolid()) {
             return hit;
         }

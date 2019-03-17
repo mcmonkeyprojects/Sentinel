@@ -1100,7 +1100,11 @@ public class SentinelTrait extends Trait {
                         npc.getNavigator().getDefaultParameters().distanceMargin(SentinelPlugin.instance.guardDistanceMargin);
                         npc.getNavigator().getDefaultParameters().range(100);
                         npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
-                        npc.getNavigator().setTarget(SentinelUtilities.pickNear(player.getLocation(), guardSelectionRange));
+                        Location picked = SentinelUtilities.pickNear(player.getLocation(), guardSelectionRange);
+                        if (SentinelPlugin.debugMe) {
+                            debug("Guard movement chosen to go to " + picked.toVector().toBlockVector().toString());
+                        }
+                        npc.getNavigator().setTarget(picked);
                         npc.getNavigator().getLocalParameters().speedModifier((float) speed);
                         chased = true;
                     }
@@ -1131,7 +1135,7 @@ public class SentinelTrait extends Trait {
                 chased = false;
             }
             else {
-                if (pathingTo == null && npc.getNavigator().isNavigating()) {
+                if (pathingTo == null && npc.getNavigator().isNavigating() && getGuarding() == null) {
                     npc.getNavigator().cancelNavigation();
                     needsSafeReturn = false;
                 }
@@ -1142,7 +1146,7 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
-        else if (chasing == null && pathingTo == null && npc.getNavigator().isNavigating() && needsSafeReturn) {
+        else if (chasing == null && getGuarding() == null && pathingTo == null && npc.getNavigator().isNavigating() && needsSafeReturn) {
             npc.getNavigator().cancelNavigation();
             needsSafeReturn = false;
         }

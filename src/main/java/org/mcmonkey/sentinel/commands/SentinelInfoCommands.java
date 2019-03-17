@@ -47,7 +47,7 @@ public class SentinelInfoCommands {
 
     @Command(aliases = {"sentinel"}, usage = "stats",
             desc = "Shows statistics about the current NPC.",
-            modifiers = {"stats"}, permission = "sentinel.info", min = 2, max = 2)
+            modifiers = {"stats"}, permission = "sentinel.info", min = 1, max = 1)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void stats(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.ColorBasic
