@@ -27,6 +27,12 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Returns whether the NPC can see the target entity.
      */
     public boolean canSee(LivingEntity entity) {
+        if (!getLivingEntity().getWorld().equals(entity.getWorld())) {
+            return false;
+        }
+        if (getLivingEntity().getEyeLocation().distanceSquared(entity.getEyeLocation()) > sentinel.range * sentinel.range) {
+            return false;
+        }
         if (!getLivingEntity().hasLineOfSight(entity)) {
             return false;
         }
