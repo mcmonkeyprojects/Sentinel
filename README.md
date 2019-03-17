@@ -1,13 +1,13 @@
 Sentinel NPCs: Combat NPCs for Spigot!
 --------------------------------------
 
-![AnimatedSentinel](http://i.imgur.com/VDwTzrs.gif)
+![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
-**Version 1.7.6**: Compatible with Spigot 1.8.8(see Info section below), 1.9.4, 1.10.2, 1.11.2, 1.12.2, and 1.13.2
+**Version 1.8.1**: Compatible with Spigot 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, and 1.13.2 (Primarily targeted at 1.12.2 and 1.13.2 - see info section below if on other supported versions)
 
 ### Downloads
 
-- **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Sentinel/
+- **Download (Developmental builds)**: https://ci.citizensnpcs.co/job/Sentinel/
 - **Download (Spigot releases)**: https://www.spigotmc.org/resources/sentinel.22017/
 - **Download (Bukkit releases)**: http://dev.bukkit.org/bukkit-plugins/sentinel/
 
@@ -18,11 +18,11 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ### Update Warnings
 
-- Sentinel 1.7 **changes the API** structure of Sentinel - and adds documentation and **JavaDocs**, which can be found here: http://ci.citizensnpcs.co/job/Sentinel/javadoc/
+- Sentinel 1.7 **changes the API** structure of Sentinel - and adds documentation and **JavaDocs**, which can be found here: https://ci.citizensnpcs.co/job/Sentinel/javadoc/
     - Save data structure is also changed in the 1.7 updates.
-    - If you need a pre-API rewrite version of Sentinel, you can get the last version of Sentinel (1.6.2) here: http://ci.citizensnpcs.co/job/Sentinel/191/
+    - If you need a pre-API rewrite version of Sentinel, you can get the last version of Sentinel (1.6.2) here: https://ci.citizensnpcs.co/job/Sentinel/191/
 - Sentinel 1.7.2 is the last version that contained the **Sentry importer**. If you need to import old Sentry data, you must use a 1.7.2 build.
-    - You can get that build here: http://ci.citizensnpcs.co/job/Sentinel/201/
+    - You can get that build here: https://ci.citizensnpcs.co/job/Sentinel/201/
 
 ### Info
 
@@ -132,7 +132,7 @@ Sentinel is integrated into by external plugins as well, including:
 
 - Type "/sentinel sentryimport" on a server running both Sentry and Sentinel to instantly transfer all data to Sentinel!
 - Sentinel 1.7.2 is the last version that contained the **Sentry importer**. If you need to import old Sentry data, you must use a 1.7.2 build.
-    - You can get that build here: http://ci.citizensnpcs.co/job/Sentinel/201/
+    - You can get that build here: https://ci.citizensnpcs.co/job/Sentinel/201/
 
 ### Permissions
 - sentinel.basic for the /sentinel command
@@ -210,10 +210,10 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
 ----
 
 - Add a `depend` or `softdepend` (as relevant) on `Sentinel` to your `plugin.yml` file. See sample of how Sentinel does this to depend on other plugins here: https://github.com/mcmonkeyprojects/Sentinel/blob/master/src/main/resources/plugin.yml
-- When possible, take advantage of the `SentinelIntegration` class: http://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/SentinelIntegration.html
+- When possible, take advantage of the `SentinelIntegration` class: https://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/SentinelIntegration.html
     - Extend the class (with your own custom class) and implement whichever methods you need. See samples of integrations available here: https://github.com/mcmonkeyprojects/Sentinel/tree/master/src/main/java/org/mcmonkey/sentinel/integration
-    - Within your plugin's `onEnable`, Register the class by calling `SentinelPlugin.integrations.add(new YourIntegration());` where `YourIntegration` is the integration class you created.
-- You might also benefit from events like the `SentinelAttackEvent` http://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/events/SentinelAttackEvent.html
+    - Within your plugin's `onEnable`, Register the class by calling `SentinelPlugin.registerIntegration(new YourIntegration());` where `YourIntegration` is the integration class you created.
+- You might also benefit from events like the `SentinelAttackEvent` https://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/events/package-summary.html
 - If you're lost, feel free to ask for help using the help channels listed below.
 
 ### Need help using Sentinel? Try one of these places:
