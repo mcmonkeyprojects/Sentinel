@@ -489,6 +489,12 @@ public class SentinelTrait extends Trait {
      */
     private boolean canEnforce = false;
 
+    private static EntityDamageEvent.DamageModifier[] modifiersToZero = new EntityDamageEvent.DamageModifier[]{
+            EntityDamageEvent.DamageModifier.HARD_HAT, EntityDamageEvent.DamageModifier.BLOCKING,
+            EntityDamageEvent.DamageModifier.RESISTANCE, EntityDamageEvent.DamageModifier.MAGIC,
+            EntityDamageEvent.DamageModifier.ABSORPTION
+    };
+
     /**
      * Called when combat occurs in the world (and has not yet been processed by other plugins),
      * to handle things like cancelling invalid damage to/from a Sentinel NPC,
@@ -509,6 +515,11 @@ public class SentinelTrait extends Trait {
             }
             else {
                 event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, -getArmor(getLivingEntity()) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
+            }
+            for (EntityDamageEvent.DamageModifier modifier : modifiersToZero) {
+                if (event.isApplicable(modifier)) {
+                    event.setDamage(modifier, 0);
+                }
             }
             return;
         }
