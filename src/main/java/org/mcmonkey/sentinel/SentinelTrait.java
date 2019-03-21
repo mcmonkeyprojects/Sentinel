@@ -325,7 +325,7 @@ public class SentinelTrait extends Trait {
      * How long (in ticks) before the NPC heals by 1 HP (when damaged).
      */
     @Persist("healRate")
-    public int healRate = 30;
+    public int healRate = 100;
 
     /**
      * Upper 64 bits of the guarded player's UUID.
@@ -708,7 +708,7 @@ public class SentinelTrait extends Trait {
     public void onAttach() {
         FileConfiguration config = SentinelPlugin.instance.getConfig();
         attackRate = config.getInt("sentinel defaults.attack rate", 30);
-        healRate = config.getInt("sentinel defaults.heal rate", 30);
+        healRate = config.getInt("sentinel defaults.heal rate", 100);
         respawnTime = config.getInt("sentinel defaults.respawn time", 100);
         rangedChase = config.getBoolean("sentinel defaults.ranged chase target", false);
         closeChase = config.getBoolean("sentinel defaults.close chase target", true);

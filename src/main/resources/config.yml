@@ -17,7 +17,7 @@ sentinel defaults:
     # Attack rate, in ticks.
     attack rate: 30
     # Heal rate, in ticks.
-    heal rate: 30
+    heal rate: 100
     # Whether this NPC fights back.
     fightback: true
     # Whether this NPC needs ammo to fight with.
