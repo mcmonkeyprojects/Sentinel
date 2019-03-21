@@ -26,10 +26,10 @@ public class SentinelInfoCommands {
                 (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/" : "") + sentinel.health);
         sender.sendMessage(SentinelCommand.prefixGood + "Range: " + ChatColor.AQUA + sentinel.range);
         sender.sendMessage(SentinelCommand.prefixGood + "Avoidance Range: " + ChatColor.AQUA + sentinel.avoidRange);
-        sender.sendMessage(SentinelCommand.prefixGood + "Attack Rate: " + ChatColor.AQUA + sentinel.attackRate);
-        sender.sendMessage(SentinelCommand.prefixGood + "Ranged Attack Rate: " + ChatColor.AQUA + sentinel.attackRateRanged);
-        sender.sendMessage(SentinelCommand.prefixGood + "Heal Rate: " + ChatColor.AQUA + sentinel.healRate);
-        sender.sendMessage(SentinelCommand.prefixGood + "Respawn Time: " + ChatColor.AQUA + sentinel.respawnTime);
+        sender.sendMessage(SentinelCommand.prefixGood + "Attack Rate: " + ChatColor.AQUA + (sentinel.attackRate / 20.0));
+        sender.sendMessage(SentinelCommand.prefixGood + "Ranged Attack Rate: " + ChatColor.AQUA + (sentinel.attackRateRanged / 20.0));
+        sender.sendMessage(SentinelCommand.prefixGood + "Heal Rate: " + ChatColor.AQUA + (sentinel.healRate / 20.0));
+        sender.sendMessage(SentinelCommand.prefixGood + "Respawn Time: " + ChatColor.AQUA + (sentinel.respawnTime / 20.0));
         sender.sendMessage(SentinelCommand.prefixGood + "Accuracy: " + ChatColor.AQUA + sentinel.accuracy);
         sender.sendMessage(SentinelCommand.prefixGood + "Reach: " + ChatColor.AQUA + sentinel.reach);
         sender.sendMessage(SentinelCommand.prefixGood + "Invincibility Enabled: " + ChatColor.AQUA + sentinel.invincible);
