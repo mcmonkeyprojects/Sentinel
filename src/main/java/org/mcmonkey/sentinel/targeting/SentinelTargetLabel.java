@@ -141,6 +141,9 @@ public class SentinelTargetLabel {
      * True for all non-multi targets.
      */
     public boolean isValidMulti() {
+        if (prefix == null) {
+            return true;
+        }
         if (prefix.equals("multi")) {
             return getMulti(",").totalTargetsCount() > 0;
         }
@@ -157,7 +160,7 @@ public class SentinelTargetLabel {
         SentinelTargetList newList = new SentinelTargetList();
         for (String str : value.split(splitter)) {
             SentinelTargetLabel label = new SentinelTargetLabel(str);
-            label.addToList(newList);
+            label.addToList(newList, false);
         }
         newList.recalculateCacheNoClear();
         return newList;
@@ -167,21 +170,28 @@ public class SentinelTargetLabel {
      * Adds this target label to a list set.
      */
     public boolean addToList(SentinelTargetList listSet) {
-        if (prefix.equals("multi")) {
+        return addToList(listSet, true);
+    }
+
+    /**
+     * Adds this target label to a list set.
+     */
+    public boolean addToList(SentinelTargetList listSet, boolean doRecache) {
+        if (prefix != null && prefix.equals("multi")) {
             listSet.byMultiple.add(getMulti(","));
             return true;
         }
-        if (prefix.equals("allinone")) {
-            listSet.byAllInOne.add(getMulti("|"));
+        if (prefix != null && prefix.equals("allinone")) {
+            listSet.byAllInOne.add(getMulti("\\|"));
             return true;
         }
         Collection<String> list = getTargetsList(listSet);
         String addable = addable();
-        if (list.contains(addable)) {
+        if (doRecache && list.contains(addable)) {
             return false;
         }
         getTargetsList(listSet).add(addable());
-        if (list == listSet.targets || list == listSet.byOther) {
+        if (doRecache && (list == listSet.targets || list == listSet.byOther)) {
             listSet.recalculateTargetsCache();
         }
         return true;
@@ -191,7 +201,7 @@ public class SentinelTargetLabel {
      * Removes this target label from a list set.
      */
     public boolean removeFromList(SentinelTargetList listSet) {
-        if (prefix.equals("multi")) {
+        if (prefix != null && prefix.equals("multi")) {
             try {
                 int integerValue = Integer.parseInt(value);
                 if (integerValue >= 0 && integerValue < listSet.byMultiple.size()) {
@@ -204,7 +214,7 @@ public class SentinelTargetLabel {
                 return false;
             }
         }
-        if (prefix.equals("allinone")) {
+        if (prefix != null && prefix.equals("allinone")) {
             try {
                 int integerValue = Integer.parseInt(value);
                 if (integerValue >= 0 && integerValue < listSet.byAllInOne.size()) {

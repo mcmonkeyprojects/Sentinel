@@ -181,6 +181,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Returns whether an entity is ignored by this NPC's ignore lists.
      */
     public boolean isIgnored(LivingEntity entity) {
+        if (isUntargetable(entity)) {
+            return true;
+        }
         if (isInvisible(entity)) {
             return true;
         }
@@ -399,8 +402,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         }
         LivingEntity closest = null;
         boolean wasLos = false;
-        double range = rangesquared;
-        for (Entity loopEnt : getLivingEntity().getWorld().getNearbyEntities(pos, range, range, range)) {
+        for (Entity loopEnt : getLivingEntity().getWorld().getNearbyEntities(pos, sentinel.range, sentinel.range, sentinel.range)) {
             if (!(loopEnt instanceof LivingEntity)) {
                 continue;
             }
@@ -422,6 +424,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         return closest;
     }
 
+    /**
+     * Process all current multi-targets.
+     */
     public void processAllMultiTargets() {
         processMultiTargets(sentinel.allTargets, TargetListType.TARGETS);
         processMultiTargets(sentinel.allAvoids, TargetListType.AVOIDS);
@@ -434,6 +439,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         TARGETS, IGNORES, AVOIDS
     }
 
+    /**
+     * Process a specific set of multi-targets.
+     */
     public void processMultiTargets(SentinelTargetList baseList, TargetListType type) {
         if (type == null) {
             return;
@@ -446,17 +454,12 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             SentinelTargetList toAdd = list.duplicate();
             toAdd.recalculateCacheNoClear();
             subList.add(toAdd);
+            if (SentinelPlugin.debugMe) {
+                SentinelPlugin.instance.getLogger().info("Multi-Target Debug: " + toAdd.totalTargetsCount() + " at start: " + toAdd.toMultiTargetString());
+            }
         }
-        HashSet<SentinelCurrentTarget> currentKnown = null;
-        if (type == TargetListType.TARGETS) {
-            currentKnown = currentTargets;
-        }
-        else if (type == TargetListType.AVOIDS) {
-            currentKnown = currentAvoids;
-        }
-        double rangesquared = sentinel.range * sentinel.range;
         Location pos = sentinel.getGuardZone();
-        for (Entity loopEnt : getLivingEntity().getWorld().getNearbyEntities(pos, rangesquared, rangesquared, rangesquared)) {
+        for (Entity loopEnt : getLivingEntity().getWorld().getNearbyEntities(pos, sentinel.range, sentinel.range, sentinel.range)) {
             if (!(loopEnt instanceof LivingEntity)) {
                 continue;
             }
@@ -464,14 +467,22 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             if (ent.isDead()) {
                 continue;
             }
-            tempTarget.targetID = ent.getUniqueId();
-            if (currentKnown != null && currentKnown.contains(tempTarget)) {
+            if (isIgnored(ent)) {
+                continue;
+            }
+            if (!canSee(ent)) {
                 continue;
             }
             for (SentinelTargetList lister : subList) {
                 if (lister.ifIsTargetDeleteTarget(ent)) {
+                    if (SentinelPlugin.debugMe) {
+                        SentinelPlugin.instance.getLogger().info("Multi-Target Debug: " + ent.getName() + " (" + ent.getType().name() + ") checked off for a list.");
+                    }
                     lister.tempTargeted.add(ent);
                     if (lister.totalTargetsCount() == 0) {
+                        if (SentinelPlugin.debugMe) {
+                            SentinelPlugin.instance.getLogger().info("Multi-Target Debug: " + lister.totalTargetsCount() + " completed: " + lister.toMultiTargetString());
+                        }
                         for (LivingEntity subEnt : lister.tempTargeted) {
                             if (type == TargetListType.TARGETS) {
                                 addTarget(subEnt.getUniqueId());
@@ -505,20 +516,20 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Updates the current avoids set for the NPC.
      */
     public void updateAvoids() {
-        for (SentinelCurrentTarget uuid : new HashSet<>(currentAvoids)) {
-            Entity e = SentinelUtilities.getEntityForID(uuid.targetID);
+        for (SentinelCurrentTarget curTarg : new HashSet<>(currentAvoids)) {
+            Entity e = SentinelUtilities.getEntityForID(curTarg.targetID);
             if (e == null) {
-                currentAvoids.remove(uuid);
+                currentAvoids.remove(curTarg);
                 continue;
             }
             if (e.isDead()) {
-                currentAvoids.remove(uuid);
+                currentAvoids.remove(curTarg);
                 continue;
             }
-            if (uuid.ticksLeft > 0) {
-                uuid.ticksLeft -= SentinelPlugin.instance.tickRate;
-                if (uuid.ticksLeft <= 0) {
-                    currentAvoids.remove(uuid);
+            if (curTarg.ticksLeft > 0) {
+                curTarg.ticksLeft -= SentinelPlugin.instance.tickRate;
+                if (curTarg.ticksLeft <= 0) {
+                    currentAvoids.remove(curTarg);
                 }
             }
         }
@@ -537,23 +548,27 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Updates the current targets set for the NPC.
      */
     public void updateTargets() {
-        for (SentinelCurrentTarget uuid : new HashSet<>(currentTargets)) {
-            Entity e = SentinelUtilities.getEntityForID(uuid.targetID);
+        for (SentinelCurrentTarget curTarg : new HashSet<>(currentTargets)) {
+            Entity e = SentinelUtilities.getEntityForID(curTarg.targetID);
             if (isUntargetable(e)) {
-                currentTargets.remove(uuid);
+                currentTargets.remove(curTarg);
                 continue;
             }
             double d = e.getWorld().equals(getLivingEntity().getWorld()) ?
                     e.getLocation().distanceSquared(getLivingEntity().getLocation())
                     : 10000.0 * 10000.0;
             if (d > sentinel.range * sentinel.range * 4 && d > sentinel.chaseRange * sentinel.chaseRange * 4) {
-                currentTargets.remove(uuid);
+                currentTargets.remove(curTarg);
                 continue;
             }
-            if (uuid.ticksLeft > 0) {
-                uuid.ticksLeft -= SentinelPlugin.instance.tickRate;
-                if (uuid.ticksLeft <= 0) {
-                    currentTargets.remove(uuid);
+            if (e instanceof LivingEntity && isIgnored((LivingEntity) e)) {
+                currentTargets.remove(curTarg);
+                continue;
+            }
+            if (curTarg.ticksLeft > 0) {
+                curTarg.ticksLeft -= SentinelPlugin.instance.tickRate;
+                if (curTarg.ticksLeft <= 0) {
+                    currentTargets.remove(curTarg);
                 }
             }
         }

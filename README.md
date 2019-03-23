@@ -170,7 +170,7 @@ These are all valid targets and ignores:
     - Note that incompatible requirements don't work together (for example, `allinone:dolphin|parrot` doesn't work, because no single entity is both a dolphin *and* a parrot).
 - Note that you can have `allinone` targets inside a `multi` target, but you cannot have `multi` targets inside an `allinone` target.
 - Also, do not put `allinone` inside another `allinone`, and do not put a `multi` inside another `multi`.
-- Note that to remove `allinone` and `multi` targets, you need to use the ID number (use `/sentinel targets` and related commands to find the ID).
+- Note that to remove `allinone` and `multi` targets, you need to use the ID number (use `/sentinel targets` and related commands to find the ID), like `/sentinel removetarget allinone:0`.
 
 ### Some random supported things
 

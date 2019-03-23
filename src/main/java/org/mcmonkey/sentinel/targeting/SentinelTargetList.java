@@ -4,6 +4,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.api.util.DataKey;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -12,6 +13,7 @@ import org.mcmonkey.sentinel.SentinelIntegration;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.SentinelUtilities;
+import org.mcmonkey.sentinel.commands.SentinelCommand;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +34,7 @@ public class SentinelTargetList {
         result.byHeldItem.addAll(byHeldItem);
         result.byGroup.addAll(byGroup);
         result.byEvent.addAll(byEvent);
+        result.byOther.addAll(byOther);
         result.byMultiple.addAll(byMultiple);
         result.byAllInOne.addAll(byAllInOne);
         return result;
@@ -67,17 +70,9 @@ public class SentinelTargetList {
      * Explicitly does not reprocess the cache.
      */
     public boolean isTargetNoCache(LivingEntity entity) {
-        if (SentinelTarget.v1_9) {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
-                    && SentinelUtilities.isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), byHeldItem)) {
-                return true;
-            }
-        }
-        else {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInHand() != null
-                    && SentinelUtilities.isRegexTargeted(entity.getEquipment().getItemInHand().getType().name(), byHeldItem)) {
-                return true;
-            }
+        if (entity.getEquipment() != null && SentinelUtilities.getHeldItem(entity) != null
+                && SentinelUtilities.isRegexTargeted(SentinelUtilities.getHeldItem(entity).getType().name(), byHeldItem)) {
+            return true;
         }
         for (ArrayList<CachedOtherTarget> targets : otherTargetCache.values()) {
             for (CachedOtherTarget target : targets) {
@@ -86,6 +81,22 @@ public class SentinelTargetList {
                 }
             }
         }
+        for (SentinelTargetList allInOne : byAllInOne) {
+            SentinelTargetList subList = allInOne.duplicate();
+            subList.recalculateCacheNoClear();
+            if (SentinelPlugin.debugMe) {
+                SentinelPlugin.instance.getLogger().info("All-In-One Debug: " + subList.totalTargetsCount() + " at start: " + subList.toMultiTargetString());
+            }
+            while (subList.ifIsTargetDeleteTarget(entity)) {
+            }
+            if (subList.totalTargetsCount() == 0) {
+                return true;
+            }
+            if (SentinelPlugin.debugMe) {
+                SentinelPlugin.instance.getLogger().info("All-In-One Debug: " + subList.totalTargetsCount() + " left: " + subList.toMultiTargetString());
+            }
+        }
+        // Any NPCs cause instant return - things below should be non-NPC only target types
         if (entity.hasMetadata("NPC")) {
             return targetsProcessed.contains(SentinelTarget.NPCS) ||
                     SentinelUtilities.isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), byNpcName);
@@ -111,14 +122,6 @@ public class SentinelTargetList {
                 return true;
             }
         }
-        for (SentinelTargetList allInOne : byAllInOne) {
-            SentinelTargetList subList = allInOne.duplicate();
-            while (subList.ifIsTargetDeleteTarget(entity)) {
-            }
-            if (subList.totalTargetsCount() == 0) {
-                return true;
-            }
-        }
         return false;
     }
 
@@ -127,22 +130,11 @@ public class SentinelTargetList {
      * Primarily for the multi-targets system.
      */
     public boolean ifIsTargetDeleteTarget(LivingEntity entity) {
-        if (SentinelTarget.v1_9) {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null) {
-                String match = SentinelUtilities.getRegexTarget(entity.getEquipment().getItemInMainHand().getType().name(), byHeldItem);
-                if (match != null) {
-                    byHeldItem.remove(match);
-                    return true;
-                }
-            }
-        }
-        else {
-            if (entity.getEquipment() != null && entity.getEquipment().getItemInHand() != null) {
-                String match = SentinelUtilities.getRegexTarget(entity.getEquipment().getItemInHand().getType().name(), byHeldItem);
-                if (match != null) {
-                    byHeldItem.remove(match);
-                    return true;
-                }
+        if (entity.getEquipment() != null && SentinelUtilities.getHeldItem(entity) != null) {
+            String match = SentinelUtilities.getRegexTarget(SentinelUtilities.getHeldItem(entity).getType().name(), byHeldItem);
+            if (match != null) {
+                byHeldItem.remove(match);
+                return true;
             }
         }
         for (Map.Entry<String, ArrayList<CachedOtherTarget>> targets : otherTargetCache.entrySet()) {
@@ -154,6 +146,17 @@ public class SentinelTargetList {
                 }
             }
         }
+        for (SentinelTargetList allInOne : byAllInOne) {
+            SentinelTargetList subList = allInOne.duplicate();
+            subList.recalculateCacheNoClear();
+            while (subList.ifIsTargetDeleteTarget(entity)) {
+            }
+            if (subList.totalTargetsCount() == 0) {
+                byAllInOne.remove(allInOne);
+                return true;
+            }
+        }
+        // Any NPCs cause instant return - things below should be non-NPC only target types
         if (entity.hasMetadata("NPC")) {
             if (targetsProcessed.contains(SentinelTarget.NPCS)) {
                 for (String target : targets) {
@@ -171,6 +174,7 @@ public class SentinelTargetList {
                 byNpcName.remove(match);
                 return true;
             }
+            return false;
         }
         if (entity instanceof Player) {
             String match = SentinelUtilities.getRegexTarget(((Player) entity).getName(), byPlayerName);
@@ -205,15 +209,6 @@ public class SentinelTargetList {
                     }
                 }
                 targetsProcessed.remove(poss);
-                return true;
-            }
-        }
-        for (SentinelTargetList allInOne : byAllInOne) {
-            SentinelTargetList subList = allInOne.duplicate();
-            while (subList.ifIsTargetDeleteTarget(entity)) {
-            }
-            if (subList.totalTargetsCount() == 0) {
-                byAllInOne.remove(allInOne);
                 return true;
             }
         }
@@ -398,16 +393,15 @@ public class SentinelTargetList {
                 if (prefix != null) {
                     builder.append(prefix).append(":");
                 }
-                builder.append(str).append(",");
+                builder.append(str).append(SentinelCommand.colorBasic).append(" ").append((char) 0x01).append(" ").append(ChatColor.AQUA);
             }
-            builder.setLength(builder.length() - 1);
         }
     }
 
     /**
-     * Forms a comma-separated list for multi-target output.
+     * Forms a \0x01-separated list for all-in-one-target output.
      */
-    public String toMultiTargetString() {
+    public String toComboString() {
         StringBuilder sb = new StringBuilder();
         addList(sb, targets, null);
         addList(sb, byPlayerName, "player");
@@ -419,18 +413,28 @@ public class SentinelTargetList {
         addList(sb, byOther, null);
         if (!byAllInOne.isEmpty()) {
             for (SentinelTargetList list : byAllInOne) {
-                sb.append("allinone:").append(list.toAllInOneString()).append(",");
+                sb.append("allinone:").append(list.toAllInOneString()).append(SentinelCommand.colorBasic)
+                        .append(" ").append((char) 0x01).append(" ").append(ChatColor.AQUA);
             }
-            sb.setLength(sb.length() - 1);
         }
-        return sb.toString();
+        if (sb.length() == 0) {
+            return "";
+        }
+        return sb.substring(0, sb.length() - (SentinelCommand.colorBasic + " . " + ChatColor.AQUA.toString()).length());
+    }
+
+    /**
+     * Forms a comma-separated list for multi-target output.
+     */
+    public String toMultiTargetString() {
+        return toComboString().replace((char) 0x01, ',');
     }
 
     /**
      * Forms a pipe-separated list for all-in-one-target output.
      */
     public String toAllInOneString() {
-        return toMultiTargetString().replace(',', '|');
+        return toComboString().replace((char) 0x01, '|');
     }
 
     /**
