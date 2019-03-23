@@ -428,7 +428,6 @@ public class SentinelTargetList {
 
     /**
      * Forms a pipe-separated list for all-in-one-target output.
-     * @return
      */
     public String toAllInOneString() {
         return toMultiTargetString().replace(',', '|');

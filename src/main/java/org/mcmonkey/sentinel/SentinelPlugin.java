@@ -60,6 +60,11 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     public static SentinelPlugin instance;
 
     /**
+     * A list of all currently spawned Sentinel NPCs.
+     */
+    public ArrayList<SentinelTrait> currentSentinelNPCs = new ArrayList<>();
+
+    /**
      * Permissions handler.
      */
     public Permission vaultPerms;

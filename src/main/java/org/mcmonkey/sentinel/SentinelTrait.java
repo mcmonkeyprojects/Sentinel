@@ -21,8 +21,6 @@ import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -496,117 +494,116 @@ public class SentinelTrait extends Trait {
     };
 
     /**
-     * Called when combat occurs in the world (and has not yet been processed by other plugins),
-     * to handle things like cancelling invalid damage to/from a Sentinel NPC,
-     * changing damage values given to or received from an NPC,
-     * and if relevant handling config options that require overriding damage events.
+     * Called when this sentinel gets attacked, to correct the armor handling.
      */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void whenAttacksAreHappening(EntityDamageByEntityEvent event) {
-        if (!npc.isSpawned()) {
-            return;
-        }
+    public void whenAttacksAreHappeningToMe(EntityDamageByEntityEvent event) {
         if (event.isCancelled()) {
             return;
         }
-        if (event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId())) {
-            if (!event.isApplicable(EntityDamageEvent.DamageModifier.ARMOR)) {
-                event.setDamage(EntityDamageEvent.DamageModifier.BASE, (1.0 - getArmor(getLivingEntity())) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
-            }
-            else {
-                event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, -getArmor(getLivingEntity()) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
-            }
-            for (EntityDamageEvent.DamageModifier modifier : modifiersToZero) {
-                if (event.isApplicable(modifier)) {
-                    event.setDamage(modifier, 0);
-                }
-            }
-            return;
+        if (!event.isApplicable(EntityDamageEvent.DamageModifier.ARMOR)) {
+            event.setDamage(EntityDamageEvent.DamageModifier.BASE, (1.0 - getArmor(getLivingEntity())) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
         }
-        if (event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId())) {
-            if (SentinelPlugin.instance.alternateDamage) {
-                if (canEnforce) {
-                    canEnforce = false;
-                    whenAttacksHappened(event);
-                    if (!event.isCancelled()) {
-                        ((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
-                        if (event.getEntity() instanceof LivingEntity) {
-                            weaponHelper.knockback((LivingEntity) event.getEntity());
-                        }
-                    }
-                    if (SentinelPlugin.debugMe) {
-                        debug("enforce damage value to " + event.getFinalDamage());
-                    }
-                }
-                else {
-                    if (SentinelPlugin.debugMe) {
-                        debug("refuse damage enforcement");
-                    }
-                }
-                event.setDamage(0);
-                event.setCancelled(true);
-                return;
-            }
-            event.setDamage(EntityDamageEvent.DamageModifier.BASE, getDamage());
+        else {
+            event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, -getArmor(getLivingEntity()) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
         }
-        if (event.getDamager() instanceof Projectile) {
-            ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
-            if (source instanceof LivingEntity && ((LivingEntity) source).getUniqueId().equals(getLivingEntity().getUniqueId())) {
-                if (SentinelPlugin.instance.alternateDamage) {
-                    if (canEnforce) {
-                        canEnforce = false;
-                        whenAttacksHappened(event);
-                        if (!event.isCancelled()) {
-                            ((LivingEntity) event.getEntity()).damage(getDamage());
-                            if (event.getEntity() instanceof LivingEntity) {
-                                weaponHelper.knockback((LivingEntity) event.getEntity());
-                            }
-                        }
-                        if (SentinelPlugin.debugMe) {
-                            debug("enforce damage value to " + getDamage());
-                        }
-                    }
-                    else {
-                        if (SentinelPlugin.debugMe) {
-                            debug("refuse damage enforcement");
-                        }
-                    }
-                    event.setDamage(0);
-                    event.setCancelled(true);
-                    return;
-                }
-                double dam = getDamage();
-                double modder = event.getDamage(EntityDamageEvent.DamageModifier.BASE);
-                double rel = modder == 0.0 ? 1.0 : dam / modder;
-                event.setDamage(EntityDamageEvent.DamageModifier.BASE, dam);
-                for (EntityDamageEvent.DamageModifier mod : EntityDamageEvent.DamageModifier.values()) {
-                    if (mod != EntityDamageEvent.DamageModifier.BASE && event.isApplicable(mod)) {
-                        event.setDamage(mod, event.getDamage(mod) * rel);
-                        if (SentinelPlugin.debugMe) {
-                            debug("Set damage for " + mod + " to " + event.getDamage(mod));
-                        }
-                    }
-                }
+        for (EntityDamageEvent.DamageModifier modifier : modifiersToZero) {
+            if (event.isApplicable(modifier)) {
+                event.setDamage(modifier, 0);
             }
         }
     }
 
     /**
-     * Called when combat has occurred in the world (and has been processed by all other plugins), to handle things like cancelling invalid damage to/from a Sentinel NPC,
-     * adding targets (if combat occurs near an NPC), and if relevant handling config options that require overriding damage events.
+     * Called when this sentinel attacks something, to correct damage handling.
      */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void whenAttacksHappened(EntityDamageByEntityEvent event) {
-        if (!npc.isSpawned()) {
-            return;
-        }
+    public void whenAttacksAreHappeningFromMe(EntityDamageByEntityEvent event) {
         if (event.isCancelled()) {
             return;
         }
+        if (SentinelPlugin.instance.alternateDamage) {
+            if (canEnforce) {
+                canEnforce = false;
+                whenAttacksHappened(event);
+                if (!event.isCancelled()) {
+                    ((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
+                    if (event.getEntity() instanceof LivingEntity) {
+                        weaponHelper.knockback((LivingEntity) event.getEntity());
+                    }
+                }
+                if (SentinelPlugin.debugMe) {
+                    debug("enforce damage value to " + event.getFinalDamage());
+                }
+            }
+            else {
+                if (SentinelPlugin.debugMe) {
+                    debug("refuse damage enforcement");
+                }
+            }
+            event.setDamage(0);
+            event.setCancelled(true);
+            return;
+        }
+        event.setDamage(EntityDamageEvent.DamageModifier.BASE, getDamage());
+    }
+
+    /**
+     * Called when this sentinel attacks something with a projectile, to correct damage handling.
+     */
+    public void whenAttacksAreHappeningFromMyArrow(EntityDamageByEntityEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        if (SentinelPlugin.instance.alternateDamage) {
+            if (canEnforce) {
+                canEnforce = false;
+                whenAttacksHappened(event);
+                if (!event.isCancelled()) {
+                    ((LivingEntity) event.getEntity()).damage(getDamage());
+                    if (event.getEntity() instanceof LivingEntity) {
+                        weaponHelper.knockback((LivingEntity) event.getEntity());
+                    }
+                }
+                if (SentinelPlugin.debugMe) {
+                    debug("enforce damage value to " + getDamage());
+                }
+            }
+            else {
+                if (SentinelPlugin.debugMe) {
+                    debug("refuse damage enforcement");
+                }
+            }
+            event.setDamage(0);
+            event.setCancelled(true);
+            return;
+        }
+        double dam = getDamage();
+        double modder = event.getDamage(EntityDamageEvent.DamageModifier.BASE);
+        double rel = modder == 0.0 ? 1.0 : dam / modder;
+        event.setDamage(EntityDamageEvent.DamageModifier.BASE, dam);
+        for (EntityDamageEvent.DamageModifier mod : EntityDamageEvent.DamageModifier.values()) {
+            if (mod != EntityDamageEvent.DamageModifier.BASE && event.isApplicable(mod)) {
+                event.setDamage(mod, event.getDamage(mod) * rel);
+                if (SentinelPlugin.debugMe) {
+                    debug("Set damage for " + mod + " to " + event.getDamage(mod));
+                }
+            }
+        }
+    }
+
+    private EntityDamageByEntityEvent damageDeDup = null;
+
+    public void whenAttacksHappened(EntityDamageByEntityEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        if (event == damageDeDup) {
+            return;
+        }
+        damageDeDup = event;
         Entity damager = event.getDamager();
         LivingEntity projectileSource = null;
-        if (event.getDamager() instanceof Projectile) {
-            ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
+        if (damager instanceof Projectile) {
+            ProjectileSource source = ((Projectile) damager).getShooter();
             if (source instanceof LivingEntity) {
                 projectileSource = (LivingEntity) source;
                 damager = projectileSource;
@@ -614,7 +611,7 @@ public class SentinelTrait extends Trait {
         }
         boolean isMe = event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId());
         if (SentinelPlugin.instance.protectFromIgnores && isMe) {
-            if (event.getDamager() instanceof LivingEntity && targetingHelper.isIgnored((LivingEntity) event.getDamager())) {
+            if (damager instanceof LivingEntity && targetingHelper.isIgnored((LivingEntity) damager)) {
                 event.setCancelled(true);
                 return;
             }
@@ -625,7 +622,7 @@ public class SentinelTrait extends Trait {
         }
         boolean isKilling = event.getEntity() instanceof LivingEntity && event.getFinalDamage() >= ((LivingEntity) event.getEntity()).getHealth();
         boolean isFriend = getGuarding() != null && event.getEntity().getUniqueId().equals(getGuarding());
-        boolean attackerIsMe = event.getDamager().getUniqueId().equals(getLivingEntity().getUniqueId());
+        boolean attackerIsMe = damager.getUniqueId().equals(getLivingEntity().getUniqueId());
         if (projectileSource != null && projectileSource.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             attackerIsMe = true;
         }
@@ -652,14 +649,14 @@ public class SentinelTrait extends Trait {
                     if (SentinelPlugin.debugMe) {
                         debug("Ow! They hit me! Run!");
                     }
-                    targetingHelper.addAvoid(event.getDamager().getUniqueId());
+                    targetingHelper.addAvoid(damager.getUniqueId());
                 }
             }
             if (fightback && (damager instanceof LivingEntity) && !targetingHelper.isIgnored((LivingEntity) damager)) {
                 if (SentinelPlugin.debugMe) {
-                    debug("Fighting back against attacker: " + event.getDamager().getUniqueId() + "! They hurt " + (isMe ? "me!" : "my friend!"));
+                    debug("Fighting back against attacker: " + damager.getUniqueId() + "! They hurt " + (isMe ? "me!" : "my friend!"));
                 }
-                targetingHelper.addTarget(event.getDamager().getUniqueId());
+                targetingHelper.addTarget(damager.getUniqueId());
             }
             if (SentinelPlugin.debugMe && isMe) {
                 debug("Took damage of " + event.getFinalDamage() + " with currently remaining health " + getLivingEntity().getHealth()
@@ -705,9 +702,8 @@ public class SentinelTrait extends Trait {
     /**
      * Called when a target dies to remove them from the target list.
      */
-    @EventHandler
-    public void whenAnEnemyDies(EntityDeathEvent event) {
-        tempTarget.targetID = event.getEntity().getUniqueId();
+    public void whenAnEnemyDies(UUID dead) {
+        tempTarget.targetID = dead;
         targetingHelper.currentTargets.remove(tempTarget);
         targetingHelper.currentAvoids.remove(tempTarget);
     }
@@ -748,6 +744,17 @@ public class SentinelTrait extends Trait {
         runaway = config.getBoolean("sentinel defaults.runaway", false);
         guardDistanceMinimum = SentinelPlugin.instance.guardDistanceMinimum;
         guardSelectionRange = SentinelPlugin.instance.guardDistanceSelectionRange;
+        if (npc.isSpawned()) {
+            SentinelPlugin.instance.currentSentinelNPCs.add(this);
+        }
+    }
+
+    /**
+     * Called when the Sentinel trait is removed from an NPC.
+     */
+    @Override
+    public void onRemove() {
+        SentinelPlugin.instance.currentSentinelNPCs.remove(this);
     }
 
     /**
@@ -1291,6 +1298,7 @@ public class SentinelTrait extends Trait {
             respawnMe.cancel();
             respawnMe = null;
         }
+        SentinelPlugin.instance.currentSentinelNPCs.add(this);
     }
 
     /**
@@ -1304,20 +1312,7 @@ public class SentinelTrait extends Trait {
     /**
      * Called whenever a player teleports, for use with NPC guarding logic.
      */
-    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerTeleports(final PlayerTeleportEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-        if (getGuarding() == null) {
-            return;
-        }
-        if (!event.getPlayer().getUniqueId().equals(getGuarding())) {
-            return;
-        }
-        if (!npc.isSpawned()) {
-            return;
-        }
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             npc.teleport(event.getTo(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
@@ -1341,15 +1336,8 @@ public class SentinelTrait extends Trait {
     /**
      * Called every time a player moves at all, for use with monitoring if players move into range of an NPC.
      */
-    @EventHandler
     public void onPlayerMovesInRange(PlayerMoveEvent event) {
-        if (!npc.isSpawned()) {
-            return;
-        }
         if (!event.getTo().getWorld().equals(getLivingEntity().getLocation().getWorld())) {
-            return;
-        }
-        if (event.getTo().toVector().equals(event.getFrom().toVector())) {
             return;
         }
         double dist = event.getTo().distanceSquared(getLivingEntity().getLocation());
@@ -1378,9 +1366,8 @@ public class SentinelTrait extends Trait {
     /**
      * Called when an entity might die from damage (called before Sentinel detects that an NPC might have killed an entity).
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void whenSomethingMightDie(EntityDamageByEntityEvent event) {
-        needsDropsClear.remove(event.getEntity().getUniqueId());
+    public void whenSomethingMightDie(UUID mightDie) {
+        needsDropsClear.remove(mightDie);
     }
 
     /**
@@ -1395,23 +1382,19 @@ public class SentinelTrait extends Trait {
     /**
      * Called when the NPC dies.
      */
-    @EventHandler(priority = EventPriority.MONITOR)
     public void whenWeDie(EntityDeathEvent event) {
-        if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
-                && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getUniqueId().equals(npc.getUniqueId())) {
-            if (SentinelPlugin.debugMe) {
-                debug("Died! Death event received.");
-            }
-            event.getDrops().clear();
-            if (event instanceof PlayerDeathEvent && !SentinelPlugin.instance.deathMessages) {
-                ((PlayerDeathEvent) event).setDeathMessage("");
-            }
-            if (!SentinelPlugin.instance.workaroundDrops) {
-                event.getDrops().addAll(drops);
-            }
-            event.setDroppedExp(0);
-            generalDeathHandler(event.getEntity());
+        if (SentinelPlugin.debugMe) {
+            debug("Died! Death event received.");
         }
+        event.getDrops().clear();
+        if (event instanceof PlayerDeathEvent && !SentinelPlugin.instance.deathMessages) {
+            ((PlayerDeathEvent) event).setDeathMessage("");
+        }
+        if (!SentinelPlugin.instance.workaroundDrops) {
+            event.getDrops().addAll(drops);
+        }
+        event.setDroppedExp(0);
+        generalDeathHandler(event.getEntity());
     }
 
     /**
@@ -1432,7 +1415,6 @@ public class SentinelTrait extends Trait {
     /**
      * Called when any entity dies.
      */
-    @EventHandler(priority = EventPriority.LOW)
     public void whenSomethingDies(EntityDeathEvent event) {
         if (event.getEntity().getType() != EntityType.PLAYER && needsDropsClear.containsKey(event.getEntity().getUniqueId())) {
             event.getDrops().clear();
@@ -1507,6 +1489,7 @@ public class SentinelTrait extends Trait {
     public void onDespawn() {
         targetingHelper.currentTargets.clear();
         targetingHelper.currentAvoids.clear();
+        SentinelPlugin.instance.currentSentinelNPCs.remove(this);
     }
 
     /**
