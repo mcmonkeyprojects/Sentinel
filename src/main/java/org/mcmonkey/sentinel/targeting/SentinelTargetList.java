@@ -254,7 +254,10 @@ public class SentinelTargetList {
     /**
      * Returns whether a chat event is targeted by this list.
      */
-    public boolean isEventTarget(AsyncPlayerChatEvent event) {
+    public boolean isEventTarget(SentinelTrait sentinel, AsyncPlayerChatEvent event) {
+        if (!sentinel.targetingHelper.canSee(event.getPlayer())) {
+            return false;
+        }
         for (String str : byEvent) {
             if (str.startsWith("message,")) {
                 String messageCheck = str.substring("message,".length());

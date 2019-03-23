@@ -34,10 +34,10 @@ public class SentinelEventHandler implements Listener {
                     return;
                 }
                 for (SentinelTrait sentinel : SentinelPlugin.instance.currentSentinelNPCs) {
-                    if (sentinel.allTargets.isEventTarget(event)) {
+                    if (sentinel.allTargets.isEventTarget(sentinel, event)) {
                         sentinel.targetingHelper.addTarget(event.getPlayer().getUniqueId());
                     }
-                    if (sentinel.allAvoids.isEventTarget(event)) {
+                    if (sentinel.allAvoids.isEventTarget(sentinel, event)) {
                         sentinel.targetingHelper.addAvoid(event.getPlayer().getUniqueId());
                     }
                 }
