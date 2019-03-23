@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
-**Version 1.8.1**: Compatible with Spigot 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, and 1.13.2 (Primarily targeted at 1.12.2 and 1.13.2 - see info section below if on other supported versions)
+**Version 1.8.5**: Compatible with Spigot 1.8.8 through 1.13.2 (Primarily targeted at 1.12.2 and 1.13.2 - see info section below if on other supported versions)
 
 ### Downloads
 
@@ -154,6 +154,7 @@ These are all valid targets and ignores:
 - In 1.13 or higher: DOLPHIN, DROWNED, COD, SALMON, PUFFERFISH, TROPICAL_FISH, PHANTOM, TURTLE
 - Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)
 - Also, event:pvp/pvnpc/pve/pvsentinel
+- Also, event:message,SOMETEXT will match chat messages that contain 'sometext'.
 - Also, sbteam:SCOREBOARD\_TEAM\_HERE
 - Also, healthabove:PERCENTAGE and healthbelow:PERCENTAGE
 - Also, permission:PERM.KEY
