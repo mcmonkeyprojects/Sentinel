@@ -116,6 +116,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel accuracy OFFSET - Sets the accuracy of an NPC.
     - /sentinel squad SQUAD - Sets the NPC's squad name (null for none).
     - /sentinel reach REACH - Sets the NPC's reach (how far it can punch).
+    - /sentinel avoidreturnpoint - Changes the location the NPC runs to when avoid mode is activated, or removes it if the NPC is already there.
 - **Toggleable NPC configuration commands...**
     - /sentinel invincible ['true'/'false'] - Toggles whether the NPC is invincible.
     - /sentinel fightback ['true'/'false'] - Toggles whether the NPC will fight back.

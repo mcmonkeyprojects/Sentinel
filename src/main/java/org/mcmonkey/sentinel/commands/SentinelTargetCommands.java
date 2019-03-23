@@ -4,6 +4,7 @@ import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.mcmonkey.sentinel.SentinelIntegration;
 import org.mcmonkey.sentinel.SentinelPlugin;
@@ -329,5 +330,29 @@ public class SentinelTargetCommands {
         sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.colorBasic
                 + ": owned by " + ChatColor.RESET + SentinelPlugin.instance.getOwner(sentinel.getNPC()));
         outputEntireTargetsList(sender, sentinel.allAvoids, "Avoided");
+    }
+
+    @Command(aliases = {"sentinel"}, usage = "avoidreturnpoint",
+            desc = "Changes the location the NPC runs to when avoid mode is activated, or removes it if the NPC is already there.",
+            modifiers = {"avoidreturnpoint"}, permission = "sentinel.avoidreturnpoint", min = 1, max = 1)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void avoidReturnpoint(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (!sentinel.getNPC().isSpawned()) {
+            sender.sendMessage(SentinelCommand.prefixBad + "NPC must be spawned for this command!");
+            return;
+        }
+        Location pos = sentinel.getLivingEntity().getLocation().getBlock().getLocation();
+        if (sentinel.avoidReturnPoint != null
+                && pos.getBlockX() == sentinel.avoidReturnPoint.getBlockX()
+                && pos.getBlockY() == sentinel.avoidReturnPoint.getBlockY()
+                && pos.getBlockZ() == sentinel.avoidReturnPoint.getBlockZ()
+                && pos.getWorld().getName().equals(sentinel.avoidReturnPoint.getWorld().getName())) {
+            sentinel.avoidReturnPoint = null;
+            sender.sendMessage(SentinelCommand.prefixGood + "Spawn point removed!");
+        }
+        else {
+            sentinel.avoidReturnPoint = pos.add(0.5, 0.0, 0.5);
+            sender.sendMessage(SentinelCommand.prefixGood + "Spawn point updated!");
+        }
     }
 }

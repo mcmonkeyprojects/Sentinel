@@ -100,5 +100,7 @@ permissions:
       sentinel.info: true
       # /sentinel reload
       sentinel.reload: true
+      # /sentinel avoidreturnpoint
+      sentinel.avoidreturnpoint: true
       # Edit other people's NPCs
       sentinel.admin: true

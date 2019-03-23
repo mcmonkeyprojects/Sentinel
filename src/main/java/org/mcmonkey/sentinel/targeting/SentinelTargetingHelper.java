@@ -285,6 +285,10 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Finds a spot this NPC should run to, to avoid threats. Returns null if there's nowhere to run.
      */
     public Location findBestRunSpot() {
+        if (sentinel.avoidReturnPoint != null
+                && sentinel.avoidReturnPoint.getWorld().equals(getLivingEntity().getWorld())) {
+            return sentinel.avoidReturnPoint;
+        }
         Location pos = sentinel.getGuardZone();
         if (!pos.getWorld().equals(getLivingEntity().getWorld())) {
             // Emergency corrective measures...

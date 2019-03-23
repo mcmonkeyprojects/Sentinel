@@ -368,6 +368,12 @@ public class SentinelTrait extends Trait {
     public Location spawnPoint = null;
 
     /**
+     * The NPC's avoid return point (null = just run away).
+     */
+    @Persist("avoidReturnPoint")
+    public Location avoidReturnPoint = null;
+
+    /**
      * What the NPC drops when dead.
      */
     @Persist("drops")
