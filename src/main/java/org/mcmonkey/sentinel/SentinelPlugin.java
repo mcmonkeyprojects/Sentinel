@@ -269,6 +269,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         getLogger().info("Sentinel loaded!");
         getServer().getPluginManager().registerEvents(this, this);
         SentinelCommand.buildCommandHandler();
+        Bukkit.getPluginManager().registerEvents(new SentinelEventHandler(), this);
         // mcstats.org
         try {
             MetricsLite metrics = new MetricsLite(this);
