@@ -37,7 +37,7 @@ public class SentinelTargetLabel {
      * All default prefixes (anything else handled by an integration object).
      */
     public static HashSet<String> corePrefixes = new HashSet<>(
-            Arrays.asList("player", "npc", "entityname", "helditem", "group", "event")
+            Arrays.asList("player", "npc", "entityname", "helditem", "group", "event", "multi", "allinone")
     );
 
     /**
@@ -73,6 +73,7 @@ public class SentinelTargetLabel {
 
     /**
      * Returns whether the prefix is valid - if 'false', the prefix doesn't exist.
+     * True for all non-prefixed targets.
      */
     public boolean isValidPrefix() {
         if (prefix == null) {
@@ -112,6 +113,12 @@ public class SentinelTargetLabel {
         else if (prefix.equals("event")) {
             return listSet.byEvent;
         }
+        else if (prefix.equals("multi")) {
+            return null;
+        }
+        else if (prefix.equals("allinone")) {
+            return null;
+        }
         else {
             return listSet.byOther;
         }
@@ -130,9 +137,44 @@ public class SentinelTargetLabel {
     }
 
     /**
+     * Returns whether the label is a valid multi-target.
+     * True for all non-multi targets.
+     */
+    public boolean isValidMulti() {
+        if (prefix.equals("multi")) {
+            return getMulti(",").totalTargetsCount() > 0;
+        }
+        else if (prefix.equals("allinone")) {
+            return getMulti("|").totalTargetsCount() > 0;
+        }
+        return true;
+    }
+
+    /**
+     * Gets the TargetList created by this multi-target label.
+     */
+    public SentinelTargetList getMulti(String splitter) {
+        SentinelTargetList newList = new SentinelTargetList();
+        for (String str : value.split(splitter)) {
+            SentinelTargetLabel label = new SentinelTargetLabel(str);
+            label.addToList(newList);
+        }
+        newList.recalculateCacheNoClear();
+        return newList;
+    }
+
+    /**
      * Adds this target label to a list set.
      */
     public boolean addToList(SentinelTargetList listSet) {
+        if (prefix.equals("multi")) {
+            listSet.byMultiple.add(getMulti(","));
+            return true;
+        }
+        if (prefix.equals("allinone")) {
+            listSet.byAllInOne.add(getMulti("|"));
+            return true;
+        }
         Collection<String> list = getTargetsList(listSet);
         String addable = addable();
         if (list.contains(addable)) {
@@ -149,6 +191,32 @@ public class SentinelTargetLabel {
      * Removes this target label from a list set.
      */
     public boolean removeFromList(SentinelTargetList listSet) {
+        if (prefix.equals("multi")) {
+            try {
+                int integerValue = Integer.parseInt(value);
+                if (integerValue >= 0 && integerValue < listSet.byMultiple.size()) {
+                    listSet.byMultiple.remove(integerValue);
+                    return true;
+                }
+                return false;
+            }
+            catch (NumberFormatException ex) {
+                return false;
+            }
+        }
+        if (prefix.equals("allinone")) {
+            try {
+                int integerValue = Integer.parseInt(value);
+                if (integerValue >= 0 && integerValue < listSet.byAllInOne.size()) {
+                    listSet.byAllInOne.remove(integerValue);
+                    return true;
+                }
+                return false;
+            }
+            catch (NumberFormatException ex) {
+                return false;
+            }
+        }
         Collection<String> list = getTargetsList(listSet);
         String addable = addable();
         if (!list.contains(addable)) {

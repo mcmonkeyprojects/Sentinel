@@ -16,6 +16,7 @@ import org.mcmonkey.sentinel.events.SentinelNoMoreTargetsEvent;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -420,6 +421,70 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             }
         }
         return closest;
+    }
+
+    public void processAllMultiTargets() {
+        processMultiTargets(sentinel.allTargets, TargetListType.TARGETS);
+        processMultiTargets(sentinel.allAvoids, TargetListType.AVOIDS);
+    }
+
+    /**
+     * The types of target lists.
+     */
+    public enum TargetListType {
+        TARGETS, IGNORES, AVOIDS
+    }
+
+    public void processMultiTargets(SentinelTargetList baseList, TargetListType type) {
+        if (type == null) {
+            return;
+        }
+        if (baseList.byMultiple.isEmpty()) {
+            return;
+        }
+        ArrayList<SentinelTargetList> subList = new ArrayList<>(baseList.byMultiple.size());
+        for (SentinelTargetList list : baseList.byMultiple) {
+            SentinelTargetList toAdd = list.duplicate();
+            toAdd.recalculateCacheNoClear();
+            subList.add(toAdd);
+        }
+        HashSet<SentinelCurrentTarget> currentKnown = null;
+        if (type == TargetListType.TARGETS) {
+            currentKnown = currentTargets;
+        }
+        else if (type == TargetListType.AVOIDS) {
+            currentKnown = currentAvoids;
+        }
+        double rangesquared = sentinel.range * sentinel.range;
+        Location pos = sentinel.getGuardZone();
+        for (Entity loopEnt : getLivingEntity().getWorld().getNearbyEntities(pos, rangesquared, rangesquared, rangesquared)) {
+            if (!(loopEnt instanceof LivingEntity)) {
+                continue;
+            }
+            LivingEntity ent = (LivingEntity) loopEnt;
+            if (ent.isDead()) {
+                continue;
+            }
+            tempTarget.targetID = ent.getUniqueId();
+            if (currentKnown != null && currentKnown.contains(tempTarget)) {
+                continue;
+            }
+            for (SentinelTargetList lister : subList) {
+                if (lister.ifIsTargetDeleteTarget(ent)) {
+                    lister.tempTargeted.add(ent);
+                    if (lister.totalTargetsCount() == 0) {
+                        for (LivingEntity subEnt : lister.tempTargeted) {
+                            if (type == TargetListType.TARGETS) {
+                                addTarget(subEnt.getUniqueId());
+                            }
+                            else if (type == TargetListType.AVOIDS) {
+                                addAvoid(subEnt.getUniqueId());
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

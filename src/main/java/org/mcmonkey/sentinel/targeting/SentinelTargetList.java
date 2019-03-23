@@ -7,6 +7,7 @@ import net.citizensnpcs.api.util.DataKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.mcmonkey.sentinel.SentinelIntegration;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
@@ -15,8 +16,26 @@ import org.mcmonkey.sentinel.SentinelUtilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class SentinelTargetList {
+
+    /**
+     * Returns a duplicate of the target list, with all inner arrays duplicated.
+     */
+    public SentinelTargetList duplicate() {
+        SentinelTargetList result = new SentinelTargetList();
+        result.targets.addAll(targets);
+        result.byPlayerName.addAll(byPlayerName);
+        result.byNpcName.addAll(byNpcName);
+        result.byEntityName.addAll(byEntityName);
+        result.byHeldItem.addAll(byHeldItem);
+        result.byGroup.addAll(byGroup);
+        result.byEvent.addAll(byEvent);
+        result.byMultiple.addAll(byMultiple);
+        result.byAllInOne.addAll(byAllInOne);
+        return result;
+    }
 
     /**
      * Returns whether an entity is targeted by this target list on a specific Sentinel NPC.
@@ -37,6 +56,17 @@ public class SentinelTargetList {
      */
     public boolean isTarget(LivingEntity entity) {
         checkRecalculateTargetsCache();
+        return isTargetNoCache(entity);
+    }
+
+    /**
+     * Returns whether an entity is targeted by this target list.
+     * Does not account for NPC-specific target handlers, like 'owner' (which requires knowledge of who that owner is, based on which NPC is checking).
+     * To include that, use isTarget(LivingEntity, SentinelTrait)
+     *
+     * Explicitly does not reprocess the cache.
+     */
+    public boolean isTargetNoCache(LivingEntity entity) {
         if (SentinelTarget.v1_9) {
             if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null
                     && SentinelUtilities.isRegexTargeted(entity.getEquipment().getItemInMainHand().getType().name(), byHeldItem)) {
@@ -81,6 +111,112 @@ public class SentinelTargetList {
                 return true;
             }
         }
+        for (SentinelTargetList allInOne : byAllInOne) {
+            SentinelTargetList subList = allInOne.duplicate();
+            while (subList.ifIsTargetDeleteTarget(entity)) {
+            }
+            if (subList.totalTargetsCount() == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * This is a special target method, that will remove the target from the targets list if it's matched.
+     * Primarily for the multi-targets system.
+     */
+    public boolean ifIsTargetDeleteTarget(LivingEntity entity) {
+        if (SentinelTarget.v1_9) {
+            if (entity.getEquipment() != null && entity.getEquipment().getItemInMainHand() != null) {
+                String match = SentinelUtilities.getRegexTarget(entity.getEquipment().getItemInMainHand().getType().name(), byHeldItem);
+                if (match != null) {
+                    byHeldItem.remove(match);
+                    return true;
+                }
+            }
+        }
+        else {
+            if (entity.getEquipment() != null && entity.getEquipment().getItemInHand() != null) {
+                String match = SentinelUtilities.getRegexTarget(entity.getEquipment().getItemInHand().getType().name(), byHeldItem);
+                if (match != null) {
+                    byHeldItem.remove(match);
+                    return true;
+                }
+            }
+        }
+        for (Map.Entry<String, ArrayList<CachedOtherTarget>> targets : otherTargetCache.entrySet()) {
+            for (CachedOtherTarget target : targets.getValue()) {
+                if (target.integration.isTarget(entity, target.prefix, target.value)) {
+                    byOther.remove(target.prefix + ":" + target.value);
+                    recalculateCacheNoClear();
+                    return true;
+                }
+            }
+        }
+        if (entity.hasMetadata("NPC")) {
+            if (targetsProcessed.contains(SentinelTarget.NPCS)) {
+                for (String target : targets) {
+                    if (SentinelTarget.forName(target) == SentinelTarget.NPCS) {
+                        targets.remove(target);
+                        recalculateCacheNoClear();
+                        return true;
+                    }
+                }
+                targetsProcessed.remove(SentinelTarget.NPCS);
+                return true;
+            }
+            String match = SentinelUtilities.getRegexTarget(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), byNpcName);
+            if (match != null) {
+                byNpcName.remove(match);
+                return true;
+            }
+        }
+        if (entity instanceof Player) {
+            String match = SentinelUtilities.getRegexTarget(((Player) entity).getName(), byPlayerName);
+            if (match != null) {
+                byPlayerName.remove(match);
+                return true;
+            }
+            if (SentinelPlugin.instance.vaultPerms != null) {
+                for (String group : byGroup) {
+                    if (SentinelPlugin.instance.vaultPerms.playerInGroup((Player) entity, group)) {
+                        byGroup.remove(group);
+                        return true;
+                    }
+                }
+            }
+        }
+        else {
+            String match = SentinelUtilities.getRegexTarget(entity.getCustomName() == null ? entity.getType().name() : entity.getCustomName(), byEntityName);
+            if (match != null) {
+                byEntityName.remove(match);
+                return true;
+            }
+        }
+        HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
+        for (SentinelTarget poss : possible) {
+            if (targetsProcessed.contains(poss)) {
+                for (String target : targets) {
+                    if (SentinelTarget.forName(target) == poss) {
+                        targets.remove(target);
+                        recalculateCacheNoClear();
+                        return true;
+                    }
+                }
+                targetsProcessed.remove(poss);
+                return true;
+            }
+        }
+        for (SentinelTargetList allInOne : byAllInOne) {
+            SentinelTargetList subList = allInOne.duplicate();
+            while (subList.ifIsTargetDeleteTarget(entity)) {
+            }
+            if (subList.totalTargetsCount() == 0) {
+                byAllInOne.remove(allInOne);
+                return true;
+            }
+        }
         return false;
     }
 
@@ -118,6 +254,21 @@ public class SentinelTargetList {
         else if (name.equals("other")) {
             fillListFromKey(byOther, key);
         }
+    }
+
+    /**
+     * Returns whether a chat event is targeted by this list.
+     */
+    public boolean isEventTarget(AsyncPlayerChatEvent event) {
+        for (String str : byEvent) {
+            if (str.startsWith("message,")) {
+                String messageCheck = str.substring("message,".length());
+                if (event.getMessage().toLowerCase().contains(messageCheck.toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -191,17 +342,13 @@ public class SentinelTargetList {
     }
 
     /**
-     * Fills the cache 'targetsProcessed' set then uses that set to deduplicate the source 'targets' set.
+     * Fills the cache 'targetsProcessed' set and does not deduplicate the source list.
      * Also fills the 'otherTargetCache'.
      */
-    public void recalculateTargetsCache() {
+    public void recalculateCacheNoClear() {
         targetsProcessed.clear();
         for (String target : targets) {
             targetsProcessed.add(SentinelTarget.forName(target));
-        }
-        targets.clear();
-        for (SentinelTarget target : targetsProcessed) {
-            targets.add(target.name());
         }
         otherTargetCache.clear();
         for (String otherTarget : byOther) {
@@ -226,10 +373,77 @@ public class SentinelTargetList {
     }
 
     /**
+     * Fills the cache 'targetsProcessed' set then uses that set to deduplicate the source 'targets' set.
+     * Also fills the 'otherTargetCache'.
+     */
+    public void recalculateTargetsCache() {
+        recalculateCacheNoClear();
+        targets.clear();
+        for (SentinelTarget target : targetsProcessed) {
+            targets.add(target.name());
+        }
+    }
+
+    /**
+     * Returns the total count of targets (other than multi-targets).
+     */
+    public int totalTargetsCount() {
+        return targets.size() + byPlayerName.size() + byNpcName.size() + byEntityName.size()
+                + byHeldItem.size() + byGroup.size() + byEvent.size() + byOther.size() + byAllInOne.size();
+    }
+
+    private static void addList(StringBuilder builder, ArrayList<String> strs, String prefix) {
+        if (!strs.isEmpty()) {
+            for (String str : strs) {
+                if (prefix != null) {
+                    builder.append(prefix).append(":");
+                }
+                builder.append(str).append(",");
+            }
+            builder.setLength(builder.length() - 1);
+        }
+    }
+
+    /**
+     * Forms a comma-separated list for multi-target output.
+     */
+    public String toMultiTargetString() {
+        StringBuilder sb = new StringBuilder();
+        addList(sb, targets, null);
+        addList(sb, byPlayerName, "player");
+        addList(sb, byNpcName, "npc");
+        addList(sb, byEntityName, "entityname");
+        addList(sb, byHeldItem, "helditem");
+        addList(sb, byGroup, "group");
+        addList(sb, byEvent, "event");
+        addList(sb, byOther, null);
+        if (!byAllInOne.isEmpty()) {
+            for (SentinelTargetList list : byAllInOne) {
+                sb.append("allinone:").append(list.toAllInOneString()).append(",");
+            }
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Forms a pipe-separated list for all-in-one-target output.
+     * @return
+     */
+    public String toAllInOneString() {
+        return toMultiTargetString().replace(',', '|');
+    }
+
+    /**
+     * Helper list, general ignorable.
+     */
+    public ArrayList<LivingEntity> tempTargeted = new ArrayList<>();
+
+    /**
      * List of target-type-based targets.
      */
     @Persist("targets")
-    public HashSet<String> targets = new HashSet<>();
+    public ArrayList<String> targets = new ArrayList<>();
 
     /**
      * List of player-name-based targets.
@@ -272,4 +486,16 @@ public class SentinelTargetList {
      */
     @Persist("byOther")
     public ArrayList<String> byOther = new ArrayList<>();
+
+    /**
+     * List of target lists that need to be matched in full on exactly one entity to qualify as a match.
+     */
+    @Persist("byAllInOne")
+    public ArrayList<SentinelTargetList> byAllInOne = new ArrayList<>();
+
+    /**
+     * List of target lists that need to be matched in full to qualify as a match.
+     */
+    @Persist("byMultiple")
+    public ArrayList<SentinelTargetList> byMultiple = new ArrayList<>();
 }

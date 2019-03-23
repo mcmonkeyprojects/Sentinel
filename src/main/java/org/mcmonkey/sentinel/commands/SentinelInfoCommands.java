@@ -16,9 +16,9 @@ public class SentinelInfoCommands {
             modifiers = {"info"}, permission = "sentinel.info", min = 1, max = 1)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void info(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
-        sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.ColorBasic
+        sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.colorBasic
                 + ": owned by " + ChatColor.RESET + SentinelPlugin.instance.getOwner(sentinel.getNPC()) +
-                (sentinel.getGuarding() == null ? "" : SentinelCommand.ColorBasic
+                (sentinel.getGuarding() == null ? "" : SentinelCommand.colorBasic
                         + ", guarding: " + ChatColor.RESET + Bukkit.getOfflinePlayer(sentinel.getGuarding()).getName()));
         sender.sendMessage(SentinelCommand.prefixGood + "Damage: " + ChatColor.AQUA + sentinel.damage);
         sender.sendMessage(SentinelCommand.prefixGood + "Armor: " + ChatColor.AQUA + sentinel.armor);
@@ -50,7 +50,7 @@ public class SentinelInfoCommands {
             modifiers = {"stats"}, permission = "sentinel.info", min = 1, max = 1)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void stats(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
-        sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.ColorBasic
+        sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.colorBasic
                 + ": owned by " + ChatColor.RESET + SentinelPlugin.instance.getOwner(sentinel.getNPC()));
         sender.sendMessage(SentinelCommand.prefixGood + "Arrows fired: " + ChatColor.AQUA + sentinel.stats_arrowsFired);
         sender.sendMessage(SentinelCommand.prefixGood + "Potions thrown: " + ChatColor.AQUA + sentinel.stats_potionsThrown);

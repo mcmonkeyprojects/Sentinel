@@ -1043,6 +1043,7 @@ public class SentinelTrait extends Trait {
                 chasing = null;
             }
         }
+        targetingHelper.processAllMultiTargets();
         LivingEntity target = targetingHelper.findBestTarget();
         if (target != null) {
             Location near = nearestPathPoint();

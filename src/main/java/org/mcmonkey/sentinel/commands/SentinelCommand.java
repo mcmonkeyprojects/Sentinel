@@ -25,12 +25,12 @@ public class SentinelCommand {
     /**
      * Output string representing a message color.
      */
-    public static final String ColorBasic = ChatColor.YELLOW.toString();
+    public static final String colorBasic = ChatColor.YELLOW.toString();
 
     /**
      * Output string representing a success prefix.
      */
-    public static final String prefixGood = ChatColor.DARK_GREEN + "[Sentinel] " + ColorBasic;
+    public static final String prefixGood = ChatColor.DARK_GREEN + "[Sentinel] " + colorBasic;
 
     /**
      * Output string representing a failure prefix.

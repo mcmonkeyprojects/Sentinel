@@ -160,6 +160,17 @@ These are all valid targets and ignores:
 - Also, permission:PERM.KEY
 - Also, squad:SENTINEL\_SQUAD\_NAME
 - Also anything listed in the integrations section above!
+- You can also add multi-targets - that is, `multi:TARGET_ONE,TARGET_TWO,...` to have multiple targets required together.
+    - For example: `multi:PLAYER,PLAYER,CHICKEN` will make the NPC angry at 2 players and a chicken if they are all together.
+    - As another example: `multi:npc:steve,player,healthabove:50` will make the player angry at the NPC named steve, any one player, and any entity with health above 50%, if all 3 are together.
+    - Note that currently `multi` targets do not work with `ignores`.
+- You can also add all-in-one list targets - that is, `allinone:REQUIRED_ONE|REQUIRED_TWO|...` to have multiple target inputs that all must match for a single entity.
+    - For example, `allinone:player|healthabove:50` will target specifically a player with health above 50%.
+    - As another example: `allinone:chicken|entityname:cluckers|healthbelow:75` will target specifically injured chickens who are named "cluckers".
+    - Note that incompatible requirements don't work together (for example, `allinone:dolphin|parrot` doesn't work, because no single entity is both a dolphin *and* a parrot).
+- Note that you can have `allinone` targets inside a `multi` target, but you cannot have `multi` targets inside an `allinone` target.
+- Also, do not put `allinone` inside another `allinone`, and do not put a `multi` inside another `multi`.
+- Note that to remove `allinone` and `multi` targets, you need to use the ID number (use `/sentinel targets` and related commands to find the ID).
 
 ### Some random supported things
 

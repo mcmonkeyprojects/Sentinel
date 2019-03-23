@@ -45,13 +45,29 @@ public class SentinelTargetCommands {
         any = any | outputTargetsList(sender, prefixType + " by Held Item", list.byHeldItem);
         any = any | outputTargetsList(sender, prefixType + " by Event", list.byEvent);
         any = any | outputTargetsList(sender, prefixType + " by Other", list.byOther);
+        if (!list.byAllInOne.isEmpty()) {
+            for (int i = 0; i < list.byAllInOne.size(); i++) {
+                sender.sendMessage(SentinelCommand.prefixGood + prefixType + " by All-In-One ("
+                        + ChatColor.AQUA + i + SentinelCommand.colorBasic + "): "
+                        + ChatColor.AQUA + list.byAllInOne.get(i).toAllInOneString());
+            }
+            any = true;
+        }
+        if (!list.byMultiple.isEmpty()) {
+            for (int i = 0; i < list.byMultiple.size(); i++) {
+                sender.sendMessage(SentinelCommand.prefixGood + prefixType + " by Multiple ("
+                        + ChatColor.AQUA + i + SentinelCommand.colorBasic + "): "
+                        + ChatColor.AQUA + list.byMultiple.get(i).toMultiTargetString());
+            }
+            any = true;
+        }
         if (!any) {
             sender.sendMessage(SentinelCommand.prefixGood + prefixType + ": Nothing.");
         }
     }
 
     public static boolean outputTargetsList(CommandSender sender, String label, Collection<String> targets) {
-        if (targets.size() > 0) {
+        if (!targets.isEmpty()) {
             sender.sendMessage(SentinelCommand.prefixGood + label + ": " + ChatColor.AQUA + getNameTargetString(targets));
             return true;
         }
@@ -70,6 +86,10 @@ public class SentinelTargetCommands {
         }
         if (!label.isValidPrefix()) {
             sender.sendMessage(SentinelCommand.prefixBad + "The target prefix '" + label.prefix + "' is unknown!");
+            return false;
+        }
+        if (!label.isValidMulti()) {
+            sender.sendMessage(SentinelCommand.prefixBad + "The multi-target '" + label.value + "' is invalid (targets within don't exist?)!");
             return false;
         }
         return true;
@@ -286,7 +306,7 @@ public class SentinelTargetCommands {
             modifiers = {"targets"}, permission = "sentinel.info", min = 1, max = 1)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void targets(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
-        sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.ColorBasic
+        sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.colorBasic
                 + ": owned by " + ChatColor.RESET + SentinelPlugin.instance.getOwner(sentinel.getNPC()));
         outputEntireTargetsList(sender, sentinel.allTargets, "Targeted");
     }
@@ -296,7 +316,7 @@ public class SentinelTargetCommands {
             modifiers = {"ignores"}, permission = "sentinel.info", min = 1, max = 1)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void ignores(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
-        sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.ColorBasic
+        sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.colorBasic
                 + ": owned by " + ChatColor.RESET + SentinelPlugin.instance.getOwner(sentinel.getNPC()));
         outputEntireTargetsList(sender, sentinel.allIgnores, "Ignored");
     }
@@ -306,7 +326,7 @@ public class SentinelTargetCommands {
             modifiers = {"avoids"}, permission = "sentinel.info", min = 1, max = 1)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void avoids(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
-        sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.ColorBasic
+        sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.colorBasic
                 + ": owned by " + ChatColor.RESET + SentinelPlugin.instance.getOwner(sentinel.getNPC()));
         outputEntireTargetsList(sender, sentinel.allAvoids, "Avoided");
     }
