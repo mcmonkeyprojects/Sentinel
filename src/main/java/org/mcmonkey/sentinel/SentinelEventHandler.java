@@ -34,11 +34,13 @@ public class SentinelEventHandler implements Listener {
                     return;
                 }
                 for (SentinelTrait sentinel : SentinelPlugin.instance.currentSentinelNPCs) {
-                    if (sentinel.allTargets.isEventTarget(sentinel, event)) {
-                        sentinel.targetingHelper.addTarget(event.getPlayer().getUniqueId());
-                    }
-                    if (sentinel.allAvoids.isEventTarget(sentinel, event)) {
-                        sentinel.targetingHelper.addAvoid(event.getPlayer().getUniqueId());
+                    if (sentinel.validateOnList()) {
+                        if (sentinel.allTargets.isEventTarget(sentinel, event)) {
+                            sentinel.targetingHelper.addTarget(event.getPlayer().getUniqueId());
+                        }
+                        if (sentinel.allAvoids.isEventTarget(sentinel, event)) {
+                            sentinel.targetingHelper.addAvoid(event.getPlayer().getUniqueId());
+                        }
                     }
                 }
             }
@@ -71,7 +73,9 @@ public class SentinelEventHandler implements Listener {
         }
         UUID victimUuid = event.getEntity().getUniqueId();
         for (SentinelTrait sentinel : SentinelPlugin.instance.currentSentinelNPCs) {
-            sentinel.whenSomethingMightDie(victimUuid);
+            if (sentinel.validateOnList()) {
+                sentinel.whenSomethingMightDie(victimUuid);
+            }
         }
         SentinelTrait victim = tryGetSentinel(event.getEntity());
         if (victim != null) {
@@ -119,9 +123,9 @@ public class SentinelEventHandler implements Listener {
             }
         }
         for (SentinelTrait sentinel : SentinelPlugin.instance.currentSentinelNPCs) {
-            UUID guarding = sentinel.getGuarding();
-            if (guarding != null) {
-                if (event.getEntity().getUniqueId().equals(guarding)) {
+            if (sentinel.validateOnList()) {
+                UUID guarding = sentinel.getGuarding();
+                if (guarding != null && event.getEntity().getUniqueId().equals(guarding)) {
                     sentinel.whenAttacksHappened(event);
                 }
             }
@@ -135,10 +139,12 @@ public class SentinelEventHandler implements Listener {
     public void whenAnEnemyDies(EntityDeathEvent event) {
         UUID dead = event.getEntity().getUniqueId();
         for (SentinelTrait sentinel : SentinelPlugin.instance.currentSentinelNPCs) {
-            sentinel.whenAnEnemyDies(dead);
-            sentinel.whenSomethingDies(event);
-            if (sentinel.getLivingEntity().getUniqueId().equals(dead)) {
-                sentinel.whenWeDie(event);
+            if (sentinel.validateOnList()) {
+                sentinel.whenAnEnemyDies(dead);
+                sentinel.whenSomethingDies(event);
+                if (sentinel.getLivingEntity().getUniqueId().equals(dead)) {
+                    sentinel.whenWeDie(event);
+                }
             }
         }
     }
@@ -153,7 +159,7 @@ public class SentinelEventHandler implements Listener {
         }
         UUID uuid = event.getPlayer().getUniqueId();
         for (SentinelTrait sentinel : SentinelPlugin.instance.currentSentinelNPCs) {
-            if (sentinel.getGuarding() != null && sentinel.getGuarding().equals(uuid)) {
+            if (sentinel.validateOnList() && sentinel.getGuarding() != null && sentinel.getGuarding().equals(uuid)) {
                 sentinel.onPlayerTeleports(event);
             }
         }
@@ -171,7 +177,9 @@ public class SentinelEventHandler implements Listener {
             return;
         }
         for (SentinelTrait sentinel : SentinelPlugin.instance.currentSentinelNPCs) {
-            sentinel.onPlayerMovesInRange(event);
+            if (sentinel.validateOnList()) {
+                sentinel.onPlayerMovesInRange(event);
+            }
         }
     }
 }

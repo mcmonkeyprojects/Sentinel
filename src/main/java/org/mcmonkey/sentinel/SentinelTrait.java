@@ -1516,4 +1516,15 @@ public class SentinelTrait extends Trait {
         invincible = inv;
         npc.setProtected(invincible);
     }
+
+    /**
+     * Validates this Sentinel NPC's presence on the current NPCs list.
+     */
+    public boolean validateOnList() {
+        if (npc == null || !npc.isSpawned() || getLivingEntity() == null) {
+            SentinelPlugin.instance.currentSentinelNPCs.remove(this);
+            return false;
+        }
+        return true;
+    }
 }
