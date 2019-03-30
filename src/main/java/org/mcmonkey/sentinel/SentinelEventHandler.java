@@ -110,7 +110,7 @@ public class SentinelEventHandler implements Listener {
      * Called when combat has occurred in the world (and has been processed by all other plugins), to handle things like cancelling invalid damage to/from a Sentinel NPC,
      * adding targets (if combat occurs near an NPC), and if relevant handling config options that require overriding damage events.
      */
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void whenAttacksHappened(EntityDamageByEntityEvent event) {
         if (event.isCancelled()) {
             return;
@@ -149,9 +149,17 @@ public class SentinelEventHandler implements Listener {
         for (SentinelTrait sentinel : cleanCurrentList()) {
             sentinel.whenAnEnemyDies(dead);
             sentinel.whenSomethingDies(event);
-            if (sentinel.getLivingEntity().getUniqueId().equals(dead)) {
-                sentinel.whenWeDie(event);
-            }
+        }
+    }
+
+    /**
+     * Called when a Sentinel NPC dies.
+     */
+    @EventHandler
+    public void whenWeDie(EntityDeathEvent event) {
+        SentinelTrait sentinel = tryGetSentinel(event.getEntity());
+        if (sentinel != null) {
+            sentinel.whenWeDie(event);
         }
     }
 

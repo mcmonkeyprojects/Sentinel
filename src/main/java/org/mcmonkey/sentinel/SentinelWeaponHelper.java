@@ -161,7 +161,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
             entity.damage(sentinel.getDamage() * (1.0 - sentinel.getArmor(entity)));
             knockback(entity);
             if (!sentinel.enemyDrops) {
-                sentinel.needsDropsClear.put(entity.getUniqueId(), true);
+                sentinel.needsDropsClear.add(entity.getUniqueId());
             }
         }
         else {

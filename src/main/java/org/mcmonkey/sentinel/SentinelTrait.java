@@ -688,8 +688,11 @@ public class SentinelTrait extends Trait {
                 return;
             }
             stats_damageGiven += event.getFinalDamage();
-            if (!enemyDrops) {
-                needsDropsClear.put(event.getEntity().getUniqueId(), true);
+            if (!enemyDrops && event.getEntity().getType() != EntityType.PLAYER) {
+                needsDropsClear.add(event.getEntity().getUniqueId());
+                if (SentinelPlugin.debugMe) {
+                    debug("This " + event.getEntity().getType() + " with id " + event.getEntity().getUniqueId() + " is being tracked for potential drops removal.");
+                }
             }
             return;
         }
@@ -752,6 +755,7 @@ public class SentinelTrait extends Trait {
         guardSelectionRange = SentinelPlugin.instance.guardDistanceSelectionRange;
         if (npc.isSpawned()) {
             SentinelPlugin.instance.currentSentinelNPCs.add(this);
+            lastEntityUUID = getLivingEntity().getUniqueId();
         }
     }
 
@@ -1293,10 +1297,16 @@ public class SentinelTrait extends Trait {
     public BukkitRunnable respawnMe;
 
     /**
+     * Last known entity UUID for this Sentinel NPC.
+     */
+    public UUID lastEntityUUID;
+
+    /**
      * Called when the NPC spawns in.
      */
     @Override
     public void onSpawn() {
+        lastEntityUUID = getLivingEntity().getUniqueId();
         stats_timesSpawned++;
         setHealth(health);
         setInvincible(invincible);
@@ -1367,12 +1377,18 @@ public class SentinelTrait extends Trait {
     /**
      * Entities that will need their drops cleared if they die soon (because they were killed by this NPC).
      */
-    public HashMap<UUID, Boolean> needsDropsClear = new HashMap<>();
+    public HashSet<UUID> needsDropsClear = new HashSet<>();
 
     /**
      * Called when an entity might die from damage (called before Sentinel detects that an NPC might have killed an entity).
      */
     public void whenSomethingMightDie(UUID mightDie) {
+        if (!needsDropsClear.contains(mightDie)) {
+            return;
+        }
+        if (SentinelPlugin.debugMe) {
+            debug("ID " + mightDie + " is no longer being tracked.");
+        }
         needsDropsClear.remove(mightDie);
     }
 
@@ -1422,11 +1438,23 @@ public class SentinelTrait extends Trait {
      * Called when any entity dies.
      */
     public void whenSomethingDies(EntityDeathEvent event) {
-        if (event.getEntity().getType() != EntityType.PLAYER && needsDropsClear.containsKey(event.getEntity().getUniqueId())) {
-            event.getDrops().clear();
-            event.setDroppedExp(0);
+        UUID id = event.getEntity().getUniqueId();
+        if (needsDropsClear.contains(id)) {
+            needsDropsClear.remove(id);
+            if (event.getEntity().getType() != EntityType.PLAYER) {
+                if (SentinelPlugin.debugMe) {
+                    debug("A " + event.getEntity().getType() + " with id " + id + " died. Clearing its drops.");
+                }
+                event.getDrops().clear();
+                event.setDroppedExp(0);
+            }
         }
-        targetingHelper.removeTarget(event.getEntity().getUniqueId());
+        else {
+            if (SentinelPlugin.debugMe) {
+                debug("A " + event.getEntity().getType() + " with id " + id + " died, but that's none of my business.");
+            }
+        }
+        targetingHelper.removeTarget(id);
     }
 
     /**
