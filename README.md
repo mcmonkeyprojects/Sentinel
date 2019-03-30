@@ -155,11 +155,8 @@ These are all valid targets and ignores:
 - In 1.13 or higher: DOLPHIN, DROWNED, COD, SALMON, PUFFERFISH, TROPICAL_FISH, PHANTOM, TURTLE
 - Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)
 - Also, event:pvp/pvnpc/pve/pvsentinel
+- Also, via internal sample integrations: sbteam:SCOREBOARD\_TEAM\_HERE, healthabove:PERCENTAGE and healthbelow:PERCENTAGE, permission:PERM.KEY, squad:SENTINEL\_SQUAD\_NAME, uuid:UUID
 - Also, event:message,SOMETEXT will match chat messages that contain 'sometext'.
-- Also, sbteam:SCOREBOARD\_TEAM\_HERE
-- Also, healthabove:PERCENTAGE and healthbelow:PERCENTAGE
-- Also, permission:PERM.KEY
-- Also, squad:SENTINEL\_SQUAD\_NAME
 - Also anything listed in the integrations section above!
 - You can also add multi-targets - that is, `multi:TARGET_ONE,TARGET_TWO,...` to have multiple targets required together.
     - For example: `multi:PLAYER,PLAYER,CHICKEN` will make the NPC angry at 2 players and a chicken if they are all together.

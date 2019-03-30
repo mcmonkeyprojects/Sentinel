@@ -304,6 +304,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         registerIntegration(new SentinelPermissions());
         registerIntegration(new SentinelSBTeams());
         registerIntegration(new SentinelSquads());
+        registerIntegration(new SentinelUUID());
         if (Bukkit.getPluginManager().getPlugin("Towny") != null) {
             try {
                 registerIntegration(new SentinelTowny());
