@@ -273,6 +273,9 @@ public class SentinelTargetList {
      * Returns whether a damage event is targeted by this list.
      */
     public boolean isEventTarget(EntityDamageByEntityEvent event) {
+        if (CitizensAPI.getNPCRegistry().isNPC(event.getDamager())) {
+            return false;
+        }
         if (byEvent.contains("pvp")
                 && event.getEntity() instanceof Player
                 && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
