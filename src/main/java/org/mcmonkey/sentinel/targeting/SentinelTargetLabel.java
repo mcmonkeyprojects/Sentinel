@@ -232,7 +232,7 @@ public class SentinelTargetLabel {
         if (!list.contains(addable)) {
             return false;
         }
-        getTargetsList(listSet).remove(addable());
+        list.remove(addable());
         if (list == listSet.targets || list == listSet.byOther) {
             listSet.recalculateTargetsCache();
         }
@@ -252,6 +252,10 @@ public class SentinelTargetLabel {
         }
         else {
             value = label.toUpperCase();
+            SentinelTarget targetVersion = SentinelTarget.forName(value);
+            if (targetVersion != null) {
+                value = targetVersion.name();
+            }
         }
     }
 }
