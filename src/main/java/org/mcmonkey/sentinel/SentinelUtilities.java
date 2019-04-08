@@ -319,7 +319,7 @@ public class SentinelUtilities {
         for (int i = start; i < strs.length; i++) {
             temp.append(strs[i]).append(" ");
         }
-        return temp.toString();
+        return temp.toString().trim();
     }
 
     /**
