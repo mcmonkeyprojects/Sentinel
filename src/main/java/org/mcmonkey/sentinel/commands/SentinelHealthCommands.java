@@ -4,6 +4,7 @@ import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -24,7 +25,21 @@ public class SentinelHealthCommands {
             double d = Double.parseDouble(args.getString(1));
             if (d <= 1) {
                 sentinel.armor = d;
-                sender.sendMessage(SentinelCommand.prefixGood + "Armor set!");
+                String armorInfo;
+                if (d == 0) {
+                    armorInfo = "no armor";
+                }
+                else if (d < 0) {
+                    armorInfo = "automatic armor calculation";
+                }
+                else if (d == 1) {
+                    armorInfo = "100%, invincible armor";
+                }
+                else {
+                    armorInfo = (d * 100) + "%";
+                }
+                sender.sendMessage(SentinelCommand.prefixGood + "Armor set to " + ChatColor.AQUA + d
+                        + SentinelCommand.colorBasic + "! (" + armorInfo + ")");
             }
             else {
                 throw new NumberFormatException("Number out of range (must be <= 1).");
