@@ -61,7 +61,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - **"My NPCs aren't respawning at their `spawnpoint` value / are respawning just where they died!"**
     - You likely have an unrelated respawner taking control. The most common cause of this would be the Citizens native respawn functionality... if that's been activated, you can disable that by using command `/npc respawn -1`
 - **"My NPCs aren't dropping their items when they die! I used `/sentinel drops` and everything!"**
-    - You may have a plugin or world setting blocking drops. If this is the case, the easiest solution is to just enable `workaround drops` in the config (Find your `Sentinel/config.yml` file, open it in a text editor, and change that valueu from `false` to `true`, then use `/sentinel reload`).
+    - You may have a plugin or world setting blocking drops. If this is the case, the easiest solution is to just enable `workaround drops` in the config (Find your `Sentinel/config.yml` file, open it in a text editor, and change that value from `false` to `true`, then use `/sentinel reload`).
 - **"My NPCs aren't taking/giving damage in no-PvP zones!"**
     - If you're using WorldGuard for anti-PvP... update! WG 7.0.0 has patches to fix this issue! If you're using a different plugin or can't update, consider enabling the `workaround damage` and/or `enforce damage` options in the config.
 
