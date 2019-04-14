@@ -1,7 +1,5 @@
 package org.mcmonkey.sentinel;
 
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
@@ -60,19 +58,6 @@ public class SentinelEventHandler implements Listener {
     }
 
     /**
-     * Tries to get a Sentinel from an entity. Returns null if it is not a Sentinel.
-     */
-    public SentinelTrait tryGetSentinel(Entity entity) {
-        if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
-            NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
-            if (npc.hasTrait(SentinelTrait.class)) {
-                return npc.getTrait(SentinelTrait.class);
-            }
-        }
-        return null;
-    }
-
-    /**
      * Called when combat occurs in the world (and has not yet been processed by other plugins),
      * to handle things like cancelling invalid damage to/from a Sentinel NPC,
      * changing damage values given to or received from an NPC,
@@ -87,18 +72,18 @@ public class SentinelEventHandler implements Listener {
         for (SentinelTrait sentinel : cleanCurrentList()) {
             sentinel.whenSomethingMightDie(victimUuid);
         }
-        SentinelTrait victim = tryGetSentinel(event.getEntity());
+        SentinelTrait victim = SentinelUtilities.tryGetSentinel(event.getEntity());
         if (victim != null) {
             victim.whenAttacksAreHappeningToMe(event);
         }
-        SentinelTrait attacker = tryGetSentinel(event.getDamager());
+        SentinelTrait attacker = SentinelUtilities.tryGetSentinel(event.getDamager());
         if (attacker != null) {
             attacker.whenAttacksAreHappeningFromMe(event);
         }
         if (event.getDamager() instanceof Projectile) {
             ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
             if (source instanceof Entity) {
-                SentinelTrait shooter = tryGetSentinel((Entity) source);
+                SentinelTrait shooter = SentinelUtilities.tryGetSentinel((Entity) source);
                 if (shooter != null) {
                     shooter.whenAttacksAreHappeningFromMyArrow(event);
                 }
@@ -115,18 +100,18 @@ public class SentinelEventHandler implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        SentinelTrait victim = tryGetSentinel(event.getEntity());
+        SentinelTrait victim = SentinelUtilities.tryGetSentinel(event.getEntity());
         if (victim != null) {
             victim.whenAttacksHappened(event);
         }
-        SentinelTrait attacker = tryGetSentinel(event.getDamager());
+        SentinelTrait attacker = SentinelUtilities.tryGetSentinel(event.getDamager());
         if (attacker != null) {
             attacker.whenAttacksHappened(event);
         }
         if (event.getDamager() instanceof Projectile) {
             ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
             if (source instanceof Entity) {
-                SentinelTrait shooter = tryGetSentinel((Entity) source);
+                SentinelTrait shooter = SentinelUtilities.tryGetSentinel((Entity) source);
                 if (shooter != null) {
                     shooter.whenAttacksHappened(event);
                 }
@@ -157,7 +142,7 @@ public class SentinelEventHandler implements Listener {
      */
     @EventHandler
     public void whenWeDie(EntityDeathEvent event) {
-        SentinelTrait sentinel = tryGetSentinel(event.getEntity());
+        SentinelTrait sentinel = SentinelUtilities.tryGetSentinel(event.getEntity());
         if (sentinel != null) {
             sentinel.whenWeDie(event);
         }

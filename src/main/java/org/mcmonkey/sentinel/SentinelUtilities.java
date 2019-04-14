@@ -1,6 +1,8 @@
 package org.mcmonkey.sentinel;
 
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.EntityTarget;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,6 +31,19 @@ public class SentinelUtilities {
      * A random object for reuse.
      */
     public static Random random = new Random();
+
+    /**
+     * Tries to get a Sentinel from an entity. Returns null if it is not a Sentinel.
+     */
+    public static SentinelTrait tryGetSentinel(Entity entity) {
+        if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
+            NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
+            if (npc.hasTrait(SentinelTrait.class)) {
+                return npc.getTrait(SentinelTrait.class);
+            }
+        }
+        return null;
+    }
 
     /**
      * Returns the item held in an entity's hand.
