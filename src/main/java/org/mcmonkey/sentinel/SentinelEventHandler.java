@@ -2,6 +2,7 @@ package org.mcmonkey.sentinel;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -121,6 +122,19 @@ public class SentinelEventHandler implements Listener {
             UUID guarding = sentinel.getGuarding();
             if (guarding != null && event.getEntity().getUniqueId().equals(guarding)) {
                 sentinel.whenAttacksHappened(event);
+            }
+        }
+        if (event.getDamager() instanceof LivingEntity) {
+            LivingEntity damager = (LivingEntity) event.getDamager();
+            for (SentinelTrait sentinel : cleanCurrentList()) {
+                if (sentinel.allTargets.isEventTarget(event)
+                        && sentinel.targetingHelper.canSee(damager) && !sentinel.targetingHelper.isIgnored(damager)) {
+                    sentinel.targetingHelper.addTarget(damager.getUniqueId());
+                }
+                if (sentinel.allAvoids.isEventTarget(event)
+                        && sentinel.targetingHelper.canSee(damager) && !sentinel.targetingHelper.isIgnored(damager)) {
+                    sentinel.targetingHelper.addTarget(damager.getUniqueId());
+                }
             }
         }
     }

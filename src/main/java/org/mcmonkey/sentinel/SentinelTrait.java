@@ -696,14 +696,6 @@ public class SentinelTrait extends Trait {
             }
             return;
         }
-        if (allTargets.isEventTarget(event) && damager instanceof LivingEntity
-                && targetingHelper.canSee((LivingEntity) damager) && !targetingHelper.isIgnored((LivingEntity) damager)) {
-            targetingHelper.addTarget(damager.getUniqueId());
-        }
-        if (allAvoids.isEventTarget(event) && damager instanceof LivingEntity
-                && targetingHelper.canSee((LivingEntity) damager) && !targetingHelper.isIgnored((LivingEntity) damager)) {
-            targetingHelper.addTarget(damager.getUniqueId());
-        }
     }
 
     private SentinelCurrentTarget tempTarget = new SentinelCurrentTarget();
