@@ -20,8 +20,11 @@ public class SentinelInfoCommands {
                 + ": owned by " + ChatColor.RESET + SentinelPlugin.instance.getOwner(sentinel.getNPC()) +
                 (sentinel.getGuarding() == null ? "" : SentinelCommand.colorBasic
                         + ", guarding: " + ChatColor.RESET + Bukkit.getOfflinePlayer(sentinel.getGuarding()).getName()));
-        sender.sendMessage(SentinelCommand.prefixGood + "Damage: " + ChatColor.AQUA + sentinel.damage);
-        sender.sendMessage(SentinelCommand.prefixGood + "Armor: " + ChatColor.AQUA + sentinel.armor);
+        sender.sendMessage(SentinelCommand.prefixGood + "Damage: " + ChatColor.AQUA + sentinel.damage
+                + SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getDamage());
+        sender.sendMessage(SentinelCommand.prefixGood + "Armor: " + ChatColor.AQUA + sentinel.armor
+                + (sentinel.getNPC().isSpawned() ? SentinelCommand.colorBasic + " Calculated: "
+                + ChatColor.AQUA + sentinel.getArmor(sentinel.getLivingEntity()) : ""));
         sender.sendMessage(SentinelCommand.prefixGood + "Health: " + ChatColor.AQUA +
                 (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/" : "") + sentinel.health);
         sender.sendMessage(SentinelCommand.prefixGood + "Range: " + ChatColor.AQUA + sentinel.range);
@@ -40,7 +43,7 @@ public class SentinelInfoCommands {
         sender.sendMessage(SentinelCommand.prefixGood + "Safe-Shot Enabled: " + ChatColor.AQUA + sentinel.safeShot);
         sender.sendMessage(SentinelCommand.prefixGood + "Enemy-Drops Enabled: " + ChatColor.AQUA + sentinel.enemyDrops);
         sender.sendMessage(SentinelCommand.prefixGood + "Autoswitch Enabled: " + ChatColor.AQUA + sentinel.autoswitch);
-        sender.sendMessage(SentinelCommand.prefixGood + "Realistic Targetting Enabled: " + ChatColor.AQUA + sentinel.realistic);
+        sender.sendMessage(SentinelCommand.prefixGood + "Realistic Targeting Enabled: " + ChatColor.AQUA + sentinel.realistic);
         sender.sendMessage(SentinelCommand.prefixGood + "Run-Away Enabled: " + ChatColor.AQUA + sentinel.runaway);
         sender.sendMessage(SentinelCommand.prefixGood + "Squad: " + ChatColor.AQUA + (sentinel.squad == null ? "None" : sentinel.squad));
     }
