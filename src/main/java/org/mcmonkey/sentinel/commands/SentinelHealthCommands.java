@@ -83,7 +83,7 @@ public class SentinelHealthCommands {
                 sender.sendMessage(SentinelCommand.prefixGood + "Heal rate set!");
             }
             else {
-                throw new NumberFormatException("Number out of range (must be >= " + SentinelPlugin.instance.tickRate + " and <= " + SentinelTrait.healRateMax + ", or 0).");
+                throw new NumberFormatException("Number out of range (must be >= " + (SentinelPlugin.instance.tickRate / 20.0) + " and <= " + (SentinelTrait.healRateMax / 20.0) + ", or 0).");
             }
         }
         catch (NumberFormatException ex) {

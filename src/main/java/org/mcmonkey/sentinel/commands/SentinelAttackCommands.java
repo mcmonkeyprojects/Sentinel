@@ -89,7 +89,7 @@ public class SentinelAttackCommands {
                 }
             }
             else {
-                throw new NumberFormatException("Number out of range (must be >= " + SentinelPlugin.instance.tickRate + " and <= " + SentinelTrait.attackRateMax + ").");
+                throw new NumberFormatException("Number out of range (must be >= " + (SentinelPlugin.instance.tickRate / 20.0) + " and <= " + (SentinelTrait.attackRateMax / 20.0) + ").");
             }
         }
         catch (NumberFormatException ex) {
