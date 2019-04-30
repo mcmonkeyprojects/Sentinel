@@ -67,16 +67,22 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         sentinel.stats_arrowsFired++;
         Entity arrow;
         if (SentinelTarget.v1_9) {
-            Class<? extends Arrow> toShoot;
-            toShoot = type.getType() == Material.SPECTRAL_ARROW ? SpectralArrow.class :
-                    (type.getType() == Material.TIPPED_ARROW ? TippedArrow.class : Arrow.class);
-            Vector dir = sentinel.fixForAcc(start.getValue());
-            double length = Math.max(1.0, dir.length());
-            arrow = start.getKey().getWorld().spawnArrow(start.getKey(), dir.multiply(1.0 / length), (float) length, 0f, toShoot);
-            ((Projectile) arrow).setShooter(getLivingEntity());
-            if (SentinelTarget.v1_11) {
+            if (SentinelTarget.v1_14) {
+                Class toShoot;
+                toShoot = type.getType() == Material.SPECTRAL_ARROW ? SpectralArrow.class :
+                        (type.getType() == Material.TIPPED_ARROW ? TippedArrow.class : Arrow.class);
+                Vector dir = sentinel.fixForAcc(start.getValue());
+                double length = Math.max(1.0, dir.length());
+                arrow = start.getKey().getWorld().spawnArrow(start.getKey(), dir.multiply(1.0 / length), (float) length, 0f, toShoot);
                 ((Arrow) arrow).setPickupStatus(Arrow.PickupStatus.DISALLOWED);
             }
+            else {
+                arrow = start.getKey().getWorld().spawnEntity(start.getKey(),
+                        type.getType() == Material.SPECTRAL_ARROW ? EntityType.SPECTRAL_ARROW :
+                                (type.getType() == Material.TIPPED_ARROW ? TIPPED_ARROW : EntityType.ARROW));
+                arrow.setVelocity(sentinel.fixForAcc(start.getValue()));
+            }
+            ((Projectile) arrow).setShooter(getLivingEntity());
             if (arrow instanceof TippedArrow && type instanceof PotionMeta) {
                 PotionData data = ((PotionMeta) type.getItemMeta()).getBasePotionData();
                 if (data.getType() == null || data.getType() == PotionType.UNCRAFTABLE) {
