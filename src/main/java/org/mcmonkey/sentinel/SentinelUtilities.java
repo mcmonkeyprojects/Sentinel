@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
@@ -31,6 +32,20 @@ public class SentinelUtilities {
      * A random object for reuse.
      */
     public static Random random = new Random();
+
+    public static String getInventoryTitle(InventoryCloseEvent event) {
+        if (SentinelTarget.v1_10) {
+            return event.getView().getTitle();
+        }
+        try {
+            Object inventory = event.getInventory();
+            return (String) inventory.getClass().getMethod("getTitle").invoke(inventory);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      * Tries to get a Sentinel from an entity. Returns null if it is not a Sentinel.

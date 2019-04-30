@@ -1209,7 +1209,7 @@ public class SentinelTrait extends Trait {
         if (!SentinelTarget.v1_9) {
             if (waypointHelperAvailable == null) {
                 try {
-                    Class.forName("net.citizensnpcs.trait.waypoint.WaypointProvider.EnumerableWaypointProvider");
+                    Class.forName("net.citizensnpcs.trait.waypoint.WaypointProvider$EnumerableWaypointProvider");
                     waypointHelperAvailable = true;
                 }
                 catch (ClassNotFoundException ex) {

@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
-**Version 1.8.5**: Compatible with Spigot 1.8.8 through 1.13.2 (Primarily targeted at 1.12.2 and 1.13.2 - see info section below if on other supported versions)
+**Version 1.9.1**: Compatible with Spigot 1.8.8 through 1.14 (Primarily targeted at 1.13.2 and 1.14 - see info section below if on other supported versions)
 
 ### Downloads
 
@@ -163,7 +163,9 @@ These are all valid targets and ignores:
 - In 1.10 or higher: POLAR_BEARS
 - In 1.11 or higher: VEXES, DONKEYS, LLAMAS, MULES, HUSKS, ELDER_GUARDIANS, EVOKERS, SKELETON_HORSES, STRAYS, ZOMBIE_VILLAGERS, ZOMBIE_HORSES, WITHER_SKELETONS, VINDICATORS
 - In 1.12 or higher: PARROTS, ILLUSIONERS
-- In 1.13 or higher: DOLPHIN, DROWNED, COD, SALMON, PUFFERFISH, TROPICAL_FISH, PHANTOM, TURTLE
+- In 1.13 or higher: DOLPHINS, DROWNED, COD, SALMON, PUFFERFISH, TROPICAL_FISH, PHANTOMS, TURTLES
+- 1.13 or higher special targets: FISH
+- In 1.14 or higher: PILLAGERS, RAVAGERS, CATS, PANDAS, TRADER_LLAMAS, WANDERING_TRADERS, FOXES
 - Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)
 - Also, event:pvp/pvnpc/pve/pvsentinel
 - Also, via internal sample integrations: sbteam:SCOREBOARD\_TEAM\_HERE, healthabove:PERCENTAGE and healthbelow:PERCENTAGE, permission:PERM.KEY, squad:SENTINEL\_SQUAD\_NAME, uuid:UUID

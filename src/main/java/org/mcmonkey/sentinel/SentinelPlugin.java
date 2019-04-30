@@ -362,8 +362,9 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void onInvClose(InventoryCloseEvent event) {
-        if (event.getInventory().getTitle().startsWith(InvPrefix)) {
-            int id = Integer.parseInt(event.getInventory().getTitle().substring(InvPrefix.length()));
+        String invTitle = SentinelUtilities.getInventoryTitle(event);
+        if (invTitle.startsWith(InvPrefix)) {
+            int id = Integer.parseInt(invTitle.substring(InvPrefix.length()));
             NPC npc = CitizensAPI.getNPCRegistry().getById(id);
             if (npc != null && npc.hasTrait(SentinelTrait.class)) {
                 ArrayList<ItemStack> its = npc.getTrait(SentinelTrait.class).drops;

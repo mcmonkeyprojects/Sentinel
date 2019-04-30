@@ -20,6 +20,19 @@ import java.util.HashMap;
  */
 public class SentinelWeaponHelper extends SentinelHelperObject {
 
+    public static final EntityType LINGERING_POTION, TIPPED_ARROW;
+
+    static {
+        if (SentinelTarget.v1_14) {
+            LINGERING_POTION = EntityType.SPLASH_POTION;
+            TIPPED_ARROW = EntityType.ARROW;
+        }
+        else {
+            LINGERING_POTION = EntityType.valueOf("LINGERING_POTION");
+            TIPPED_ARROW = EntityType.valueOf("TIPPED_ARROW");
+        }
+    }
+
     /**
      * Fires a potion from the NPC at a target.
      */
@@ -27,9 +40,12 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         sentinel.stats_potionsThrown++;
         HashMap.SimpleEntry<Location, Vector> start = sentinel.getLaunchDetail(target, lead);
         Entity entpotion;
-        if (SentinelTarget.v1_9) {
+        if (SentinelTarget.v1_14) {
+            entpotion = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.SPLASH_POTION);
+        }
+        else if (SentinelTarget.v1_9) {
             entpotion = start.getKey().getWorld().spawnEntity(start.getKey(),
-                    potion.getType() == Material.SPLASH_POTION ? EntityType.SPLASH_POTION : EntityType.LINGERING_POTION);
+                    potion.getType() == Material.SPLASH_POTION ? EntityType.SPLASH_POTION : LINGERING_POTION);
         }
         else {
             entpotion = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.SPLASH_POTION);
@@ -51,11 +67,17 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         sentinel.stats_arrowsFired++;
         Entity arrow;
         if (SentinelTarget.v1_9) {
-            arrow = start.getKey().getWorld().spawnEntity(start.getKey(),
-                    type.getType() == Material.SPECTRAL_ARROW ? EntityType.SPECTRAL_ARROW :
-                            (type.getType() == Material.TIPPED_ARROW ? EntityType.TIPPED_ARROW : EntityType.ARROW));
+            Class<? extends Arrow> toShoot;
+            toShoot = type.getType() == Material.SPECTRAL_ARROW ? SpectralArrow.class :
+                    (type.getType() == Material.TIPPED_ARROW ? TippedArrow.class : Arrow.class);
+            Vector dir = sentinel.fixForAcc(start.getValue());
+            double length = Math.max(1.0, dir.length());
+            arrow = start.getKey().getWorld().spawnArrow(start.getKey(), dir.multiply(1.0 / length), (float) length, 0f, toShoot);
             ((Projectile) arrow).setShooter(getLivingEntity());
-            if (arrow instanceof TippedArrow) {
+            if (SentinelTarget.v1_11) {
+                ((Arrow) arrow).setPickupStatus(Arrow.PickupStatus.DISALLOWED);
+            }
+            if (arrow instanceof TippedArrow && type instanceof PotionMeta) {
                 PotionData data = ((PotionMeta) type.getItemMeta()).getBasePotionData();
                 if (data.getType() == null || data.getType() == PotionType.UNCRAFTABLE) {
                     // TODO: Perhaps a **single** warning?
@@ -71,8 +93,8 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         else {
             arrow = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.ARROW);
             ((Projectile) arrow).setShooter(getLivingEntity());
+            arrow.setVelocity(sentinel.fixForAcc(start.getValue()));
         }
-        arrow.setVelocity(sentinel.fixForAcc(start.getValue()));
         if (getNPC().getTrait(Inventory.class).getContents()[0].containsEnchantment(Enchantment.ARROW_FIRE)) {
             arrow.setFireTicks(10000);
         }

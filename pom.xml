@@ -7,14 +7,14 @@
     <groupId>org.mcmonkey</groupId>
     <artifactId>sentinel</artifactId>
     <packaging>jar</packaging>
-    <version>1.8.5</version>
+    <version>1.9.1</version>
     <name>Sentinel</name>
     <description>Combat NPCs for Spigot</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <craftbukkit.version>1.13.2-R0.1-SNAPSHOT</craftbukkit.version>
-        <citizens.version>2.0.24-SNAPSHOT</citizens.version>
+        <craftbukkit.version>1.14-R0.1-SNAPSHOT</craftbukkit.version>
+        <citizens.version>2.0.25-SNAPSHOT</citizens.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
     </properties>
 
@@ -50,6 +50,12 @@
             <groupId>com.freneticllc.freneticutilities</groupId>
             <artifactId>freneticdatasyntax</artifactId>
             <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>LATEST</version>
             <scope>compile</scope>
         </dependency>
         <!-- Primary Support -->
@@ -152,6 +158,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.freneticllc.freneticutilities:freneticdatasyntax</include>
+                                    <include>org.json:json</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
