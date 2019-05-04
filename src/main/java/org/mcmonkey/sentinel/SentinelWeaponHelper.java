@@ -27,9 +27,13 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
             LINGERING_POTION = EntityType.SPLASH_POTION;
             TIPPED_ARROW = EntityType.ARROW;
         }
-        else {
+        else if (SentinelTarget.v1_9) {
             LINGERING_POTION = EntityType.valueOf("LINGERING_POTION");
             TIPPED_ARROW = EntityType.valueOf("TIPPED_ARROW");
+        }
+        else {
+            LINGERING_POTION = null;
+            TIPPED_ARROW = null;
         }
     }
 
