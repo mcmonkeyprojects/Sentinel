@@ -190,6 +190,7 @@ These are all valid targets and ignores:
     - Swords/tools
     - Bow
         - equip NPC with arrows of any given type in their `/npc inventory` to set fired arrow type!
+    - Trident (will be thrown)
     - Blaze rod (shoots fire balls!)
     - Potions (splash, lingering)
     - Nether star (strikes lightning!)

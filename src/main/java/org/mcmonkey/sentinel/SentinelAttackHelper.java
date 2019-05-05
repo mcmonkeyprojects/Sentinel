@@ -154,15 +154,33 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     return false;
                 }
                 sentinel.timeSinceAttack = 0;
-                ItemStack item = itemHelper.getArrow();
-                if (item != null) {
-                    weaponHelper.fireSnowball(entity.getEyeLocation());
-                    if (sentinel.needsAmmo) {
-                        itemHelper.takeSnowball();
-                        itemHelper.grabNextItem();
-                    }
-                    return true;
+                weaponHelper.fireSnowball(entity.getEyeLocation());
+                if (sentinel.needsAmmo) {
+                    itemHelper.takeOne();
+                    itemHelper.grabNextItem();
                 }
+                return true;
+            }
+            else if (sentinel.rangedChase) {
+                chase(entity);
+                return false;
+            }
+        }
+        else if (itemHelper.usesTrident()) {
+            if (targetingHelper.canSee(entity)) {
+                if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
+                    if (sentinel.rangedChase) {
+                        rechase();
+                    }
+                    return false;
+                }
+                sentinel.timeSinceAttack = 0;
+                weaponHelper.fireTrident(entity.getEyeLocation());
+                if (sentinel.needsAmmo) {
+                    itemHelper.takeOne();
+                    itemHelper.grabNextItem();
+                }
+                return true;
             }
             else if (sentinel.rangedChase) {
                 chase(entity);

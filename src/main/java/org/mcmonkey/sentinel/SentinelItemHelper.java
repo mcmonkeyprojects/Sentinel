@@ -97,37 +97,6 @@ public class SentinelItemHelper extends SentinelHelperObject {
         }
     }
 
-
-    /**
-     * Takes a snowball from the NPC's inventory.
-     */
-    public void takeSnowball() {
-        if (!getNPC().hasTrait(Inventory.class)) {
-            return;
-        }
-        Inventory inv = getNPC().getTrait(Inventory.class);
-        ItemStack[] items = inv.getContents();
-        for (int i = 0; i < items.length; i++) {
-            ItemStack item = items[i];
-            if (item != null) {
-                Material mat = item.getType();
-                if (mat == SentinelTarget.MATERIAL_SNOW_BALL) {
-                    if (item.getAmount() > 1) {
-                        item.setAmount(item.getAmount() - 1);
-                        items[i] = item;
-                        inv.setContents(items);
-                        return;
-                    }
-                    else {
-                        items[i] = null;
-                        inv.setContents(items);
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * Takes one item from the NPC's held items (for consumables).
      */
@@ -335,6 +304,17 @@ public class SentinelItemHelper extends SentinelHelperObject {
         }
         ItemStack it = getHeldItem();
         return it != null && SentinelTarget.SKULL_MATERIALS.contains(it.getType());
+    }
+
+    /**
+     * Returns whether the NPC is using a trident item.
+     */
+    public boolean usesTrident() {
+        if (!SentinelTarget.v1_13) {
+            return false;
+        }
+        ItemStack it = getHeldItem();
+        return it != null && it.getType() == Material.TRIDENT;
     }
 
     /**

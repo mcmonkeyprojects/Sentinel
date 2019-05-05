@@ -126,6 +126,26 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
     }
 
     /**
+     * Fires a trident from the NPC at a target.
+     */
+    public void fireTrident(Location target) {
+        if (!SentinelTarget.v1_13) {
+            return;
+        }
+        sentinel.swingWeapon();
+        sentinel.stats_arrowsFired++;
+        sentinel.faceLocation(target);
+        Vector forward = getLivingEntity().getEyeLocation().getDirection();
+        Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(sentinel.firingMinimumRange() + 2));
+        Trident ent = (Trident) spawnAt.getWorld().spawnEntity(spawnAt, EntityType.TRIDENT);
+        if (SentinelTarget.v1_14) {
+            ent.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+        }
+        ent.setShooter(getLivingEntity());
+        ent.setVelocity(sentinel.fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(2.0))); // TODO: Fiddle with '2.0'.
+    }
+
+    /**
      * Fires an egg from the NPC at a target.
      */
     public void fireEgg(Location target) {
