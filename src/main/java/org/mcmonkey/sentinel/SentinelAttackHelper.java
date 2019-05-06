@@ -2,6 +2,7 @@ package org.mcmonkey.sentinel;
 
 import net.citizensnpcs.api.ai.TargetType;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -38,7 +39,9 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         bunny_goal = goal;
         */
         if (SentinelPlugin.instance.workaroundEntityChasePathfinder) {
+            final Location entityEyeLoc = entity.getEyeLocation();
             getNPC().getNavigator().setTarget(entity.getLocation());
+            getNPC().getNavigator().getLocalParameters().lookAtFunction(n -> entityEyeLoc);
         }
         else {
             getNPC().getNavigator().setTarget(entity, false);
