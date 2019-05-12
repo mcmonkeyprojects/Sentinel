@@ -796,6 +796,9 @@ public class SentinelTrait extends Trait {
         if (type == EntityType.WITHER || type == EntityType.GHAST) {
             return 8; // Yikes!
         }
+        if (type == EntityType.BLAZE) {
+            return 3;
+        }
         return 2;
     }
 
