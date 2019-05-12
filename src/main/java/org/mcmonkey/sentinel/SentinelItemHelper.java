@@ -252,7 +252,15 @@ public class SentinelItemHelper extends SentinelHelperObject {
      */
     public boolean usesBow() {
         ItemStack it = getHeldItem();
-        return it != null && it.getType() == Material.BOW && getArrow() != null;
+        if (it == null) {
+            return false;
+        }
+        if (SentinelTarget.v1_14) {
+            if (it.getType() == Material.CROSSBOW && getArrow() != null) {
+                return true;
+            }
+        }
+        return it.getType() == Material.BOW && getArrow() != null;
     }
 
     /**
