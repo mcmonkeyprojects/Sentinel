@@ -7,7 +7,7 @@
     <groupId>org.mcmonkey</groupId>
     <artifactId>sentinel</artifactId>
     <packaging>jar</packaging>
-    <version>1.9.1</version>
+    <version>1.9.2</version>
     <name>Sentinel</name>
     <description>Combat NPCs for Spigot</description>
 
