@@ -41,28 +41,21 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Reduces the durability of the NPC's held item.
      */
     public void reduceDurability() {
-        if (SentinelTarget.v1_9) {
-            ItemStack item = getLivingEntity().getEquipment().getItemInMainHand();
-            if (item != null && item.getType() != Material.AIR) {
-                if (item.getDurability() >= item.getType().getMaxDurability() - 1) {
-                    getLivingEntity().getEquipment().setItemInMainHand(null);
-                }
-                else {
-                    item.setDurability((short) (item.getDurability() + 1));
-                    getLivingEntity().getEquipment().setItemInMainHand(item);
-                }
+        ItemStack toSet;
+        ItemStack item = getHeldItem();
+        if (item != null && item.getType() != Material.AIR) {
+            if (item.getDurability() >= item.getType().getMaxDurability() - 1) {
+                toSet = null;
             }
-        }
-        else {
-            ItemStack item = getLivingEntity().getEquipment().getItemInHand();
-            if (item != null && item.getType() != Material.AIR) {
-                if (item.getDurability() >= item.getType().getMaxDurability() - 1) {
-                    getLivingEntity().getEquipment().setItemInHand(null);
-                }
-                else {
-                    item.setDurability((short) (item.getDurability() + 1));
-                    getLivingEntity().getEquipment().setItemInHand(item);
-                }
+            else {
+                item.setDurability((short) (item.getDurability() + 1));
+                toSet = item;
+            }
+            if (SentinelTarget.v1_9) {
+                getLivingEntity().getEquipment().setItemInMainHand(toSet);
+            }
+            else {
+                getLivingEntity().getEquipment().setItemInHand(toSet);
             }
         }
     }
@@ -101,28 +94,21 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Takes one item from the NPC's held items (for consumables).
      */
     public void takeOne() {
-        if (SentinelTarget.v1_9) {
-            ItemStack item = getLivingEntity().getEquipment().getItemInMainHand();
-            if (item != null && item.getType() != Material.AIR) {
-                if (item.getAmount() > 1) {
-                    item.setAmount(item.getAmount() - 1);
-                    getLivingEntity().getEquipment().setItemInMainHand(item);
-                }
-                else {
-                    getLivingEntity().getEquipment().setItemInMainHand(null);
-                }
+        ItemStack toSet;
+        ItemStack item = getHeldItem();
+        if (item != null && item.getType() != Material.AIR) {
+            if (item.getAmount() > 1) {
+                item.setAmount(item.getAmount() - 1);
+                toSet = item;
             }
-        }
-        else {
-            ItemStack item = getLivingEntity().getEquipment().getItemInHand();
-            if (item != null && item.getType() != Material.AIR) {
-                if (item.getAmount() > 1) {
-                    item.setAmount(item.getAmount() - 1);
-                    getLivingEntity().getEquipment().setItemInHand(item);
-                }
-                else {
-                    getLivingEntity().getEquipment().setItemInHand(null);
-                }
+            else {
+                toSet = null;
+            }
+            if (SentinelTarget.v1_9) {
+                getLivingEntity().getEquipment().setItemInMainHand(toSet);
+            }
+            else {
+                getLivingEntity().getEquipment().setItemInHand(toSet);
             }
         }
     }
@@ -348,7 +334,11 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC can take durability from the held item.
      */
     public boolean shouldTakeDura() {
-        Material type = getHeldItem().getType();
+        ItemStack it = getHeldItem();
+        if (it == null) {
+            return false;
+        }
+        Material type = it.getType();
         return SentinelTarget.BOW_MATERIALS.contains(type) || SentinelTarget.SWORD_MATERIALS.contains(type)
                 || SentinelTarget.PICKAXE_MATERIALS.contains(type) || SentinelTarget.AXE_MATERIALS.contains(type);
     }
