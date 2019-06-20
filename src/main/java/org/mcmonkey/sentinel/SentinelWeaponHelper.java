@@ -78,6 +78,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
                 Vector dir = sentinel.fixForAcc(start.getValue());
                 double length = Math.max(1.0, dir.length());
                 arrow = start.getKey().getWorld().spawnArrow(start.getKey(), dir.multiply(1.0 / length), (float) length, 0f, toShoot);
+                ((Projectile) arrow).setShooter(getLivingEntity());
                 ((Arrow) arrow).setPickupStatus(Arrow.PickupStatus.DISALLOWED);
             }
             else {
@@ -85,9 +86,9 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
                         type.getType() == Material.SPECTRAL_ARROW ? EntityType.SPECTRAL_ARROW :
                                 (type.getType() == Material.TIPPED_ARROW ? TIPPED_ARROW : EntityType.ARROW));
                 arrow.setVelocity(sentinel.fixForAcc(start.getValue()));
+                ((Projectile) arrow).setShooter(getLivingEntity());
             }
-            ((Projectile) arrow).setShooter(getLivingEntity());
-            if (arrow instanceof TippedArrow && type instanceof PotionMeta) {
+            if (arrow instanceof TippedArrow && type.getItemMeta() instanceof PotionMeta) {
                 PotionData data = ((PotionMeta) type.getItemMeta()).getBasePotionData();
                 if (data.getType() == null || data.getType() == PotionType.UNCRAFTABLE) {
                     // TODO: Perhaps a **single** warning?
