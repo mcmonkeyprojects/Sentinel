@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -89,6 +90,21 @@ public class SentinelEventHandler implements Listener {
                     shooter.whenAttacksAreHappeningFromMyArrow(event);
                 }
             }
+        }
+    }
+
+    /**
+     * Called when damage has occurred in the world (before being processed by all other plugins), to handle things like
+     * preventing overly rapid fire damage.
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void whenEntitiesAreHurt(EntityDamageEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        SentinelTrait victim = SentinelUtilities.tryGetSentinel(event.getEntity());
+        if (victim != null) {
+            victim.whenImHurt(event);
         }
     }
 

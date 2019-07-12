@@ -500,6 +500,33 @@ public class SentinelTrait extends Trait {
     };
 
     /**
+     * How long ago (in ticks) the NPC was last burned.
+     */
+    public int ticksSinceLastBurn = 0;
+
+    /**
+     * Called when this sentinel gets hurt.
+     */
+    public void whenImHurt(EntityDamageEvent event) {
+        if (SentinelPlugin.debugMe) {
+            debug("I'm hurt! By " + event.getCause().name() + " for " + event.getFinalDamage() + " hp");
+        }
+        switch (event.getCause()) {
+            case FIRE:
+            case FIRE_TICK:
+            case LAVA:
+            case MELTING:
+                if (ticksSinceLastBurn <= 20) {
+                    event.setDamage(0);
+                    event.setCancelled(true);
+                    return;
+                }
+                ticksSinceLastBurn = 0;
+                break;
+        }
+    }
+
+    /**
      * Called when this sentinel gets attacked, to correct the armor handling.
      */
     public void whenAttacksAreHappeningToMe(EntityDamageByEntityEvent event) {
@@ -1007,6 +1034,7 @@ public class SentinelTrait extends Trait {
     public void runUpdate() {
         // Basic prep and tracking
         canEnforce = true;
+        ticksSinceLastBurn += SentinelPlugin.instance.tickRate;
         timeSinceAttack += SentinelPlugin.instance.tickRate;
         timeSinceHeal += SentinelPlugin.instance.tickRate;
         // Protection against falling below the world
