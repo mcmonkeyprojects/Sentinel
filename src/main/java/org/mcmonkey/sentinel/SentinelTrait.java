@@ -1555,6 +1555,9 @@ public class SentinelTrait extends Trait {
     public void setHealth(double heal) {
         health = heal;
         if (npc.isSpawned()) {
+            if (SentinelPlugin.debugMe) {
+                debug("Setting spawned NPC health to " + health);
+            }
             getLivingEntity().setMaxHealth(health);
             getLivingEntity().setHealth(health);
         }

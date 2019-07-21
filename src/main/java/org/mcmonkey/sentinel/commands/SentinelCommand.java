@@ -1,6 +1,7 @@
 package org.mcmonkey.sentinel.commands;
 
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.CommandManager;
 import net.citizensnpcs.api.command.Injector;
 import net.citizensnpcs.api.command.Requirements;
@@ -106,6 +107,10 @@ public class SentinelCommand {
         }
         NPC selected = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
         SentinelTrait sentinel = null;
+        CommandContext context = new CommandContext(sender, args);
+        if (context.hasValueFlag("id") && sender.hasPermission("npc.select")) {
+            selected = CitizensAPI.getNPCRegistry().getById(context.getFlagInteger("id"));
+        }
         if (selected != null) {
             if (selected.hasTrait(SentinelTrait.class)) {
                 sentinel = selected.getTrait(SentinelTrait.class);
