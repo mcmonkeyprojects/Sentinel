@@ -230,7 +230,9 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
      */
     public void knockback(LivingEntity entity) {
         Vector relative = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector());
-        relative = relative.normalize();
+        if (relative.lengthSquared() > 0) {
+            relative = relative.normalize();
+        }
         relative.setY(0.75);
         relative.multiply(0.5 / Math.max(1.0, entity.getVelocity().length()));
         entity.setVelocity(entity.getVelocity().multiply(0.25).add(relative));
