@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -72,14 +73,23 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         Entity arrow;
         if (SentinelTarget.v1_9) {
             if (SentinelTarget.v1_14) {
-                Class toShoot;
-                toShoot = type.getType() == Material.SPECTRAL_ARROW ? SpectralArrow.class :
-                        (type.getType() == Material.TIPPED_ARROW ? TippedArrow.class : Arrow.class);
                 Vector dir = sentinel.fixForAcc(start.getValue());
                 double length = Math.max(1.0, dir.length());
-                arrow = start.getKey().getWorld().spawnArrow(start.getKey(), dir.multiply(1.0 / length), (float) length, 0f, toShoot);
-                ((Projectile) arrow).setShooter(getLivingEntity());
-                ((Arrow) arrow).setPickupStatus(Arrow.PickupStatus.DISALLOWED);
+                if (type.getType() == Material.FIREWORK_ROCKET) {
+                    arrow = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.FIREWORK);
+                    FireworkMeta meta = (FireworkMeta) type.getItemMeta();
+                    meta.setPower(0);
+                    ((Firework) arrow).setFireworkMeta(meta);
+                    arrow.setVelocity(sentinel.fixForAcc(start.getValue()));
+                }
+                else {
+                    Class toShoot;
+                    toShoot = type.getType() == Material.SPECTRAL_ARROW ? SpectralArrow.class :
+                            (type.getType() == Material.TIPPED_ARROW ? TippedArrow.class : Arrow.class);
+                    arrow = start.getKey().getWorld().spawnArrow(start.getKey(), dir.multiply(1.0 / length), (float) length, 0f, toShoot);
+                    ((Arrow) arrow).setPickupStatus(Arrow.PickupStatus.DISALLOWED);
+                    ((Projectile) arrow).setShooter(getLivingEntity());
+                }
             }
             else {
                 arrow = start.getKey().getWorld().spawnEntity(start.getKey(),

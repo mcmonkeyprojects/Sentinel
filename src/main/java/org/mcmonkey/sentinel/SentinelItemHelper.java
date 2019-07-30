@@ -22,15 +22,10 @@ public class SentinelItemHelper extends SentinelHelperObject {
         for (ItemStack item : items) {
             if (item != null) {
                 Material mat = item.getType();
-                if (SentinelTarget.v1_9) {
-                    if (mat == Material.ARROW || mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW) {
-                        return item.clone();
-                    }
-                }
-                else {
-                    if (mat == Material.ARROW) {
-                        return item.clone();
-                    }
+                if (mat == Material.ARROW
+                        || (SentinelTarget.v1_9 && (mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW))
+                        || (SentinelTarget.v1_14 && mat == Material.FIREWORK_ROCKET)) {
+                    return item.clone();
                 }
             }
         }
@@ -73,7 +68,9 @@ public class SentinelItemHelper extends SentinelHelperObject {
             ItemStack item = items[i];
             if (item != null) {
                 Material mat = item.getType();
-                if (mat == Material.ARROW || (SentinelTarget.v1_9 && (mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW))) {
+                if (mat == Material.ARROW
+                        || (SentinelTarget.v1_9 && (mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW))
+                        || (SentinelTarget.v1_14 && mat == Material.FIREWORK_ROCKET)) {
                     if (item.getAmount() > 1) {
                         item.setAmount(item.getAmount() - 1);
                         items[i] = item;
