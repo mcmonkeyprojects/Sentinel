@@ -5,7 +5,9 @@ import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.LivingEntity;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 
@@ -16,10 +18,21 @@ public class SentinelInfoCommands {
             modifiers = {"info"}, permission = "sentinel.info", min = 1, max = 1)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void info(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        String guardName = null;
+        LivingEntity guarded = sentinel.getGuardingEntity();
+        if (guarded != null) {
+            guardName = guarded.getName();
+        }
+        else if (sentinel.getGuarding() != null) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(sentinel.getGuarding());
+            if (player != null && player.getName() != null) {
+                guardName = player.getName();
+            }
+        }
         sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.colorBasic
                 + ": owned by " + ChatColor.RESET + SentinelPlugin.instance.getOwner(sentinel.getNPC()) +
-                (sentinel.getGuarding() == null ? "" : SentinelCommand.colorBasic
-                        + ", guarding: " + ChatColor.RESET + Bukkit.getOfflinePlayer(sentinel.getGuarding()).getName()));
+                (guardName == null ? "" : SentinelCommand.colorBasic
+                        + ", guarding: " + ChatColor.RESET + guardName));
         sender.sendMessage(SentinelCommand.prefixGood + "Damage: " + ChatColor.AQUA + sentinel.damage
                 + SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getDamage());
         sender.sendMessage(SentinelCommand.prefixGood + "Armor: " + ChatColor.AQUA + sentinel.armor

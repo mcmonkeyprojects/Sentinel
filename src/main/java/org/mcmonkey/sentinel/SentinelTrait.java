@@ -4,6 +4,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
 import net.citizensnpcs.api.event.DespawnReason;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.persistence.PersistenceLoader;
 import net.citizensnpcs.api.persistence.Persister;
@@ -338,6 +339,12 @@ public class SentinelTrait extends Trait {
     public long guardingLower = 0;
 
     /**
+     * ID of an NPC to guard, if any.
+     */
+    @Persist("guardedNPC")
+    public int guardedNPC = -1;
+
+    /**
      * Whether the NPC needs ammo to fire ranged weapons (otherwise, infinite ammo).
      */
     @Persist("needsAmmo")
@@ -467,6 +474,12 @@ public class SentinelTrait extends Trait {
      * Null indicates not guarding anyone.
      */
     public UUID getGuarding() {
+        if (guardedNPC >= 0) {
+            NPC npc = CitizensAPI.getNPCRegistry().getById(guardedNPC);
+            if (npc != null) {
+                return npc.getUniqueId();
+            }
+        }
         if (guardingLower == 0 && guardingUpper == 0) {
             return null;
         }
@@ -474,10 +487,21 @@ public class SentinelTrait extends Trait {
     }
 
     /**
-     * Sets the NPC to be guarding a player.
+     * Sets the NPC to be guarding an NPC.
+     * -1 indicates not guarding anyone.
+     */
+    public void setGuarding(int npcID) {
+        guardingUpper = 0;
+        guardingLower = 0;
+        guardedNPC = npcID;
+    }
+
+    /**
+     * Sets the NPC to be guarding an entity.
      * Null indicates not guarding anyone.
      */
     public void setGuarding(UUID uuid) {
+        guardedNPC = -1;
         if (uuid == null) {
             guardingUpper = 0;
             guardingLower = 0;
@@ -1029,6 +1053,33 @@ public class SentinelTrait extends Trait {
     public boolean needsSafeReturn = true;
 
     /**
+     * Gets the entity this NPC is guarding, or null.
+     */
+    public LivingEntity getGuardingEntity() {
+        if (guardedNPC >= 0) {
+            NPC npc = CitizensAPI.getNPCRegistry().getById(guardedNPC);
+            if (npc != null && npc.isSpawned()) {
+                return (LivingEntity) npc.getEntity();
+            }
+        }
+        UUID guardId = getGuarding();
+        if (guardId == null) {
+            return null;
+        }
+        Player player = Bukkit.getPlayer(guardId);
+        if (player != null) {
+            return player;
+        }
+        if (SentinelTarget.v1_12) {
+            Entity entity = Bukkit.getEntity(guardId);
+            if (entity instanceof LivingEntity) {
+                return (LivingEntity) entity;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Runs a full update cycle on the NPC.
      */
     public void runUpdate() {
@@ -1037,6 +1088,7 @@ public class SentinelTrait extends Trait {
         ticksSinceLastBurn += SentinelPlugin.instance.tickRate;
         timeSinceAttack += SentinelPlugin.instance.tickRate;
         timeSinceHeal += SentinelPlugin.instance.tickRate;
+        LivingEntity guarded = getGuardingEntity();
         // Protection against falling below the world
         if (getLivingEntity().getLocation().getY() <= 0) {
             if (SentinelPlugin.debugMe) {
@@ -1044,9 +1096,9 @@ public class SentinelTrait extends Trait {
             }
             getLivingEntity().damage(1);
             if (!npc.isSpawned()) {
-                if (getGuarding() != null && Bukkit.getPlayer(getGuarding()) != null) {
+                if (guarded != null) {
                     if (respawnTime > 0 && respawnMe == null) {
-                        npc.spawn(Bukkit.getPlayer(getGuarding()).getLocation());
+                        npc.spawn(guarded.getLocation());
                     }
                 }
                 return;
@@ -1065,7 +1117,7 @@ public class SentinelTrait extends Trait {
         if (!npc.getNavigator().isNavigating()) {
             pathingTo = null;
         }
-        if ((getGuarding() != null || chasing != null || pathingTo != null) && npc.hasTrait(Waypoints.class)) {
+        if ((guarded != null || chasing != null || pathingTo != null) && npc.hasTrait(Waypoints.class)) {
             pauseWaypoints();
         }
         else if (needsToUnpause && npc.hasTrait(Waypoints.class)) {
@@ -1136,34 +1188,31 @@ public class SentinelTrait extends Trait {
             specialUnmarkVision();
         }
         // Special guarding handling
-        if (getGuarding() != null) {
-            Player player = Bukkit.getPlayer(getGuarding());
-            if (player != null) {
-                Location myLoc = getLivingEntity().getLocation();
-                Location theirLoc = player.getLocation();
-                double dist = theirLoc.getWorld().equals(myLoc.getWorld()) ? myLoc.distanceSquared(theirLoc) : MAX_DIST;
-                if (dist > 60 * 60) {
-                    npc.teleport(player.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                }
-                if (dist > guardDistanceMinimum * guardDistanceMinimum) {
-                    ticksCountGuard += SentinelPlugin.instance.tickRate;
-                    if (ticksCountGuard >= 30) {
-                        ticksCountGuard = 0;
-                        npc.getNavigator().getDefaultParameters().range(100);
-                        npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
-                        Location picked = SentinelUtilities.pickNear(player.getLocation(), guardSelectionRange);
-                        if (SentinelPlugin.debugMe) {
-                            debug("Guard movement chosen to go to " + picked.toVector().toBlockVector().toString());
-                        }
-                        npc.getNavigator().setTarget(picked);
-                        npc.getNavigator().getLocalParameters().speedModifier((float) speed);
-                        npc.getNavigator().getLocalParameters().distanceMargin(guardDistanceMinimum * 0.75);
-                        chased = true;
-                    }
-                }
-                needsSafeReturn = true;
-                goHome = false;
+        if (guarded != null) {
+            Location myLoc = getLivingEntity().getLocation();
+            Location theirLoc = guarded.getLocation();
+            double dist = theirLoc.getWorld().equals(myLoc.getWorld()) ? myLoc.distanceSquared(theirLoc) : MAX_DIST;
+            if (dist > 60 * 60) {
+                npc.teleport(guarded.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             }
+            if (dist > guardDistanceMinimum * guardDistanceMinimum) {
+                ticksCountGuard += SentinelPlugin.instance.tickRate;
+                if (ticksCountGuard >= 30) {
+                    ticksCountGuard = 0;
+                    npc.getNavigator().getDefaultParameters().range(100);
+                    npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
+                    Location picked = SentinelUtilities.pickNear(guarded.getLocation(), guardSelectionRange);
+                    if (SentinelPlugin.debugMe) {
+                        debug("Guard movement chosen to go to " + picked.toVector().toBlockVector().toString());
+                    }
+                    npc.getNavigator().setTarget(picked);
+                    npc.getNavigator().getLocalParameters().speedModifier((float) speed);
+                    npc.getNavigator().getLocalParameters().distanceMargin(guardDistanceMinimum * 0.75);
+                    chased = true;
+                }
+            }
+            needsSafeReturn = true;
+            goHome = false;
         }
         // Avoidance handling
         targetingHelper.processAvoidance();
@@ -1187,7 +1236,7 @@ public class SentinelTrait extends Trait {
                 chased = false;
             }
             else {
-                if (pathingTo == null && npc.getNavigator().isNavigating() && getGuarding() == null) {
+                if (pathingTo == null && npc.getNavigator().isNavigating() && guarded == null) {
                     npc.getNavigator().cancelNavigation();
                     needsSafeReturn = false;
                 }
@@ -1198,7 +1247,7 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
-        else if (chasing == null && getGuarding() == null && pathingTo == null && npc.getNavigator().isNavigating() && needsSafeReturn) {
+        else if (chasing == null && guarded == null && pathingTo == null && npc.getNavigator().isNavigating() && needsSafeReturn) {
             npc.getNavigator().cancelNavigation();
             needsSafeReturn = false;
         }
@@ -1213,11 +1262,9 @@ public class SentinelTrait extends Trait {
      * Gets the location this NPC is guarding (the NPC's own location if nothing else to guard).
      */
     public Location getGuardZone() {
-        if (getGuarding() != null) {
-            Player player = Bukkit.getPlayer(getGuarding());
-            if (player != null) {
-                return player.getLocation();
-            }
+        LivingEntity guarded = getGuardingEntity();
+        if (guarded != null) {
+            return guarded.getLocation();
         }
         if (chaseRange > 0) {
             Location goal = nearestPathPoint();

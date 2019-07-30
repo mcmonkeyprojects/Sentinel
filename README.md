@@ -98,7 +98,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel kill - Kills the NPC.
     - /sentinel respawn - Respawns the NPC.
     - /sentinel forgive - Forgives all current targets.
-    - /sentinel guard [PLAYERNAME] - Makes the NPC guard a specific player. Don't specify a player to stop guarding.
+    - /sentinel guard [PLAYERNAME]/npc:[ID] - Makes the NPC guard a specific player or NPC. Don't specify a player to stop guarding.
 - **NPC targeting commands...**
     - /sentinel addtarget TYPE - Adds a target.
     - /sentinel removetarget TYPE - Removes a target.

@@ -1,8 +1,10 @@
 package org.mcmonkey.sentinel.commands;
 
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,14 +27,34 @@ public class SentinelIntelligenceCommands {
         sender.sendMessage(SentinelCommand.prefixGood + "Set!");
     }
 
-    @Command(aliases = {"sentinel"}, usage = "guard [PLAYERNAME]",
-            desc = "Makes the NPC guard a specific player - don't specify a player to stop guarding.",
+    @Command(aliases = {"sentinel"}, usage = "guard [PLAYERNAME]/npc:[ID]",
+            desc = "Makes the NPC guard a specific player or NPC - don't specify a player to stop guarding.",
             modifiers = {"guard"}, permission = "sentinel.guard", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void guard(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() > 1) {
-            Player pl = Bukkit.getPlayer(args.getString(1));
-            sentinel.setGuarding(pl == null ? null : pl.getUniqueId());
+            String inputArg = args.getString(1);
+            if (inputArg.toLowerCase().startsWith("npc:")) {
+                try {
+                    int id = Integer.parseInt(inputArg.substring("npc:".length()));
+                    NPC npc = CitizensAPI.getNPCRegistry().getById(id);
+                    if (npc == null) {
+                        sender.sendMessage(SentinelCommand.prefixBad + "NPC ID input invalid (that number isn't any NPC's ID)!");
+                        return;
+                    }
+                    sentinel.setGuarding(id);
+                    sender.sendMessage(SentinelCommand.prefixGood + "NPC now guarding the specified NPC!");
+                    return;
+                }
+                catch (NumberFormatException ex) {
+                    sender.sendMessage(SentinelCommand.prefixBad + "NPC ID input invalid (need a number)!");
+                    return;
+                }
+            }
+            else {
+                Player pl = Bukkit.getPlayer(inputArg);
+                sentinel.setGuarding(pl == null ? null : pl.getUniqueId());
+            }
         }
         else {
             sentinel.setGuarding(null);
