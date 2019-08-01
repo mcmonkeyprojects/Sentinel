@@ -153,6 +153,19 @@ public class SentinelEventHandler implements Listener {
                 }
             }
         }
+        if (event.getEntity() instanceof LivingEntity) {
+            LivingEntity entity = (LivingEntity) event.getEntity();
+            for (SentinelTrait sentinel : cleanCurrentList()) {
+                if (sentinel.allTargets.isReverseEventTarget(sentinel, event)
+                        && sentinel.targetingHelper.canSee(entity) && !sentinel.targetingHelper.isIgnored(entity)) {
+                    sentinel.targetingHelper.addTarget(entity.getUniqueId());
+                }
+                if (sentinel.allAvoids.isReverseEventTarget(sentinel, event)
+                        && sentinel.targetingHelper.canSee(entity) && !sentinel.targetingHelper.isIgnored(entity)) {
+                    sentinel.targetingHelper.addAvoid(entity.getUniqueId());
+                }
+            }
+        }
     }
 
     /**
