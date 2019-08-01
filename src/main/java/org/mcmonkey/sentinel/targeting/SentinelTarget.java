@@ -1,14 +1,15 @@
 package org.mcmonkey.sentinel.targeting;
 
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.trait.trait.Owner;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.mcmonkey.sentinel.SentinelPlugin;
+import org.mcmonkey.sentinel.SentinelTrait;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Helper for target types.
@@ -497,6 +498,7 @@ public class SentinelTarget {
      */
     SentinelTarget(EntityType[] types, String... names) {
         this.names = names;
+        this.types = new HashSet<>(Arrays.asList(types));
         for (String name : names) {
             SentinelPlugin.targetOptions.put(name, this);
             SentinelPlugin.targetOptions.put(name + "S", this);
@@ -504,5 +506,31 @@ public class SentinelTarget {
         for (EntityType type : types) {
             SentinelPlugin.entityToTargets.get(type).add(this);
         }
+    }
+
+    public HashSet<EntityType> types;
+
+    /**
+     * Returns whether this SentinelTarget targets the given entity.
+     */
+    public boolean isTarget(LivingEntity entity) {
+        return isTarget(entity, null);
+    }
+
+    /**
+     * Returns whether this SentinelTarget targets the given entity for the given Sentinel.
+     */
+    public boolean isTarget(LivingEntity entity, SentinelTrait sentinel) {
+        if (types.contains(entity.getType())) {
+            return true;
+        }
+        if (this == NPCS && CitizensAPI.getNPCRegistry().isNPC(entity)) {
+            return true;
+        }
+        if (this == OWNER && sentinel != null
+            && entity.getUniqueId().equals(sentinel.getNPC().getTrait(Owner.class).getOwnerId())) {
+            return true;
+        }
+        return false;
     }
 }

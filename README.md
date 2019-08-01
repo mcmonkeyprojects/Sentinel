@@ -167,7 +167,7 @@ These are all valid targets and ignores:
 - 1.13 or higher special targets: FISH
 - In 1.14 or higher: PILLAGERS, RAVAGERS, CATS, PANDAS, TRADER_LLAMAS, WANDERING_TRADERS, FOXES
 - Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)
-- Also, event:pvp/pvnpc/pve/pvsentinel/guarded_fight
+- Also, event:pvp/pvnpc/pve/pv:<entity>/pvsentinel/guarded_fight/eve/ev:<entity>
 - Also, via internal sample integrations: sbteam:SCOREBOARD\_TEAM\_HERE, healthabove:PERCENTAGE and healthbelow:PERCENTAGE, permission:PERM.KEY, squad:SENTINEL\_SQUAD\_NAME, uuid:UUID
 - Also, event:message,SOMETEXT will match chat messages that contain 'sometext'.
 - Also anything listed in the integrations section above!

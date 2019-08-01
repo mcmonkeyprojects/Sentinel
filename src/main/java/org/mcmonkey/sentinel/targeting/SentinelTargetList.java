@@ -320,6 +320,31 @@ public class SentinelTargetList {
                     && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).hasTrait(SentinelTrait.class)) {
                 return true;
             }
+            if (evt.contains(":")) {
+                int colon = evt.indexOf(':');
+                String prefix = evt.substring(0, colon);
+                String value = evt.substring(colon + 1);
+                if (prefix.equals("pv")) {
+                    SentinelTarget target = SentinelTarget.forName(value);
+                    if (target != null) {
+                        if (event.getDamager() instanceof Player
+                                && event.getEntity() instanceof LivingEntity
+                                && target.isTarget((LivingEntity) event.getEntity())) {
+                            return true;
+                        }
+                    }
+                }
+                else if (prefix.equals("ev")) {
+                    SentinelTarget target = SentinelTarget.forName(value);
+                    if (target != null) {
+                        if (!(event.getDamager() instanceof Player)
+                                && event.getEntity() instanceof LivingEntity
+                                && target.isTarget((LivingEntity) event.getEntity())) {
+                            return true;
+                        }
+                    }
+                }
+            }
         }
         return false;
     }
