@@ -40,6 +40,16 @@ public class SentinelTargetList {
         return result;
     }
 
+    public void init() {
+        recalculateTargetsCache();
+        for (String str : new ArrayList<>(byEvent)) {
+            if (str.startsWith("message,")) {
+                byEvent.remove(str);
+                byEvent.add("message:" + str.substring("message,".length()));
+            }
+        }
+    }
+
     /**
      * Returns whether an entity is targeted by this target list on a specific Sentinel NPC.
      * Does not include target-list-specific handling, such as current temporary targets.
@@ -259,8 +269,8 @@ public class SentinelTargetList {
             return false;
         }
         for (String str : byEvent) {
-            if (str.startsWith("message,")) {
-                String messageCheck = str.substring("message,".length());
+            if (str.startsWith("message:")) {
+                String messageCheck = str.substring("message:".length());
                 if (event.getMessage().toLowerCase().contains(messageCheck.toLowerCase())) {
                     return true;
                 }

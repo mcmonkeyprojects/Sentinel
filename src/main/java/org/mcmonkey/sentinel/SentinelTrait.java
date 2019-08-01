@@ -235,7 +235,9 @@ public class SentinelTrait extends Trait {
     public static class SentinelTargetListPersister implements Persister<SentinelTargetList> {
         @Override
         public SentinelTargetList create(DataKey dataKey) {
-            return PersistenceLoader.load(new SentinelTargetList(), dataKey);
+            SentinelTargetList list = PersistenceLoader.load(new SentinelTargetList(), dataKey);
+            list.init();
+            return list;
         }
 
         @Override

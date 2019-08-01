@@ -168,8 +168,8 @@ These are all valid targets and ignores:
 - In 1.14 or higher: PILLAGERS, RAVAGERS, CATS, PANDAS, TRADER_LLAMAS, WANDERING_TRADERS, FOXES
 - Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)
 - Also, event:pvp/pvnpc/pve/pv:<entity>/pvsentinel/guarded_fight/eve/ev:<entity>
+- Also, event:message:SOMETEXT will match chat messages that contain 'sometext'.
 - Also, via internal sample integrations: sbteam:SCOREBOARD\_TEAM\_HERE, healthabove:PERCENTAGE and healthbelow:PERCENTAGE, permission:PERM.KEY, squad:SENTINEL\_SQUAD\_NAME, uuid:UUID
-- Also, event:message,SOMETEXT will match chat messages that contain 'sometext'.
 - Also anything listed in the integrations section above!
 - You can also add multi-targets - that is, `multi:TARGET_ONE,TARGET_TWO,...` to have multiple targets required together.
     - For example: `multi:PLAYER,PLAYER,CHICKEN` will make the NPC angry at 2 players and a chicken if they are all together.
