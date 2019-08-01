@@ -288,26 +288,38 @@ public class SentinelTargetList {
         if (CitizensAPI.getNPCRegistry().isNPC(event.getDamager())) {
             return false;
         }
-        if (byEvent.contains("pvp")
-                && event.getEntity() instanceof Player
-                && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
-            return true;
-        }
-        else if (byEvent.contains("pve")
-                && !(event.getEntity() instanceof Player)
-                && event.getEntity() instanceof LivingEntity) {
-            return true;
-        }
-        else if (byEvent.contains("pvnpc")
-                && event.getEntity() instanceof LivingEntity
-                && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
-            return true;
-        }
-        else if (byEvent.contains("pvsentinel")
-                && event.getEntity() instanceof LivingEntity
-                && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
-                && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).hasTrait(SentinelTrait.class)) {
-            return true;
+        for (String evt : byEvent) {
+            if (evt.equals("pvp")
+                    && event.getEntity() instanceof Player
+                    && event.getDamager() instanceof Player
+                    && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+                return true;
+            }
+            else if (evt.equals("pve")
+                    && !(event.getEntity() instanceof Player)
+                    && event.getDamager() instanceof Player
+                    && event.getEntity() instanceof LivingEntity) {
+                return true;
+            }
+            else if (evt.equals("eve")
+                    && !(event.getDamager() instanceof Player)
+                    && !(event.getEntity() instanceof Player)
+                    && event.getEntity() instanceof LivingEntity) {
+                return true;
+            }
+            else if (evt.equals("pvnpc")
+                    && event.getEntity() instanceof LivingEntity
+                    && event.getDamager() instanceof Player
+                    && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+                return true;
+            }
+            else if (evt.equals("pvsentinel")
+                    && event.getEntity() instanceof LivingEntity
+                    && event.getDamager() instanceof Player
+                    && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
+                    && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).hasTrait(SentinelTrait.class)) {
+                return true;
+            }
         }
         return false;
     }
