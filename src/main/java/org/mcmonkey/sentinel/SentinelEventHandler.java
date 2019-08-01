@@ -149,7 +149,7 @@ public class SentinelEventHandler implements Listener {
                 }
                 if (sentinel.allAvoids.isEventTarget(event)
                         && sentinel.targetingHelper.canSee(damager) && !sentinel.targetingHelper.isIgnored(damager)) {
-                    sentinel.targetingHelper.addTarget(damager.getUniqueId());
+                    sentinel.targetingHelper.addAvoid(damager.getUniqueId());
                 }
             }
         }
