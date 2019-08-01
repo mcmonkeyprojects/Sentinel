@@ -26,6 +26,7 @@ import org.mcmonkey.sentinel.utilities.ConfigUpdater;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -33,6 +34,13 @@ import java.util.HashSet;
  * The main Sentinel plugin class.
  */
 public class SentinelPlugin extends JavaPlugin implements Listener {
+
+    /**
+     * A map of of all valid event targets.
+     */
+    public static HashSet<String> validEventTargets = new HashSet<>(
+            Arrays.asList("pvp", "pve", "pvnpc", "pvsentinel", "guarded_fight")
+    );
 
     /**
      * A map of typeable target names to valid targets.

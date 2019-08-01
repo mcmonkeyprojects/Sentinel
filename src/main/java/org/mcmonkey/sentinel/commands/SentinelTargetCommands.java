@@ -29,7 +29,8 @@ public class SentinelTargetCommands {
         }
         sender.sendMessage(SentinelCommand.prefixGood + "Valid targets: " + valid.substring(0, valid.length() - 2));
         sender.sendMessage(SentinelCommand.prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX),"
-                + "helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT), event:pvp/pvnpc/pve/pvsentinel/guarded_fight");
+                + "helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)");
+        sender.sendMessage(SentinelCommand.prefixGood + "Also allowed: event:" + String.join("/", SentinelPlugin.validEventTargets));
         for (SentinelIntegration si : SentinelPlugin.integrations) {
             if (si.getTargetHelp().length() > 0) {
                 sender.sendMessage(SentinelCommand.prefixGood + "Also: " + si.getTargetHelp());

@@ -66,6 +66,9 @@ public class SentinelTargetLabel {
      */
     public boolean isValidTarget() {
         if (prefix != null) {
+            if (prefix.equals("event")) {
+                return SentinelPlugin.validEventTargets.contains(value);
+            }
             return true;
         }
         return SentinelTarget.forName(value) != null;
