@@ -12,7 +12,7 @@ public class SentinelIntegration {
      * Example format is: "myintegration:MY_TARGET_IDENTIFIER" like "squad:SQUAD_NAME" or "healthabove:PERCENTAGE"
      */
     public String getTargetHelp() {
-        return "{{Error:UnimplementedGetTargetHelp}}";
+        return "";
     }
 
     /**
