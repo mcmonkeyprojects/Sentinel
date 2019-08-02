@@ -65,37 +65,54 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
      * Fires an arrow from the NPC at a target.
      */
     public void fireArrow(ItemStack type, Location target, Vector lead) {
-        HashMap.SimpleEntry<Location, Vector> start = sentinel.getLaunchDetail(target, lead);
-        if (start == null || start.getKey() == null) {
-            return;
+        Location launchStart;
+        Vector baseVelocity;
+        if (SentinelTarget.v1_14 && type.getType() == Material.FIREWORK_ROCKET) {
+            launchStart = sentinel.getLivingEntity().getEyeLocation();
+            launchStart = launchStart.clone().add(launchStart.getDirection());
+            baseVelocity = target.toVector().subtract(launchStart.toVector().add(lead));
+            if (baseVelocity.lengthSquared() > 0) {
+                baseVelocity = baseVelocity.normalize();
+            }
+            baseVelocity = baseVelocity.multiply(2);
         }
+        else {
+            HashMap.SimpleEntry<Location, Vector> start = sentinel.getLaunchDetail(target, lead);
+            if (start == null || start.getKey() == null) {
+                return;
+            }
+            launchStart = start.getKey();
+            baseVelocity = start.getValue();
+        }
+        Vector velocity = sentinel.fixForAcc(baseVelocity);
         sentinel.stats_arrowsFired++;
         Entity arrow;
         if (SentinelTarget.v1_9) {
             if (SentinelTarget.v1_14) {
-                Vector dir = sentinel.fixForAcc(start.getValue());
-                double length = Math.max(1.0, dir.length());
+                double length = Math.max(1.0, velocity.length());
                 if (type.getType() == Material.FIREWORK_ROCKET) {
-                    arrow = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.FIREWORK);
                     FireworkMeta meta = (FireworkMeta) type.getItemMeta();
-                    meta.setPower(0);
-                    ((Firework) arrow).setFireworkMeta(meta);
-                    arrow.setVelocity(sentinel.fixForAcc(start.getValue()));
+                    meta.setPower(3);
+                    arrow = launchStart.getWorld().spawn(launchStart, EntityType.FIREWORK.getEntityClass(), (e) -> {
+                        ((Firework) e).setShotAtAngle(true);
+                        ((Firework) e).setFireworkMeta(meta);
+                        e.setVelocity(velocity);
+                    });
                 }
                 else {
                     Class toShoot;
                     toShoot = type.getType() == Material.SPECTRAL_ARROW ? SpectralArrow.class :
                             (type.getType() == Material.TIPPED_ARROW ? TippedArrow.class : Arrow.class);
-                    arrow = start.getKey().getWorld().spawnArrow(start.getKey(), dir.multiply(1.0 / length), (float) length, 0f, toShoot);
+                    arrow = launchStart.getWorld().spawnArrow(launchStart, velocity.multiply(1.0 / length), (float) length, 0f, toShoot);
                     ((Arrow) arrow).setPickupStatus(Arrow.PickupStatus.DISALLOWED);
                     ((Projectile) arrow).setShooter(getLivingEntity());
                 }
             }
             else {
-                arrow = start.getKey().getWorld().spawnEntity(start.getKey(),
+                arrow = launchStart.getWorld().spawnEntity(launchStart,
                         type.getType() == Material.SPECTRAL_ARROW ? EntityType.SPECTRAL_ARROW :
                                 (type.getType() == Material.TIPPED_ARROW ? TIPPED_ARROW : EntityType.ARROW));
-                arrow.setVelocity(sentinel.fixForAcc(start.getValue()));
+                arrow.setVelocity(velocity);
                 ((Projectile) arrow).setShooter(getLivingEntity());
             }
             if (arrow instanceof TippedArrow && type.getItemMeta() instanceof PotionMeta) {
@@ -112,9 +129,9 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
             }
         }
         else {
-            arrow = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.ARROW);
+            arrow = launchStart.getWorld().spawnEntity(launchStart, EntityType.ARROW);
             ((Projectile) arrow).setShooter(getLivingEntity());
-            arrow.setVelocity(sentinel.fixForAcc(start.getValue()));
+            arrow.setVelocity(velocity);
         }
         if (getNPC().getTrait(Inventory.class).getContents()[0].containsEnchantment(Enchantment.ARROW_FIRE)) {
             arrow.setFireTicks(10000);
