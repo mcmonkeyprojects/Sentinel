@@ -66,6 +66,16 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
     }
 
     /**
+     * Returns whether the NPC should avoid a specific entity.
+     */
+    public boolean shouldAvoid(LivingEntity entity) {
+        if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            return false;
+        }
+        return isAvoided(entity) && !isIgnored(entity);
+    }
+
+    /**
      * The set of all current targets for this NPC.
      */
     public HashSet<SentinelCurrentTarget> currentTargets = new HashSet<>();
@@ -258,7 +268,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             if (!canSee((LivingEntity) entity) && !targetingHelper.currentAvoids.contains(tempTarget)) {
                 continue;
             }
-            if (targetingHelper.currentAvoids.contains(tempTarget) || isAvoided((LivingEntity) entity)) {
+            if (targetingHelper.currentAvoids.contains(tempTarget) || shouldAvoid((LivingEntity) entity)) {
                 avoidanceList.add((LivingEntity) entity);
                 targetingHelper.addAvoid(entity.getUniqueId());
             }
