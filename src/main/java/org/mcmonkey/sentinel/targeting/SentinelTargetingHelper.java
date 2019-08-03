@@ -268,7 +268,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             if (!canSee((LivingEntity) entity) && !targetingHelper.currentAvoids.contains(tempTarget)) {
                 continue;
             }
-            if (targetingHelper.currentAvoids.contains(tempTarget) || shouldAvoid((LivingEntity) entity)) {
+            if (shouldAvoid((LivingEntity) entity)) {
                 avoidanceList.add((LivingEntity) entity);
                 targetingHelper.addAvoid(entity.getUniqueId());
             }
