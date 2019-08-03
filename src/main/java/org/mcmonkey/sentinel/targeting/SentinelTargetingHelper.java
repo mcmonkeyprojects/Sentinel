@@ -297,7 +297,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
     public Location findBestRunSpot() {
         if (sentinel.avoidReturnPoint != null
                 && sentinel.avoidReturnPoint.getWorld().equals(getLivingEntity().getWorld())) {
-            return sentinel.avoidReturnPoint;
+            return sentinel.avoidReturnPoint.clone();
         }
         Location pos = sentinel.getGuardZone();
         if (!pos.getWorld().equals(getLivingEntity().getWorld())) {
@@ -322,7 +322,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             if (SentinelPlugin.debugMe) {
                 sentinel.debug("Threats are getting close... holding my post.");
             }
-            return pos;
+            return pos.clone();
         }
         return runDirection(pos);
     }
