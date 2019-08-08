@@ -18,7 +18,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ### Update Warnings
 
-- Sentinel 1.7 **changes the API** structure of Sentinel - and adds documentation and **JavaDocs**, which can be found here: https://ci.citizensnpcs.co/job/Sentinel/javadoc/
+- Sentinel 1.7 **changes the API** structure of Sentinel - and adds documentation and **JavaDocs**, which can be found here: https://ci.citizensnpcs.co/job/Sentinel/javadoc/overview-summary.html
     - Save data structure is also changed in the 1.7 updates.
     - If you need a pre-API rewrite version of Sentinel, you can get the last version of Sentinel (1.6.2) here: https://ci.citizensnpcs.co/job/Sentinel/191/
 - Sentinel 1.7.2 is the last version that contained the **Sentry importer**. If you need to import old Sentry data, you must use a 1.7.2 build.
