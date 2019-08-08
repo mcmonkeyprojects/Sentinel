@@ -238,6 +238,12 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
     - Extend the class (with your own custom class) and implement whichever methods you need. See samples of integrations available here: https://github.com/mcmonkeyprojects/Sentinel/tree/master/src/main/java/org/mcmonkey/sentinel/integration
     - Within your plugin's `onEnable`, Register the class by calling `SentinelPlugin.registerIntegration(new YourIntegration());` where `YourIntegration` is the integration class you created.
 - You might also benefit from events like the `SentinelAttackEvent` https://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/events/package-summary.html
+- Samples of a few common basic operations:
+    - Check if NPC is a Sentinel: `if (npc.hasTrait(SentinelTrait.class)) { ...`
+    - Get the Sentinel trait from an NPC: `SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);`
+    - Add a target to a Sentinel: `new SentinelTargetLabel("monsters").addToList(sentinel.allTargets);`
+    - Set the Sentinel NPC's max health: `sentinel.setHealth(500);`
+    - Set the Sentinel NPC's damage output: `sentinel.damage = 10;`
 - If you're lost, feel free to ask for help using the help channels listed below.
 
 ### Need help using Sentinel? Try one of these places:
