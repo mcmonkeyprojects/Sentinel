@@ -104,8 +104,8 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
                     toShoot = type.getType() == Material.SPECTRAL_ARROW ? SpectralArrow.class :
                             (type.getType() == Material.TIPPED_ARROW ? TippedArrow.class : Arrow.class);
                     arrow = launchStart.getWorld().spawnArrow(launchStart, velocity.multiply(1.0 / length), (float) length, 0f, toShoot);
-                    ((Arrow) arrow).setPickupStatus(Arrow.PickupStatus.DISALLOWED);
                     ((Projectile) arrow).setShooter(getLivingEntity());
+                    ((Arrow) arrow).setPickupStatus(Arrow.PickupStatus.DISALLOWED);
                 }
             }
             else {
