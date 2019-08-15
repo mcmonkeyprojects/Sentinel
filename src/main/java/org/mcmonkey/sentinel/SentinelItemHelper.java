@@ -220,14 +220,18 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns the item held by an NPC.
      */
     public ItemStack getHeldItem() {
-        if (!getNPC().hasTrait(Inventory.class)) {
-            if (!getNPC().isSpawned()) {
-                return null;
-            }
-            return SentinelUtilities.getHeldItem(getLivingEntity());
+        if (!getNPC().isSpawned()) {
+            return null;
         }
-        // Note: this allows entities that don't normally have equipment to still 'hold' weapons (eg a cow can hold a bow)
-        return getNPC().getTrait(Inventory.class).getContents()[0];
+        ItemStack stack = SentinelUtilities.getHeldItem(getLivingEntity());
+        if (stack != null && stack.getType() != Material.AIR) {
+            return stack;
+        }
+        if (getNPC().hasTrait(Inventory.class)) {
+            // Note: this allows entities that don't normally have equipment to still 'hold' weapons (eg a cow can hold a bow)
+            return getNPC().getTrait(Inventory.class).getContents()[0];
+        }
+        return null;
     }
 
     /**

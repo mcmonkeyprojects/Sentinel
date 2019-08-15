@@ -1,6 +1,5 @@
 package org.mcmonkey.sentinel;
 
-import net.citizensnpcs.api.trait.trait.Inventory;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -133,7 +132,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
             ((Projectile) arrow).setShooter(getLivingEntity());
             arrow.setVelocity(velocity);
         }
-        if (getNPC().getTrait(Inventory.class).getContents()[0].containsEnchantment(Enchantment.ARROW_FIRE)) {
+        if (sentinel.itemHelper.getHeldItem().containsEnchantment(Enchantment.ARROW_FIRE)) {
             arrow.setFireTicks(10000);
         }
         sentinel.useItem();
