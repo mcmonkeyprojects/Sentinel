@@ -652,6 +652,9 @@ public class SentinelTrait extends Trait {
     private EntityDamageByEntityEvent damageDeDup = null;
 
     public void whenAttacksHappened(EntityDamageByEntityEvent event) {
+        if (!npc.isSpawned()) {
+            return;
+        }
         if (event.isCancelled()) {
             return;
         }
