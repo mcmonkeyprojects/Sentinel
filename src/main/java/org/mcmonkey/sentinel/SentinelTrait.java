@@ -1031,8 +1031,9 @@ public class SentinelTrait extends Trait {
     public void pathTo(Location target) {
         pauseWaypoints();
         pathingTo = target;
-        npc.getNavigator().getDefaultParameters().distanceMargin(1.5);
         getNPC().getNavigator().setTarget(target);
+        npc.getNavigator().getLocalParameters().distanceMargin(1.5);
+        npc.getNavigator().getLocalParameters().speedModifier((float) speed);
         chasing = null;
         needsSafeReturn = true;
     }
