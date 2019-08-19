@@ -32,7 +32,6 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                 && SentinelUtilities.getTargetFor(getNPC().getNavigator().getEntityTarget()).getUniqueId().equals(entity.getUniqueId())) {
             return;
         }
-        getNPC().getNavigator().getDefaultParameters().stuckAction(null);
         /*
         Location goal = entity.getLocation().clone().add(entity.getVelocity().clone());
         npc.getNavigator().setTarget(goal);
@@ -46,6 +45,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         else {
             getNPC().getNavigator().setTarget(entity, false);
         }
+        getNPC().getNavigator().getLocalParameters().stuckAction(null);
         getNPC().getNavigator().getLocalParameters().speedModifier((float) sentinel.speed);
     }
 
