@@ -100,16 +100,6 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         target.ticksLeft = SentinelPlugin.instance.runAwayTime;
         currentAvoids.remove(target);
         currentAvoids.add(target);
-        if (sentinel.squad != null) {
-            for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                if (npc.hasTrait(SentinelTrait.class)) {
-                    SentinelTrait squadMade = npc.getTrait(SentinelTrait.class);
-                    if (squadMade.squad != null && squadMade.squad.equals(sentinel.squad)) {
-                        addTargetNoBounce(id);
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -127,6 +117,16 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         target.ticksLeft = sentinel.enemyTargetTime;
         currentTargets.remove(target);
         currentTargets.add(target);
+        if (sentinel.squad != null) {
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                if (npc.hasTrait(SentinelTrait.class)) {
+                    SentinelTrait squadMade = npc.getTrait(SentinelTrait.class);
+                    if (squadMade.squad != null && squadMade.squad.equals(sentinel.squad)) {
+                        addTargetNoBounce(id);
+                    }
+                }
+            }
+        }
     }
 
     /**
