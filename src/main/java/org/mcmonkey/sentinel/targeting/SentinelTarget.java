@@ -339,7 +339,7 @@ public class SentinelTarget {
             // Bow
             BOW_MATERIALS.add(getMaterial("BOW"));
             // Helmet
-            addAllMaterials(HELMET_MATERIALS, "DIAMOND_HELMET", "GOLDEN_HELMET", "IRON_HELMET", "LEATHER_HELMET", "CHAINMAIL_HELMET");
+            addAllMaterials(HELMET_MATERIALS, "DIAMOND_HELMET", "GOLDEN_HELMET", "IRON_HELMET", "LEATHER_HELMET", "CHAINMAIL_HELMET", "TURTLE_HELMET");
             ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("DIAMOND_HELMET"), 0.12);
             ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("GOLDEN_HELMET"), 0.08);
             ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("IRON_HELMET"), 0.08);
