@@ -202,7 +202,7 @@ These are all valid targets and ignores:
     - Skulls (Dangerous wither skull explosions!)
     - CrackShot guns!
 - Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
-- Sentinels will guard a point or path if either is set using the command "`/npc path`"
+- Sentinels will guard a point or path if either is set using the command "`/npc path`". This means they will still within their chaserange of that point or path, and return to it when out of combat.
 - To make a ghast or blaze fire fireballs, give them a blazerod!
 - Damage value for a Sentinel NPC can be set to "-1" to auto-calculate from held item (otherwise, it will used as a raw HP damage amount).
 - Armor value can be set to "-1" to auto-calculate from equipped armor (otherwise, set a value between 0.0 and 1.0 to indicate how much of any damage will be blocked).
