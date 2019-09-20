@@ -80,7 +80,11 @@ Sentinel is integrated into by external plugins as well, including:
 
 - Denizen (using Depenizen as a bridge), for scriptable targeting!
     - Use held_denizen_item:DENIZEN_ITEM_NAME for targeting based on targets holding a Denizen item
-    - or use denizen_proc:PROCEDURE_SCRIPT_NAME to fire a procedure script with first procedure context (named 'entity' by default) being the entity that might be a target. Determine 'true' or 'false' to indicate whether the entity is a target.
+    - or use denizen_proc:PROCEDURE_SCRIPT_NAME to fire a procedure script
+        - First procedure context (named 'entity' by default) is the entity that might be a target.
+        - Second procedure context (named 'context' by default) is the optional user-input context info.
+            - To use this, do: denizen_proc:PROCEDURE_SCRIPT_NAME:SOME_CONTEXT_HERE
+        - Determine 'true' or 'false' to indicate whether the entity is a target.
 
 ### Commands
 
