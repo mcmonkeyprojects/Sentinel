@@ -73,6 +73,19 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     public ArrayList<SentinelTrait> currentSentinelNPCs = new ArrayList<>();
 
     /**
+     * Cleans and returns the current Sentinel NPC list.
+     */
+    public ArrayList<SentinelTrait> cleanCurrentList() {
+        ArrayList<SentinelTrait> npcs = SentinelPlugin.instance.currentSentinelNPCs;
+        for (int i = 0; i < npcs.size(); i++) {
+            if (!npcs.get(i).validateOnList()) {
+                i--;
+            }
+        }
+        return npcs;
+    }
+
+    /**
      * Permissions handler.
      */
     public Permission vaultPerms;

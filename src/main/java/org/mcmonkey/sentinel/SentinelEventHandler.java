@@ -20,17 +20,9 @@ import java.util.UUID;
 
 public class SentinelEventHandler implements Listener {
 
-    /**
-     * Cleans the current Sentinel NPC list.
-     */
-    public ArrayList<SentinelTrait> cleanCurrentList() {
-        ArrayList<SentinelTrait> npcs = SentinelPlugin.instance.currentSentinelNPCs;
-        for (int i = 0; i < npcs.size(); i++) {
-            if (!npcs.get(i).validateOnList()) {
-                i--;
-            }
-        }
-        return npcs;
+
+    private ArrayList<SentinelTrait> cleanCurrentList() {
+        return SentinelPlugin.instance.cleanCurrentList();
     }
 
     /**

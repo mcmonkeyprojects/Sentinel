@@ -118,12 +118,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         currentTargets.remove(target);
         currentTargets.add(target);
         if (sentinel.squad != null) {
-            for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                if (npc.hasTrait(SentinelTrait.class)) {
-                    SentinelTrait squadMade = npc.getTrait(SentinelTrait.class);
-                    if (squadMade.squad != null && squadMade.squad.equals(sentinel.squad)) {
-                        addTargetNoBounce(id);
-                    }
+            for (SentinelTrait squadMate : SentinelPlugin.instance.cleanCurrentList()) {
+                if (squadMate.squad != null && squadMate.squad.equals(sentinel.squad)) {
+                    squadMate.targetingHelper.addTargetNoBounce(id);
                 }
             }
         }
@@ -138,12 +135,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         target.targetID = id;
         boolean removed = removeTargetNoBounce(target);
         if (removed && sentinel.squad != null) {
-            for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                if (npc.hasTrait(SentinelTrait.class)) {
-                    SentinelTrait squadMade = npc.getTrait(SentinelTrait.class);
-                    if (squadMade.squad != null && squadMade.squad.equals(sentinel.squad)) {
-                        sentinel.targetingHelper.removeTargetNoBounce(target);
-                    }
+            for (SentinelTrait squadMate : SentinelPlugin.instance.cleanCurrentList()) {
+                if (squadMate.squad != null && squadMate.squad.equals(sentinel.squad)) {
+                    squadMate.targetingHelper.removeTargetNoBounce(target);
                 }
             }
         }
@@ -434,6 +428,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
                     wasLos = hasLos;
                 }
             }
+        }
+        if (closest != null) {
+            addTarget(closest.getUniqueId());
         }
         return closest;
     }
