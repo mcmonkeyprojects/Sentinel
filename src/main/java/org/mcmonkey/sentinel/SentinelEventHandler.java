@@ -109,22 +109,20 @@ public class SentinelEventHandler implements Listener {
         if (event.isCancelled()) {
             return;
         }
+        Entity damager = event.getDamager();
+        if (event.getDamager() instanceof Projectile) {
+            ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
+            if (source instanceof Entity) {
+                damager = (Entity) source;
+            }
+        }
         SentinelTrait victim = SentinelUtilities.tryGetSentinel(event.getEntity());
         if (victim != null) {
             victim.whenAttacksHappened(event);
         }
-        SentinelTrait attacker = SentinelUtilities.tryGetSentinel(event.getDamager());
+        SentinelTrait attacker = SentinelUtilities.tryGetSentinel(damager);
         if (attacker != null) {
             attacker.whenAttacksHappened(event);
-        }
-        if (event.getDamager() instanceof Projectile) {
-            ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
-            if (source instanceof Entity) {
-                SentinelTrait shooter = SentinelUtilities.tryGetSentinel((Entity) source);
-                if (shooter != null) {
-                    shooter.whenAttacksHappened(event);
-                }
-            }
         }
         for (SentinelTrait sentinel : cleanCurrentList()) {
             UUID guarding = sentinel.getGuarding();
@@ -132,15 +130,15 @@ public class SentinelEventHandler implements Listener {
                 sentinel.whenAttacksHappened(event);
             }
         }
-        if (event.getDamager() instanceof LivingEntity) {
-            LivingEntity damager = (LivingEntity) event.getDamager();
+        if (damager instanceof LivingEntity) {
+            LivingEntity damagerLiving = (LivingEntity) damager;
             for (SentinelTrait sentinel : cleanCurrentList()) {
                 if (sentinel.allTargets.isEventTarget(event)
-                        && sentinel.targetingHelper.canSee(damager) && !sentinel.targetingHelper.isIgnored(damager)) {
+                        && sentinel.targetingHelper.canSee(damagerLiving) && !sentinel.targetingHelper.isIgnored(damagerLiving)) {
                     sentinel.targetingHelper.addTarget(damager.getUniqueId());
                 }
                 if (sentinel.allAvoids.isEventTarget(event)
-                        && sentinel.targetingHelper.canSee(damager) && !sentinel.targetingHelper.isIgnored(damager)) {
+                        && sentinel.targetingHelper.canSee(damagerLiving) && !sentinel.targetingHelper.isIgnored(damagerLiving)) {
                     sentinel.targetingHelper.addAvoid(damager.getUniqueId());
                 }
             }
