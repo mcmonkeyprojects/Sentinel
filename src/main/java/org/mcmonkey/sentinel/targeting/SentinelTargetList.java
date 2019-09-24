@@ -5,10 +5,13 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.api.util.DataKey;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.projectiles.ProjectileSource;
 import org.mcmonkey.sentinel.SentinelIntegration;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
@@ -295,37 +298,44 @@ public class SentinelTargetList {
      * Returns whether the damager in a damage event is targeted by this list.
      */
     public boolean isEventTarget(EntityDamageByEntityEvent event) {
-        if (CitizensAPI.getNPCRegistry().isNPC(event.getDamager())) {
+        Entity damager = event.getDamager();
+        if (event.getDamager() instanceof Projectile) {
+            ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
+            if (source instanceof Entity) {
+                damager = (Entity) source;
+            }
+        }
+        if (CitizensAPI.getNPCRegistry().isNPC(damager)) {
             return false;
         }
         for (String evt : byEvent) {
             if (evt.equals("pvp")
                     && event.getEntity() instanceof Player
-                    && event.getDamager() instanceof Player
+                    && damager instanceof Player
                     && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
                 return true;
             }
             else if (evt.equals("pve")
                     && !(event.getEntity() instanceof Player)
-                    && event.getDamager() instanceof Player
+                    && damager instanceof Player
                     && event.getEntity() instanceof LivingEntity) {
                 return true;
             }
             else if (evt.equals("eve")
-                    && !(event.getDamager() instanceof Player)
+                    && !(damager instanceof Player)
                     && !(event.getEntity() instanceof Player)
                     && event.getEntity() instanceof LivingEntity) {
                 return true;
             }
             else if (evt.equals("pvnpc")
                     && event.getEntity() instanceof LivingEntity
-                    && event.getDamager() instanceof Player
+                    && damager instanceof Player
                     && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
                 return true;
             }
             else if (evt.equals("pvsentinel")
                     && event.getEntity() instanceof LivingEntity
-                    && event.getDamager() instanceof Player
+                    && damager instanceof Player
                     && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
                     && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).hasTrait(SentinelTrait.class)) {
                 return true;
@@ -337,7 +347,7 @@ public class SentinelTargetList {
                 if (prefix.equals("pv")) {
                     SentinelTarget target = SentinelTarget.forName(value);
                     if (target != null) {
-                        if (event.getDamager() instanceof Player
+                        if (damager instanceof Player
                                 && event.getEntity() instanceof LivingEntity
                                 && target.isTarget((LivingEntity) event.getEntity())) {
                             return true;
@@ -347,7 +357,7 @@ public class SentinelTargetList {
                 else if (prefix.equals("ev")) {
                     SentinelTarget target = SentinelTarget.forName(value);
                     if (target != null) {
-                        if (!(event.getDamager() instanceof Player)
+                        if (!(damager instanceof Player)
                                 && event.getEntity() instanceof LivingEntity
                                 && target.isTarget((LivingEntity) event.getEntity())) {
                             return true;
