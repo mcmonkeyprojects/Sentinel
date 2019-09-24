@@ -105,6 +105,20 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
                     arrow = launchStart.getWorld().spawnArrow(launchStart, velocity.multiply(1.0 / length), (float) length, 0f, toShoot);
                     ((Projectile) arrow).setShooter(getLivingEntity());
                     ((Arrow) arrow).setPickupStatus(Arrow.PickupStatus.DISALLOWED);
+                    if (type.getItemMeta() instanceof PotionMeta) {
+                        PotionData data = ((PotionMeta) type.getItemMeta()).getBasePotionData();
+                        if (data.getType() == null || data.getType() == PotionType.UNCRAFTABLE) {
+                            if (SentinelPlugin.debugMe) {
+                                sentinel.debug("Potion data '" + data + "' for '" + type.toString() + "' is invalid.");
+                            }
+                        }
+                        else {
+                            ((Arrow) arrow).setBasePotionData(data);
+                            for (PotionEffect effect : ((PotionMeta) type.getItemMeta()).getCustomEffects()) {
+                                ((Arrow) arrow).addCustomEffect(effect, true);
+                            }
+                        }
+                    }
                 }
             }
             else {
@@ -113,18 +127,6 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
                                 (type.getType() == Material.TIPPED_ARROW ? TIPPED_ARROW : EntityType.ARROW));
                 arrow.setVelocity(velocity);
                 ((Projectile) arrow).setShooter(getLivingEntity());
-            }
-            if (arrow instanceof TippedArrow && type.getItemMeta() instanceof PotionMeta) {
-                PotionData data = ((PotionMeta) type.getItemMeta()).getBasePotionData();
-                if (data.getType() == null || data.getType() == PotionType.UNCRAFTABLE) {
-                    // TODO: Perhaps a **single** warning?
-                }
-                else {
-                    ((TippedArrow) arrow).setBasePotionData(data);
-                    for (PotionEffect effect : ((PotionMeta) type.getItemMeta()).getCustomEffects()) {
-                        ((TippedArrow) arrow).addCustomEffect(effect, true);
-                    }
-                }
             }
         }
         else {

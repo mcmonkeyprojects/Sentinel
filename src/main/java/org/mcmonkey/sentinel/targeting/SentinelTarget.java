@@ -45,7 +45,7 @@ public class SentinelTarget {
             IRON_GOLEMS = new SentinelTarget(new EntityType[]{EntityType.IRON_GOLEM}, "IRON_GOLEM", "IRONGOLEM"),
             SQUIDS = new SentinelTarget(new EntityType[]{EntityType.SQUID}, "SQUID"),
             VILLAGER = new SentinelTarget(new EntityType[]{EntityType.VILLAGER}, "VILLAGER"),
-            WOLF = new SentinelTarget(new EntityType[]{EntityType.WOLF}, "WOLF"),
+            WOLF = new SentinelTarget(new EntityType[]{EntityType.WOLF}, "WOLF", "WOLVE"),
             SNOWMEN = new SentinelTarget(new EntityType[]{EntityType.SNOWMAN}, "SNOWMAN", "SNOWMEN"),
             WITCH = new SentinelTarget(new EntityType[]{EntityType.WITCH}, "WITCH"),
             GUARDIANS = new SentinelTarget(new EntityType[]{EntityType.GUARDIAN}, "GUARDIAN"),
