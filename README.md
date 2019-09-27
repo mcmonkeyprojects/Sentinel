@@ -173,6 +173,8 @@ These are all valid targets and ignores:
 - Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)
 - Also, event:pvp/pvnpc/pve/pv:<entity>/pvsentinel/guarded_fight/eve/ev:<entity>
 - Also, event:message:SOMETEXT will match chat messages that contain 'sometext'.
+- Also, status:STATUS_TYPE. Current status types:
+    - "status:angry" for mobs (wolves, endermen, spiders, etc.) that are currently angry. This is handy with a combo like "allinone:enderman|status:angry"
 - Also, via internal sample integrations: sbteam:SCOREBOARD\_TEAM\_HERE, healthabove:PERCENTAGE and healthbelow:PERCENTAGE, permission:PERM.KEY, squad:SENTINEL\_SQUAD\_NAME, uuid:UUID
 - Also anything listed in the integrations section above!
 - You can also add multi-targets - that is, `multi:TARGET_ONE,TARGET_TWO,...` to have multiple targets required together.

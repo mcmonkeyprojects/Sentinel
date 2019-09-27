@@ -30,6 +30,7 @@ public class SentinelTargetCommands {
         sender.sendMessage(SentinelCommand.prefixGood + "Valid targets: " + valid.substring(0, valid.length() - 2));
         sender.sendMessage(SentinelCommand.prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX),"
                 + "helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)");
+        sender.sendMessage(SentinelCommand.prefixGood + "Also: status:ANGRY");
         sender.sendMessage(SentinelCommand.prefixGood + "Also allowed: event:" + String.join("/", SentinelPlugin.validEventTargets));
         for (SentinelIntegration si : SentinelPlugin.integrations) {
             if (si.getTargetHelp().length() > 0) {
@@ -46,8 +47,8 @@ public class SentinelTargetCommands {
         any = any | outputTargetsList(sender, prefixType + " by Entity Name", list.byEntityName);
         any = any | outputTargetsList(sender, prefixType + " by Held Item", list.byHeldItem);
         any = any | outputTargetsList(sender, prefixType + " by Permissions Group", list.byGroup);
-        any = any | outputTargetsList(sender, prefixType + " by Held Item", list.byHeldItem);
         any = any | outputTargetsList(sender, prefixType + " by Event", list.byEvent);
+        any = any | outputTargetsList(sender, prefixType + " by Status", list.byStatus);
         any = any | outputTargetsList(sender, prefixType + " by Other", list.byOther);
         if (!list.byAllInOne.isEmpty()) {
             for (int i = 0; i < list.byAllInOne.size(); i++) {

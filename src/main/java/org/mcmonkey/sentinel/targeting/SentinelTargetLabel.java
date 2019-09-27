@@ -119,6 +119,9 @@ public class SentinelTargetLabel {
         else if (prefix.equals("event")) {
             return listSet.byEvent;
         }
+        else if (prefix.equals("status")) {
+            return listSet.byStatus;
+        }
         else if (prefix.equals("multi")) {
             return null;
         }

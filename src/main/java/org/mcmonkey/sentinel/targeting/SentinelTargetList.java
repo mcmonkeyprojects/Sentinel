@@ -5,10 +5,7 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.api.util.DataKey;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.projectiles.ProjectileSource;
@@ -37,6 +34,7 @@ public class SentinelTargetList {
         result.byHeldItem.addAll(byHeldItem);
         result.byGroup.addAll(byGroup);
         result.byEvent.addAll(byEvent);
+        result.byStatus.addAll(byStatus);
         result.byOther.addAll(byOther);
         result.byMultiple.addAll(byMultiple);
         result.byAllInOne.addAll(byAllInOne);
@@ -127,6 +125,9 @@ public class SentinelTargetList {
             }
         }
         else if (SentinelUtilities.isRegexTargeted(entity.getCustomName() == null ? entity.getType().name() : entity.getCustomName(), byEntityName)) {
+            return true;
+        }
+        if (byStatus.contains("ANGRY") && entity instanceof Mob && ((Mob) entity).getTarget() != null) {
             return true;
         }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
@@ -459,7 +460,7 @@ public class SentinelTargetList {
      */
     public int totalTargetsCount() {
         return targets.size() + byPlayerName.size() + byNpcName.size() + byEntityName.size()
-                + byHeldItem.size() + byGroup.size() + byEvent.size() + byOther.size() + byAllInOne.size();
+                + byHeldItem.size() + byGroup.size() + byEvent.size() + byStatus.size() + byOther.size() + byAllInOne.size();
     }
 
     private static void addList(StringBuilder builder, ArrayList<String> strs, String prefix) {
@@ -485,6 +486,7 @@ public class SentinelTargetList {
         addList(sb, byHeldItem, "helditem");
         addList(sb, byGroup, "group");
         addList(sb, byEvent, "event");
+        addList(sb, byStatus, "status");
         addList(sb, byOther, null);
         if (!byAllInOne.isEmpty()) {
             for (SentinelTargetList list : byAllInOne) {
@@ -558,6 +560,12 @@ public class SentinelTargetList {
      */
     @Persist("byEvent")
     public ArrayList<String> byEvent = new ArrayList<>();
+
+    /**
+     * List of targets handled by special status.
+     */
+    @Persist("byStatus")
+    public ArrayList<String> byStatus = new ArrayList<>();
 
     /**
      * List of targets not handled by any other target type list.
