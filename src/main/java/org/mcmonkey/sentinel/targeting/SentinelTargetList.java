@@ -212,6 +212,10 @@ public class SentinelTargetList {
                 return true;
             }
         }
+        if (byStatus.contains("ANGRY") && entity instanceof Mob && ((Mob) entity).getTarget() != null) {
+            byStatus.remove("ANGRY");
+            return true;
+        }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
         for (SentinelTarget poss : possible) {
             if (targetsProcessed.contains(poss)) {
