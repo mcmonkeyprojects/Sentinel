@@ -130,6 +130,9 @@ public class SentinelTargetList {
         if (byStatus.contains("ANGRY") && entity instanceof Mob && ((Mob) entity).getTarget() != null) {
             return true;
         }
+        if (byStatus.contains("PASSIVE") && entity instanceof Mob && ((Mob) entity).getTarget() == null) {
+            return true;
+        }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
         for (SentinelTarget poss : possible) {
             if (targetsProcessed.contains(poss)) {
@@ -214,6 +217,10 @@ public class SentinelTargetList {
         }
         if (byStatus.contains("ANGRY") && entity instanceof Mob && ((Mob) entity).getTarget() != null) {
             byStatus.remove("ANGRY");
+            return true;
+        }
+        if (byStatus.contains("PASSIVE") && entity instanceof Mob && ((Mob) entity).getTarget() == null) {
+            byStatus.remove("PASSIVE");
             return true;
         }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
