@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -23,6 +24,33 @@ public class SentinelEventHandler implements Listener {
 
     private ArrayList<SentinelTrait> cleanCurrentList() {
         return SentinelPlugin.instance.cleanCurrentList();
+    }
+
+    /**
+     * Called when a projectile hits a block, to auto-remove Sentinel-fired arrows quickly.
+     */
+    @EventHandler
+    public void onProjectileHitsBlock(ProjectileHitEvent event) {
+        if (SentinelPlugin.instance.arrowCleanupTime <= 0) {
+            return;
+        }
+        final Projectile projectile = event.getEntity();
+        ProjectileSource source = projectile.getShooter();
+        if (!(source instanceof Entity)) {
+            return;
+        }
+        SentinelTrait sentinel = SentinelUtilities.tryGetSentinel((Entity) source);
+        if (sentinel == null) {
+            return;
+        }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, new Runnable() {
+            @Override
+            public void run() {
+                if (projectile.isValid()) {
+                    projectile.remove();
+                }
+            }
+        }, SentinelPlugin.instance.arrowCleanupTime);
     }
 
     /**

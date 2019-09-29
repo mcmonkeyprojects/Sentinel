@@ -83,6 +83,8 @@ random:
         selection range: 4
         # Minimum distance before choosing a new point (relative to guarded player)
         minimum: 7
+    # How long (in ticks) before Sentinel-fired arrows in the ground are cleaned up. Set to 0 to disable cleanup.
+    arrow cleanup time: 200
 
 # How fast to recalculate, in ticks.
 update rate: 10

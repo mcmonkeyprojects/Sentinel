@@ -176,6 +176,11 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
     public boolean noGuardDamage;
 
     /**
+     * Configuration option: time until arrow cleanup.
+     */
+    public int arrowCleanupTime;
+
+    /**
      * Fills the {@code vaultPerms} object if possible.
      */
     public void tryGetPerms() {
@@ -240,6 +245,7 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         runAwayTime = getConfig().getInt("random.run away time");
         maxHealth = getConfig().getDouble("random.max health", 2000);
         noGuardDamage = getConfig().getBoolean("random.no guard damage", true);
+        arrowCleanupTime = getConfig().getInt("random.arrow cleanup time", 200);
         tickRate = getConfig().getInt("update rate", 10);
     }
 
