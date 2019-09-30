@@ -127,10 +127,10 @@ public class SentinelTargetList {
         else if (SentinelUtilities.isRegexTargeted(entity.getCustomName() == null ? entity.getType().name() : entity.getCustomName(), byEntityName)) {
             return true;
         }
-        if (byStatus.contains("ANGRY") && entity instanceof Mob && ((Mob) entity).getTarget() != null) {
+        if (byStatus.contains("angry") && entity instanceof Mob && ((Mob) entity).getTarget() != null) {
             return true;
         }
-        if (byStatus.contains("PASSIVE") && entity instanceof Mob && ((Mob) entity).getTarget() == null) {
+        if (byStatus.contains("passive") && entity instanceof Mob && ((Mob) entity).getTarget() == null) {
             return true;
         }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
@@ -215,12 +215,12 @@ public class SentinelTargetList {
                 return true;
             }
         }
-        if (byStatus.contains("ANGRY") && entity instanceof Mob && ((Mob) entity).getTarget() != null) {
-            byStatus.remove("ANGRY");
+        if (byStatus.contains("angry") && entity instanceof Mob && ((Mob) entity).getTarget() != null) {
+            byStatus.remove("angry");
             return true;
         }
-        if (byStatus.contains("PASSIVE") && entity instanceof Mob && ((Mob) entity).getTarget() == null) {
-            byStatus.remove("PASSIVE");
+        if (byStatus.contains("passive") && entity instanceof Mob && ((Mob) entity).getTarget() == null) {
+            byStatus.remove("passive");
             return true;
         }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());

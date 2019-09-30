@@ -37,7 +37,14 @@ public class SentinelTargetLabel {
      * All default prefixes (anything else handled by an integration object).
      */
     public static HashSet<String> corePrefixes = new HashSet<>(
-            Arrays.asList("player", "npc", "entityname", "helditem", "group", "event", "multi", "allinone")
+            Arrays.asList("player", "npc", "entityname", "helditem", "group", "status", "event", "multi", "allinone")
+    );
+
+    /**
+     * Prefixes that expect lowercased values.
+     */
+    public static HashSet<String> autoLowercasePrefixes = new HashSet<>(
+            Arrays.asList("status", "event")
     );
 
     /**
@@ -258,6 +265,9 @@ public class SentinelTargetLabel {
             value = label.substring(index + 1);
             isRegex = regexPrefixes.contains(prefix);
             value = ChatColor.translateAlternateColorCodes('&', value);
+            if (autoLowercasePrefixes.contains(prefix)) {
+                value = value.toLowerCase();
+            }
         }
         else {
             value = label.toUpperCase();
