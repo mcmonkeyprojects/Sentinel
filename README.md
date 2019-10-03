@@ -115,6 +115,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel range RANGE - Sets the NPC's maximum attack range.
     - /sentinel damage DAMAGE - Sets the NPC's attack damage.
     - /sentinel weapondamage MATERIAL DAMAGE - Sets the NPC's attack damage for a specific weapon material.
+    - /sentinel weaponredirect MATERIAL_ONE MATERIAL_TWO  - Sets the NPC to treat material one as though it's material two.
     - /sentinel armor ARMOR - Sets the NPC's armor level.
     - /sentinel health HEALTH - Sets the NPC's health level.
     - /sentinel attackrate RATE ['ranged'] - Changes the rate at which the NPC attacks, in seconds. Either ranged or close modes.

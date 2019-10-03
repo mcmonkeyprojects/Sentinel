@@ -485,6 +485,12 @@ public class SentinelTrait extends Trait {
     public HashMap<String, Double> weaponDamage = new HashMap<>();
 
     /**
+     * Map of held weapon material names to redirect 'work like' material names.
+     */
+    @Persist("weapon_redirect_map")
+    public HashMap<String, String> weaponRedirects = new HashMap<>();
+
+    /**
      * The target entity this NPC is chasing (if any).
      */
     public LivingEntity chasing = null;

@@ -200,6 +200,36 @@ public class SentinelAttackCommands {
         }
     }
 
+    @Command(aliases = {"sentinel"}, usage = "weaponredirect MATERIAL_ONE MATERIAL_TWO",
+            desc = "Sets the NPC to treat material one as though it's material two.",
+            modifiers = {"weaponredirect"}, permission = "sentinel.weaponredirect", min = 2, max = 3)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void weaponRedirect(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        String weaponOne = args.getString(1).toLowerCase();
+        try {
+            Material.valueOf(weaponOne.toUpperCase());
+        }
+        catch (IllegalArgumentException ex) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid weapon-one material (name misspelled?)");
+            return;
+        }
+        if (args.argsLength() <= 2) {
+            String redirect = sentinel.weaponRedirects.get(weaponOne);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current weapon redirect for '" + weaponOne + "': " + ChatColor.AQUA + (redirect == null ? "Unset" : redirect));
+            return;
+        }
+        String weaponTwo = args.getString(2).toLowerCase();
+        try {
+            Material.valueOf(weaponTwo.toUpperCase());
+        }
+        catch (IllegalArgumentException ex) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid weapon-two material (name misspelled?)");
+            return;
+        }
+        sentinel.weaponRedirects.put(weaponOne, weaponTwo);
+        sender.sendMessage(SentinelCommand.prefixGood + "Weapon redirect set!");
+    }
+
     @Command(aliases = {"sentinel"}, usage = "safeshot ['true'/'false']",
             desc = "Toggles whether the NPC will avoid damaging non-targets.",
             modifiers = {"safeshot"}, permission = "sentinel.safeshot", min = 1, max = 2)

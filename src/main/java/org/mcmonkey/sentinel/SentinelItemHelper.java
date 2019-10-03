@@ -217,6 +217,23 @@ public class SentinelItemHelper extends SentinelHelperObject {
     }
 
     /**
+     * Processes weapon redirection for an item, returning the redirected item (or an unchanged one).
+     */
+    public ItemStack autoRedirect(ItemStack stack) {
+        if (stack == null) {
+            return null;
+        }
+        String redirect = sentinel.weaponRedirects.get(stack.getType().name().toLowerCase());
+        if (redirect == null) {
+            return stack;
+        }
+        Material mat = Material.valueOf(redirect.toUpperCase());
+        ItemStack newStack = stack.clone();
+        newStack.setType(mat);
+        return newStack;
+    }
+
+    /**
      * Returns the item held by an NPC.
      */
     public ItemStack getHeldItem() {
@@ -225,11 +242,11 @@ public class SentinelItemHelper extends SentinelHelperObject {
         }
         ItemStack stack = SentinelUtilities.getHeldItem(getLivingEntity());
         if (stack != null && stack.getType() != Material.AIR) {
-            return stack;
+            return autoRedirect(stack);
         }
         if (getNPC().hasTrait(Inventory.class)) {
             // Note: this allows entities that don't normally have equipment to still 'hold' weapons (eg a cow can hold a bow)
-            return getNPC().getTrait(Inventory.class).getContents()[0];
+            return autoRedirect(getNPC().getTrait(Inventory.class).getContents()[0]);
         }
         return null;
     }
