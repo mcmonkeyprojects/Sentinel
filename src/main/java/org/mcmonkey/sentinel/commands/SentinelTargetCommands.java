@@ -6,7 +6,6 @@ import net.citizensnpcs.api.command.Requirements;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.mcmonkey.sentinel.SentinelIntegration;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
@@ -18,26 +17,6 @@ import java.util.Collection;
  * Commands related to targeting.
  */
 public class SentinelTargetCommands {
-
-    /**
-     * Shows a list of valid targets to a command sender.
-     */
-    public static void listValidTargets(CommandSender sender) {
-        StringBuilder valid = new StringBuilder();
-        for (String poss : SentinelPlugin.targetOptions.keySet()) {
-            valid.append(poss).append(", ");
-        }
-        sender.sendMessage(SentinelCommand.prefixGood + "Valid targets: " + valid.substring(0, valid.length() - 2));
-        sender.sendMessage(SentinelCommand.prefixGood + "Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX),"
-                + "helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)");
-        sender.sendMessage(SentinelCommand.prefixGood + "Also: status:ANGRY, status:PASSIVE");
-        sender.sendMessage(SentinelCommand.prefixGood + "Also allowed: event:" + String.join("/", SentinelPlugin.validEventTargets));
-        for (SentinelIntegration si : SentinelPlugin.integrations) {
-            if (si.getTargetHelp().length() > 0) {
-                sender.sendMessage(SentinelCommand.prefixGood + "Also: " + si.getTargetHelp());
-            }
-        }
-    }
 
     public static void outputEntireTargetsList(CommandSender sender, SentinelTargetList list, String prefixType) {
         boolean any = false;
@@ -84,8 +63,7 @@ public class SentinelTargetCommands {
 
     public static boolean testLabel(CommandSender sender, SentinelTargetLabel label) {
         if (!label.isValidTarget()) {
-            sender.sendMessage(SentinelCommand.prefixBad + "Invalid target!");
-            listValidTargets(sender);
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid target! See the readme for a list of valid targets.");
             return false;
         }
         if (!label.isValidRegex()) {
