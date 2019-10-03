@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
-**Version 1.9.9**: Compatible with Spigot 1.8.8 through 1.14.4 (Primarily targeted at 1.13.2 and 1.14.4 - see info section below if on other supported versions)
+**Version 2.0.0**: Compatible with Spigot 1.8.8 through 1.14.4 (Primarily targeted at 1.13.2 and 1.14.4 - see info section below if on other supported versions)
 
 ### Downloads
 
@@ -232,7 +232,7 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
         <dependency>
             <groupId>org.mcmonkey</groupId>
             <artifactId>sentinel</artifactId>
-            <version>1.9.9-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
