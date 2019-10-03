@@ -66,6 +66,8 @@ permissions:
       sentinel.chase: true
       # /sentinel drops
       sentinel.drops: true
+      # /sentinel dropchance
+      sentinel.dropchance: true
       # /sentinel spawnpoint
       sentinel.spawnpoint: true
       # /sentinel forgive

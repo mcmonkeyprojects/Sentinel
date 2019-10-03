@@ -170,6 +170,54 @@ public class SentinelHealthCommands {
         ((Player) sender).openInventory(inv);
     }
 
+    @Command(aliases = {"sentinel"}, usage = "dropchance [ID] [CHANCE]",
+            desc = "Changes the chance of a drop.",
+            modifiers = {"dropchance"}, permission = "sentinel.dropchance", min = 1, max = 3)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void dropChance(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() < 3) {
+            if (sentinel.drops.isEmpty()) {
+                sender.sendMessage(SentinelCommand.prefixBad + "No drops currently set on this NPC. Use /sentinel drops");
+                sentinel.dropChances.clear();
+                return;
+            }
+            for (int i = 0; i < sentinel.drops.size(); i++) {
+                double chance = 100.0;
+                if (i < sentinel.dropChances.size()) {
+                    chance = sentinel.dropChances.get(i) * 100.0;
+                }
+                sender.sendMessage(SentinelCommand.prefixGood + "[" + (i + 1) + "]: " + sentinel.drops.get(i).getType().name() + ": " + chance + "%");
+            }
+            return;
+        }
+        int id;
+        double chance;
+        try {
+            id = args.getInteger(1) - 1;
+            chance = args.getDouble(2);
+        }
+        catch (NumberFormatException ex) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Input invalid. Arguments must be an integer then a double - /sentinel dropchance ID CHANCE");
+            return;
+        }
+        if (id < 0 || id >= sentinel.drops.size()) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Input invalid. ID must be a valid listed ID - to see valid IDs, type /sentinel dropchance");
+            return;
+        }
+        if (chance < 0 || chance > 100) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Input invalid. Chance must be from 0 to 100 (percent).");
+            return;
+        }
+        while (sentinel.dropChances.size() > sentinel.drops.size()) {
+            sentinel.dropChances.remove(sentinel.drops.size());
+        }
+        while (sentinel.dropChances.size() < sentinel.drops.size()) {
+            sentinel.dropChances.add(1.0);
+        }
+        sentinel.dropChances.set(id, chance * 0.01);
+        sender.sendMessage(SentinelCommand.prefixGood + "Drop chance for " + sentinel.drops.get(id).getType().name() + " set to " + chance + "%.");
+    }
+
     @Command(aliases = {"sentinel"}, usage = "spawnpoint",
             desc = "Changes the NPC's spawn point to its current location, or removes it if it's already there.",
             modifiers = {"spawnpoint"}, permission = "sentinel.spawnpoint", min = 1, max = 1)

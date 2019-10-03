@@ -389,6 +389,12 @@ public class SentinelTrait extends Trait {
     public ArrayList<ItemStack> drops = new ArrayList<>();
 
     /**
+     * Chances of item drops, matched to the 'drops' list.
+     */
+    @Persist("dropChances")
+    public ArrayList<Double> dropChances = new ArrayList<>();
+
+    /**
      * Whether mob targets killed by the NPC can drop items.
      */
     @Persist("enemyDrops")
@@ -1478,6 +1484,26 @@ public class SentinelTrait extends Trait {
     }
 
     /**
+     * Gets a list of items to drop (factoring in the drop chance values).
+     */
+    public List<ItemStack> getDrops() {
+        if (dropChances.isEmpty()) {
+            return drops;
+        }
+        List<ItemStack> items = new ArrayList<>();
+        for (int i = 0; i < drops.size(); i++) {
+            if (i < dropChances.size()) {
+                double chance = dropChances.get(i);
+                if (SentinelUtilities.random.nextDouble() > chance) {
+                    continue;
+                }
+            }
+            items.add(drops.get(i));
+        }
+        return items;
+    }
+
+    /**
      * Called when the NPC dies.
      */
     public void whenWeDie(EntityDeathEvent event) {
@@ -1489,7 +1515,7 @@ public class SentinelTrait extends Trait {
             ((PlayerDeathEvent) event).setDeathMessage("");
         }
         if (!SentinelPlugin.instance.workaroundDrops) {
-            event.getDrops().addAll(drops);
+            event.getDrops().addAll(getDrops());
         }
         event.setDroppedExp(0);
         generalDeathHandler(event.getEntity());
@@ -1503,7 +1529,7 @@ public class SentinelTrait extends Trait {
             npc.getTrait(CurrentLocation.class).setLocation(spawnPoint.clone());
         }
         if (SentinelPlugin.instance.workaroundDrops) {
-            for (ItemStack item : drops) {
+            for (ItemStack item : getDrops()) {
                 entity.getWorld().dropItemNaturally(entity.getLocation(), item.clone());
             }
         }

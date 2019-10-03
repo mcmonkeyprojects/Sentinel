@@ -121,6 +121,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in seconds.
     - /sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.
     - /sentinel drops - Changes the drops of the current NPC.
+    - /sentinel dropchance [ID] [CHANCE] - Changes the chance of a drop. Use "/sentinel dropchance" to see the drops list with IDs, then do like "/sentinel dropchance 3 50" (that puts a 50% chance on item with ID 3).
     - /sentinel targettime TIME - Sets the NPC's enemy target time limit in seconds.
     - /sentinel speed SPEED - Sets the NPC's movement speed modifier.
     - /sentinel guarddistance MINIMUM_DISTANCE [SELECTION_RANGE] - Sets the NPC's minimum guard distance (how far you must go before the NPC moves to keep up) and selection range (how close it will try to get to you).
@@ -223,7 +224,7 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
 ```xml
         <repository>
             <id>citizens-repo</id>
-            <url>http://repo.citizensnpcs.co</url>
+            <url>https://repo.citizensnpcs.co</url>
         </repository>
 ```
 - And add Sentinel as a `provided` dependency (be sure to change the version to match the current version available):
