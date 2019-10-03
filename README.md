@@ -129,6 +129,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel greeting GREETING - Sets a greeting message for the NPC to say.
     - /sentinel warning WARNING - Sets a warning message for the NPC to say.
     - /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
+    - /sentinel greetrate RATE - Sets how quickly (in seconds) the Sentinel may re-greet any player.
     - /sentinel accuracy OFFSET - Sets the accuracy of an NPC.
     - /sentinel squad SQUAD - Sets the NPC's squad name (null for none).
     - /sentinel reach REACH - Sets the NPC's reach (how far it can punch).

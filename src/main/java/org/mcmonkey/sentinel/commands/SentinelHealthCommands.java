@@ -172,7 +172,7 @@ public class SentinelHealthCommands {
 
     @Command(aliases = {"sentinel"}, usage = "dropchance [ID] [CHANCE]",
             desc = "Changes the chance of a drop.",
-            modifiers = {"dropchance"}, permission = "sentinel.dropchance", min = 1, max = 3)
+            modifiers = {"dropchance"}, permission = "sentinel.drops", min = 1, max = 3)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void dropChance(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() < 3) {

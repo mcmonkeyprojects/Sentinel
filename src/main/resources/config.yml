@@ -44,6 +44,10 @@ sentinel defaults:
     avoid range: 10
     # Whether the NPC should run away when attacked.
     runaway: false
+    # How far away the NPC will greet or warn players from.
+    greet range: 10
+    # How fast the NPC will greet or warn players, in ticks.
+    greet rate: 100
 
 random:
     # How long (in ticks) NPCs should run away for (when hit or told to avoid threats).

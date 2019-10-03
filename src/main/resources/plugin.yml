@@ -64,10 +64,8 @@ permissions:
       sentinel.safeshot: true
       # /sentinel chaseclose, chaseranged
       sentinel.chase: true
-      # /sentinel drops
+      # /sentinel drops, /sentinel dropchance
       sentinel.drops: true
-      # /sentinel dropchance
-      sentinel.dropchance: true
       # /sentinel spawnpoint
       sentinel.spawnpoint: true
       # /sentinel forgive
@@ -96,7 +94,7 @@ permissions:
       sentinel.debug: true
       # /sentinel reach REACH
       sentinel.reach: true
-      # /sentinel greeting GREETING, sentinel warning WARNING, sentinel greetrange RANGE
+      # /sentinel greeting GREETING, sentinel warning WARNING, sentinel greetrange RANGE, sentinel greetrate RATE
       sentinel.greet: true
       # /sentinel info, /sentinel targets, /sentinel stats
       sentinel.info: true

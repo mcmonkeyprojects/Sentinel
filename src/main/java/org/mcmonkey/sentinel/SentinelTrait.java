@@ -431,6 +431,12 @@ public class SentinelTrait extends Trait {
     public double greetRange = 10;
 
     /**
+     * The rate in ticks this NPC gives greetings or warnings at.
+     */
+    @Persist("greet_rate")
+    public int greetRate = 100;
+
+    /**
      * Whether this NPC automatically switches weapons.
      */
     @Persist("autoswitch")
@@ -805,6 +811,8 @@ public class SentinelTrait extends Trait {
         reach = config.getDouble("sentinel defaults.reach", 3);
         avoidRange = config.getDouble("sentinel defaults.avoid range", 10);
         runaway = config.getBoolean("sentinel defaults.runaway", false);
+        greetRange = config.getDouble("sentinel defaults.greet range", 10);
+        greetRate = config.getInt("sentinel defaults.greet rate", 100);
         guardDistanceMinimum = SentinelPlugin.instance.guardDistanceMinimum;
         guardSelectionRange = SentinelPlugin.instance.guardDistanceSelectionRange;
         if (npc.isSpawned()) {
@@ -967,7 +975,12 @@ public class SentinelTrait extends Trait {
     /**
      * Players in range of the NPC that have already been greeted.
      */
-    private HashSet<UUID> greetedAlready = new HashSet<>();
+    public HashSet<UUID> greetedAlready = new HashSet<>();
+
+    /**
+     * Map of player UUIDs to the last ticks-alive stamp they were greeted at.
+     */
+    public HashMap<UUID, Long> lastGreetTime = new HashMap<>();
 
     /**
      * Time since the last attack.
@@ -1442,6 +1455,11 @@ public class SentinelTrait extends Trait {
         boolean known = greetedAlready.contains(event.getPlayer().getUniqueId());
         if (dist < greetRange * greetRange && !known && targetingHelper.canSee(event.getPlayer())) {
             greetedAlready.add(event.getPlayer().getUniqueId());
+            Long lastGreet = lastGreetTime.get(event.getPlayer().getUniqueId());
+            if (lastGreet != null && lastGreet + greetRate > stats_ticksSpawned) {
+                return;
+            }
+            lastGreetTime.put(event.getPlayer().getUniqueId(), stats_ticksSpawned);
             boolean enemy = targetingHelper.shouldTarget(event.getPlayer());
             if (enemy && warningText != null && warningText.length() > 0) {
                 sayTo(event.getPlayer(), warningText);

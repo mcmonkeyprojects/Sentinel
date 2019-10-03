@@ -9,14 +9,13 @@ import org.mcmonkey.sentinel.SentinelUtilities;
 
 public class SentinelGreetingCommands {
 
-
     @Command(aliases = {"sentinel"}, usage = "greetrange GREETRANGE",
             desc = "Sets how far a player can be from an NPC before they are greeted.",
             modifiers = {"greetrange"}, permission = "sentinel.greet", min = 2, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void greetRange(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         try {
-            Double d = Double.parseDouble(args.getString(1));
+            Double d = args.getDouble(1);
             if (d < 100) {
                 sentinel.greetRange = d;
                 sender.sendMessage(SentinelCommand.prefixGood + "Range set!");
@@ -27,6 +26,27 @@ public class SentinelGreetingCommands {
         }
         catch (NumberFormatException ex) {
             sender.sendMessage(SentinelCommand.prefixBad + "Invalid range number: " + ex.getMessage());
+        }
+        return;
+    }
+
+    @Command(aliases = {"sentinel"}, usage = "greetrate GREETRATE",
+            desc = "Sets how quickly (in seconds) the Sentinel may re-greet any player.",
+            modifiers = {"greetrate"}, permission = "sentinel.greet", min = 2, max = 2)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void greetRate(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        try {
+            Double d = args.getDouble(1);
+            if (d >= 0) {
+                sentinel.greetRate = (int) (d * 20);
+                sender.sendMessage(SentinelCommand.prefixGood + "Rate set!");
+            }
+            else {
+                throw new NumberFormatException("Number out of range (must be >= 0).");
+            }
+        }
+        catch (NumberFormatException ex) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid rate number: " + ex.getMessage());
         }
         return;
     }
