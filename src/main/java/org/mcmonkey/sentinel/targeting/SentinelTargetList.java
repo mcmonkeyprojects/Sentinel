@@ -8,6 +8,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.mcmonkey.sentinel.SentinelIntegration;
 import org.mcmonkey.sentinel.SentinelPlugin;
@@ -32,6 +34,9 @@ public class SentinelTargetList {
         result.byNpcName.addAll(byNpcName);
         result.byEntityName.addAll(byEntityName);
         result.byHeldItem.addAll(byHeldItem);
+        result.byOffhandItem.addAll(byOffhandItem);
+        result.byEquippedItem.addAll(byEquippedItem);
+        result.byInventoryItem.addAll(byInventoryItem);
         result.byGroup.addAll(byGroup);
         result.byEvent.addAll(byEvent);
         result.byStatus.addAll(byStatus);
@@ -81,9 +86,34 @@ public class SentinelTargetList {
      * Explicitly does not reprocess the cache.
      */
     public boolean isTargetNoCache(LivingEntity entity) {
-        if (entity.getEquipment() != null && SentinelUtilities.getHeldItem(entity) != null
-                && SentinelUtilities.isRegexTargeted(SentinelUtilities.getHeldItem(entity).getType().name(), byHeldItem)) {
-            return true;
+        if (entity.getEquipment() != null) {
+            if (SentinelUtilities.isItemTarget(SentinelUtilities.getHeldItem(entity), byHeldItem)) {
+                return true;
+            }
+            if (SentinelUtilities.isItemTarget(SentinelUtilities.getOffhandItem(entity), byOffhandItem)) {
+                return true;
+            }
+            if (!byEquippedItem.isEmpty()) {
+                if (SentinelUtilities.isItemTarget(entity.getEquipment().getHelmet(), byEquippedItem)) {
+                    return true;
+                }
+                if (SentinelUtilities.isItemTarget(entity.getEquipment().getChestplate(), byEquippedItem)) {
+                    return true;
+                }
+                if (SentinelUtilities.isItemTarget(entity.getEquipment().getLeggings(), byEquippedItem)) {
+                    return true;
+                }
+                if (SentinelUtilities.isItemTarget(entity.getEquipment().getBoots(), byEquippedItem)) {
+                    return true;
+                }
+            }
+        }
+        if (entity instanceof InventoryHolder && !byInventoryItem.isEmpty()) {
+            for (ItemStack item : ((InventoryHolder) entity).getInventory().getStorageContents()) {
+                if (SentinelUtilities.isItemTarget(item, byInventoryItem)) {
+                    return true;
+                }
+            }
         }
         for (ArrayList<CachedOtherTarget> targets : otherTargetCache.values()) {
             for (CachedOtherTarget target : targets) {
@@ -147,11 +177,47 @@ public class SentinelTargetList {
      * Primarily for the multi-targets system.
      */
     public boolean ifIsTargetDeleteTarget(LivingEntity entity) {
-        if (entity.getEquipment() != null && SentinelUtilities.getHeldItem(entity) != null) {
-            String match = SentinelUtilities.getRegexTarget(SentinelUtilities.getHeldItem(entity).getType().name(), byHeldItem);
+        if (entity.getEquipment() != null) {
+            String match = SentinelUtilities.getItemTarget(SentinelUtilities.getHeldItem(entity), byHeldItem);
             if (match != null) {
                 byHeldItem.remove(match);
                 return true;
+            }
+            match = SentinelUtilities.getItemTarget(SentinelUtilities.getOffhandItem(entity), byOffhandItem);
+            if (match != null) {
+                byOffhandItem.remove(match);
+                return true;
+            }
+            if (!byEquippedItem.isEmpty()) {
+                match = SentinelUtilities.getItemTarget(entity.getEquipment().getHelmet(), byEquippedItem);
+                if (match != null) {
+                    byEquippedItem.remove(match);
+                    return true;
+                }
+                match = SentinelUtilities.getItemTarget(entity.getEquipment().getChestplate(), byEquippedItem);
+                if (match != null) {
+                    byEquippedItem.remove(match);
+                    return true;
+                }
+                match = SentinelUtilities.getItemTarget(entity.getEquipment().getLeggings(), byEquippedItem);
+                if (match != null) {
+                    byEquippedItem.remove(match);
+                    return true;
+                }
+                match = SentinelUtilities.getItemTarget(entity.getEquipment().getBoots(), byEquippedItem);
+                if (match != null) {
+                    byEquippedItem.remove(match);
+                    return true;
+                }
+            }
+        }
+        if (entity instanceof InventoryHolder && !byInventoryItem.isEmpty()) {
+            for (ItemStack item : ((InventoryHolder) entity).getInventory().getStorageContents()) {
+                String match = SentinelUtilities.getItemTarget(item, byInventoryItem);
+                if (match != null) {
+                    byInventoryItem.remove(match);
+                    return true;
+                }
             }
         }
         for (Map.Entry<String, ArrayList<CachedOtherTarget>> targets : otherTargetCache.entrySet()) {
@@ -471,7 +537,8 @@ public class SentinelTargetList {
      */
     public int totalTargetsCount() {
         return targets.size() + byPlayerName.size() + byNpcName.size() + byEntityName.size()
-                + byHeldItem.size() + byGroup.size() + byEvent.size() + byStatus.size() + byOther.size() + byAllInOne.size();
+                + byHeldItem.size() + byOffhandItem.size() + byEquippedItem.size() + byInventoryItem.size()
+                + byGroup.size() + byEvent.size() + byStatus.size() + byOther.size() + byAllInOne.size();
     }
 
     private static void addList(StringBuilder builder, ArrayList<String> strs, String prefix) {
@@ -495,6 +562,9 @@ public class SentinelTargetList {
         addList(sb, byNpcName, "npc");
         addList(sb, byEntityName, "entityname");
         addList(sb, byHeldItem, "helditem");
+        addList(sb, byOffhandItem, "offhand");
+        addList(sb, byEquippedItem, "equipped");
+        addList(sb, byInventoryItem, "in_inventory");
         addList(sb, byGroup, "group");
         addList(sb, byEvent, "event");
         addList(sb, byStatus, "status");
@@ -559,6 +629,24 @@ public class SentinelTargetList {
      */
     @Persist("byHeldItem")
     public ArrayList<String> byHeldItem = new ArrayList<>();
+
+    /**
+     * List of offhand-item-based targets.
+     */
+    @Persist("byOffhandItem")
+    public ArrayList<String> byOffhandItem = new ArrayList<>();
+
+    /**
+     * List of equipped-item-based targets.
+     */
+    @Persist("byEquippedItem")
+    public ArrayList<String> byEquippedItem = new ArrayList<>();
+
+    /**
+     * List of inventory-item-based targets.
+     */
+    @Persist("byInventoryItem")
+    public ArrayList<String> byInventoryItem = new ArrayList<>();
 
     /**
      * List of scoreboard-group-based targets.

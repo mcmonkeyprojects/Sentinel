@@ -31,13 +31,14 @@ public class SentinelTargetLabel {
      * Prefixes that need regex validation.
      */
     public static HashSet<String> regexPrefixes = new HashSet<>(
-            Arrays.asList("player", "npc", "entityname", "helditem"));
+            Arrays.asList("player", "npc", "entityname", "helditem", "offhand", "equipped", "in_inventory"));
 
     /**
      * All default prefixes (anything else handled by an integration object).
      */
     public static HashSet<String> corePrefixes = new HashSet<>(
-            Arrays.asList("player", "npc", "entityname", "helditem", "group", "status", "event", "multi", "allinone")
+            Arrays.asList("player", "npc", "entityname", "helditem", "offhand", "equipped",
+                    "in_inventory", "group", "status", "event", "multi", "allinone")
     );
 
     /**
@@ -119,6 +120,15 @@ public class SentinelTargetLabel {
         }
         else if (prefix.equals("helditem")) {
             return listSet.byHeldItem;
+        }
+        else if (prefix.equals("offhand")) {
+            return listSet.byOffhandItem;
+        }
+        else if (prefix.equals("equipped")) {
+            return listSet.byEquippedItem;
+        }
+        else if (prefix.equals("in_inventory")) {
+            return listSet.byInventoryItem;
         }
         else if (prefix.equals("group")) {
             return listSet.byGroup;

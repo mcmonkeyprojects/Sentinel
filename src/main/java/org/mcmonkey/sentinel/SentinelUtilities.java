@@ -20,10 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class SentinelUtilities {
@@ -69,6 +66,18 @@ public class SentinelUtilities {
         }
         else {
             return entity.getEquipment().getItemInHand();
+        }
+    }
+
+    /**
+     * Returns the item held in an entity's offhand.
+     */
+    public static ItemStack getOffhandItem(LivingEntity entity) {
+        if (SentinelTarget.v1_9) {
+            return entity.getEquipment().getItemInOffHand();
+        }
+        else {
+            return null;
         }
     }
 
@@ -130,12 +139,19 @@ public class SentinelUtilities {
     }
 
     /**
+     * Returns whether a regex value match the string.
+     */
+    public static boolean isRegexTarget(String name, String regex) {
+        Pattern pattern = SentinelUtilities.regexFor(".*" + regex + ".*");
+        return pattern.matcher(name).matches();
+    }
+
+    /**
      * Returns the string of a regex that matches the name (if any).
      */
     public static String getRegexTarget(String name, List<String> regexes) {
         for (String str : regexes) {
-            Pattern pattern = SentinelUtilities.regexFor(".*" + str + ".*");
-            if (pattern.matcher(name).matches()) {
+            if (isRegexTarget(name, str)) {
                 return str;
             }
         }
@@ -143,16 +159,52 @@ public class SentinelUtilities {
     }
 
     /**
-     * Returns whether a list of regex values match the a string.
+     * Returns the string of an item matcher that matches the item (if any).
      */
-    public static boolean isRegexTargeted(String name, List<String> regexes) {
-        for (String str : regexes) {
-            Pattern pattern = SentinelUtilities.regexFor(".*" + str + ".*");
-            if (pattern.matcher(name).matches()) {
-                return true;
+    public static String getItemTarget(ItemStack item, List<String> targets) {
+        if (item == null || item.getType() == Material.AIR) {
+            return null;
+        }
+        for (String str : targets) {
+            if (str.startsWith("name:")) {
+                String nameMatch = str.substring("name:".length());
+                if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) {
+                    continue;
+                }
+                if (isRegexTarget(item.getItemMeta().getDisplayName(), nameMatch)) {
+                    return str;
+                }
+            }
+            else if (str.startsWith("lore:")) {
+                String loreMatch = str.substring("lore:".length());
+                if (!item.hasItemMeta() || !item.getItemMeta().hasLore()) {
+                    continue;
+                }
+                for (String lore : item.getItemMeta().getLore()) {
+                    if (isRegexTarget(lore, loreMatch)) {
+                        return str;
+                    }
+                }
+            }
+            else if (isRegexTarget(item.getType().name(), str)) {
+                return str;
             }
         }
-        return false;
+        return null;
+    }
+
+    /**
+     * Returns whether a list of item regex values match the item.
+     */
+    public static boolean isItemTarget(ItemStack item, List<String> targets) {
+        return getItemTarget(item, targets) != null;
+    }
+
+    /**
+     * Returns whether a list of regex values match the string.
+     */
+    public static boolean isRegexTargeted(String name, List<String> regexes) {
+        return getRegexTarget(name, regexes) != null;
     }
 
     /**

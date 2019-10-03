@@ -46,6 +46,9 @@ public class SentinelTargetCommands {
         any = any | outputTargetsList(sender, prefixType + " by NPC Name", list.byNpcName);
         any = any | outputTargetsList(sender, prefixType + " by Entity Name", list.byEntityName);
         any = any | outputTargetsList(sender, prefixType + " by Held Item", list.byHeldItem);
+        any = any | outputTargetsList(sender, prefixType + " by Offhand Item", list.byOffhandItem);
+        any = any | outputTargetsList(sender, prefixType + " by Equipped Item", list.byEquippedItem);
+        any = any | outputTargetsList(sender, prefixType + " by Inventory-carried Item", list.byInventoryItem);
         any = any | outputTargetsList(sender, prefixType + " by Permissions Group", list.byGroup);
         any = any | outputTargetsList(sender, prefixType + " by Event", list.byEvent);
         any = any | outputTargetsList(sender, prefixType + " by Status", list.byStatus);

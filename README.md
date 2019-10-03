@@ -172,11 +172,15 @@ These are all valid targets and ignores:
 - In 1.13 or higher: DOLPHINS, DROWNED, COD, SALMON, PUFFERFISH, TROPICAL_FISH, PHANTOMS, TURTLES
 - 1.13 or higher special targets: FISH
 - In 1.14 or higher: PILLAGERS, RAVAGERS, CATS, PANDAS, TRADER_LLAMAS, WANDERING_TRADERS, FOXES
-- Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), helditem:MATERIALNAME(REGEX), group:GROUPNAME(EXACT)
+- Also allowed: player:NAME(REGEX), npc:NAME(REGEX), entityname:NAME(REGEX), group:GROUPNAME(EXACT)
+- Alo allowed: helditem:ITEM_MATCHER, offhand:ITEM_MATCHER, equipped:ITEM_MATCHER, in_inventory:ITEM_MATCHER
+    - These all use "ITEM_MATCHER"s, which, at their simplest, are just a regex that matches the material name. So, `helditem:diamond_sword` targets enemies that are holding a diamond sword.
+    - However, you can also do "lore:LORE(REGEX)" as a matcher for a line of lore, or "name:NAME(REGEX)" as a matcher for the item display name.
+    - For example, `offhand:name:Stick\d+` would target players holding an item in their offhand named like "Stick123".
 - Also, event:pvp/pvnpc/pve/pv:<entity>/pvsentinel/guarded_fight/eve/ev:<entity>
 - Also, event:message:SOMETEXT will match chat messages that contain 'sometext'.
 - Also, status:STATUS_TYPE. Current status types:
-    - "status:angry" for mobs (wolves, endermen, spiders, etc.) that are currently angry. This is handy with a combo like "allinone:enderman|status:angry"
+    - "status:angry" for mobs (wolves, endermen, spiders, etc.) that are currently angry. This is handy with a combo like `allinone:enderman|status:angry`
     - "status:passive" for non-angry
 - Also, via internal sample integrations: sbteam:SCOREBOARD\_TEAM\_HERE, healthabove:PERCENTAGE and healthbelow:PERCENTAGE, permission:PERM.KEY, squad:SENTINEL\_SQUAD\_NAME, uuid:UUID
 - Also anything listed in the integrations section above!
