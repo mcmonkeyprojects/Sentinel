@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 
@@ -115,7 +116,8 @@ public class SentinelTarget {
                                       BOOTS_MATERIALS = new HashSet<>(),
                                       BOW_MATERIALS = new HashSet<>(),
                                       POTION_MATERIALS = new HashSet<>(),
-                                      SKULL_MATERIALS = new HashSet<>();
+                                      SKULL_MATERIALS = new HashSet<>(),
+                                      OTHER_RANGED_MATERIALS = new HashSet<>();
 
     /**
      * A map of weapon materials to their damage multipliers.
@@ -141,13 +143,26 @@ public class SentinelTarget {
      * Returns whether an item material is a valid weapon type.
      */
     public static boolean isWeapon(Material mat) {
-        return SentinelTarget.WEAPON_DAMAGE_MULTIPLIERS.containsKey(mat)
-                || SentinelTarget.POTION_MATERIALS.contains(mat)
-                || SentinelTarget.BOW_MATERIALS.contains(mat)
-                || SentinelTarget.SKULL_MATERIALS.contains(mat)
-                || mat == SentinelTarget.MATERIAL_SNOW_BALL
-                || mat == SentinelTarget.MATERIAL_BLAZE_ROD
-                || mat == SentinelTarget.MATERIAL_NETHER_STAR;
+        return WEAPON_DAMAGE_MULTIPLIERS.containsKey(mat)
+                || POTION_MATERIALS.contains(mat)
+                || BOW_MATERIALS.contains(mat)
+                || SKULL_MATERIALS.contains(mat)
+                || mat == MATERIAL_SNOW_BALL
+                || mat == MATERIAL_BLAZE_ROD
+                || mat == MATERIAL_NETHER_STAR;
+    }
+
+    /**
+     * Returns whether an item is a valid ranged weapon type.
+     */
+    public static boolean isRangedWeapon(ItemStack item) {
+        if (item == null) {
+            return false;
+        }
+        Material mat = item.getType();
+        return BOW_MATERIALS.contains(mat)
+                || OTHER_RANGED_MATERIALS.contains(mat)
+                || mat == MATERIAL_SNOW_BALL;
     }
 
     /**
@@ -315,9 +330,10 @@ public class SentinelTarget {
             FOXES = new SentinelTarget(new EntityType[]{EntityType.FOX}, "FOX", "FOXE");
         }
         if (v1_14) { // && !v1_15
-            PASSIVE_MOBS = new SentinelTarget(v1_13_passive(), passiveNames());
-            MOBS = new SentinelTarget(combine(v1_13_passive(), v1_14_monsters()), "MOB");
+            PASSIVE_MOBS = new SentinelTarget(v1_14_passive(), passiveNames());
+            MOBS = new SentinelTarget(combine(v1_14_passive(), v1_14_monsters()), "MOB");
             MONSTERS = new SentinelTarget(v1_14_monsters(), "MONSTER");
+            BOW_MATERIALS.add(getMaterial("CROSSBOW"));
         }
         // ========================== End Entities ==========================
         // ========================== Begin Materials ==========================
@@ -330,6 +346,7 @@ public class SentinelTarget {
             WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("GOLDEN_SWORD"), 4.0);
             WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("WOODEN_SWORD"), 4.0);
             WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("TRIDENT"), 8.0);
+            OTHER_RANGED_MATERIALS.add(getMaterial("TRIDENT"));
             // Pickaxe
             addAllMaterials(PICKAXE_MATERIALS, "DIAMOND_PICKAXE", "IRON_PICKAXE", "STONE_PICKAXE", "GOLDEN_PICKAXE", "WOODEN_PICKAXE");
             allMaterialsTo(WEAPON_DAMAGE_MULTIPLIERS, PICKAXE_MATERIALS, 2.0);

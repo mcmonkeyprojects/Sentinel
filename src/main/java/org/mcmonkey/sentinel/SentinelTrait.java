@@ -496,6 +496,53 @@ public class SentinelTrait extends Trait {
     public LivingEntity chasing = null;
 
     /**
+     * Whether the NPC is currently trying to block with a shield.
+     */
+    public boolean isBlocking = false;
+
+    /**
+     * Causes the NPC to start blocking with a shield (if it has one).
+     */
+    public void startBlocking() {
+        if (!npc.isSpawned() || !(getLivingEntity() instanceof Player) || !itemHelper.hasShield()) {
+            isBlocking = false;
+            return;
+        }
+        if (SentinelPlugin.debugMe && !isBlocking) {
+            debug("I'm scared! I'll block with my shield!");
+        }
+        isBlocking = true;
+        PlayerAnimation.START_USE_OFFHAND_ITEM.play((Player) getLivingEntity());
+        autoSpeedModifier();
+    }
+
+    /**
+     * Causes the NPC to stop blocking with a shield (if it has one).
+     */
+    public void stopBlocking() {
+        if (!isBlocking) {
+            return;
+        }
+        if (SentinelPlugin.debugMe) {
+            debug("No more threat ahead. I'll put my shield down.");
+        }
+        isBlocking = false;
+        if (!npc.isSpawned() || !(getLivingEntity() instanceof Player) || !itemHelper.hasShield()) {
+            return;
+        }
+        PlayerAnimation.STOP_USE_ITEM.play((Player) getLivingEntity());
+        autoSpeedModifier();
+    }
+
+    /**
+     * Sets the NPC's local parameter speed modifier to its proper current value.
+     */
+    public void autoSpeedModifier() {
+        double speedMod = isBlocking ? 0.6 : 1.0;
+        getNPC().getNavigator().getLocalParameters().speedModifier((float) (speed * speedMod));
+    }
+
+    /**
      * Gets the UUID of the player this Sentinel is set to be guarding.
      * Null indicates not guarding anyone.
      */
@@ -577,17 +624,41 @@ public class SentinelTrait extends Trait {
     }
 
     /**
+     * Returns a boolean indicating whether a hit from the given damager should be blocked by a shield.
+     */
+    public boolean hitIsBlocked(Entity damager) {
+        if (!isBlocking) {
+            return false;
+        }
+        if (!itemHelper.hasShield()) {
+            isBlocking = false;
+            return false;
+        }
+        if (!SentinelUtilities.isLookingTowards(getLivingEntity().getEyeLocation(), damager.getLocation(), 45, 45)) {
+            return false;
+        }
+        if (SentinelTarget.v1_14 && damager instanceof Arrow && ((Arrow) damager).getPierceLevel() > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Called when this sentinel gets attacked, to correct the armor handling.
      */
     public void whenAttacksAreHappeningToMe(EntityDamageByEntityEvent event) {
         if (event.isCancelled()) {
             return;
         }
+        double armorLevel = getArmor(getLivingEntity());
+        if (hitIsBlocked(event.getDamager())) {
+            armorLevel = (1.0 - armorLevel) * 0.5 + armorLevel;
+        }
         if (!event.isApplicable(EntityDamageEvent.DamageModifier.ARMOR)) {
-            event.setDamage(EntityDamageEvent.DamageModifier.BASE, (1.0 - getArmor(getLivingEntity())) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
+            event.setDamage(EntityDamageEvent.DamageModifier.BASE, (1.0 - armorLevel) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
         }
         else {
-            event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, -getArmor(getLivingEntity()) * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
+            event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, -armorLevel * event.getDamage(EntityDamageEvent.DamageModifier.BASE));
         }
         for (EntityDamageEvent.DamageModifier modifier : modifiersToZero) {
             if (event.isApplicable(modifier)) {
@@ -1074,7 +1145,7 @@ public class SentinelTrait extends Trait {
         pathingTo = target;
         getNPC().getNavigator().setTarget(target);
         npc.getNavigator().getLocalParameters().distanceMargin(1.5);
-        npc.getNavigator().getLocalParameters().speedModifier((float) speed);
+        autoSpeedModifier();
         chasing = null;
         needsSafeReturn = true;
     }
@@ -1197,6 +1268,7 @@ public class SentinelTrait extends Trait {
                 chasing = target;
                 needsSafeReturn = true;
                 cleverTicks = 0;
+                attackHelper.tryDefendFrom(target);
                 attackHelper.tryAttack(target);
                 goHome = false;
             }
@@ -1223,6 +1295,7 @@ public class SentinelTrait extends Trait {
             else {
                 Location near = nearestPathPoint();
                 if (crsq <= 0 || near == null || near.distanceSquared(chasing.getLocation()) <= crsq) {
+                    attackHelper.tryDefendFrom(chasing);
                     attackHelper.tryAttack(chasing);
                     goHome = false;
                 }
@@ -1250,7 +1323,7 @@ public class SentinelTrait extends Trait {
                         debug("Guard movement chosen to go to " + picked.toVector().toBlockVector().toString());
                     }
                     npc.getNavigator().setTarget(picked);
-                    npc.getNavigator().getLocalParameters().speedModifier((float) speed);
+                    autoSpeedModifier();
                     npc.getNavigator().getLocalParameters().distanceMargin(guardDistanceMinimum * 0.75);
                     chased = true;
                 }
@@ -1275,7 +1348,7 @@ public class SentinelTrait extends Trait {
                 }
                 npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
                 npc.getNavigator().setTarget(near);
-                npc.getNavigator().getLocalParameters().speedModifier((float) speed);
+                autoSpeedModifier();
                 needsSafeReturn = false;
                 chased = false;
             }

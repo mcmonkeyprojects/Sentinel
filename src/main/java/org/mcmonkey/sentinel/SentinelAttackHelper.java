@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.events.SentinelAttackEvent;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 
@@ -46,7 +47,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             getNPC().getNavigator().setTarget(entity, false);
         }
         getNPC().getNavigator().getLocalParameters().stuckAction(null);
-        getNPC().getNavigator().getLocalParameters().speedModifier((float) sentinel.speed);
+        sentinel.autoSpeedModifier();
     }
 
     /**
@@ -55,6 +56,50 @@ public class SentinelAttackHelper extends SentinelHelperObject {
     public void rechase() {
         if (sentinel.chasing != null) {
             chase(sentinel.chasing);
+        }
+    }
+
+    /**
+     * Returns a boolean indicating whether the NPC sees a threat from the input entity (for use with shield blocking).
+     */
+    public boolean seesThreatFrom(LivingEntity entity) {
+        if (!entity.getWorld().equals(getLivingEntity().getWorld())) {
+            return false;
+        }
+        if (!getLivingEntity().hasLineOfSight(entity)) {
+            return false;
+        }
+        if (!targetingHelper.canSee(entity)) {
+            return false;
+        }
+        if (!SentinelUtilities.isLookingTowards(getLivingEntity().getEyeLocation(), entity.getLocation(), 60, 60)) {
+            return false;
+        }
+        double dist = getLivingEntity().getEyeLocation().distanceSquared(entity.getEyeLocation());
+        if (dist < 5 * 5) {
+            return true;
+        }
+        else if (SentinelTarget.isRangedWeapon(SentinelUtilities.getHeldItem(entity))) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * Causes the entity to prepare to defend against a dangerous opponent (if it sees the threat).
+     * This will raise the NPC's shield (if it has one).
+     */
+    public void tryDefendFrom(LivingEntity entity) {
+        if (!itemHelper.hasShield()) {
+            return;
+        }
+        if (seesThreatFrom(entity)) {
+            sentinel.startBlocking();
+        }
+        else {
+            sentinel.stopBlocking();
         }
     }
 

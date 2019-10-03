@@ -205,6 +205,17 @@ public class SentinelItemHelper extends SentinelHelperObject {
     }
 
     /**
+     * Returns whether the NPC is holding a shield in its offhand.
+     */
+    public boolean hasShield() {
+        if (SentinelTarget.v1_9) {
+            ItemStack item = SentinelUtilities.getOffhandItem(sentinel.getLivingEntity());
+            return item != null && item.getType() == Material.SHIELD;
+        }
+        return false;
+    }
+
+    /**
      * Returns whether the NPC is holding a ranged weapon.
      */
     public boolean isRanged() {

@@ -1,9 +1,7 @@
 package org.mcmonkey.sentinel.targeting;
 
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.astar.AStarMachine;
 import net.citizensnpcs.api.astar.pathfinder.*;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -37,18 +35,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             return false;
         }
         if (sentinel.realistic) {
-            float yaw = getLivingEntity().getEyeLocation().getYaw();
-            while (yaw < 0) {
-                yaw += 360;
-            }
-            while (yaw >= 360) {
-                yaw -= 360;
-            }
-            Vector rel = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector()).normalize();
-            float yawHelp = SentinelUtilities.getYaw(rel);
-            if (!(Math.abs(yawHelp - yaw) < 90 ||
-                    Math.abs(yawHelp + 360 - yaw) < 90 ||
-                    Math.abs(yaw + 360 - yawHelp) < 90)) {
+            if (!SentinelUtilities.isLookingTowards(getLivingEntity().getEyeLocation(), entity.getLocation(), 90, 110)) {
                 return false;
             }
         }

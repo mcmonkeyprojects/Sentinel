@@ -208,6 +208,26 @@ public class SentinelUtilities {
     }
 
     /**
+     * Returns a boolean indicating whether the first location is looking towards a second location, within a yaw and pitch limit.
+     */
+    public static boolean isLookingTowards(Location myLoc, Location theirLoc, float yawLimit, float pitchLimit) {
+        Vector rel = theirLoc.toVector().subtract(myLoc.toVector()).normalize();
+        float yaw = normalizeYaw(myLoc.getYaw());
+        float yawHelp = getYaw(rel);
+        if (!(Math.abs(yawHelp - yaw) < yawLimit ||
+                Math.abs(yawHelp + 360 - yaw) < yawLimit ||
+                Math.abs(yaw + 360 - yawHelp) < yawLimit)) {
+            return false;
+        }
+        float pitch = myLoc.getPitch();
+        float pitchHelp = getPitch(rel);
+        if (!(Math.abs(pitchHelp - pitch) < yawLimit)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Normalizes Mincraft's yaws (which can be negative or can exceed 360)
      * by turning them into proper yaw values that only go from 0 to 359.
      */
@@ -220,7 +240,19 @@ public class SentinelUtilities {
     }
 
     /**
-     * Gets the yaw angle value (in degrees) for a vector.
+     * Gets the pitch angle value (in degrees) for a normalized vector.
+     */
+    public static float getPitch(Vector vector) {
+        double dx = vector.getX();
+        double dy = vector.getY();
+        double dz = vector.getZ();
+        double forward = Math.sqrt((dx * dx) + (dz * dz));
+        double pitch = Math.atan2(dy, forward) * (180.0 / Math.PI);
+        return (float) pitch;
+    }
+
+    /**
+     * Gets the yaw angle value (in degrees) for a normalized vector.
      */
     public static float getYaw(Vector vector) {
         double dx = vector.getX();
