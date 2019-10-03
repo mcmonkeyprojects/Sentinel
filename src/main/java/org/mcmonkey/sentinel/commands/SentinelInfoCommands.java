@@ -56,6 +56,8 @@ public class SentinelInfoCommands {
         paginator.addLine(SentinelCommand.prefixGood + "Warning: " + ChatColor.AQUA + (sentinel.warningText == null ? "None" : sentinel.warningText));
         paginator.addLine(SentinelCommand.prefixGood + "Greeting Range: " + ChatColor.AQUA + sentinel.greetRange);
         paginator.addLine(SentinelCommand.prefixGood + "Greeting Rate: " + ChatColor.AQUA + sentinel.greetRate);
+        paginator.addLine(SentinelCommand.prefixGood + "Guard Distance Minimum: " + ChatColor.AQUA + sentinel.guardDistanceMinimum);
+        paginator.addLine(SentinelCommand.prefixGood + "Guard Selection Range: " + ChatColor.AQUA + sentinel.guardSelectionRange);
         paginator.addLine(SentinelCommand.prefixGood + "Invincibility Enabled: " + ChatColor.AQUA + sentinel.invincible);
         paginator.addLine(SentinelCommand.prefixGood + "Fightback Enabled: " + ChatColor.AQUA + sentinel.fightback);
         paginator.addLine(SentinelCommand.prefixGood + "Ranged Chasing Enabled: " + ChatColor.AQUA + sentinel.rangedChase);

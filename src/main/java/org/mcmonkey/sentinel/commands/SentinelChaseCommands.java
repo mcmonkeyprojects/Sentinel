@@ -3,6 +3,7 @@ package org.mcmonkey.sentinel.commands;
 import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.mcmonkey.sentinel.SentinelTrait;
 
@@ -10,9 +11,13 @@ public class SentinelChaseCommands {
 
     @Command(aliases = {"sentinel"}, usage = "speed SPEED",
             desc = "Sets the NPC's movement speed modifier.",
-            modifiers = {"speed"}, permission = "sentinel.speed", min = 2, max = 2)
+            modifiers = {"speed"}, permission = "sentinel.speed", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void speed(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current speed: " + ChatColor.AQUA + sentinel.speed);
+            return;
+        }
         try {
             Double d = Double.parseDouble(args.getString(1));
             if (d < 1000 && d >= 0) {
@@ -30,9 +35,13 @@ public class SentinelChaseCommands {
 
     @Command(aliases = {"sentinel"}, usage = "chaserange RANGE",
             desc = "Changes the maximum distance an NPC will run before returning to base.",
-            modifiers = {"chaserange"}, permission = "sentinel.chaserange", min = 2, max = 2)
+            modifiers = {"chaserange"}, permission = "sentinel.chaserange", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void chaseRange(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current chase range: " + ChatColor.AQUA + sentinel.chaseRange);
+            return;
+        }
         try {
             double d = Double.parseDouble(args.getString(1));
             sentinel.chaseRange = d;

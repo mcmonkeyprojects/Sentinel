@@ -19,9 +19,15 @@ public class SentinelHealthCommands {
 
     @Command(aliases = {"sentinel"}, usage = "armor ARMOR",
             desc = "Sets the NPC's armor level.",
-            modifiers = {"armor"}, permission = "sentinel.armor", min = 2, max = 2)
+            modifiers = {"armor"}, permission = "sentinel.armor", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void armor(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current armor: " + ChatColor.AQUA + sentinel.armor
+                    + (sentinel.getNPC().isSpawned() ? SentinelCommand.colorBasic + " Calculated: "
+                    + ChatColor.AQUA + sentinel.getArmor(sentinel.getLivingEntity()) : ""));
+            return;
+        }
         try {
             double d = Double.parseDouble(args.getString(1));
             if (d <= 1) {
@@ -53,9 +59,13 @@ public class SentinelHealthCommands {
 
     @Command(aliases = {"sentinel"}, usage = "health HEALTH",
             desc = "Sets the NPC's health level.",
-            modifiers = {"health"}, permission = "sentinel.health", min = 2, max = 2)
+            modifiers = {"health"}, permission = "sentinel.health", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void health(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current max health: " + ChatColor.AQUA + sentinel.health);
+            return;
+        }
         try {
             double d = Double.parseDouble(args.getString(1));
             if ((d >= SentinelTrait.healthMin) && (d <= SentinelPlugin.instance.maxHealth)) {
@@ -73,9 +83,13 @@ public class SentinelHealthCommands {
 
     @Command(aliases = {"sentinel"}, usage = "healrate RATE",
             desc = "Changes the rate at which the NPC heals, in seconds.",
-            modifiers = {"healrate"}, permission = "sentinel.healrate", min = 2, max = 2)
+            modifiers = {"healrate"}, permission = "sentinel.healrate", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void healRate(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current heal rate: " + ChatColor.AQUA + (sentinel.healRate / 20.0));
+            return;
+        }
         try {
             double da = Double.parseDouble(args.getString(1));
             int d = (int) (da * 20);
@@ -95,9 +109,13 @@ public class SentinelHealthCommands {
 
     @Command(aliases = {"sentinel"}, usage = "respawntime TIME",
             desc = "Changes the time it takes for the NPC to respawn, in seconds.",
-            modifiers = {"respawntime"}, permission = "sentinel.respawntime", min = 2, max = 2)
+            modifiers = {"respawntime"}, permission = "sentinel.respawntime", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void respawnTime(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current respawn time: " + ChatColor.AQUA + (sentinel.respawnTime / 20.0));
+            return;
+        }
         try {
             double d = Double.parseDouble(args.getString(1));
             sentinel.respawnTime = (long) (d * 20);

@@ -215,9 +215,13 @@ public class SentinelTargetCommands {
 
     @Command(aliases = {"sentinel"}, usage = "avoidrange RANGE",
             desc = "Sets the distance to try to keep from threats.",
-            modifiers = {"avoidrange"}, permission = "sentinel.avoidrange", min = 2, max = 2)
+            modifiers = {"avoidrange"}, permission = "sentinel.avoidrange", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void avoidRange(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current avoid range: " + ChatColor.AQUA + sentinel.avoidRange);
+            return;
+        }
         try {
             double d = Double.parseDouble(args.getString(1));
             if (d >= 4 && d < 100) {
@@ -235,9 +239,13 @@ public class SentinelTargetCommands {
 
     @Command(aliases = {"sentinel"}, usage = "targettime TIME",
             desc = "Sets the NPC's enemy target time limit in seconds.",
-            modifiers = {"targettime"}, permission = "sentinel.targettime", min = 2, max = 2)
+            modifiers = {"targettime"}, permission = "sentinel.targettime", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void targetTime(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current target time: " + ChatColor.AQUA + (sentinel.enemyTargetTime / 20.0));
+            return;
+        }
         try {
             double d = Double.parseDouble(args.getString(1));
             if (d >= 0) {

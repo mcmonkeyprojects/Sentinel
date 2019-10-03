@@ -3,6 +3,7 @@ package org.mcmonkey.sentinel.commands;
 import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
@@ -32,9 +33,13 @@ public class SentinelAttackCommands {
 
     @Command(aliases = {"sentinel"}, usage = "accuracy OFFSET",
             desc = "Sets the accuracy of an NPC.",
-            modifiers = {"accuracy"}, permission = "sentinel.accuracy", min = 2, max = 2)
+            modifiers = {"accuracy"}, permission = "sentinel.accuracy", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void accuracy(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current accuracy offset: " + ChatColor.AQUA + sentinel.accuracy);
+            return;
+        }
         try {
             double d = Double.parseDouble(args.getString(1));
             if (d >= 0 && d <= 10) {
@@ -52,9 +57,13 @@ public class SentinelAttackCommands {
 
     @Command(aliases = {"sentinel"}, usage = "reach REACH",
             desc = "Sets the NPC's reach (how far it can punch).",
-            modifiers = {"reach"}, permission = "sentinel.reach", min = 2, max = 2)
+            modifiers = {"reach"}, permission = "sentinel.reach", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void reach(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current reach: " + ChatColor.AQUA + sentinel.reach);
+            return;
+        }
         try {
             double d = Double.parseDouble(args.getString(1));
             if (d >= 0) {
@@ -72,9 +81,14 @@ public class SentinelAttackCommands {
 
     @Command(aliases = {"sentinel"}, usage = "attackrate RATE ['ranged']",
             desc = "Changes the rate at which the NPC attacks, in seconds - either ranged or close modes.",
-            modifiers = {"attackrate"}, permission = "sentinel.attackrate", min = 2, max = 3)
+            modifiers = {"attackrate"}, permission = "sentinel.attackrate", min = 1, max = 3)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void attackRate(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current attack rate (close): " + ChatColor.AQUA + (sentinel.attackRate / 20.0));
+            sender.sendMessage(SentinelCommand.prefixGood + "Current attack rate (ranged): " + ChatColor.AQUA + (sentinel.attackRateRanged / 20.0));
+            return;
+        }
         try {
             double da = Double.parseDouble(args.getString(1));
             int d = (int) (da * 20);
@@ -99,9 +113,13 @@ public class SentinelAttackCommands {
 
     @Command(aliases = {"sentinel"}, usage = "range RANGE",
             desc = "Sets the NPC's maximum attack range.",
-            modifiers = {"range"}, permission = "sentinel.range", min = 2, max = 2)
+            modifiers = {"range"}, permission = "sentinel.range", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void range(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current range: " + ChatColor.AQUA + sentinel.range);
+            return;
+        }
         try {
             double d = Double.parseDouble(args.getString(1));
             if (d > 0 && d < 200) {
@@ -119,9 +137,14 @@ public class SentinelAttackCommands {
 
     @Command(aliases = {"sentinel"}, usage = "damage DAMAGE",
             desc = "Sets the NPC's attack damage.",
-            modifiers = {"damage"}, permission = "sentinel.damage", min = 2, max = 2)
+            modifiers = {"damage"}, permission = "sentinel.damage", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void damage(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current damage: " + ChatColor.AQUA + sentinel.damage
+                    + SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getDamage());
+            return;
+        }
         try {
             Double d = Double.parseDouble(args.getString(1));
             if (d < SentinelPlugin.instance.maxHealth) {
