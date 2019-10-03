@@ -69,6 +69,7 @@ public class SentinelInfoCommands {
         paginator.addLine(SentinelCommand.prefixGood + "Realistic Targeting Enabled: " + ChatColor.AQUA + sentinel.realistic);
         paginator.addLine(SentinelCommand.prefixGood + "Run-Away Enabled: " + ChatColor.AQUA + sentinel.runaway);
         paginator.addLine(SentinelCommand.prefixGood + "Squad: " + ChatColor.AQUA + (sentinel.squad == null ? "None" : sentinel.squad));
+        paginator.addLine(SentinelCommand.prefixGood + "Per-weapon damage values: " + ChatColor.AQUA + sentinel.weaponDamage.toString());
         int page = 1;
         if (args.argsLength() == 2) {
             try {

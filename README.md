@@ -114,6 +114,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel avoidrange RANGE - Sets the distance to try to keep from threats.
     - /sentinel range RANGE - Sets the NPC's maximum attack range.
     - /sentinel damage DAMAGE - Sets the NPC's attack damage.
+    - /sentinel weapondamage MATERIAL DAMAGE - Sets the NPC's attack damage for a specific weapon material.
     - /sentinel armor ARMOR - Sets the NPC's armor level.
     - /sentinel health HEALTH - Sets the NPC's health level.
     - /sentinel attackrate RATE ['ranged'] - Changes the rate at which the NPC attacks, in seconds. Either ranged or close modes.
@@ -121,7 +122,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in seconds.
     - /sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.
     - /sentinel drops - Changes the drops of the current NPC.
-    - /sentinel dropchance [ID] [CHANCE] - Changes the chance of a drop. Use "/sentinel dropchance" to see the drops list with IDs, then do like "/sentinel dropchance 3 50" (that puts a 50% chance on item with ID 3).
+    - /sentinel dropchance ID CHANCE - Changes the chance of a drop. Use "/sentinel dropchance" to see the drops list with IDs, then do like "/sentinel dropchance 3 50" (that puts a 50% chance on item with ID 3).
     - /sentinel targettime TIME - Sets the NPC's enemy target time limit in seconds.
     - /sentinel speed SPEED - Sets the NPC's movement speed modifier.
     - /sentinel guarddistance MINIMUM_DISTANCE [SELECTION_RANGE] - Sets the NPC's minimum guard distance (how far you must go before the NPC moves to keep up) and selection range (how close it will try to get to you).

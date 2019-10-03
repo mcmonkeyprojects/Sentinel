@@ -188,7 +188,7 @@ public class SentinelHealthCommands {
         ((Player) sender).openInventory(inv);
     }
 
-    @Command(aliases = {"sentinel"}, usage = "dropchance [ID] [CHANCE]",
+    @Command(aliases = {"sentinel"}, usage = "dropchance ID CHANCE",
             desc = "Changes the chance of a drop.",
             modifiers = {"dropchance"}, permission = "sentinel.drops", min = 1, max = 3)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})

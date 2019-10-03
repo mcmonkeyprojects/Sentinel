@@ -4,6 +4,7 @@ import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
@@ -41,7 +42,7 @@ public class SentinelAttackCommands {
             return;
         }
         try {
-            double d = Double.parseDouble(args.getString(1));
+            double d = args.getDouble(1);
             if (d >= 0 && d <= 10) {
                 sentinel.accuracy = d;
                 sender.sendMessage(SentinelCommand.prefixGood + "Accuracy offset set!");
@@ -65,7 +66,7 @@ public class SentinelAttackCommands {
             return;
         }
         try {
-            double d = Double.parseDouble(args.getString(1));
+            double d = args.getDouble(1);
             if (d >= 0) {
                 sentinel.reach = d;
                 sender.sendMessage(SentinelCommand.prefixGood + "Reach set!");
@@ -90,7 +91,7 @@ public class SentinelAttackCommands {
             return;
         }
         try {
-            double da = Double.parseDouble(args.getString(1));
+            double da = args.getDouble(1);
             int d = (int) (da * 20);
             if (d >= SentinelPlugin.instance.tickRate && d <= SentinelTrait.attackRateMax) {
                 if (args.argsLength() > 2 && args.getString(2).toLowerCase().contains("ranged")) {
@@ -121,7 +122,7 @@ public class SentinelAttackCommands {
             return;
         }
         try {
-            double d = Double.parseDouble(args.getString(1));
+            double d = args.getDouble(1);
             if (d > 0 && d < 200) {
                 sentinel.range = d;
                 sender.sendMessage(SentinelCommand.prefixGood + "Range set!");
@@ -146,7 +147,7 @@ public class SentinelAttackCommands {
             return;
         }
         try {
-            Double d = Double.parseDouble(args.getString(1));
+            double d = args.getDouble(1);
             if (d < SentinelPlugin.instance.maxHealth) {
                 sentinel.damage = d;
                 sender.sendMessage(SentinelCommand.prefixGood + "Damage set!");
@@ -157,6 +158,45 @@ public class SentinelAttackCommands {
         }
         catch (NumberFormatException ex) {
             sender.sendMessage(SentinelCommand.prefixBad + "Invalid damage number: " + ex.getMessage());
+        }
+    }
+
+    @Command(aliases = {"sentinel"}, usage = "weapondamage MATERIAL DAMAGE",
+            desc = "Sets the NPC's attack damage for a specific weapon material.",
+            modifiers = {"weapondamage"}, permission = "sentinel.weapondamage", min = 2, max = 3)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void weaponDamage(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        String weapon = args.getString(1).toLowerCase();
+        try {
+            Material.valueOf(weapon.toUpperCase());
+        }
+        catch (IllegalArgumentException ex) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid weapon material (name misspelled?)");
+            return;
+        }
+        if (args.argsLength() <= 2) {
+            Double damage = sentinel.weaponDamage.get(weapon);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current weapon damage for '" + weapon + "': " + ChatColor.AQUA + (damage == null ? "Unset" : damage));
+            return;
+        }
+        try {
+            double d = args.getDouble(2);
+            if (d < SentinelPlugin.instance.maxHealth) {
+                if (d < 0) {
+                    sentinel.weaponDamage.remove(weapon);
+                    sender.sendMessage(SentinelCommand.prefixGood + "Weapon damage removed!");
+                }
+                else {
+                    sentinel.weaponDamage.put(weapon, d);
+                    sender.sendMessage(SentinelCommand.prefixGood + "Weapon damage set!");
+                }
+            }
+            else {
+                throw new NumberFormatException("Number out of range (must be < " + SentinelPlugin.instance.maxHealth + ").");
+            }
+        }
+        catch (NumberFormatException ex) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid weapon damage number: " + ex.getMessage());
         }
     }
 

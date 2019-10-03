@@ -479,6 +479,12 @@ public class SentinelTrait extends Trait {
     public double guardSelectionRange = 4;
 
     /**
+     * Map of weapon material names to custom damage amount.
+     */
+    @Persist("weapon_damage_map")
+    public HashMap<String, Double> weaponDamage = new HashMap<>();
+
+    /**
      * The target entity this NPC is chasing (if any).
      */
     public LivingEntity chasing = null;
@@ -909,12 +915,19 @@ public class SentinelTrait extends Trait {
      * Gets the NPC's current damage value (based on held weapon if calculation is required).
      */
     public double getDamage() {
-        if (damage >= 0) {
-            return damage;
-        }
         ItemStack weapon = itemHelper.getHeldItem();
         if (weapon == null) {
+            if (damage >= 0) {
+                return damage;
+            }
             return 1;
+        }
+        Double customDamage = weaponDamage.get(weapon.getType().name().toLowerCase());
+        if (customDamage != null) {
+            return customDamage;
+        }
+        if (damage >= 0) {
+            return damage;
         }
         // TODO: Less randomness, more game-like calculations.
         double multiplier = 1;
