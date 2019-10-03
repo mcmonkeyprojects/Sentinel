@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.mcmonkey.sentinel.SentinelEventHandler;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 
@@ -163,7 +164,7 @@ public class SentinelHealthCommands {
             sender.sendMessage(SentinelCommand.prefixBad + "Players only!");
             return;
         }
-        Inventory inv = Bukkit.createInventory(null, 9 * 4, SentinelPlugin.InvPrefix + sentinel.getNPC().getId());
+        Inventory inv = Bukkit.createInventory(null, 9 * 4, SentinelEventHandler.InvPrefix + sentinel.getNPC().getId());
         ItemStack[] items = new ItemStack[sentinel.drops.size()];
         inv.addItem(sentinel.drops.toArray(items));
         ((Player) sender).openInventory(inv);
