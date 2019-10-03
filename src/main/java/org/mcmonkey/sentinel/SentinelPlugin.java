@@ -9,10 +9,6 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,7 +29,7 @@ import java.util.HashSet;
 /**
  * The main Sentinel plugin class.
  */
-public class SentinelPlugin extends JavaPlugin implements Listener {
+public class SentinelPlugin extends JavaPlugin {
 
     /**
      * A map of of all valid event targets.
@@ -299,7 +295,6 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
         };
         postLoad.runTaskLater(this, 40);
         getLogger().info("Sentinel loaded!");
-        getServer().getPluginManager().registerEvents(this, this);
         SentinelCommand.buildCommandHandler();
         Bukkit.getPluginManager().registerEvents(new SentinelEventHandler(), this);
         // mcstats.org
@@ -375,32 +370,6 @@ public class SentinelPlugin extends JavaPlugin implements Listener {
             }
             catch (Throwable ex) {
                 ex.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Prefix string for an inventory title.
-     */
-    public final static String InvPrefix = ChatColor.GREEN + "Sentinel ";
-
-    /**
-     * Called when an inventory is closed.
-     */
-    @EventHandler
-    public void onInvClose(InventoryCloseEvent event) {
-        String invTitle = SentinelUtilities.getInventoryTitle(event);
-        if (invTitle.startsWith(InvPrefix)) {
-            int id = Integer.parseInt(invTitle.substring(InvPrefix.length()));
-            NPC npc = CitizensAPI.getNPCRegistry().getById(id);
-            if (npc != null && npc.hasTrait(SentinelTrait.class)) {
-                ArrayList<ItemStack> its = npc.getTrait(SentinelTrait.class).drops;
-                its.clear();
-                for (ItemStack it : event.getInventory().getContents()) {
-                    if (it != null && it.getType() != Material.AIR) {
-                        its.add(it);
-                    }
-                }
             }
         }
     }

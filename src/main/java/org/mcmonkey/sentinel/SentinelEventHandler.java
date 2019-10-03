@@ -1,6 +1,10 @@
 package org.mcmonkey.sentinel;
 
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -11,9 +15,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.ArrayList;
@@ -238,6 +244,32 @@ public class SentinelEventHandler implements Listener {
         }
         for (SentinelTrait sentinel : cleanCurrentList()) {
             sentinel.onPlayerMovesInRange(event);
+        }
+    }
+
+    /**
+     * Prefix string for an inventory title.
+     */
+    public final static String InvPrefix = ChatColor.GREEN + "Sentinel ";
+
+    /**
+     * Called when an inventory is closed.
+     */
+    @EventHandler
+    public void onInvClose(InventoryCloseEvent event) {
+        String invTitle = SentinelUtilities.getInventoryTitle(event);
+        if (invTitle.startsWith(InvPrefix)) {
+            int id = Integer.parseInt(invTitle.substring(InvPrefix.length()));
+            NPC npc = CitizensAPI.getNPCRegistry().getById(id);
+            if (npc != null && npc.hasTrait(SentinelTrait.class)) {
+                ArrayList<ItemStack> its = npc.getTrait(SentinelTrait.class).drops;
+                its.clear();
+                for (ItemStack it : event.getInventory().getContents()) {
+                    if (it != null && it.getType() != Material.AIR) {
+                        its.add(it);
+                    }
+                }
+            }
         }
     }
 }
