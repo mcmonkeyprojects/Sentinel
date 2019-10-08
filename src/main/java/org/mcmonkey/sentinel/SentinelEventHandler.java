@@ -11,10 +11,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -30,6 +27,20 @@ public class SentinelEventHandler implements Listener {
 
     private ArrayList<SentinelTrait> cleanCurrentList() {
         return SentinelPlugin.instance.cleanCurrentList();
+    }
+
+    @EventHandler
+    public void onEntityCombusts(EntityCombustEvent event) {
+        if (event instanceof EntityCombustByEntityEvent || event instanceof EntityCombustByBlockEvent) {
+            return;
+        }
+        if (!SentinelPlugin.instance.blockSunburn) {
+            return;
+        }
+        if (SentinelUtilities.tryGetSentinel(event.getEntity()) == null) {
+            return;
+        }
+        event.setCancelled(true);
     }
 
     /**

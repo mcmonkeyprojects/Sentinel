@@ -167,9 +167,14 @@ public class SentinelPlugin extends JavaPlugin {
     public int runAwayTime;
 
     /**
-     * Configuration option: whether block players from damaging their own guards.
+     * Configuration option: whether to block players from damaging their own guards.
      */
     public boolean noGuardDamage;
+
+    /**
+     * Configuration option: whether to protect Sentinel NPCs from being burned by the sun.
+     */
+    public boolean blockSunburn;
 
     /**
      * Configuration option: time until arrow cleanup.
@@ -242,6 +247,7 @@ public class SentinelPlugin extends JavaPlugin {
         maxHealth = getConfig().getDouble("random.max health", 2000);
         noGuardDamage = getConfig().getBoolean("random.no guard damage", true);
         arrowCleanupTime = getConfig().getInt("random.arrow cleanup time", 200);
+        blockSunburn = getConfig().getBoolean("random.block sunburn", true);
         tickRate = getConfig().getInt("update rate", 10);
     }
 

@@ -89,6 +89,8 @@ random:
         minimum: 7
     # How long (in ticks) before Sentinel-fired arrows in the ground are cleaned up. Set to 0 to disable cleanup.
     arrow cleanup time: 200
+    # Whether to protect Sentinel NPCs from being burned by the sun.
+    block sunburn: true
 
 # How fast to recalculate, in ticks.
 update rate: 10
