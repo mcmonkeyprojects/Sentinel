@@ -184,7 +184,13 @@ These are all valid targets and ignores:
 - Also, status:STATUS_TYPE. Current status types:
     - "status:angry" for mobs (wolves, endermen, spiders, etc.) that are currently angry. This is handy with a combo like `allinone:enderman|status:angry`
     - "status:passive" for non-angry
-- Also, via internal sample integrations: sbteam:SCOREBOARD\_TEAM\_HERE, healthabove:PERCENTAGE and healthbelow:PERCENTAGE, permission:PERM.KEY, squad:SENTINEL\_SQUAD\_NAME, uuid:UUID
+- Also, via internal sample integrations:
+    - sbteam:SCOREBOARD\_TEAM\_HERE
+    - healthabove:PERCENTAGE and healthbelow:PERCENTAGE
+    - permission:PERM.KEY
+    - squad:SENTINEL\_SQUAD\_NAME
+    - uuid:UUID
+    - potion:POTION_EFFECT ( effect name must be on https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html )
 - Also anything listed in the integrations section above!
 - You can also add multi-targets - that is, `multi:TARGET_ONE,TARGET_TWO,...` to have multiple targets required together.
     - For example: `multi:PLAYER,PLAYER,CHICKEN` will make the NPC angry at 2 players and a chicken if they are all together.

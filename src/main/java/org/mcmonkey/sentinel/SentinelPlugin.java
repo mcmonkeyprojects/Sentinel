@@ -330,6 +330,7 @@ public class SentinelPlugin extends JavaPlugin {
         tryGetPerms();
         registerIntegration(new SentinelHealth());
         registerIntegration(new SentinelPermissions());
+        registerIntegration(new SentinelPotion());
         registerIntegration(new SentinelSBTeams());
         registerIntegration(new SentinelSquads());
         registerIntegration(new SentinelUUID());

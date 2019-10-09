@@ -310,11 +310,11 @@ public class SentinelUtilities {
      * Returns whether an entity is invisible (when invisible targets are ignorable).
      */
     public static boolean isInvisible(LivingEntity entity) {
-        EntityEquipment eq = entity.getEquipment();
         if (!SentinelPlugin.instance.ignoreInvisible
                 || !entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
             return false;
         }
+        EntityEquipment eq = entity.getEquipment();
         if (SentinelTarget.v1_9) {
             if (!isAir(eq.getItemInMainHand()) || !isAir(eq.getItemInOffHand())) {
                 return false;
