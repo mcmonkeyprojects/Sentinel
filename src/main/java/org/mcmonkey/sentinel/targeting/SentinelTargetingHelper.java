@@ -385,6 +385,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Failing a direct line of sight, the nearest entity in range at all will be chosen.
      */
     public LivingEntity findBestTarget() {
+        if (sentinel.chasing != null && SentinelPlugin.instance.retainTarget) {
+            return sentinel.chasing;
+        }
         boolean ignoreGlow = itemHelper.usesSpectral();
         double rangesquared = sentinel.range * sentinel.range;
         double crsq = sentinel.chaseRange * sentinel.chaseRange;

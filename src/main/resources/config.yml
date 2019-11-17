@@ -91,6 +91,8 @@ random:
     arrow cleanup time: 200
     # Whether to protect Sentinel NPCs from being burned by the sun.
     block sunburn: true
+    # Whether to retain the existing target even when a better one exists.
+    retain target: false
 
 # How fast to recalculate, in ticks.
 update rate: 10
