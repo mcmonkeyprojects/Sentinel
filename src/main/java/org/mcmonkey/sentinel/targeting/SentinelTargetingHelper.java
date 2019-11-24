@@ -544,18 +544,18 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      */
     public static boolean isUntargetable(Entity e) {
         if (e == null) {
-            return false;
+            return true;
         }
         if (e.isDead()) {
-            return false;
+            return true;
         }
         if (e instanceof Player) {
             GameMode mode = ((Player) e).getGameMode();
             if (mode == GameMode.CREATIVE || mode == GameMode.SPECTATOR) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
