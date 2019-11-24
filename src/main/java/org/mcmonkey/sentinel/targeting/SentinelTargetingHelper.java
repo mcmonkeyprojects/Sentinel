@@ -385,9 +385,6 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Failing a direct line of sight, the nearest entity in range at all will be chosen.
      */
     public LivingEntity findBestTarget() {
-        if (sentinel.chasing != null && SentinelPlugin.instance.retainTarget) {
-            return sentinel.chasing;
-        }
         boolean ignoreGlow = itemHelper.usesSpectral();
         double rangesquared = sentinel.range * sentinel.range;
         double crsq = sentinel.chaseRange * sentinel.chaseRange;
@@ -397,6 +394,12 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             getNPC().getNavigator().cancelNavigation();
             getLivingEntity().teleport(sentinel.getGuardZone());
             return null;
+        }
+        if (sentinel.chasing != null && SentinelPlugin.instance.retainTarget) {
+            double dist = sentinel.chasing.getEyeLocation().distanceSquared(pos);
+            if (dist < crsq && shouldTarget(sentinel.chasing)) {
+                return sentinel.chasing;
+            }
         }
         LivingEntity closest = null;
         boolean wasLos = false;
@@ -540,9 +543,19 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Returns whether an entity is not able to be targeted at all.
      */
     public static boolean isUntargetable(Entity e) {
-        return e == null ||
-                (e instanceof Player && (((Player) e).getGameMode() == GameMode.CREATIVE || ((Player) e).getGameMode() == GameMode.SPECTATOR)) ||
-                e.isDead();
+        if (e == null) {
+            return false;
+        }
+        if (e.isDead()) {
+            return false;
+        }
+        if (e instanceof Player) {
+            GameMode mode = ((Player) e).getGameMode();
+            if (mode == GameMode.CREATIVE || mode == GameMode.SPECTATOR) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
