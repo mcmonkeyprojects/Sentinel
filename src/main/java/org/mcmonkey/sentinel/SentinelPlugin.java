@@ -87,6 +87,11 @@ public class SentinelPlugin extends JavaPlugin {
     public Permission vaultPerms;
 
     /**
+     * Total server tick time (for timing correction handlers).
+     */
+    public long tickTimeTotal = 0;
+
+    /**
      * Configuration option: maximum health value any NPC can ever have.
      */
     public double maxHealth;
@@ -385,6 +390,12 @@ public class SentinelPlugin extends JavaPlugin {
                 ex.printStackTrace();
             }
         }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                tickTimeTotal++;
+            }
+        }.runTaskTimer(this, 1, 1);
     }
 
     /**

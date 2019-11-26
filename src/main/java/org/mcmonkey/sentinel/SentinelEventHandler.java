@@ -5,8 +5,10 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,11 +17,13 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class SentinelEventHandler implements Listener {
@@ -222,7 +226,75 @@ public class SentinelEventHandler implements Listener {
     public void whenWeDie(EntityDeathEvent event) {
         SentinelTrait sentinel = SentinelUtilities.tryGetSentinel(event.getEntity());
         if (sentinel != null) {
+            if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+                Entity damager = ((EntityDamageByEntityEvent) event.getEntity().getLastDamageCause()).getDamager();
+                if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof Entity) {
+                    damager = (Entity) ((Projectile) damager).getShooter();
+                }
+                if (damager instanceof Player && !CitizensAPI.getNPCRegistry().isNPC(damager)) {
+                    TrackedKillToBlock blocker = killStatsToBlock.get(damager.getUniqueId());
+                    if (blocker == null) {
+                        blocker = new TrackedKillToBlock();
+                        killStatsToBlock.put(damager.getUniqueId(), blocker);
+                    }
+                    blocker.addOne();
+                }
+            }
             sentinel.whenWeDie(event);
+        }
+    }
+
+    /**
+     * Class to help prevent kill statistic incrementing.
+     */
+    public static class TrackedKillToBlock {
+
+        /**
+         * The number of kills to block.
+         */
+        public int killCount = 0;
+
+        /**
+         * The server tick time of the block.
+         */
+        public long systemTick = 0;
+
+        /**
+         * Adds one kill and handles system time.
+         */
+        public void addOne() {
+            if (systemTick != SentinelPlugin.instance.tickTimeTotal) {
+                killCount = 0;
+                systemTick = SentinelPlugin.instance.tickTimeTotal;
+            }
+            killCount++;
+        }
+    }
+
+    /**
+     * Map to track automatic kill-statistic incrementing.
+     */
+    public static HashMap<UUID, TrackedKillToBlock> killStatsToBlock = new HashMap<>();
+
+    /**
+     * Called when a player statistic increments, to prevent the "PLAYER_KILLS" stat updating for killing an NPC.
+     */
+    @EventHandler
+    public void onStatisticIncrement(PlayerStatisticIncrementEvent event) {
+        if (event.getStatistic() == Statistic.PLAYER_KILLS) {
+            UUID uuid = event.getPlayer().getUniqueId();
+            TrackedKillToBlock blocker = killStatsToBlock.get(uuid);
+            if (blocker != null) {
+                blocker.killCount--;
+                if (blocker.systemTick != SentinelPlugin.instance.tickTimeTotal) {
+                    killStatsToBlock.remove(uuid);
+                    return;
+                }
+                if (blocker.killCount <= 0) {
+                    killStatsToBlock.remove(uuid);
+                }
+                event.setCancelled(true);
+            }
         }
     }
 
