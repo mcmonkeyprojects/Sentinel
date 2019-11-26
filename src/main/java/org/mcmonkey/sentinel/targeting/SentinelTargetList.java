@@ -65,7 +65,7 @@ public class SentinelTargetList {
         if (targetsProcessed.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(sentinel.getNPC().getTrait(Owner.class).getOwnerId())) {
             return true;
         }
-        return isTarget(entity);
+        return isTargetNoCache(entity);
     }
 
     /**
@@ -86,6 +86,9 @@ public class SentinelTargetList {
      * Explicitly does not reprocess the cache.
      */
     public boolean isTargetNoCache(LivingEntity entity) {
+        if (totalTargetsCount() == 0) { // Opti
+            return false;
+        }
         if (entity.getEquipment() != null) {
             if (SentinelUtilities.isItemTarget(SentinelUtilities.getHeldItem(entity), byHeldItem)) {
                 return true;
@@ -177,6 +180,9 @@ public class SentinelTargetList {
      * Primarily for the multi-targets system.
      */
     public boolean ifIsTargetDeleteTarget(LivingEntity entity) {
+        if (totalTargetsCount() == 0) { // Opti
+            return false;
+        }
         if (entity.getEquipment() != null) {
             String match = SentinelUtilities.getItemTarget(SentinelUtilities.getHeldItem(entity), byHeldItem);
             if (match != null) {

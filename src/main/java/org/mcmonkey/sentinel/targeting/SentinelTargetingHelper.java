@@ -240,18 +240,21 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      */
     public void processAvoidance() {
         avoidanceList.clear();
+        if (currentAvoids.isEmpty() && sentinel.allAvoids.totalTargetsCount() == 0) { // Opti
+            return;
+        }
         double range = sentinel.avoidRange + 10;
         for (Entity entity : getLivingEntity().getWorld().getNearbyEntities(getLivingEntity().getLocation(), range, 16, range)) {
             if (!(entity instanceof LivingEntity)) {
                 continue;
             }
             tempTarget.targetID = entity.getUniqueId();
-            if (!canSee((LivingEntity) entity) && !targetingHelper.currentAvoids.contains(tempTarget)) {
-                continue;
-            }
             if (shouldAvoid((LivingEntity) entity)) {
+                if (!currentAvoids.contains(tempTarget) && !canSee((LivingEntity) entity)) {
+                    continue;
+                }
                 avoidanceList.add((LivingEntity) entity);
-                targetingHelper.addAvoid(entity.getUniqueId());
+                addAvoid(entity.getUniqueId());
             }
         }
         if (avoidanceList.isEmpty()) {
@@ -413,8 +416,12 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             }
             double dist = ent.getEyeLocation().distanceSquared(pos);
             tempTarget.targetID = ent.getUniqueId();
-            if ((dist < rangesquared && shouldTarget(ent) && canSee(ent)) || (dist < crsq && currentTargets.contains(tempTarget))) {
+            boolean isExistingTarget = dist < crsq && dist < rangesquared && currentTargets.contains(tempTarget);
+            if (isExistingTarget || (dist < rangesquared && shouldTarget(ent))) {
                 boolean hasLos = canSee(ent);
+                if (!hasLos && !isExistingTarget) {
+                    continue;
+                }
                 if (!wasLos || hasLos) {
                     rangesquared = dist;
                     closest = ent;
