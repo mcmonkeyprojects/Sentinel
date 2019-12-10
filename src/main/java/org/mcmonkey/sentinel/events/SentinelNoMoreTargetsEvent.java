@@ -15,7 +15,7 @@ public class SentinelNoMoreTargetsEvent extends NPCEvent {
     private static final HandlerList handlers = new HandlerList();
 
     /**
-     * Constructs the attack event.
+     * Constructs the no-more-targets event.
      */
     public SentinelNoMoreTargetsEvent(NPC npc) {
         super(npc);

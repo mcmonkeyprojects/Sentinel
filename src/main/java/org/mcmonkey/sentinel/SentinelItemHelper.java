@@ -157,23 +157,19 @@ public class SentinelItemHelper extends SentinelHelperObject {
         if (!getNPC().hasTrait(Inventory.class)) {
             return;
         }
-        int i = 0;
         Inventory inv = getNPC().getTrait(Inventory.class);
         ItemStack[] items = inv.getContents();
         ItemStack held = items[0] == null ? null : items[0].clone();
-        boolean edit = false;
-        while (!isRanged() && i < items.length - 1) {
-            i++;
-            if (items[i] != null && items[i].getType() != Material.AIR) {
-                items[0] = items[i].clone();
-                items[i] = new ItemStack(Material.AIR);
-                inv.setContents(items);
-                edit = true;
-            }
+        if (isRanged(held)) {
+            return;
         }
-        if (edit) {
-            items[i] = held;
-            inv.setContents(items);
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null && items[i].getType() != Material.AIR && isRanged(items[i])) {
+                items[0] = items[i].clone();
+                items[i] = held;
+                inv.setContents(items);
+                return;
+            }
         }
     }
 
@@ -184,23 +180,19 @@ public class SentinelItemHelper extends SentinelHelperObject {
         if (!getNPC().hasTrait(Inventory.class)) {
             return;
         }
-        int i = 0;
         Inventory inv = getNPC().getTrait(Inventory.class);
         ItemStack[] items = inv.getContents();
         ItemStack held = items[0] == null ? null : items[0].clone();
-        boolean edit = false;
-        while (isRanged() && i < items.length - 1) {
-            i++;
-            if (items[i] != null && items[i].getType() != Material.AIR) {
-                items[0] = items[i].clone();
-                items[i] = new ItemStack(Material.AIR);
-                inv.setContents(items);
-                edit = true;
-            }
+        if (!isRanged(held)) {
+            return;
         }
-        if (edit) {
-            items[i] = held;
-            inv.setContents(items);
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null && items[i].getType() != Material.AIR && !isRanged(items[i])) {
+                items[0] = items[i].clone();
+                items[i] = held;
+                inv.setContents(items);
+                return;
+            }
         }
     }
 
@@ -219,12 +211,23 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is holding a ranged weapon.
      */
     public boolean isRanged() {
-        return usesBow()
-                || usesFireball()
-                || usesSnowball()
-                || usesLightning()
-                || usesSpectral()
-                || usesPotion();
+        return isRanged(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is holding a ranged weapon.
+     */
+    public boolean isRanged(ItemStack item) {
+        return usesBow(item)
+                || usesFireball(item)
+                || usesSnowball(item)
+                || usesLightning(item)
+                || usesEgg(item)
+                || usesPearl(item)
+                || usesWitherSkull(item)
+                || usesTrident(item)
+                || usesSpectral(item)
+                || usesPotion(item);
     }
 
     /**
@@ -266,7 +269,13 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a bow item.
      */
     public boolean usesBow() {
-        ItemStack it = getHeldItem();
+        return usesBow(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using a bow item.
+     */
+    public boolean usesBow(ItemStack it) {
         if (it == null) {
             return false;
         }
@@ -282,7 +291,13 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a fireball item.
      */
     public boolean usesFireball() {
-        ItemStack it = getHeldItem();
+        return usesFireball(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using a fireball item.
+     */
+    public boolean usesFireball(ItemStack it) {
         return it != null && it.getType() == SentinelTarget.MATERIAL_BLAZE_ROD;
     }
 
@@ -290,7 +305,13 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a snowball item.
      */
     public boolean usesSnowball() {
-        ItemStack it = getHeldItem();
+        return usesSnowball(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using a snowball item.
+     */
+    public boolean usesSnowball(ItemStack it) {
         return it != null && it.getType() == SentinelTarget.MATERIAL_SNOW_BALL;
     }
 
@@ -298,7 +319,13 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a lightning-attack item.
      */
     public boolean usesLightning() {
-        ItemStack it = getHeldItem();
+        return usesLightning(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using a lightning-attack item.
+     */
+    public boolean usesLightning(ItemStack it) {
         return it != null && it.getType() == SentinelTarget.MATERIAL_NETHER_STAR;
     }
 
@@ -306,15 +333,27 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using an egg item.
      */
     public boolean usesEgg() {
-        ItemStack it = getHeldItem();
+        return usesEgg(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using an egg item.
+     */
+    public boolean usesEgg(ItemStack it) {
         return it != null && it.getType() == Material.EGG;
     }
 
     /**
-     * Returns whether the NPC is using a peal item.
+     * Returns whether the NPC is using a pearl item.
      */
     public boolean usesPearl() {
-        ItemStack it = getHeldItem();
+        return usesPearl(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using a pearl item.
+     */
+    public boolean usesPearl(ItemStack it) {
         return it != null && it.getType() == Material.ENDER_PEARL;
     }
 
@@ -322,10 +361,16 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a wither-skull item.
      */
     public boolean usesWitherSkull() {
+        return usesWitherSkull(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using a wither-skull item.
+     */
+    public boolean usesWitherSkull(ItemStack it) {
         if (!SentinelPlugin.instance.canUseSkull) {
             return false;
         }
-        ItemStack it = getHeldItem();
         return it != null && SentinelTarget.SKULL_MATERIALS.contains(it.getType());
     }
 
@@ -333,10 +378,16 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a trident item.
      */
     public boolean usesTrident() {
+        return usesTrident(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using a trident item.
+     */
+    public boolean usesTrident(ItemStack it) {
         if (!SentinelTarget.v1_13) {
             return false;
         }
-        ItemStack it = getHeldItem();
         return it != null && it.getType() == Material.TRIDENT;
     }
 
@@ -344,10 +395,16 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a spectral-effect-attack item.
      */
     public boolean usesSpectral() {
+        return usesSpectral(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using a spectral-effect-attack item.
+     */
+    public boolean usesSpectral(ItemStack it) {
         if (!SentinelTarget.v1_10) {
             return false;
         }
-        ItemStack it = getHeldItem();
         return it != null && it.getType() == Material.SPECTRAL_ARROW;
     }
 
@@ -355,7 +412,13 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a potion item.
      */
     public boolean usesPotion() {
-        ItemStack it = getHeldItem();
+        return usesPotion(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using a potion item.
+     */
+    public boolean usesPotion(ItemStack it) {
         return it != null && SentinelTarget.POTION_MATERIALS.contains(it.getType());
     }
 
