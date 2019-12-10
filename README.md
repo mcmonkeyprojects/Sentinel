@@ -70,7 +70,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 Sentinel integrates with a few external plugins, including:
 
 - Vault, for permission group targets! (Use group:GROUP_HERE)
-- Towny, for town targets! (Use towny:TOWN_HERE, nation:NATION_HERE)
+- Towny, for town targets! (Use towny:TOWN_HERE, nation:NATION_HERE, nationenemies:NATION_HERE, nationallies:NATION_HERE)
 - Factions, for faction targets! (Use factions:FACTION_HERE, factionsenemy:NAME, factionsally:NAME)
 - SimpleClans, for clan targets! (Use simpleclan:CLAN_NAME_HERE)
 - War, for war team targets! (Use war_team:WAR_TEAM_NAME)
