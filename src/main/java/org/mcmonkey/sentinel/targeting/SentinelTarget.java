@@ -100,6 +100,11 @@ public class SentinelTarget {
     public static SentinelTarget RAVAGERS, PILLAGERS, CATS, PANDAS, TRADER_LLAMAS, WANDERING_TRADERS, FOXES;
 
     /**
+     * Valid target types for 1.15 or higher.
+     */
+    public static SentinelTarget BEES;
+
+    /**
      * Multiple-entity-type targets.
      */
     public static SentinelTarget PASSIVE_MOBS, MONSTERS, MOBS;
@@ -137,7 +142,7 @@ public class SentinelTarget {
     /**
      * Boolean indicating if the server version is >= the named version.
      */
-    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14;
+    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14, v1_15;
 
     /**
      * Returns whether an item material is a valid weapon type.
@@ -213,7 +218,6 @@ public class SentinelTarget {
         return combine(v1_13_passive(), EntityType.CAT, EntityType.PANDA, EntityType.TRADER_LLAMA, EntityType.WANDERING_TRADER, EntityType.FOX);
     }
 
-
     static EntityType[] v1_8_monsters() {
         return new EntityType[]{EntityType.GUARDIAN, EntityType.CREEPER, EntityType.SKELETON, EntityType.ZOMBIE,
                 EntityType.MAGMA_CUBE, EntityType.PIG_ZOMBIE, EntityType.SILVERFISH, EntityType.BAT, EntityType.BLAZE,
@@ -243,10 +247,15 @@ public class SentinelTarget {
         return combine(v1_13_monsters(), EntityType.RAVAGER, EntityType.PILLAGER);
     }
 
+    static EntityType[] v1_15_monsters() {
+        return combine(v1_14_monsters(), EntityType.BEE);
+    }
+
     static {
         String vers = Bukkit.getBukkitVersion(); // Returns in format like: 1.12.2-R0.1-SNAPSHOT
-        boolean future = vers.startsWith("1.15") || vers.startsWith("1.16");
-        v1_14 = vers.startsWith("1.14") || future;
+        boolean future = vers.startsWith("1.16") || vers.startsWith("1.17");
+        v1_15 = vers.startsWith("1.15") || future;
+        v1_14 = vers.startsWith("1.14") || v1_15;
         v1_13 = vers.startsWith("1.13") || v1_14;
         v1_12 = vers.startsWith("1.12") || v1_13;
         v1_11 = vers.startsWith("1.11") || v1_12;
@@ -262,7 +271,7 @@ public class SentinelTarget {
             SHULKERS = new SentinelTarget(new EntityType[]{EntityType.SHULKER}, "SHULKER");
         }
         if (v1_9 && !v1_10) {
-            PASSIVE_MOBS = new SentinelTarget(v1_8_passive(), passiveNames());
+            PASSIVE_MOBS = new SentinelTarget(v1_8_passive(), passiveNames()); // No new passives in 1.9
             MOBS = new SentinelTarget(combine(v1_8_passive(), v1_9_monsters()), "MOB");
             MONSTERS = new SentinelTarget(v1_9_monsters(), "MONSTER");
         }
@@ -271,7 +280,7 @@ public class SentinelTarget {
         }
         if (v1_10 && !v1_11) {
             PASSIVE_MOBS = new SentinelTarget(v1_10_passive(), passiveNames());
-            MOBS = new SentinelTarget(combine(v1_10_passive(), v1_9_monsters()), "MOB");
+            MOBS = new SentinelTarget(combine(v1_10_passive(), v1_9_monsters()), "MOB"); // No new monsters in 1.10
             MONSTERS = new SentinelTarget(v1_9_monsters(), "MONSTER");
         }
         if (v1_11) {
@@ -310,7 +319,7 @@ public class SentinelTarget {
             SALMON = new SentinelTarget(new EntityType[]{EntityType.SALMON}, "SALMON");
             PUFFERFISH = new SentinelTarget(new EntityType[]{EntityType.PUFFERFISH}, "PUFFERFISH", "PUFFERFISHE");
             TROPICAL_FISH = new SentinelTarget(new EntityType[]{EntityType.TROPICAL_FISH}, "TROPICAL_FISH", "TROPICALFISH", "TROPICAL_FISHE", "TROPICALFISHE");
-            TROPICAL_FISH = new SentinelTarget(new EntityType[]{EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SALMON, EntityType.COD}, "FISH", "FISHE");
+            FISH = new SentinelTarget(new EntityType[]{EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SALMON, EntityType.COD}, "FISH", "FISHE");
             PHANTOM = new SentinelTarget(new EntityType[]{EntityType.PHANTOM}, "PHANTOM");
             TURTLE = new SentinelTarget(new EntityType[]{EntityType.TURTLE}, "TURTLE");
         }
@@ -320,7 +329,6 @@ public class SentinelTarget {
             MONSTERS = new SentinelTarget(v1_13_monsters(), "MONSTER");
         }
         if (v1_14) {
-            // combine(v1_13_passive(), EntityType.CAT, EntityType.PANDA, EntityType.TRADER_LLAMA, EntityType.WANDERING_TRADER, EntityType.FOX);
             RAVAGERS = new SentinelTarget(new EntityType[]{EntityType.RAVAGER}, "RAVAGER");
             PILLAGERS = new SentinelTarget(new EntityType[]{EntityType.PILLAGER}, "PILLAGER");
             CATS = new SentinelTarget(new EntityType[]{EntityType.CAT}, "CAT");
@@ -329,11 +337,19 @@ public class SentinelTarget {
             WANDERING_TRADERS = new SentinelTarget(new EntityType[]{EntityType.WANDERING_TRADER}, "WANDERING_TRADER", "WANDERINGTRADER", "TRADER");
             FOXES = new SentinelTarget(new EntityType[]{EntityType.FOX}, "FOX", "FOXE");
         }
-        if (v1_14) { // && !v1_15
+        if (v1_14 && !v1_15) {
             PASSIVE_MOBS = new SentinelTarget(v1_14_passive(), passiveNames());
             MOBS = new SentinelTarget(combine(v1_14_passive(), v1_14_monsters()), "MOB");
             MONSTERS = new SentinelTarget(v1_14_monsters(), "MONSTER");
             BOW_MATERIALS.add(getMaterial("CROSSBOW"));
+        }
+        if (v1_15) {
+            BEES = new SentinelTarget(new EntityType[]{EntityType.BEE}, "BEE");
+        }
+        if (v1_15) { // && !v1_16
+            PASSIVE_MOBS = new SentinelTarget(v1_14_passive(), passiveNames()); // no new passives in 1.15
+            MOBS = new SentinelTarget(combine(v1_14_passive(), v1_15_monsters()), "MOB");
+            MONSTERS = new SentinelTarget(v1_14_monsters(), "MONSTER");
         }
         // ========================== End Entities ==========================
         // ========================== Begin Materials ==========================

@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
-**Version 2.0.0**: Compatible with Spigot 1.8.8 through 1.14.4 (Primarily targeted at 1.13.2 and 1.14.4 - see info section below if on other supported versions)
+**Version 2.0.1**: Compatible with Spigot 1.8.8 through 1.15 (Primarily targeted at 1.14.4 and 1.15 - see info section below if on other supported versions)
 
 ### Downloads
 
@@ -174,6 +174,7 @@ These are all valid targets and ignores:
 - In 1.13 or higher: DOLPHINS, DROWNED, COD, SALMON, PUFFERFISH, TROPICAL_FISH, PHANTOMS, TURTLES
 - 1.13 or higher special targets: FISH
 - In 1.14 or higher: PILLAGERS, RAVAGERS, CATS, PANDAS, TRADER_LLAMAS, WANDERING_TRADERS, FOXES
+- In 1.15 or higher: BEES
 - Also allowed: `player:NAME(REGEX)`, `npc:NAME(REGEX)`, `entityname:NAME(REGEX)`, `group:GROUPNAME(EXACT)`
 - Alo allowed: `helditem:ITEM_MATCHER`, `offhand:ITEM_MATCHER`, `equipped:ITEM_MATCHER`, `in_inventory:ITEM_MATCHER`
     - These all use "ITEM_MATCHER"s, which, at their simplest, are just a regex that matches the material name. So, `helditem:diamond_sword` targets enemies that are holding a diamond sword.
