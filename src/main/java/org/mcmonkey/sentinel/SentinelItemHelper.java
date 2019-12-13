@@ -2,6 +2,7 @@ package org.mcmonkey.sentinel;
 
 import net.citizensnpcs.api.trait.trait.Inventory;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 
@@ -154,7 +155,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Swaps the NPC to a ranged weapon if possible.
      */
     public void swapToRanged() {
-        if (!getNPC().hasTrait(Inventory.class)) {
+        if (!getNPC().isSpawned() || !getNPC().hasTrait(Inventory.class)) {
             return;
         }
         Inventory inv = getNPC().getTrait(Inventory.class);
@@ -164,10 +165,18 @@ public class SentinelItemHelper extends SentinelHelperObject {
             return;
         }
         for (int i = 0; i < items.length; i++) {
+            if (sentinel.getLivingEntity() instanceof Player && i >= 36 && i <= 39) {
+                // Patch for armor, which is "in the inventory" but not really tracked through it
+                continue;
+            }
             if (items[i] != null && items[i].getType() != Material.AIR && isRanged(items[i])) {
                 items[0] = items[i].clone();
-                items[i] = held;
+                items[i] = held == null ? null : held.clone();
                 inv.setContents(items);
+                if (sentinel.getLivingEntity() instanceof Player && i == 40) {
+                    // Patch for offhand, which is "in the inventory" but not really tracked through it
+                    sentinel.getLivingEntity().getEquipment().setItemInOffHand(items[i]);
+                }
                 return;
             }
         }
@@ -177,7 +186,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Swaps the NPC to a melee weapon if possible.
      */
     public void swapToMelee() {
-        if (!getNPC().hasTrait(Inventory.class)) {
+        if (!getNPC().isSpawned() || !getNPC().hasTrait(Inventory.class)) {
             return;
         }
         Inventory inv = getNPC().getTrait(Inventory.class);
@@ -187,10 +196,18 @@ public class SentinelItemHelper extends SentinelHelperObject {
             return;
         }
         for (int i = 0; i < items.length; i++) {
+            if (sentinel.getLivingEntity() instanceof Player && i >= 36 && i <= 39) {
+                // Patch for armor, which is "in the inventory" but not really tracked through it
+                continue;
+            }
             if (items[i] != null && items[i].getType() != Material.AIR && !isRanged(items[i])) {
                 items[0] = items[i].clone();
-                items[i] = held;
+                items[i] = held == null ? null : held.clone();
                 inv.setContents(items);
+                if (sentinel.getLivingEntity() instanceof Player && i == 40) {
+                    // Patch for offhand, which is "in the inventory" but not really tracked through it
+                    sentinel.getLivingEntity().getEquipment().setItemInOffHand(items[i]);
+                }
                 return;
             }
         }

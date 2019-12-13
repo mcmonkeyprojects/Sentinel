@@ -246,7 +246,7 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
         <dependency>
             <groupId>org.mcmonkey</groupId>
             <artifactId>sentinel</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
