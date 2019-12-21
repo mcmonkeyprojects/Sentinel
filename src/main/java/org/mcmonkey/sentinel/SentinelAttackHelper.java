@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.events.SentinelAttackEvent;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 
@@ -63,12 +62,6 @@ public class SentinelAttackHelper extends SentinelHelperObject {
      * Returns a boolean indicating whether the NPC sees a threat from the input entity (for use with shield blocking).
      */
     public boolean seesThreatFrom(LivingEntity entity) {
-        if (!entity.getWorld().equals(getLivingEntity().getWorld())) {
-            return false;
-        }
-        if (!getLivingEntity().hasLineOfSight(entity)) {
-            return false;
-        }
         if (!targetingHelper.canSee(entity)) {
             return false;
         }
