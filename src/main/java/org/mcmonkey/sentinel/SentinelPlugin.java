@@ -15,7 +15,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.mcmonkey.sentinel.commands.SentinelCommand;
 import org.mcmonkey.sentinel.integration.*;
 import org.mcmonkey.sentinel.metrics.BStatsMetricsLite;
-import org.mcmonkey.sentinel.metrics.MetricsLite;
 import org.mcmonkey.sentinel.metrics.StatsRecord;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.utilities.ConfigUpdater;
@@ -314,14 +313,6 @@ public class SentinelPlugin extends JavaPlugin {
         getLogger().info("Sentinel loaded!");
         SentinelCommand.buildCommandHandler();
         Bukkit.getPluginManager().registerEvents(new SentinelEventHandler(), this);
-        // mcstats.org
-        try {
-            MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        }
-        catch (Throwable e) {
-            e.printStackTrace();
-        }
         // bstats.org
         try {
             BStatsMetricsLite metrics = new BStatsMetricsLite(this);
