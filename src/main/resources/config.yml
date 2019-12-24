@@ -40,6 +40,8 @@ sentinel defaults:
     realistic: false
     # How far the NPC can reach.
     reach: 3
+    # How far the NPC is willing to fire projectiles.
+    projectile range: 100
     # How far the NPC should stay away from threats (listed by 'addavoid' command).
     avoid range: 10
     # Whether the NPC should run away when attacked.

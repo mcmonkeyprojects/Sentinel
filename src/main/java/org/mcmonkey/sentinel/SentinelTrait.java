@@ -467,6 +467,12 @@ public class SentinelTrait extends Trait {
     public double reach = 3;
 
     /**
+     * How far this NPC is willing to fire projectiles.
+     */
+    @Persist("projectileRange")
+    public double projectileRange = 100;
+
+    /**
      * Minimum distance before choosing a new point (relative to guarded player).
      */
     @Persist("guard_distance_minimum")
@@ -892,6 +898,7 @@ public class SentinelTrait extends Trait {
         allIgnores.targets.add(SentinelTarget.OWNER.name());
         allIgnores.recalculateTargetsCache();
         reach = config.getDouble("sentinel defaults.reach", 3);
+        projectileRange = config.getDouble("sentinel defaults.projectile range", 100);
         avoidRange = config.getDouble("sentinel defaults.avoid range", 10);
         runaway = config.getBoolean("sentinel defaults.runaway", false);
         greetRange = config.getDouble("sentinel defaults.greet range", 10);

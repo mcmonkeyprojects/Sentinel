@@ -52,6 +52,7 @@ public class SentinelInfoCommands {
         paginator.addLine(SentinelCommand.prefixGood + "Respawn Time: " + ChatColor.AQUA + (sentinel.respawnTime / 20.0));
         paginator.addLine(SentinelCommand.prefixGood + "Accuracy: " + ChatColor.AQUA + sentinel.accuracy);
         paginator.addLine(SentinelCommand.prefixGood + "Reach: " + ChatColor.AQUA + sentinel.reach);
+        paginator.addLine(SentinelCommand.prefixGood + "Projectile Range: " + ChatColor.AQUA + sentinel.projectileRange);
         paginator.addLine(SentinelCommand.prefixGood + "Greeting: " + ChatColor.AQUA + (sentinel.greetingText == null ? "None" : sentinel.greetingText));
         paginator.addLine(SentinelCommand.prefixGood + "Warning: " + ChatColor.AQUA + (sentinel.warningText == null ? "None" : sentinel.warningText));
         paginator.addLine(SentinelCommand.prefixGood + "Greeting Range: " + ChatColor.AQUA + sentinel.greetRange);

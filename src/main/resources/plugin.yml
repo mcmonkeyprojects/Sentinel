@@ -96,6 +96,8 @@ permissions:
       sentinel.debug: true
       # /sentinel reach REACH
       sentinel.reach: true
+      # /sentinel projectilerange RANGE
+      sentinel.projectilerange: true
       # /sentinel weaponredirect MATERIAL_ONE MATERIAL_TWO
       sentinel.weaponredirect: true
       # /sentinel greeting GREETING, sentinel warning WARNING, sentinel greetrange RANGE, sentinel greetrate RATE

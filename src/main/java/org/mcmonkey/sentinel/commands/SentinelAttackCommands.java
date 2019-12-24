@@ -80,6 +80,30 @@ public class SentinelAttackCommands {
         }
     }
 
+    @Command(aliases = {"sentinel"}, usage = "projectilerange RANGE",
+            desc = "Sets the NPC's projectile range (how far it is willing to shoot projectiles).",
+            modifiers = {"projectilerange"}, permission = "sentinel.projectilerange", min = 1, max = 2)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void projectileRange(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current projectile range: " + ChatColor.AQUA + sentinel.projectileRange);
+            return;
+        }
+        try {
+            double d = args.getDouble(1);
+            if (d >= 0) {
+                sentinel.projectileRange = d;
+                sender.sendMessage(SentinelCommand.prefixGood + "Projectile range set!");
+            }
+            else {
+                throw new NumberFormatException("Number out of range (must be >= 0).");
+            }
+        }
+        catch (NumberFormatException ex) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid projectile range number: " + ex.getMessage());
+        }
+    }
+
     @Command(aliases = {"sentinel"}, usage = "attackrate RATE ['ranged']",
             desc = "Changes the rate at which the NPC attacks, in seconds - either ranged or close modes.",
             modifiers = {"attackrate"}, permission = "sentinel.attackrate", min = 1, max = 3)

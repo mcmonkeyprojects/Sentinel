@@ -129,7 +129,8 @@ public class SentinelAttackHelper extends SentinelHelperObject {
      * Returns 'true' when the attack should be cancelled.
      */
     public boolean rangedPreCalculation(LivingEntity entity) {
-        if (targetingHelper.canSee(entity)) {
+        double dist = getLivingEntity().getEyeLocation().distanceSquared(entity.getEyeLocation());
+        if (dist < sentinel.projectileRange * sentinel.projectileRange && targetingHelper.canSee(entity)) {
             if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
                 if (SentinelPlugin.debugMe) {
                     debug("tryAttack refused, timeSinceAttack");
@@ -144,7 +145,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         }
         else if (sentinel.rangedChase) {
             if (SentinelPlugin.debugMe) {
-                debug("tryAttack refused, visibility");
+                debug("tryAttack refused, range or visibility");
             }
             chase(entity);
             return true;
