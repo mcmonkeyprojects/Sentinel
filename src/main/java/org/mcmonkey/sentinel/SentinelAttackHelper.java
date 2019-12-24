@@ -125,6 +125,44 @@ public class SentinelAttackHelper extends SentinelHelperObject {
     }
 
     /**
+     * Pre-calculation for ranged attacks.
+     * Returns 'true' when the attack should be cancelled.
+     */
+    public boolean rangedPreCalculation(LivingEntity entity) {
+        if (targetingHelper.canSee(entity)) {
+            if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
+                if (SentinelPlugin.debugMe) {
+                    debug("tryAttack refused, timeSinceAttack");
+                }
+                if (sentinel.rangedChase) {
+                    rechase();
+                }
+                return true;
+            }
+            sentinel.timeSinceAttack = 0;
+            return false;
+        }
+        else if (sentinel.rangedChase) {
+            if (SentinelPlugin.debugMe) {
+                debug("tryAttack refused, visibility");
+            }
+            chase(entity);
+            return true;
+        }
+        return true;
+    }
+
+    /**
+     * Post-calculation for ammo handling.
+     */
+    public void rangedAmmoCalculation() {
+        if (sentinel.needsAmmo) {
+            itemHelper.takeOne();
+            itemHelper.grabNextItem();
+        }
+    }
+
+    /**
      * Internal attack attempt logic.
      */
     public boolean tryAttackInternal(LivingEntity entity) {
@@ -162,242 +200,108 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             }
         }
         if (itemHelper.usesBow()) {
-            if (targetingHelper.canSee(entity)) {
-                if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                    if (sentinel.rangedChase) {
-                        rechase();
-                    }
-                    return false;
-                }
-                sentinel.timeSinceAttack = 0;
-                ItemStack item = itemHelper.getArrow();
-                if (item != null) {
-                    weaponHelper.fireArrow(item, entity.getEyeLocation(), entity.getVelocity());
-                    if (sentinel.needsAmmo) {
-                        itemHelper.reduceDurability();
-                        itemHelper.takeArrow();
-                        itemHelper.grabNextItem();
-                    }
-                    return true;
-                }
-            }
-            else if (sentinel.rangedChase) {
-                chase(entity);
+            if (rangedPreCalculation(entity)) {
                 return false;
+            }
+            ItemStack item = itemHelper.getArrow();
+            if (item != null) {
+                weaponHelper.fireArrow(item, entity.getEyeLocation(), entity.getVelocity());
+                if (sentinel.needsAmmo) {
+                    itemHelper.reduceDurability();
+                    itemHelper.takeArrow();
+                    itemHelper.grabNextItem();
+                }
+                return true;
             }
         }
         else if (itemHelper.usesSnowball()) {
-            if (targetingHelper.canSee(entity)) {
-                if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                    if (sentinel.rangedChase) {
-                        rechase();
-                    }
-                    return false;
-                }
-                sentinel.timeSinceAttack = 0;
-                weaponHelper.fireSnowball(entity.getEyeLocation());
-                if (sentinel.needsAmmo) {
-                    itemHelper.takeOne();
-                    itemHelper.grabNextItem();
-                }
-                return true;
-            }
-            else if (sentinel.rangedChase) {
-                chase(entity);
+            if (rangedPreCalculation(entity)) {
                 return false;
             }
+            weaponHelper.fireSnowball(entity.getEyeLocation());
+            rangedAmmoCalculation();
+            return true;
         }
         else if (itemHelper.usesTrident()) {
-            if (targetingHelper.canSee(entity)) {
-                if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                    if (sentinel.rangedChase) {
-                        rechase();
-                    }
-                    return false;
-                }
-                sentinel.timeSinceAttack = 0;
-                weaponHelper.fireTrident(entity.getEyeLocation());
-                if (sentinel.needsAmmo) {
-                    itemHelper.takeOne();
-                    itemHelper.grabNextItem();
-                }
-                return true;
-            }
-            else if (sentinel.rangedChase) {
-                chase(entity);
+            if (rangedPreCalculation(entity)) {
                 return false;
             }
+            weaponHelper.fireTrident(entity.getEyeLocation());
+            rangedAmmoCalculation();
+            return true;
         }
         else if (itemHelper.usesPotion()) {
-            if (targetingHelper.canSee(entity)) {
-                if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                    if (sentinel.rangedChase) {
-                        rechase();
-                    }
-                    return false;
-                }
-                sentinel.timeSinceAttack = 0;
-                if (SentinelTarget.v1_9) {
-                    weaponHelper.firePotion(getLivingEntity().getEquipment().getItemInMainHand(),
-                            entity.getEyeLocation(), entity.getVelocity());
-                }
-                else {
-                    weaponHelper.firePotion(getLivingEntity().getEquipment().getItemInHand(),
-                            entity.getEyeLocation(), entity.getVelocity());
-                }
-                if (sentinel.needsAmmo) {
-                    itemHelper.takeOne();
-                    itemHelper.grabNextItem();
-                }
-                return true;
-            }
-            else if (sentinel.rangedChase) {
-                chase(entity);
+            if (rangedPreCalculation(entity)) {
                 return false;
             }
+            weaponHelper.firePotion(SentinelUtilities.getHeldItem(getLivingEntity()), entity.getEyeLocation(), entity.getVelocity());
+            rangedAmmoCalculation();
+            return true;
         }
         else if (itemHelper.usesEgg()) {
-            if (targetingHelper.canSee(entity)) {
-                if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                    if (sentinel.rangedChase) {
-                        rechase();
-                    }
-                    return false;
-                }
-                sentinel.timeSinceAttack = 0;
-                weaponHelper.fireEgg(entity.getEyeLocation());
-                if (sentinel.needsAmmo) {
-                    itemHelper.takeOne();
-                    itemHelper.grabNextItem();
-                }
-                return true;
-            }
-            else if (sentinel.rangedChase) {
-                chase(entity);
+            if (rangedPreCalculation(entity)) {
                 return false;
             }
+            weaponHelper.fireEgg(entity.getEyeLocation());
+            rangedAmmoCalculation();
+            return true;
         }
         else if (itemHelper.usesPearl()) {
-            if (targetingHelper.canSee(entity)) {
-                if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                    if (sentinel.rangedChase) {
-                        rechase();
-                    }
-                    return false;
-                }
-                sentinel.timeSinceAttack = 0;
-                weaponHelper.firePearl(entity);
-                if (sentinel.needsAmmo) {
-                    itemHelper.takeOne();
-                    itemHelper.grabNextItem();
-                }
-                return true;
-            }
-            else if (sentinel.rangedChase) {
-                chase(entity);
+            if (rangedPreCalculation(entity)) {
                 return false;
             }
+            weaponHelper.firePearl(entity);
+            rangedAmmoCalculation();
+            return true;
         }
         else if (itemHelper.usesWitherSkull()) {
-            if (targetingHelper.canSee(entity)) {
-                if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                    if (sentinel.rangedChase) {
-                        rechase();
-                    }
-                    return false;
-                }
-                sentinel.timeSinceAttack = 0;
-                weaponHelper.fireSkull(entity.getEyeLocation());
-                if (sentinel.needsAmmo) {
-                    itemHelper.takeOne();
-                    itemHelper.grabNextItem();
-                }
-                return true;
-            }
-            else if (sentinel.rangedChase) {
-                chase(entity);
+            if (rangedPreCalculation(entity)) {
                 return false;
             }
+            weaponHelper.fireSkull(entity.getEyeLocation());
+            rangedAmmoCalculation();
+            return true;
         }
         else if (itemHelper.usesFireball()) {
-            if (targetingHelper.canSee(entity)) {
-                if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                    if (sentinel.rangedChase) {
-                        rechase();
-                    }
-                    return false;
-                }
-                sentinel.timeSinceAttack = 0;
-                weaponHelper.fireFireball(entity.getEyeLocation());
-                if (sentinel.needsAmmo) {
-                    itemHelper.takeOne();
-                    itemHelper.grabNextItem();
-                }
-                return true;
-            }
-            else if (sentinel.rangedChase) {
-                chase(entity);
+            if (rangedPreCalculation(entity)) {
                 return false;
             }
+            weaponHelper.fireFireball(entity.getEyeLocation());
+            rangedAmmoCalculation();
+            return true;
         }
         else if (itemHelper.usesLightning()) {
-            if (targetingHelper.canSee(entity)) {
-                if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                    if (sentinel.rangedChase) {
-                        rechase();
-                    }
-                    return false;
-                }
-                sentinel.timeSinceAttack = 0;
-                sentinel.swingWeapon();
-                entity.getWorld().strikeLightningEffect(entity.getLocation());
-                if (SentinelPlugin.debugMe) {
-                    debug("Lightning hits for " + sentinel.getDamage());
-                }
-                entity.damage(sentinel.getDamage());
-                if (sentinel.needsAmmo) {
-                    itemHelper.takeOne();
-                    itemHelper.grabNextItem();
-                }
-                return true;
-            }
-            else if (sentinel.rangedChase) {
-                chase(entity);
+            if (rangedPreCalculation(entity)) {
                 return false;
             }
+            sentinel.swingWeapon();
+            entity.getWorld().strikeLightningEffect(entity.getLocation());
+            if (SentinelPlugin.debugMe) {
+                debug("Lightning hits for " + sentinel.getDamage());
+            }
+            entity.damage(sentinel.getDamage());
+            rangedAmmoCalculation();
+            return true;
         }
         else if (itemHelper.usesSpectral()) {
-            if (targetingHelper.canSee(entity)) {
-                if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                    if (sentinel.rangedChase) {
-                        rechase();
-                    }
-                    return false;
-                }
-                sentinel.timeSinceAttack = 0;
-                if (!entity.isGlowing()) {
-                    sentinel.swingWeapon();
-                    try {
-                        Sound snd = SentinelPlugin.instance.spectralSound;
-                        if (snd != null) {
-                            entity.getWorld().playSound(entity.getLocation(), snd, 1f, 1f);
-                        }
-                    }
-                    catch (Exception e) {
-                        // Do nothing!
-                    }
-                    entity.setGlowing(true);
-                    if (sentinel.needsAmmo) {
-                        itemHelper.takeOne();
-                        itemHelper.grabNextItem();
-                    }
-                    return true;
-                }
-            }
-            else if (sentinel.rangedChase) {
-                chase(entity);
+            if (rangedPreCalculation(entity)) {
                 return false;
             }
+            if (!entity.isGlowing()) {
+                sentinel.swingWeapon();
+                try {
+                    Sound snd = SentinelPlugin.instance.spectralSound;
+                    if (snd != null) {
+                        entity.getWorld().playSound(entity.getLocation(), snd, 1f, 1f);
+                    }
+                }
+                catch (Exception e) {
+                    // Do nothing!
+                }
+                entity.setGlowing(true);
+            }
+            rangedAmmoCalculation();
+            return true;
         }
         else {
             if (dist < sentinel.reach * sentinel.reach) {
