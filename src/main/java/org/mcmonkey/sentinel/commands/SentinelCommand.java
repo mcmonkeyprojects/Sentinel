@@ -109,7 +109,13 @@ public class SentinelCommand {
         SentinelTrait sentinel = null;
         CommandContext context = new CommandContext(sender, args);
         if (context.hasValueFlag("id") && sender.hasPermission("npc.select")) {
-            selected = CitizensAPI.getNPCRegistry().getById(context.getFlagInteger("id"));
+            try {
+                selected = CitizensAPI.getNPCRegistry().getById(context.getFlagInteger("id"));
+            }
+            catch (NumberFormatException ex) {
+                sender.sendMessage(prefixBad + "ID input is invalid (not an integer)!");
+                return true;
+            }
         }
         if (selected != null) {
             if (selected.hasTrait(SentinelTrait.class)) {
