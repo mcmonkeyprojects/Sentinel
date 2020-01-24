@@ -1,6 +1,7 @@
 package org.mcmonkey.sentinel.targeting;
 
 import org.bukkit.ChatColor;
+import org.mcmonkey.sentinel.SentinelIntegration;
 import org.mcmonkey.sentinel.SentinelPlugin;
 
 import java.util.Arrays;
@@ -276,6 +277,10 @@ public class SentinelTargetLabel {
             isRegex = regexPrefixes.contains(prefix);
             value = ChatColor.translateAlternateColorCodes('&', value);
             if (autoLowercasePrefixes.contains(prefix)) {
+                value = value.toLowerCase();
+            }
+            SentinelIntegration integration = SentinelPlugin.integrationPrefixMap.get(prefix);
+            if (integration != null && integration.shouldLowerCaseValue()) {
                 value = value.toLowerCase();
             }
         }

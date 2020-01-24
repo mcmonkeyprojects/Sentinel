@@ -18,6 +18,11 @@ public class SentinelUUID extends SentinelIntegration {
     }
 
     @Override
+    public boolean shouldLowerCaseValue() {
+        return true;
+    }
+
+    @Override
     public boolean isTarget(LivingEntity ent, String prefix, String value) {
         try {
             if (prefix.equals("uuid")) {

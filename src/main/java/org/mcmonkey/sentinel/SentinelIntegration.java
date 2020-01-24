@@ -16,6 +16,13 @@ public class SentinelIntegration {
     }
 
     /**
+     * Returns whether the values for a target should be automatically lowercased in advance.
+     */
+    public boolean shouldLowerCaseValue() {
+        return false;
+    }
+
+    /**
      * Gets the list of target prefixes that this integration handles.
      * For a "squad:SQUAD_NAME" target, this should return: new String[] { "squad" }
      */
