@@ -161,6 +161,12 @@
                                     <include>org.json:json</include>
                                 </includes>
                             </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.freneticllc</pattern>
+                                    <shadedPattern>org.mcmonkey.sentinel.shaded.com.freneticllc</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
