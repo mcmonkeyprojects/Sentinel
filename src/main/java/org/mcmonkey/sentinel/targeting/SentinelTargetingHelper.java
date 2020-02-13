@@ -398,7 +398,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             getLivingEntity().teleport(sentinel.getGuardZone());
             return null;
         }
-        if (sentinel.chasing != null && SentinelPlugin.instance.retainTarget) {
+        if (sentinel.chasing != null && sentinel.retainTarget) {
             double dist = sentinel.chasing.getEyeLocation().distanceSquared(pos);
             if (dist < crsq && shouldTarget(sentinel.chasing)) {
                 return sentinel.chasing;

@@ -186,11 +186,6 @@ public class SentinelPlugin extends JavaPlugin {
     public int arrowCleanupTime;
 
     /**
-     * Configuration option: whether to retain the existing target even when a better one exists.
-     */
-    public boolean retainTarget;
-
-    /**
      * Fills the {@code vaultPerms} object if possible.
      */
     public void tryGetPerms() {
@@ -258,7 +253,6 @@ public class SentinelPlugin extends JavaPlugin {
         arrowCleanupTime = getConfig().getInt("random.arrow cleanup time", 200);
         blockSunburn = getConfig().getBoolean("random.block sunburn", true);
         tickRate = getConfig().getInt("update rate", 10);
-        retainTarget = getConfig().getBoolean("random.retain target", false);
     }
 
     /**

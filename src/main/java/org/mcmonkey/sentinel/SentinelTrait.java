@@ -484,6 +484,9 @@ public class SentinelTrait extends Trait {
     @Persist("guard_selection_range")
     public double guardSelectionRange = 4;
 
+    @Persist("retain_target")
+    public boolean retainTarget = false;
+
     /**
      * Map of weapon material names to custom damage amount.
      */
@@ -903,6 +906,7 @@ public class SentinelTrait extends Trait {
         runaway = config.getBoolean("sentinel defaults.runaway", false);
         greetRange = config.getDouble("sentinel defaults.greet range", 10);
         greetRate = config.getInt("sentinel defaults.greet rate", 100);
+        retainTarget = config.getBoolean("random.retain target", false);
         guardDistanceMinimum = SentinelPlugin.instance.guardDistanceMinimum;
         guardSelectionRange = SentinelPlugin.instance.guardDistanceSelectionRange;
         if (npc.isSpawned()) {

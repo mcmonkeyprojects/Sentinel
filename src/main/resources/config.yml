@@ -94,6 +94,7 @@ random:
     # Whether to protect Sentinel NPCs from being burned by the sun.
     block sunburn: true
     # Whether to retain the existing target even when a better one exists.
+    # This will persist per individual NPC, but is not user configurable per-NPC at the moment (API configurable only).
     retain target: false
 
 # How fast to recalculate, in ticks.
