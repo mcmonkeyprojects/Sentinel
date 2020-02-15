@@ -166,6 +166,10 @@
                                     <pattern>com.freneticllc</pattern>
                                     <shadedPattern>org.mcmonkey.sentinel.shaded.com.freneticllc</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.json</pattern>
+                                    <shadedPattern>org.mcmonkey.sentinel.shaded.org.json</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
