@@ -47,6 +47,9 @@ public class SentinelItemHelper extends SentinelHelperObject {
                 item.setDurability((short) (item.getDurability() + 1));
                 toSet = item;
             }
+            if (getLivingEntity().getEquipment() == null) {
+                return;
+            }
             if (SentinelTarget.v1_9) {
                 getLivingEntity().getEquipment().setItemInMainHand(toSet);
             }
@@ -101,6 +104,9 @@ public class SentinelItemHelper extends SentinelHelperObject {
             }
             else {
                 toSet = null;
+            }
+            if (getLivingEntity().getEquipment() == null) {
+                return;
             }
             if (SentinelTarget.v1_9) {
                 getLivingEntity().getEquipment().setItemInMainHand(toSet);

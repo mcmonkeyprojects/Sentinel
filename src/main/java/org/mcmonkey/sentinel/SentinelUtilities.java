@@ -61,6 +61,9 @@ public class SentinelUtilities {
      * Returns the item held in an entity's hand.
      */
     public static ItemStack getHeldItem(LivingEntity entity) {
+        if (entity.getEquipment() == null) {
+            return null;
+        }
         if (SentinelTarget.v1_9) {
             return entity.getEquipment().getItemInMainHand();
         }
@@ -73,7 +76,7 @@ public class SentinelUtilities {
      * Returns the item held in an entity's offhand.
      */
     public static ItemStack getOffhandItem(LivingEntity entity) {
-        if (SentinelTarget.v1_9) {
+        if (SentinelTarget.v1_9 && entity.getEquipment() != null) {
             return entity.getEquipment().getItemInOffHand();
         }
         else {
@@ -315,6 +318,9 @@ public class SentinelUtilities {
             return false;
         }
         EntityEquipment eq = entity.getEquipment();
+        if (eq == null) {
+            return true;
+        }
         if (SentinelTarget.v1_9) {
             if (!isAir(eq.getItemInMainHand()) || !isAir(eq.getItemInOffHand())) {
                 return false;

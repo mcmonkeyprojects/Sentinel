@@ -1038,6 +1038,9 @@ public class SentinelTrait extends Trait {
      */
     public double getArmor(LivingEntity ent) {
         if (armor < 0) {
+            if (ent.getEquipment() == null) {
+                return 0;
+            }
             // TODO: Enchantments!
             double baseArmor = 0;
             ItemStack helmet = ent.getEquipment().getHelmet();

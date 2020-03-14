@@ -119,6 +119,6 @@ public class SentinelInfoCommands {
             modifiers = {"reload"}, permission = "sentinel.reload", min = 1, max = 1)
     public void reload(CommandContext args, CommandSender sender) {
         SentinelPlugin.instance.loadConfigSettings();
-        sender.sendMessage(SentinelCommand.prefixGood + "Reload the config file.");
+        sender.sendMessage(SentinelCommand.prefixGood + "Reloaded the config file.");
     }
 }
