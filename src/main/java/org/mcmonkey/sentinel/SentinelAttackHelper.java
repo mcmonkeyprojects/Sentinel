@@ -278,9 +278,9 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             sentinel.swingWeapon();
             entity.getWorld().strikeLightningEffect(entity.getLocation());
             if (SentinelPlugin.debugMe) {
-                debug("Lightning hits for " + sentinel.getDamage());
+                debug("Lightning hits for " + sentinel.getDamage(false));
             }
-            entity.damage(sentinel.getDamage());
+            entity.damage(sentinel.getDamage(false));
             rangedAmmoCalculation();
             return true;
         }

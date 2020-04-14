@@ -167,7 +167,7 @@ public class SentinelAttackCommands {
     public void damage(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
             sender.sendMessage(SentinelCommand.prefixGood + "Current damage: " + ChatColor.AQUA + sentinel.damage
-                    + SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getDamage());
+                    + SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getDamage(true));
             return;
         }
         try {

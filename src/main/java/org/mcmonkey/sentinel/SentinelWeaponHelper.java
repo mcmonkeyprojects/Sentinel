@@ -196,7 +196,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         sentinel.faceLocation(target.getEyeLocation());
         // TODO: Maybe require entity is-on-ground?
         sentinel.stats_pearlsUsed++;
-        target.setVelocity(target.getVelocity().add(new Vector(0, sentinel.getDamage(), 0)));
+        target.setVelocity(target.getVelocity().add(new Vector(0, sentinel.getDamage(true), 0)));
     }
 
     /**
@@ -236,10 +236,10 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         sentinel.stats_punches++;
         if (SentinelPlugin.instance.workaroundDamage) {
             if (SentinelPlugin.debugMe) {
-                debug("workaround damage value at " + sentinel.getDamage() + " yields "
-                        + ((sentinel.getDamage() * (1.0 - sentinel.getArmor(entity)))));
+                debug("workaround damage value at " + sentinel.getDamage(false) + " yields "
+                        + ((sentinel.getDamage(false) * (1.0 - sentinel.getArmor(entity)))));
             }
-            entity.damage(sentinel.getDamage() * (1.0 - sentinel.getArmor(entity)));
+            entity.damage(sentinel.getDamage(false) * (1.0 - sentinel.getArmor(entity)));
             knockback(entity);
             if (!sentinel.enemyDrops) {
                 sentinel.needsDropsClear.add(entity.getUniqueId());
@@ -247,9 +247,9 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         }
         else {
             if (SentinelPlugin.debugMe) {
-                debug("Punch/natural for " + sentinel.getDamage());
+                debug("Punch/natural for " + sentinel.getDamage(false));
             }
-            entity.damage(sentinel.getDamage(), getLivingEntity());
+            entity.damage(sentinel.getDamage(false), getLivingEntity());
         }
     }
 

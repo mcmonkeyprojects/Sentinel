@@ -706,7 +706,7 @@ public class SentinelTrait extends Trait {
             event.setCancelled(true);
             return;
         }
-        event.setDamage(EntityDamageEvent.DamageModifier.BASE, getDamage());
+        event.setDamage(EntityDamageEvent.DamageModifier.BASE, getDamage(false));
     }
 
     /**
@@ -721,13 +721,13 @@ public class SentinelTrait extends Trait {
                 canEnforce = false;
                 whenAttacksHappened(event);
                 if (!event.isCancelled()) {
-                    ((LivingEntity) event.getEntity()).damage(getDamage());
+                    ((LivingEntity) event.getEntity()).damage(getDamage(true));
                     if (event.getEntity() instanceof LivingEntity) {
                         weaponHelper.knockback((LivingEntity) event.getEntity());
                     }
                 }
                 if (SentinelPlugin.debugMe) {
-                    debug("enforce damage value to " + getDamage());
+                    debug("enforce damage value to " + getDamage(true));
                 }
             }
             else {
@@ -739,7 +739,7 @@ public class SentinelTrait extends Trait {
             event.setCancelled(true);
             return;
         }
-        double dam = getDamage();
+        double dam = getDamage(true);
         double modder = event.getDamage(EntityDamageEvent.DamageModifier.BASE);
         double rel = modder == 0.0 ? 1.0 : dam / modder;
         event.setDamage(EntityDamageEvent.DamageModifier.BASE, dam);
@@ -1003,6 +1003,13 @@ public class SentinelTrait extends Trait {
      * Gets the NPC's current damage value (based on held weapon if calculation is required).
      */
     public double getDamage() {
+        return getDamage(false);
+    }
+
+    /**
+     * Gets the NPC's current damage value (based on held weapon if calculation is required).
+     */
+    public double getDamage(boolean forRangedAttacks) {
         ItemStack weapon = itemHelper.getHeldItem();
         if (weapon == null) {
             if (damage >= 0) {
@@ -1012,17 +1019,20 @@ public class SentinelTrait extends Trait {
         }
         Double customDamage = weaponDamage.get(weapon.getType().name().toLowerCase());
         if (customDamage != null) {
-            return customDamage;
+            damage = customDamage;
         }
         if (damage >= 0) {
             return damage;
         }
-        // TODO: Less randomness, more game-like calculations.
+        // TODO: Less arbitrary values, more game-like calculations.
         double multiplier = 1;
         multiplier += weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.DAMAGE_ALL)
                 ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
         Material weaponType = weapon.getType();
         if (SentinelTarget.BOW_MATERIALS.contains(weaponType)) {
+            if (!forRangedAttacks) {
+                return 1;
+            }
             return 6 * (1 + (weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)
                     ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3));
         }

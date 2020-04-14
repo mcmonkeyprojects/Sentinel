@@ -38,7 +38,7 @@ public class SentinelInfoCommands {
         paginator.addLine(SentinelCommand.prefixGood + "Owned by: " + ChatColor.AQUA + SentinelPlugin.instance.getOwner(sentinel.getNPC()));
         paginator.addLine(SentinelCommand.prefixGood + "Guarding: " + ChatColor.AQUA + (guardName == null ? "Nobody" : guardName));
         paginator.addLine(SentinelCommand.prefixGood + "Damage: " + ChatColor.AQUA + sentinel.damage
-                + SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getDamage());
+                + SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getDamage(true));
         paginator.addLine(SentinelCommand.prefixGood + "Armor: " + ChatColor.AQUA + sentinel.armor
                 + (sentinel.getNPC().isSpawned() ? SentinelCommand.colorBasic + " Calculated: "
                 + ChatColor.AQUA + sentinel.getArmor(sentinel.getLivingEntity()) : ""));
