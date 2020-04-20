@@ -921,6 +921,9 @@ public class SentinelTrait extends Trait {
     @Override
     public void onRemove() {
         SentinelPlugin.instance.currentSentinelNPCs.remove(this);
+        if (!invincible) {
+            npc.setProtected(true);
+        }
     }
 
     /**
