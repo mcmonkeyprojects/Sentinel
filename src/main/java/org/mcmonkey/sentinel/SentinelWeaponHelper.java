@@ -231,7 +231,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
      * Makes an NPC punch a target.
      */
     public void punch(LivingEntity entity) {
-        sentinel.faceLocation(entity.getLocation());
+        sentinel.faceLocation(entity.getEyeLocation());
         sentinel.swingWeapon();
         sentinel.stats_punches++;
         if (SentinelPlugin.instance.workaroundDamage) {

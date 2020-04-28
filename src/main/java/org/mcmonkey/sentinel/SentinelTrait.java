@@ -1700,9 +1700,6 @@ public class SentinelTrait extends Trait {
      * Handler for when the NPC died.
      */
     public void onDeath() {
-        /*if (npc.hasTrait(Spawned.class)) {
-            npc.getTrait(Spawned.class).setSpawned(false);
-        }*/
         greetedAlready.clear();
         targetingHelper.currentTargets.clear();
         targetingHelper.currentAvoids.clear();
