@@ -12,16 +12,8 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ### Donations
 
-- **Support Sentinel on Patreon!**: https://www.patreon.com/denizenscript
+- **Support Sentinel via GitHub Sponsors!**: https://github.com/sponsors/mcmonkey4eva
 - Or, give a one-time donation via PayPal: https://one.denizenscript.com/donate
-
-### Update Warnings
-
-- Sentinel 1.7 **changes the API** structure of Sentinel - and adds documentation and **JavaDocs**, which can be found here: https://ci.citizensnpcs.co/job/Sentinel/javadoc/overview-summary.html
-    - Save data structure is also changed in the 1.7 updates.
-    - If you need a pre-API rewrite version of Sentinel, you can get the last version of Sentinel (1.6.2) here: https://ci.citizensnpcs.co/job/Sentinel/191/
-- Sentinel 1.7.2 is the last version that contained the **Sentry importer**. If you need to import old Sentry data, you must use a 1.7.2 build.
-    - You can get that build here: https://ci.citizensnpcs.co/job/Sentinel/201/
 
 ### Info
 
@@ -34,11 +26,11 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - NPC's won't do ranged damaged, or protection plugins causing problems? In your config.yml file, toggle the setting that says "enforce damage" to true, and restart your server!
 - Note that back-support for older versions is sometimes limited. Compatibility is tested mainly on the most recent one or two versions. 1.8.8 servers are supported as the oldest option, but not fully functional. See notes here: https://wiki.citizensnpcs.co/Minecraft_1.8
 
-### Usage
+### Basic Usage
 
 - First, get acquainted with Citizens in general for best luck using Sentinel.
 - Second, download the plugin and put it into your server's `plugins` folder.
-- Third, if you want to adjust the config, start the server to generate a config, then close the server and edit the config (open `plugins/Sentinel/config.yml` with a text editor) to your liking and finally restart the server.
+- Third, if you want to adjust the config, start the server to generate a config, then close the server and edit the config (open `plugins/Sentinel/config.yml` with any text editor) to your liking and finally restart the server.
 - Now, to create your first Sentinel:
     - Select or create an NPC (`/npc sel` or `/npc create Bob`)
     - Run command: `/trait Sentinel`
@@ -50,8 +42,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
         - This will list all your options to edit the NPC's Sentinel settings.
             - Play with them freely, just be careful if you have other players around!
             - Do note, they won't attack you unless you run command: `/sentinel removeignore owner`.
-- Examples:
-    - To make your NPC attack sword wielders, use `/sentinel addtarget helditem:.*sword`
+    - Look through the commands on this readme and the example NPC setups.
 
 ### Common Issues
 
@@ -64,7 +55,56 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - **"My NPCs aren't taking/giving damage in no-PvP zones!"**
     - If you're using WorldGuard for anti-PvP... update! WG 7.0.0 has patches to fix this issue! If you're using a different plugin or can't update, consider enabling the `workaround damage` and/or `enforce damage` options in the config.
 
-### Integrations
+### Example NPC Setups
+
+Here are a few examples of how you might setup and configure an NPC
+
+- **Personal Guard:**
+    - `/npc create MyGuard`
+    - `/trait sentinel`
+    - `/sentinel guard yournamehere` and fill 'yournamehere' with your in-game username.
+    - `/sentinel addtarget monsters`
+    - `/npc equip` then give the NPC any armor and items you want, then `/npc equip` again to close the editor.
+    - `/sentinel addavoid creepers`
+    - `/sentinel addignore npcs`
+- **Town Guard:**
+    - `/npc create &b-Guard-`
+    - `/trait sentinel`
+    - `/npc path` then click the block the guard should stand on, then `/npc path` again.
+    - `/sentinel addtarget monsters`
+    - `/sentinel addtarget event:pvp`
+    - `/sentinel addtarget event:pvsentinel`
+    - `/sentinel spawnpoint`
+    - `/npc equip` then give the NPC any armor and items you want, then `/npc equip` again to close the editor.
+    - `/sentinel squad town1_guards` (this will put all guards of the town in the same 'squad', so they will share target info)
+    - `/sentinel greeting Welcome to town 1!`
+    - `/sentinel warning You're not welcome here!`
+    - `/sentinel greetrange 80`
+    - `/sentinel range 50`
+    - `/sentinel chaserange 70`
+    - `/sentinel realistic true`
+    - `/sentinel removeignore owner`
+- If you want a guard that attacks anyone who holds up a sword, use:
+    - `/sentinel addtarget helditem:.*sword`
+- If you want a guard that uses either a bow or a sword depending on how close the target is, use:
+    - `/npc inventory` and add the second weapon to their inventory
+    - `/sentinel autoswitch true`
+- **Town Healer NPC:**
+    - `/npc create &b-Healer-`
+    - `/trait sentinel`
+    - `/npc equip` then give the NPC a health potion and any armor, then `/npc equip` again.
+    - `/sentinel addtarget allinone:player|healthbelow:19`
+    - `/sentinel addignore allinone:player|healthabove:19`
+    - `/sentinel fightback false`
+    - `/sentinel range 10`
+    - `/sentinel removeignore owner`
+    - `/sentinel greeting Hello there traveler!`
+    - `/sentinel warning You look hurt, let me heal you!`
+    - `/sentinel greetrange 10`
+    - `/sentinel spawnpoint`
+    - `/sentinel invincible true`
+
+### Plugin Integrations
 
 Sentinel integrates with a few external plugins, including:
 
@@ -84,77 +124,74 @@ Sentinel is integrated into by external plugins as well, including:
         - Second procedure context (named 'context' by default) is the optional user-input context info.
             - To use this, do: denizen_proc:PROCEDURE_SCRIPT_NAME:SOME_CONTEXT_HERE
         - Determine 'true' or 'false' to indicate whether the entity is a target.
+    - Also check the Denizen meta docs - type `!search sentinel` in `#bot-spam` on the Denizen support Discord.
+- QualityArmory, to allow NPCs to fire QA weapons.
 
 ### Commands
 
-- **Informational commands...**
+- **Informational commands:**
     - /sentinel help - Shows help info.
     - /sentinel info - Shows info on the current NPC.
     - /sentinel stats - Shows statistics about the current NPC.
     - /sentinel targets - Shows the targets of the current NPC.
     - /sentinel ignores - Shows the ignore targets of the current NPC.
     - /sentinel avoids - Shows the avoid targets of the current NPC.
-- **Administrative commands...**
+- **Administrative commands:**
     - /sentinel debug - Toggles debug output to console.
     - /sentinel reload - Reloads the configuration file.
-- **NPC control commands...**
+- **NPC control commands:**
     - /sentinel kill - Kills the NPC.
     - /sentinel respawn - Respawns the NPC.
     - /sentinel forgive - Forgives all current targets.
-    - /sentinel guard [PLAYERNAME]/npc:[ID] - Makes the NPC guard a specific player or NPC. Don't specify a player to stop guarding.
-- **NPC targeting commands...**
+    - /sentinel guard \[PLAYERNAME\]/npc:\[ID\] - Makes the NPC guard a specific player or NPC. Don't specify a player to stop guarding.
+- **NPC targeting commands:**
     - /sentinel addtarget TYPE - Adds a target.
     - /sentinel removetarget TYPE - Removes a target.
     - /sentinel addignore TYPE - Ignores a target.
     - /sentinel removeignore TYPE - Allows targeting a target.
     - /sentinel addavoid TYPE - Avoids a target.
     - /sentinel removeavoid TYPE - Stops avoiding a target.
-- **NPC configuration commands...**
+- **NPC configuration commands:**
     - /sentinel avoidrange RANGE - Sets the distance to try to keep from threats.
     - /sentinel range RANGE - Sets the NPC's maximum attack range.
-    - /sentinel damage DAMAGE - Sets the NPC's attack damage.
+    - /sentinel damage DAMAGE - Sets the NPC's attack damage. Set to -1 to automatically calculate from held weapon.
     - /sentinel weapondamage MATERIAL DAMAGE - Sets the NPC's attack damage for a specific weapon material.
     - /sentinel weaponredirect MATERIAL_ONE MATERIAL_TWO  - Sets the NPC to treat material one as though it's material two.
-    - /sentinel armor ARMOR - Sets the NPC's armor level.
+    - /sentinel armor ARMOR - Sets the NPC's armor level. Set to -1 to automatically calculate from equipment.
     - /sentinel health HEALTH - Sets the NPC's health level.
-    - /sentinel attackrate RATE ['ranged'] - Changes the rate at which the NPC attacks, in seconds. Either ranged or close modes.
+    - /sentinel attackrate RATE \['ranged'\] - Changes the rate at which the NPC attacks, in seconds. Either ranged or close modes.
     - /sentinel healrate RATE - Changes the rate at which the NPC heals, in seconds.
-    - /sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in seconds.
+    - /sentinel respawntime TIME - Changes the time it takes for the NPC to respawn, in seconds. Set to 0 to disable automatic respawn, or -1 to make the NPC autodelete on death.
     - /sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.
     - /sentinel drops - Changes the drops of the current NPC.
     - /sentinel dropchance ID CHANCE - Changes the chance of a drop. Use "/sentinel dropchance" to see the drops list with IDs, then do like "/sentinel dropchance 3 50" (that puts a 50% chance on item with ID 3).
     - /sentinel targettime TIME - Sets the NPC's enemy target time limit in seconds.
     - /sentinel speed SPEED - Sets the NPC's movement speed modifier.
-    - /sentinel guarddistance MINIMUM_DISTANCE [SELECTION_RANGE] - Sets the NPC's minimum guard distance (how far you must go before the NPC moves to keep up) and selection range (how close it will try to get to you).
+    - /sentinel guarddistance MINIMUM_DISTANCE \[SELECTION_RANGE\] - Sets the NPC's minimum guard distance (how far you must go before the NPC moves to keep up) and selection range (how close it will try to get to you).
     - /sentinel spawnpoint - Changes the NPC's spawn point to its current location, or removes it if it's already there.
     - /sentinel greeting GREETING - Sets a greeting message for the NPC to say.
     - /sentinel warning WARNING - Sets a warning message for the NPC to say.
     - /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
     - /sentinel greetrate RATE - Sets how quickly (in seconds) the Sentinel may re-greet any player.
-    - /sentinel accuracy OFFSET - Sets the accuracy of an NPC.
+    - /sentinel accuracy OFFSET - Sets the accuracy of an NPC, as a decimal number value.
     - /sentinel squad SQUAD - Sets the NPC's squad name (null for none).
     - /sentinel reach REACH - Sets the NPC's reach (how far it can punch).
     - /sentinel projectilerange RANGE - Sets the NPC's projectile range (how far it is willing to shoot projectiles).
     - /sentinel avoidreturnpoint - Changes the location the NPC runs to when avoid mode is activated, or removes it if the NPC is already there.
-- **Toggleable NPC configuration commands...**
-    - /sentinel invincible ['true'/'false'] - Toggles whether the NPC is invincible.
-    - /sentinel fightback ['true'/'false'] - Toggles whether the NPC will fight back.
-    - /sentinel runaway ['true'/'false'] - Toggles whether the NPC will run away when attacked.
-    - /sentinel needammo ['true'/'false'] - Toggles whether the NPC will need ammo.
-    - /sentinel safeshot ['true'/'false'] - Toggles whether the NPC will avoid damaging non-targets.
-    - /sentinel chaseclose ['true'/'false'] - Toggles whether the NPC will chase while in 'close quarters' fights.
-    - /sentinel chaseranged ['true'/'false'] - Toggles whether the NPC will chase while in ranged fights.
-    - /sentinel enemydrops ['true'/'false'] - Toggles whether enemy mobs of this NPC drop items.
-    - /sentinel autoswitch ['true'/'false'] - Toggles whether the NPC automatically switches items.
-    - /sentinel realistic ['true'/'false'] - Toggles whether the NPC should use "realistic" targeting logic (don't attack things you can't see).
-
-### Sentry user?
-
-- Type "/sentinel sentryimport" on a server running both Sentry and Sentinel to instantly transfer all data to Sentinel!
-- Sentinel 1.7.2 is the last version that contained the **Sentry importer**. If you need to import old Sentry data, you must use a 1.7.2 build.
-    - You can get that build here: https://ci.citizensnpcs.co/job/Sentinel/201/
+- **Toggleable NPC configuration commands:**
+    - /sentinel invincible \['true'/'false'\] - Toggles whether the NPC is invincible.
+    - /sentinel fightback \['true'/'false'\] - Toggles whether the NPC will fight back.
+    - /sentinel runaway \['true'/'false'\] - Toggles whether the NPC will run away when attacked.
+    - /sentinel needammo \['true'/'false'\] - Toggles whether the NPC will need ammo.
+    - /sentinel safeshot \['true'/'false'\] - Toggles whether the NPC will avoid damaging non-targets.
+    - /sentinel chaseclose \['true'/'false'\] - Toggles whether the NPC will chase while in 'close quarters' fights.
+    - /sentinel chaseranged \['true'/'false'\] - Toggles whether the NPC will chase while in ranged fights.
+    - /sentinel enemydrops \['true'/'false'\] - Toggles whether enemy mobs of this NPC drop items.
+    - /sentinel autoswitch \['true'/'false'\] - Toggles whether the NPC automatically switches items.
+    - /sentinel realistic \['true'/'false'\] - Toggles whether the NPC should use "realistic" targeting logic (don't attack things you can't see).
 
 ### Permissions
+
 - sentinel.basic for the /sentinel command
 - sentinel.admin to edit other player's Sentinel NPCs.
 - sentinel.greet for commands: greeting, warning, greetrange
@@ -180,7 +217,7 @@ These are all valid targets and ignores:
     - These all use "ITEM_MATCHER"s, which, at their simplest, are just a regex that matches the material name. So, `helditem:diamond_sword` targets enemies that are holding a diamond sword.
     - However, you can also do `lore:LORE(REGEX)` as a matcher for a line of lore, or `name:NAME(REGEX)` as a matcher for the item display name.
     - For example, `offhand:name:Stick\d+` would target players holding an item in their offhand named like "Stick123".
-- Also, event:`pvp`/`pvnpc`/`pve`/`pv:ENTITY`/`pvsentinel`/`guarded_fight`/`eve`/`ev:ENTITY`
+- Also, event:`pvp`/`pvnpc`/`pve`/`pv:ENTITY`/`pvsentinel`/`guarded_fight`/`eve`/`ev:ENTITY` (pvp is Player-vs-Player, eve is Entity-vs-Entity, etc.) (`pv:ENTITY` is used like `event:pv:chicken` for players attacking chickens)
 - Also, `event:message:SOMETEXT` will match chat messages that contain 'sometext'.
 - Also, `status:STATUS_TYPE`. Current status types:
     - `status:angry` for mobs (wolves, endermen, spiders, etc.) that are currently angry. This is handy with a combo like `allinone:enderman|status:angry`
@@ -205,24 +242,26 @@ These are all valid targets and ignores:
 - Also, do not put `allinone` inside another `allinone`, and do not put a `multi` inside another `multi`.
 - Note that to remove `allinone` and `multi` targets, you need to use the ID number (use `/sentinel targets` and related commands to find the ID), like `/sentinel removetarget allinone:0`.
 
-### Some random supported things
+### Supported Weapon Types
 
-- Weapons:
-    - Fists
-    - Swords/tools
-    - Bow
-        - equip NPC with arrows of any given type in their `/npc inventory` to set fired arrow type!
-    - Trident (will be thrown)
-    - Blaze rod (shoots fire balls!)
-    - Potions (splash, lingering)
-    - Nether star (strikes lightning!)
-    - Spectral arrow (makes the target glow, without damaging it.)
-        - (To make a target glow ++ damage it, equip a bow + arm it with spectral arrows!)
-    - Snowballs
-    - Eggs
-    - Ender Pearls (Causes the target to get flung into the air!)
-    - Skulls (Dangerous wither skull explosions!)
-    - CrackShot guns!
+- Fists
+- Swords/tools
+- Bow
+    - equip NPC with arrows of any given type in their `/npc inventory` to set fired arrow type!
+- Trident (will be thrown)
+- Blaze rod (shoots fire balls!)
+- Potions (splash, lingering)
+- Nether star (strikes lightning!)
+- Spectral arrow (makes the target glow, without damaging it.)
+    - (To make a target glow ++ damage it, equip a bow + arm it with spectral arrows!)
+- Snowballs
+- Eggs
+- Ender Pearls (Causes the target to get flung into the air!)
+- Skulls (Dangerous wither skull explosions!)
+- CrackShot guns!
+
+### Useful Things To Know
+
 - Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
 - Sentinels will guard a point or path if either is set using the command "`/npc path`". This means they will still within their chaserange of that point or path, and return to it when out of combat.
 - To make a ghast or blaze fire fireballs, give them a blazerod!
@@ -255,11 +294,11 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
 
 ----
 
-- Add a `depend` or `softdepend` (as relevant) on `Sentinel` to your `plugin.yml` file. See sample of how Sentinel does this to depend on other plugins here: https://github.com/mcmonkeyprojects/Sentinel/blob/master/src/main/resources/plugin.yml
-- When possible, take advantage of the `SentinelIntegration` class: https://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/SentinelIntegration.html
-    - Extend the class (with your own custom class) and implement whichever methods you need. See samples of integrations available here: https://github.com/mcmonkeyprojects/Sentinel/tree/master/src/main/java/org/mcmonkey/sentinel/integration
+- Add a `depend` or `softdepend` (as relevant) on `Sentinel` to your `plugin.yml` file. See sample of how Sentinel does this to depend on other plugins: [Sample Source Here](https://github.com/mcmonkeyprojects/Sentinel/blob/master/src/main/resources/plugin.yml)
+- When possible, take advantage of the `SentinelIntegration` class: [JavaDoc Here](https://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/SentinelIntegration.html)
+    - Extend the class (with your own custom class) and implement whichever methods you need. See samples of integrations available: [Sample Source Here](https://github.com/mcmonkeyprojects/Sentinel/tree/master/src/main/java/org/mcmonkey/sentinel/integration)
     - Within your plugin's `onEnable`, Register the class by calling `SentinelPlugin.registerIntegration(new YourIntegration());` where `YourIntegration` is the integration class you created.
-- You might also benefit from events like the `SentinelAttackEvent` https://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/events/package-summary.html
+- You might also benefit from events like the `SentinelAttackEvent`: [JavaDoc Here](https://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/events/package-summary.html)
 - Samples of a few common basic operations:
     - Check if NPC is a Sentinel: `if (npc.hasTrait(SentinelTrait.class)) { ...`
     - Get the Sentinel trait from an NPC: `SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);`
@@ -276,12 +315,24 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
 
 ### Dependencies
 
-- **Spigot (Plugin-ready server mod)**: https://www.spigotmc.org/
-- **Citizens2 (NPC engine)**: https://github.com/CitizensDev/Citizens2/
+- **Spigot (Plugin-ready server mod)**: https://www.spigotmc.org/ or **Paper (high performance fork of Spigot)**: https://papermc.io/
+- **Citizens2 (NPC engine)**: [GitHub](https://github.com/CitizensDev/Citizens2/) / [Spigot Resource](https://www.spigotmc.org/resources/citizens.13811/) / [Dev Builds](https://ci.citizensnpcs.co/job/Citizens2/)
 
 #### Also check out:
 
 - **Denizen (Powerful script engine)**: https://github.com/DenizenScript/Denizen-For-Bukkit
+
+### Sentry user?
+
+- Type "/sentinel sentryimport" on a server running both Sentry and Sentinel to instantly transfer all data to Sentinel!
+- Sentinel 1.7.2 is the last version that contained the **Sentry importer**. If you need to import old Sentry data, you must use a 1.7.2 build.
+    - You can get that build here: https://ci.citizensnpcs.co/job/Sentinel/201/
+
+### Update Warnings
+
+- Sentinel 1.7 **changes the API** structure of Sentinel - and adds documentation and **JavaDocs**, which can be found here: https://ci.citizensnpcs.co/job/Sentinel/javadoc/overview-summary.html
+    - Save data structure is also changed in the 1.7 updates.
+    - If you need a pre-API rewrite version of Sentinel, you can get the last version of Sentinel (1.6.2) here: https://ci.citizensnpcs.co/job/Sentinel/191/
 
 ### Licensing pre-note:
 
