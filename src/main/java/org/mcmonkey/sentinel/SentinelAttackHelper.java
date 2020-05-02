@@ -18,31 +18,32 @@ public class SentinelAttackHelper extends SentinelHelperObject {
      * Causes the NPC to chase a target.
      */
     public void chase(LivingEntity entity) {
-        if (getNPC().getNavigator().getTargetType() == TargetType.LOCATION
-                && getNPC().getNavigator().getTargetAsLocation() != null
-                && ((getNPC().getNavigator().getTargetAsLocation().getWorld().equals(entity.getWorld())
-                && getNPC().getNavigator().getTargetAsLocation().distanceSquared(entity.getLocation()) < 2 * 2))) {
-            return;
-        }
         sentinel.cleverTicks = 0;
         sentinel.chasing = entity;
         sentinel.chased = true;
         sentinel.needsSafeReturn = true;
-        if (getNPC().getNavigator().getTargetType() == TargetType.ENTITY
-                && SentinelUtilities.getTargetFor(getNPC().getNavigator().getEntityTarget()).getUniqueId().equals(entity.getUniqueId())) {
-            return;
-        }
         /*
         Location goal = entity.getLocation().clone().add(entity.getVelocity().clone());
         npc.getNavigator().setTarget(goal);
         bunny_goal = goal;
         */
         if (SentinelPlugin.instance.workaroundEntityChasePathfinder) {
+            Location targetLocation = entity.getLocation().clone().add(SentinelUtilities.getVelocity(entity));
+            if (getNPC().getNavigator().getTargetType() == TargetType.LOCATION
+                    && getNPC().getNavigator().getTargetAsLocation() != null
+                    && ((getNPC().getNavigator().getTargetAsLocation().getWorld().equals(entity.getWorld())
+                    && getNPC().getNavigator().getTargetAsLocation().distanceSquared(targetLocation) < 2 * 2))) {
+                return;
+            }
+            getNPC().getNavigator().setTarget(targetLocation);
             final Location entityEyeLoc = entity.getEyeLocation();
-            getNPC().getNavigator().setTarget(entity.getLocation());
             getNPC().getNavigator().getLocalParameters().lookAtFunction(n -> entityEyeLoc);
         }
         else {
+            if (getNPC().getNavigator().getTargetType() == TargetType.ENTITY
+                    && SentinelUtilities.getTargetFor(getNPC().getNavigator().getEntityTarget()).getUniqueId().equals(entity.getUniqueId())) {
+                return;
+            }
             getNPC().getNavigator().setTarget(entity, false);
         }
         getNPC().getNavigator().getLocalParameters().stuckAction(null);

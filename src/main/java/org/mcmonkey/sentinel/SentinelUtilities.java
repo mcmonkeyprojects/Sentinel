@@ -9,12 +9,14 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
+import org.mcmonkey.sentinel.utilities.VelocityTracker;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,6 +32,9 @@ public class SentinelUtilities {
      */
     public static Random random = new Random();
 
+    /**
+     * Gets the title of an inventory in an InventoryCloseEvent (compensates for code change between Spigot versions).
+     */
     public static String getInventoryTitle(InventoryCloseEvent event) {
         if (SentinelTarget.v1_10) {
             return event.getView().getTitle();
@@ -42,6 +47,16 @@ public class SentinelUtilities {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Gets the velocity for an entity. Uses a special tracker for players (since velocity doesn't network properly).
+     */
+    public static Vector getVelocity(Entity entity) {
+        if (entity instanceof Player && !CitizensAPI.getNPCRegistry().isNPC(entity)) {
+            return VelocityTracker.getVelocityFor((Player) entity);
+        }
+        return entity.getVelocity();
     }
 
     /**

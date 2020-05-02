@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
+import org.mcmonkey.sentinel.utilities.VelocityTracker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -213,6 +214,9 @@ public class SentinelEventHandler implements Listener {
     @EventHandler
     public void whenAnEnemyDies(EntityDeathEvent event) {
         UUID dead = event.getEntity().getUniqueId();
+        if (event.getEntity() instanceof Player) {
+            VelocityTracker.playerVelocityEstimates.remove(dead);
+        }
         for (SentinelTrait sentinel : cleanCurrentList()) {
             sentinel.whenAnEnemyDies(dead);
             sentinel.whenSomethingDies(event);

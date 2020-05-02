@@ -18,6 +18,7 @@ import org.mcmonkey.sentinel.metrics.BStatsMetricsLite;
 import org.mcmonkey.sentinel.metrics.StatsRecord;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.utilities.ConfigUpdater;
+import org.mcmonkey.sentinel.utilities.VelocityTracker;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -381,6 +382,7 @@ public class SentinelPlugin extends JavaPlugin {
                 tickTimeTotal++;
             }
         }.runTaskTimer(this, 1, 1);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, VelocityTracker::runAll, 20, 20);
     }
 
     /**
