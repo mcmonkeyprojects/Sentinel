@@ -1624,10 +1624,13 @@ public class SentinelTrait extends Trait {
      * Gets a list of items to drop (factoring in the drop chance values).
      */
     public List<ItemStack> getDrops() {
+        List<ItemStack> items = new ArrayList<>(drops.size());
         if (dropChances.isEmpty()) {
-            return drops;
+            for (ItemStack item : drops) {
+                items.add(item.clone());
+            }
+            return items;
         }
-        List<ItemStack> items = new ArrayList<>();
         for (int i = 0; i < drops.size(); i++) {
             if (i < dropChances.size()) {
                 double chance = dropChances.get(i);
@@ -1667,7 +1670,7 @@ public class SentinelTrait extends Trait {
         }
         if (SentinelPlugin.instance.workaroundDrops) {
             for (ItemStack item : getDrops()) {
-                entity.getWorld().dropItemNaturally(entity.getLocation(), item.clone());
+                entity.getWorld().dropItemNaturally(entity.getLocation(), item);
             }
         }
         onDeath();
