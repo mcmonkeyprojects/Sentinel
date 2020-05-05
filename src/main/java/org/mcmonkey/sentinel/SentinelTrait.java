@@ -1635,7 +1635,7 @@ public class SentinelTrait extends Trait {
                     continue;
                 }
             }
-            items.add(drops.get(i));
+            items.add(drops.get(i).clone());
         }
         return items;
     }
