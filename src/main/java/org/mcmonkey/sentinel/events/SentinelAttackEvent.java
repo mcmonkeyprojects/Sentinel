@@ -2,6 +2,7 @@ package org.mcmonkey.sentinel.events;
 
 import net.citizensnpcs.api.event.NPCEvent;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
@@ -21,10 +22,23 @@ public class SentinelAttackEvent extends NPCEvent implements Cancellable {
     private boolean cancelled = false;
 
     /**
+     * The entity targeted by the attack.
+     */
+    private LivingEntity target = null;
+
+    /**
      * Constructs the attack event.
      */
-    public SentinelAttackEvent(NPC npc) {
+    public SentinelAttackEvent(NPC npc, LivingEntity target) {
         super(npc);
+        this.target = target;
+    }
+
+    /**
+     * Returns the entity targeted by the NPC's attack.
+     */
+    public LivingEntity getTarget() {
+        return target;
     }
 
     /**

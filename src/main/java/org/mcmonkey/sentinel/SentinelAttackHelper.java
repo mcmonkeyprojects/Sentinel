@@ -187,7 +187,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             itemHelper.swapToMelee();
         }
         sentinel.chasing = entity;
-        SentinelAttackEvent sat = new SentinelAttackEvent(getNPC());
+        SentinelAttackEvent sat = new SentinelAttackEvent(getNPC(), entity);
         Bukkit.getPluginManager().callEvent(sat);
         if (sat.isCancelled()) {
             if (SentinelPlugin.debugMe) {
