@@ -117,10 +117,14 @@ public class SentinelEventHandler implements Listener {
             sentinel.whenSomethingMightDie(victimUuid);
         }
         SentinelTrait victim = SentinelUtilities.tryGetSentinel(event.getEntity());
+        SentinelTrait attacker = SentinelUtilities.tryGetSentinel(event.getDamager());
         if (victim != null) {
+            if (attacker != null && victim.getNPC().getId() == attacker.getNPC().getId()) {
+                event.setCancelled(true);
+                return;
+            }
             victim.whenAttacksAreHappeningToMe(event);
         }
-        SentinelTrait attacker = SentinelUtilities.tryGetSentinel(event.getDamager());
         if (attacker != null) {
             attacker.whenAttacksAreHappeningFromMe(event);
         }
@@ -167,10 +171,14 @@ public class SentinelEventHandler implements Listener {
             }
         }
         SentinelTrait victim = SentinelUtilities.tryGetSentinel(event.getEntity());
+        SentinelTrait attacker = SentinelUtilities.tryGetSentinel(damager);
         if (victim != null) {
+            if (attacker != null && victim.getNPC().getId() == attacker.getNPC().getId()) {
+                event.setCancelled(true);
+                return;
+            }
             victim.whenAttacksHappened(event);
         }
-        SentinelTrait attacker = SentinelUtilities.tryGetSentinel(damager);
         if (attacker != null) {
             attacker.whenAttacksHappened(event);
         }

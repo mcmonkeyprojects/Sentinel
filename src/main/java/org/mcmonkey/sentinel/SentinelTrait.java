@@ -659,6 +659,9 @@ public class SentinelTrait extends Trait {
         if (event.isCancelled()) {
             return;
         }
+        if (!getNPC().isSpawned()) {
+            return;
+        }
         double armorLevel = getArmor(getLivingEntity());
         if (hitIsBlocked(event.getDamager())) {
             armorLevel = (1.0 - armorLevel) * 0.5 + armorLevel;
@@ -681,6 +684,9 @@ public class SentinelTrait extends Trait {
      */
     public void whenAttacksAreHappeningFromMe(EntityDamageByEntityEvent event) {
         if (event.isCancelled()) {
+            return;
+        }
+        if (!npc.isSpawned()) {
             return;
         }
         if (SentinelPlugin.instance.alternateDamage) {
@@ -714,6 +720,9 @@ public class SentinelTrait extends Trait {
      */
     public void whenAttacksAreHappeningFromMyArrow(EntityDamageByEntityEvent event) {
         if (event.isCancelled()) {
+            return;
+        }
+        if (!npc.isSpawned()) {
             return;
         }
         if (SentinelPlugin.instance.alternateDamage) {

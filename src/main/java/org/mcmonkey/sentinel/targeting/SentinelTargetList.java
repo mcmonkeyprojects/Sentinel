@@ -46,6 +46,9 @@ public class SentinelTargetList {
         return result;
     }
 
+    /**
+     * Initialize the targets list after loading it.
+     */
     public void init() {
         recalculateTargetsCache();
         for (String str : new ArrayList<>(byEvent)) {
