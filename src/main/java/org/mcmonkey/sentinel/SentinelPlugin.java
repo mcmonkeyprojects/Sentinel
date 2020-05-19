@@ -18,6 +18,7 @@ import org.mcmonkey.sentinel.metrics.BStatsMetricsLite;
 import org.mcmonkey.sentinel.metrics.StatsRecord;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.utilities.ConfigUpdater;
+import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 import org.mcmonkey.sentinel.utilities.VelocityTracker;
 
 import java.io.*;
@@ -263,6 +264,7 @@ public class SentinelPlugin extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Sentinel loading...");
         instance = this;
+        SentinelVersionCompat.init();
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SentinelTrait.class).withName("sentinel"));
         saveDefaultConfig();
         try {

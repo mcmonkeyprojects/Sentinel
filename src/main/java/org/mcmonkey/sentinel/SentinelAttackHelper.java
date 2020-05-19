@@ -7,7 +7,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.mcmonkey.sentinel.events.SentinelAttackEvent;
-import org.mcmonkey.sentinel.targeting.SentinelTarget;
+import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
 /**
  * Helper for Sentinel NPCs attacking targets.
@@ -73,7 +73,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         if (dist < 5 * 5) {
             return true;
         }
-        else if (SentinelTarget.isRangedWeapon(SentinelUtilities.getHeldItem(entity))) {
+        else if (SentinelVersionCompat.isRangedWeapon(SentinelUtilities.getHeldItem(entity))) {
             return true;
         }
         else {

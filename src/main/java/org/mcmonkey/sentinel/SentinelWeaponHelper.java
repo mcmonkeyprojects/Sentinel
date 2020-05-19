@@ -11,7 +11,7 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
-import org.mcmonkey.sentinel.targeting.SentinelTarget;
+import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
 import java.util.HashMap;
 
@@ -23,11 +23,11 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
     public static final EntityType LINGERING_POTION, TIPPED_ARROW;
 
     static {
-        if (SentinelTarget.v1_14) {
+        if (SentinelVersionCompat.v1_14) {
             LINGERING_POTION = EntityType.SPLASH_POTION;
             TIPPED_ARROW = EntityType.ARROW;
         }
-        else if (SentinelTarget.v1_9) {
+        else if (SentinelVersionCompat.v1_9) {
             LINGERING_POTION = EntityType.valueOf("LINGERING_POTION");
             TIPPED_ARROW = EntityType.valueOf("TIPPED_ARROW");
         }
@@ -44,10 +44,10 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         sentinel.stats_potionsThrown++;
         HashMap.SimpleEntry<Location, Vector> start = sentinel.getLaunchDetail(target, lead);
         Entity entpotion;
-        if (SentinelTarget.v1_14) {
+        if (SentinelVersionCompat.v1_14) {
             entpotion = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.SPLASH_POTION);
         }
-        else if (SentinelTarget.v1_9) {
+        else if (SentinelVersionCompat.v1_9) {
             entpotion = start.getKey().getWorld().spawnEntity(start.getKey(),
                     potion.getType() == Material.SPLASH_POTION ? EntityType.SPLASH_POTION : LINGERING_POTION);
         }
@@ -66,7 +66,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
     public void fireArrow(ItemStack type, Location target, Vector lead) {
         Location launchStart;
         Vector baseVelocity;
-        if (SentinelTarget.v1_14 && type.getType() == Material.FIREWORK_ROCKET) {
+        if (SentinelVersionCompat.v1_14 && type.getType() == Material.FIREWORK_ROCKET) {
             launchStart = sentinel.getLivingEntity().getEyeLocation();
             launchStart = launchStart.clone().add(launchStart.getDirection());
             baseVelocity = target.toVector().subtract(launchStart.toVector().add(lead));
@@ -86,8 +86,8 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         Vector velocity = sentinel.fixForAcc(baseVelocity);
         sentinel.stats_arrowsFired++;
         Entity arrow;
-        if (SentinelTarget.v1_9) {
-            if (SentinelTarget.v1_14) {
+        if (SentinelVersionCompat.v1_9) {
+            if (SentinelVersionCompat.v1_14) {
                 double length = Math.max(1.0, velocity.length());
                 if (type.getType() == Material.FIREWORK_ROCKET) {
                     FireworkMeta meta = (FireworkMeta) type.getItemMeta();
@@ -158,7 +158,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
      * Fires a trident from the NPC at a target.
      */
     public void fireTrident(Location target) {
-        if (!SentinelTarget.v1_13) {
+        if (!SentinelVersionCompat.v1_13) {
             return;
         }
         sentinel.swingWeapon();
@@ -167,7 +167,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(sentinel.firingMinimumRange() + 2));
         Trident ent = (Trident) spawnAt.getWorld().spawnEntity(spawnAt, EntityType.TRIDENT);
-        if (SentinelTarget.v1_14) {
+        if (SentinelVersionCompat.v1_14) {
             ent.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
         }
         ent.setShooter(getLivingEntity());

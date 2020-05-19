@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
+import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
 /**
  * Helper for item management.
@@ -24,8 +25,8 @@ public class SentinelItemHelper extends SentinelHelperObject {
             if (item != null) {
                 Material mat = item.getType();
                 if (mat == Material.ARROW
-                        || (SentinelTarget.v1_9 && (mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW))
-                        || (SentinelTarget.v1_14 && mat == Material.FIREWORK_ROCKET)) {
+                        || (SentinelVersionCompat.v1_9 && (mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW))
+                        || (SentinelVersionCompat.v1_14 && mat == Material.FIREWORK_ROCKET)) {
                     return item.clone();
                 }
             }
@@ -50,7 +51,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
             if (getLivingEntity().getEquipment() == null) {
                 return;
             }
-            if (SentinelTarget.v1_9) {
+            if (SentinelVersionCompat.v1_9) {
                 getLivingEntity().getEquipment().setItemInMainHand(toSet);
             }
             else {
@@ -73,8 +74,8 @@ public class SentinelItemHelper extends SentinelHelperObject {
             if (item != null) {
                 Material mat = item.getType();
                 if (mat == Material.ARROW
-                        || (SentinelTarget.v1_9 && (mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW))
-                        || (SentinelTarget.v1_14 && mat == Material.FIREWORK_ROCKET)) {
+                        || (SentinelVersionCompat.v1_9 && (mat == Material.TIPPED_ARROW || mat == Material.SPECTRAL_ARROW))
+                        || (SentinelVersionCompat.v1_14 && mat == Material.FIREWORK_ROCKET)) {
                     if (item.getAmount() > 1) {
                         item.setAmount(item.getAmount() - 1);
                         items[i] = item;
@@ -108,7 +109,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
             if (getLivingEntity().getEquipment() == null) {
                 return;
             }
-            if (SentinelTarget.v1_9) {
+            if (SentinelVersionCompat.v1_9) {
                 getLivingEntity().getEquipment().setItemInMainHand(toSet);
             }
             else {
@@ -135,7 +136,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
             if (item != null) {
                 item = item.clone();
                 Material mat = item.getType();
-                if (SentinelTarget.isWeapon(mat)) {
+                if (SentinelVersionCompat.isWeapon(mat)) {
                     if (item.getAmount() > 1) {
                         item.setAmount(item.getAmount() - 1);
                         items[i] = item;
@@ -223,7 +224,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is holding a shield in its offhand.
      */
     public boolean hasShield() {
-        if (SentinelTarget.v1_9) {
+        if (SentinelVersionCompat.v1_9) {
             ItemStack item = SentinelUtilities.getOffhandItem(sentinel.getLivingEntity());
             return item != null && item.getType() == Material.SHIELD;
         }
@@ -302,7 +303,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
         if (it == null) {
             return false;
         }
-        if (SentinelTarget.v1_14) {
+        if (SentinelVersionCompat.v1_14) {
             if (it.getType() == Material.CROSSBOW && getArrow() != null) {
                 return true;
             }
@@ -321,7 +322,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a fireball item.
      */
     public boolean usesFireball(ItemStack it) {
-        return it != null && it.getType() == SentinelTarget.MATERIAL_BLAZE_ROD;
+        return it != null && it.getType() == SentinelVersionCompat.MATERIAL_BLAZE_ROD;
     }
 
     /**
@@ -335,7 +336,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a snowball item.
      */
     public boolean usesSnowball(ItemStack it) {
-        return it != null && it.getType() == SentinelTarget.MATERIAL_SNOW_BALL;
+        return it != null && it.getType() == SentinelVersionCompat.MATERIAL_SNOW_BALL;
     }
 
     /**
@@ -349,7 +350,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a lightning-attack item.
      */
     public boolean usesLightning(ItemStack it) {
-        return it != null && it.getType() == SentinelTarget.MATERIAL_NETHER_STAR;
+        return it != null && it.getType() == SentinelVersionCompat.MATERIAL_NETHER_STAR;
     }
 
     /**
@@ -394,7 +395,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
         if (!SentinelPlugin.instance.canUseSkull) {
             return false;
         }
-        return it != null && SentinelTarget.SKULL_MATERIALS.contains(it.getType());
+        return it != null && SentinelVersionCompat.SKULL_MATERIALS.contains(it.getType());
     }
 
     /**
@@ -408,7 +409,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a trident item.
      */
     public boolean usesTrident(ItemStack it) {
-        if (!SentinelTarget.v1_13) {
+        if (!SentinelVersionCompat.v1_13) {
             return false;
         }
         return it != null && it.getType() == Material.TRIDENT;
@@ -425,7 +426,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a spectral-effect-attack item.
      */
     public boolean usesSpectral(ItemStack it) {
-        if (!SentinelTarget.v1_10) {
+        if (!SentinelVersionCompat.v1_10) {
             return false;
         }
         return it != null && it.getType() == Material.SPECTRAL_ARROW;
@@ -442,7 +443,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a potion item.
      */
     public boolean usesPotion(ItemStack it) {
-        return it != null && SentinelTarget.POTION_MATERIALS.contains(it.getType());
+        return it != null && SentinelVersionCompat.POTION_MATERIALS.contains(it.getType());
     }
 
     /**
@@ -454,7 +455,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
             return false;
         }
         Material type = it.getType();
-        return SentinelTarget.BOW_MATERIALS.contains(type) || SentinelTarget.SWORD_MATERIALS.contains(type)
-                || SentinelTarget.PICKAXE_MATERIALS.contains(type) || SentinelTarget.AXE_MATERIALS.contains(type);
+        return SentinelVersionCompat.BOW_MATERIALS.contains(type) || SentinelVersionCompat.SWORD_MATERIALS.contains(type)
+                || SentinelVersionCompat.PICKAXE_MATERIALS.contains(type) || SentinelVersionCompat.AXE_MATERIALS.contains(type);
     }
 }

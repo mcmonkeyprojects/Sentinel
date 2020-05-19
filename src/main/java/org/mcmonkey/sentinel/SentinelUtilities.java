@@ -15,7 +15,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import org.mcmonkey.sentinel.targeting.SentinelTarget;
+import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 import org.mcmonkey.sentinel.utilities.VelocityTracker;
 
 import java.io.InputStream;
@@ -36,7 +36,7 @@ public class SentinelUtilities {
      * Gets the title of an inventory in an InventoryCloseEvent (compensates for code change between Spigot versions).
      */
     public static String getInventoryTitle(InventoryCloseEvent event) {
-        if (SentinelTarget.v1_10) {
+        if (SentinelVersionCompat.v1_10) {
             return event.getView().getTitle();
         }
         try {
@@ -79,7 +79,7 @@ public class SentinelUtilities {
         if (entity.getEquipment() == null) {
             return null;
         }
-        if (SentinelTarget.v1_9) {
+        if (SentinelVersionCompat.v1_9) {
             return entity.getEquipment().getItemInMainHand();
         }
         else {
@@ -91,7 +91,7 @@ public class SentinelUtilities {
      * Returns the item held in an entity's offhand.
      */
     public static ItemStack getOffhandItem(LivingEntity entity) {
-        if (SentinelTarget.v1_9 && entity.getEquipment() != null) {
+        if (SentinelVersionCompat.v1_9 && entity.getEquipment() != null) {
             return entity.getEquipment().getItemInOffHand();
         }
         else {
@@ -311,7 +311,7 @@ public class SentinelUtilities {
      * Gets the entity for a given UUID.
      */
     public static Entity getEntityForID(UUID id) {
-        if (!SentinelTarget.v1_12) {
+        if (!SentinelVersionCompat.v1_12) {
             for (World world : Bukkit.getServer().getWorlds()) {
                 for (Entity e : world.getEntities()) {
                     if (e.getUniqueId().equals(id)) {
@@ -336,7 +336,7 @@ public class SentinelUtilities {
         if (eq == null) {
             return true;
         }
-        if (SentinelTarget.v1_9) {
+        if (SentinelVersionCompat.v1_9) {
             if (!isAir(eq.getItemInMainHand()) || !isAir(eq.getItemInOffHand())) {
                 return false;
             }
@@ -354,7 +354,7 @@ public class SentinelUtilities {
      * Should never return null except in error cases.
      */
     public static Entity getTargetFor(EntityTarget targ) {
-        if (SentinelTarget.v1_9) {
+        if (SentinelVersionCompat.v1_9) {
             return targ.getTarget();
         }
         try {

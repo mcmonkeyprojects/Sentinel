@@ -35,6 +35,7 @@ import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.targeting.SentinelTargetList;
 import org.mcmonkey.sentinel.targeting.SentinelTargetingHelper;
+import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
 import java.util.*;
 
@@ -646,7 +647,7 @@ public class SentinelTrait extends Trait {
         if (!SentinelUtilities.isLookingTowards(getLivingEntity().getEyeLocation(), damager.getLocation(), 45, 45)) {
             return false;
         }
-        if (SentinelTarget.v1_14 && damager instanceof Arrow && ((Arrow) damager).getPierceLevel() > 0) {
+        if (SentinelVersionCompat.v1_14 && damager instanceof Arrow && ((Arrow) damager).getPierceLevel() > 0) {
             return false;
         }
         return true;
@@ -940,7 +941,7 @@ public class SentinelTrait extends Trait {
      */
     public void useItem() {
         if (npc.isSpawned() && getLivingEntity() instanceof Player) {
-            if (SentinelTarget.v1_9) {
+            if (SentinelVersionCompat.v1_9) {
                 PlayerAnimation.START_USE_MAINHAND_ITEM.play((Player) getLivingEntity());
                 BukkitRunnable runner = new BukkitRunnable() {
                     @Override
@@ -1041,14 +1042,14 @@ public class SentinelTrait extends Trait {
         multiplier += weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.DAMAGE_ALL)
                 ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
         Material weaponType = weapon.getType();
-        if (SentinelTarget.BOW_MATERIALS.contains(weaponType)) {
+        if (SentinelVersionCompat.BOW_MATERIALS.contains(weaponType)) {
             if (!forRangedAttacks) {
                 return 1;
             }
             return 6 * (1 + (weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)
                     ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3));
         }
-        Double damageMult = SentinelTarget.WEAPON_DAMAGE_MULTIPLIERS.get(weaponType);
+        Double damageMult = SentinelVersionCompat.WEAPON_DAMAGE_MULTIPLIERS.get(weaponType);
         if (damageMult == null) {
             return multiplier;
         }
@@ -1066,22 +1067,22 @@ public class SentinelTrait extends Trait {
             // TODO: Enchantments!
             double baseArmor = 0;
             ItemStack helmet = ent.getEquipment().getHelmet();
-            Double helmetAdder = helmet == null ? null : SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(helmet.getType());
+            Double helmetAdder = helmet == null ? null : SentinelVersionCompat.ARMOR_PROTECTION_MULTIPLIERS.get(helmet.getType());
             if (helmetAdder != null) {
                 baseArmor += helmetAdder;
             }
             ItemStack chestplate = ent.getEquipment().getChestplate();
-            Double chestplateAdder = chestplate == null ? null : SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(chestplate.getType());
+            Double chestplateAdder = chestplate == null ? null : SentinelVersionCompat.ARMOR_PROTECTION_MULTIPLIERS.get(chestplate.getType());
             if (chestplateAdder != null) {
                 baseArmor += chestplateAdder;
             }
             ItemStack leggings = ent.getEquipment().getLeggings();
-            Double leggingsAdder = leggings == null ? null : SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(leggings.getType());
+            Double leggingsAdder = leggings == null ? null : SentinelVersionCompat.ARMOR_PROTECTION_MULTIPLIERS.get(leggings.getType());
             if (leggingsAdder != null) {
                 baseArmor += leggingsAdder;
             }
             ItemStack boots = ent.getEquipment().getBoots();
-            Double bootsAdder = boots == null ? null : SentinelTarget.ARMOR_PROTECTION_MULTIPLIERS.get(boots.getType());
+            Double bootsAdder = boots == null ? null : SentinelVersionCompat.ARMOR_PROTECTION_MULTIPLIERS.get(boots.getType());
             if (bootsAdder != null) {
                 baseArmor += bootsAdder;
             }
@@ -1136,7 +1137,7 @@ public class SentinelTrait extends Trait {
         if (SentinelPlugin.debugMe && !visionMarked) {
             debug("Target! I see you, " + (chasing == null ? "(Unknown)" : chasing.getName()));
         }
-        if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
+        if (SentinelVersionCompat.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
             NMS.setPeekShulker(getLivingEntity(), 100);
         }
         visionMarked = true;
@@ -1151,7 +1152,7 @@ public class SentinelTrait extends Trait {
         if (SentinelPlugin.debugMe && visionMarked) {
             debug("Goodbye, visible target " + (chasing == null ? "(Unknown)" : chasing.getName()));
         }
-        if (SentinelTarget.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
+        if (SentinelVersionCompat.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
             NMS.setPeekShulker(getLivingEntity(), 0);
         }
         visionMarked = false;
@@ -1221,7 +1222,7 @@ public class SentinelTrait extends Trait {
         if (player != null) {
             return player;
         }
-        if (SentinelTarget.v1_12) {
+        if (SentinelVersionCompat.v1_12) {
             Entity entity = Bukkit.getEntity(guardId);
             if (entity instanceof LivingEntity) {
                 return (LivingEntity) entity;
@@ -1437,7 +1438,7 @@ public class SentinelTrait extends Trait {
      * Gets the nearest pathing point to this NPC.
      */
     public Location nearestPathPoint() {
-        if (!SentinelTarget.v1_9) {
+        if (!SentinelVersionCompat.v1_9) {
             if (waypointHelperAvailable == null) {
                 try {
                     Class.forName("net.citizensnpcs.trait.waypoint.WaypointProvider$EnumerableWaypointProvider");
