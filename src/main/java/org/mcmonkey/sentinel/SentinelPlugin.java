@@ -343,12 +343,26 @@ public class SentinelPlugin extends JavaPlugin {
             }
         }
         if (Bukkit.getPluginManager().getPlugin("Factions") != null) {
+            boolean canLoad = true;
             try {
-                registerIntegration(new SentinelFactions());
-                getLogger().info("Sentinel found Factions! Adding support for it!");
+                if (Class.forName("com.massivecraft.factions.RelationParticipator") == null) {
+                    canLoad = false;
+                }
             }
-            catch (Throwable ex) {
-                ex.printStackTrace();
+            catch (ClassNotFoundException ex) {
+                getLogger().warning("You are running an unsupported fork of Factions that has listed itself as Factions."
+                        + " Sentinel will not load the integration for it."
+                        + " Please inform the developer of your Factions fork to set the plugin name to their own plugin, "
+                        + "to avoid issues with plugins built for the official version of Factions.");
+            }
+            if (canLoad) {
+                try {
+                    registerIntegration(new SentinelFactions());
+                    getLogger().info("Sentinel found Factions! Adding support for it!");
+                }
+                catch (Throwable ex) {
+                    ex.printStackTrace();
+                }
             }
         }
         if (Bukkit.getPluginManager().getPlugin("CrackShot") != null) {
