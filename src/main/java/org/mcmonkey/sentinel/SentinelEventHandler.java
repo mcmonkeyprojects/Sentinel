@@ -13,6 +13,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -50,6 +51,25 @@ public class SentinelEventHandler implements Listener {
                      event.blockList().clear();
                  }
              }
+        }
+    }
+
+    @EventHandler
+    public void onBlockIgnites(BlockIgniteEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        if (!SentinelPlugin.instance.preventExplosionBlockDamage) {
+            return;
+        }
+        if (event.getIgnitingEntity() instanceof Projectile) {
+            ProjectileSource source = ((Projectile) event.getIgnitingEntity()).getShooter();
+            if (source instanceof Entity) {
+                SentinelTrait sourceSentinel = SentinelUtilities.tryGetSentinel((Entity) source);
+                if (sourceSentinel != null) {
+                    event.setCancelled(true);
+                }
+            }
         }
     }
 
