@@ -183,6 +183,11 @@ public class SentinelPlugin extends JavaPlugin {
     public boolean blockSunburn;
 
     /**
+     * Configuration option: whether to prevent Sentinel weapons causing damage to blocks.
+     */
+    public boolean preventExplosionBlockDamage;
+
+    /**
      * Configuration option: time until arrow cleanup.
      */
     public int arrowCleanupTime;
@@ -254,6 +259,7 @@ public class SentinelPlugin extends JavaPlugin {
         noGuardDamage = getConfig().getBoolean("random.no guard damage", true);
         arrowCleanupTime = getConfig().getInt("random.arrow cleanup time", 200);
         blockSunburn = getConfig().getBoolean("random.block sunburn", true);
+        preventExplosionBlockDamage = getConfig().getBoolean("random.prevent explosion block damage", true);
         tickRate = getConfig().getInt("update rate", 10);
     }
 

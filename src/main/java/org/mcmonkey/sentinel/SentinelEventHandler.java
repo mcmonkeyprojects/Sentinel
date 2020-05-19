@@ -35,6 +35,25 @@ public class SentinelEventHandler implements Listener {
     }
 
     @EventHandler
+    public void onEntityExplodes(EntityExplodeEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        if (!SentinelPlugin.instance.preventExplosionBlockDamage) {
+            return;
+        }
+        if (event.getEntity() instanceof Projectile) {
+             ProjectileSource source = ((Projectile) event.getEntity()).getShooter();
+             if (source instanceof Entity) {
+                 SentinelTrait sourceSentinel = SentinelUtilities.tryGetSentinel((Entity) source);
+                 if (sourceSentinel != null) {
+                     event.blockList().clear();
+                 }
+             }
+        }
+    }
+
+    @EventHandler
     public void onEntityCombusts(EntityCombustEvent event) {
         if (event instanceof EntityCombustByEntityEvent || event instanceof EntityCombustByBlockEvent) {
             return;

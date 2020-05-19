@@ -96,6 +96,8 @@ random:
     # Whether to retain the existing target even when a better one exists.
     # This will persist per individual NPC, but is not user configurable per-NPC at the moment (API configurable only).
     retain target: false
+    # Whether to prevent block damage caused by Sentinel weapons.
+    prevent explosion block damage: true
 
 # How fast to recalculate, in ticks.
 update rate: 10
