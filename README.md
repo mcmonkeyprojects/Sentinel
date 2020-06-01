@@ -21,11 +21,6 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 
 **Join us on Discord!**: https://discord.gg/Q6pZGSR in the `#sentinel-lobby` channel.
 
-- **IMPORTANT:**
-- NPC's won't do melee damage? In your config.yml file, toggle the setting that says "workaround damage" to true, and restart your server!
-- NPC's won't do ranged damaged, or protection plugins causing problems? In your config.yml file, toggle the setting that says "enforce damage" to true, and restart your server!
-- Note that back-support for older versions is sometimes limited. Compatibility is tested mainly on the most recent one or two versions. 1.8.8 servers are supported as the oldest option, but not fully functional. See notes here: https://wiki.citizensnpcs.co/Minecraft_1.8
-
 ### Basic Usage
 
 - First, get acquainted with Citizens in general for best luck using Sentinel.
@@ -53,7 +48,8 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - **"My NPCs aren't dropping their items when they die! I used `/sentinel drops` and everything!"**
     - You may have a plugin or world setting blocking drops. If this is the case, the easiest solution is to just enable `workaround drops` in the config (Find your `Sentinel/config.yml` file, open it in a text editor, and change that value from `false` to `true`, then use `/sentinel reload`).
 - **"My NPCs aren't taking/giving damage in no-PvP zones!"**
-    - If you're using WorldGuard for anti-PvP... update! WG 7.0.0 has patches to fix this issue! If you're using a different plugin or can't update, consider enabling the `workaround damage` and/or `enforce damage` options in the config.
+    - If you're using WorldGuard for anti-PvP... update! WG 7.0.0 has patches to fix this issue! If you're using a different plugin or can't update, consider enabling the `workaround damage` (for melee damage issues) and/or `enforce damage` (for ranged damage issues) options in the config.
+- Also: Note that back-support for older versions is sometimes limited. Compatibility is tested mainly on the most recent one or two versions. 1.8.8 servers are supported as the oldest option, but not fully functional. See notes here: https://wiki.citizensnpcs.co/Minecraft_1.8
 
 ### Example NPC Setups
 
@@ -188,7 +184,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel chaseranged \['true'/'false'\] - Toggles whether the NPC will chase while in ranged fights.
     - /sentinel enemydrops \['true'/'false'\] - Toggles whether enemy mobs of this NPC drop items.
     - /sentinel autoswitch \['true'/'false'\] - Toggles whether the NPC automatically switches items.
-    - /sentinel realistic \['true'/'false'\] - Toggles whether the NPC should use "realistic" targeting logic (don't attack things you can't see).
+    - /sentinel realistic \['true'/'false'\] - Toggles whether the NPC should use "realistic" targeting logic (don't notice things hiding behind the NPC).
 
 ### Permissions
 
