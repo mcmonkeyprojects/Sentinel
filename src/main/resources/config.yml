@@ -56,7 +56,7 @@ random:
     run away time: 1200
     # What sound to play when the "spectral" attack is used.
     spectral sound: ENTITY_VILLAGER_YES
-    # Whether to use 'workaround' mode of fist damage.
+    # Whether to use 'workaround' mode of melee damage.
     # If enabled, this can cause unwanted side effects, like mobs not aggroing or some armor effects not applying.
     workaround damage: false
     # Whether to enforce drops even when 'keepInventory' or similar are enabled.

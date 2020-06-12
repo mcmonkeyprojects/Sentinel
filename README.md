@@ -100,6 +100,14 @@ Here are a few examples of how you might setup and configure an NPC
     - `/sentinel spawnpoint`
     - `/sentinel invincible true`
 
+### Useful Things To Know
+
+- Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
+- Sentinels will guard a point or path if either is set using the command "`/npc path`". This means they will still within their chaserange of that point or path, and return to it when out of combat.
+- To make a ghast or blaze fire fireballs, give them a blazerod!
+- Damage value for a Sentinel NPC can be set to "-1" to auto-calculate from held item (otherwise, it will used as a raw HP damage amount).
+- Armor value can be set to "-1" to auto-calculate from equipped armor (otherwise, set a value between 0.0 and 1.0 to indicate how much of any damage will be blocked).
+
 ### Plugin Integrations
 
 Sentinel integrates with a few external plugins, including:
@@ -199,6 +207,10 @@ Sentinel is integrated into by external plugins as well, including:
 These are all valid targets and ignores:
 
 - Common/basic targets: NPCS, OWNER, PASSIVE_MOBS, MOBS, MONSTERS, PLAYERS
+    - `owner` is the NPC's owner
+    - `passive_mobs` are all mobs that generally don't attack players
+    - `mobs` are both passive and monsters
+    - `monsters` are all mobs likely to attack players
 - Basic entities: PIGS, OCELOTS, COWS, RABBITS, SHEEP, CHICKENS, HORSES, MUSHROOM_COWS, IRON_GOLEMS, SQUIDS, VILLAGERS, WOLVES, SNOWMEN, WITCHES, GUARDIANS, SHULKERS, CREEPERS, SKELETONS, ZOMBIES, MAGMA_CUBES, ZOMBIE_PIGMEN, SILVERFISH, BATS, BLAZES, GHASTS, GIANTS, SLIMES, SPIDERS, CAVE_SPIDERS, ENDERMEN, ENDERMITES, WITHERS, ENDERDRAGONS
 - In 1.9 or higher: SHULKERS
 - In 1.10 or higher: POLAR_BEARS
@@ -209,11 +221,14 @@ These are all valid targets and ignores:
 - In 1.14 or higher: PILLAGERS, RAVAGERS, CATS, PANDAS, TRADER_LLAMAS, WANDERING_TRADERS, FOXES
 - In 1.15 or higher: BEES
 - Also allowed: `player:NAME(REGEX)`, `npc:NAME(REGEX)`, `entityname:NAME(REGEX)`, `group:GROUPNAME(EXACT)`
+    - These work like `player:bob` to target player named 'bob', or `npc:.*\sGuard` to target NPCs named "Space Guard" or "Town Guard" or anything else (uses [RegEx](https://www.rexegg.com/regex-quickstart.html)]).
 - Alo allowed: `helditem:ITEM_MATCHER`, `offhand:ITEM_MATCHER`, `equipped:ITEM_MATCHER`, `in_inventory:ITEM_MATCHER`
     - These all use "ITEM_MATCHER"s, which, at their simplest, are just a regex that matches the material name. So, `helditem:diamond_sword` targets enemies that are holding a diamond sword.
     - However, you can also do `lore:LORE(REGEX)` as a matcher for a line of lore, or `name:NAME(REGEX)` as a matcher for the item display name.
     - For example, `offhand:name:Stick\d+` would target players holding an item in their offhand named like "Stick123".
-- Also, event:`pvp`/`pvnpc`/`pve`/`pv:ENTITY`/`pvsentinel`/`guarded_fight`/`eve`/`ev:ENTITY` (pvp is Player-vs-Player, eve is Entity-vs-Entity, etc.) (`pv:ENTITY` is used like `event:pv:chicken` for players attacking chickens)
+- Also, event:`pvp`/`pvnpc`/`pve`/`pvsentinel`/`eve` (pvp is Player-vs-Player, eve is Entity-vs-Entity, etc.)
+- Also, event:`pv:ENTITY`/`ev:ENTITY` (`pv:ENTITY` is used like `event:pv:chicken` for players attacking chickens)
+- Also, `guarded_fight` to attack whatever the guarded player attacks.
 - Also, `event:message:SOMETEXT` will match chat messages that contain 'sometext'.
 - Also, `status:STATUS_TYPE`. Current status types:
     - `status:angry` for mobs (wolves, endermen, spiders, etc.) that are currently angry. This is handy with a combo like `allinone:enderman|status:angry`
@@ -222,9 +237,9 @@ These are all valid targets and ignores:
     - `sbteam:SCOREBOARD_TEAM_HERE`
     - `healthabove:PERCENTAGE` and `healthbelow:PERCENTAGE`
     - `permission:PERM.KEY`
-    - `squad:SENTINEL_SQUAD_NAME`
-    - `uuid:UUID`
-    - `potion:POTION_EFFECT` ( effect name must be on https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html )
+    - `squad:SENTINEL_SQUAD_NAME` (to target another Sentinel SQUAD)
+    - `uuid:UUID` (to target one single specific entity)
+    - `potion:POTION_EFFECT` ( effect name must be on <https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>)
 - Also anything listed in the integrations section above!
 - You can also add multi-targets - that is, `multi:TARGET_ONE,TARGET_TWO,...` to have multiple targets required together.
     - For example: `multi:PLAYER,PLAYER,CHICKEN` will make the NPC angry at 2 players and a chicken if they are all together.
@@ -237,10 +252,11 @@ These are all valid targets and ignores:
 - Note that you can have `allinone` targets inside a `multi` target, but you cannot have `multi` targets inside an `allinone` target.
 - Also, do not put `allinone` inside another `allinone`, and do not put a `multi` inside another `multi`.
 - Note that to remove `allinone` and `multi` targets, you need to use the ID number (use `/sentinel targets` and related commands to find the ID), like `/sentinel removetarget allinone:0`.
+- Note that `event` cannot currently be put inside `allinone` or `multi`.
 
 ### Supported Weapon Types
 
-- Fists
+- Fists (empty hand)
 - Swords/tools
 - Bow
     - equip NPC with arrows of any given type in their `/npc inventory` to set fired arrow type!
@@ -255,14 +271,6 @@ These are all valid targets and ignores:
 - Ender Pearls (Causes the target to get flung into the air!)
 - Skulls (Dangerous wither skull explosions!)
 - CrackShot guns!
-
-### Useful Things To Know
-
-- Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
-- Sentinels will guard a point or path if either is set using the command "`/npc path`". This means they will still within their chaserange of that point or path, and return to it when out of combat.
-- To make a ghast or blaze fire fireballs, give them a blazerod!
-- Damage value for a Sentinel NPC can be set to "-1" to auto-calculate from held item (otherwise, it will used as a raw HP damage amount).
-- Armor value can be set to "-1" to auto-calculate from equipped armor (otherwise, set a value between 0.0 and 1.0 to indicate how much of any damage will be blocked).
 
 ### Integrating Your Plugin With Sentinel
 
