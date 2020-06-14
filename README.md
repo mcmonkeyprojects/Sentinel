@@ -48,7 +48,9 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 - **"My NPCs aren't dropping their items when they die! I used `/sentinel drops` and everything!"**
     - You may have a plugin or world setting blocking drops. If this is the case, the easiest solution is to just enable `workaround drops` in the config (Find your `Sentinel/config.yml` file, open it in a text editor, and change that value from `false` to `true`, then use `/sentinel reload`).
 - **"My NPCs aren't taking/giving damage in no-PvP zones!"**
-    - If you're using WorldGuard for anti-PvP... update! WG 7.0.0 has patches to fix this issue! If you're using a different plugin or can't update, consider enabling the `workaround damage` (for melee damage issues) and/or `enforce damage` (for ranged damage issues) options in the config.
+    - If you're using WorldGuard for anti-PvP... update! WG 7.0.0 has patches to fix this issue! If you're using a different plugin or can't update, consider enabling the `workaround damage` (for melee damage issues) and/or `enforce damage` (for ranged damage issues) options in the config. You might also consider simply not putting combat NPCs in no-PvP regions (enable PvP in the region, or move them to dedicated combat areas).
+- **"My NPC's aren't taking/giving damage but it's not a non-PvP zone!"**
+    - You likely have *some plugin* or world setting screwing with PvP or damage in general, even if you don't realize it. Find out which plugin and fix it through [Plugin Conflict Testing & Fixing](https://wiki.citizensnpcs.co/Plugin_Conflict). If you can't fix it, consider enabling the `workaround damage` (for melee damage issues) and/or `enforce damage` (for ranged damage issues) options in the config.
 - Also: Note that back-support for older versions is sometimes limited. Compatibility is tested mainly on the most recent one or two versions. 1.8.8 servers are supported as the oldest option, but not fully functional. See notes here: https://wiki.citizensnpcs.co/Minecraft_1.8
 
 ### Example NPC Setups
