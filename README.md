@@ -112,24 +112,24 @@ Here are a few examples of how you might setup and configure an NPC
 
 Sentinel integrates with a few external plugins, including:
 
-- Vault, for permission group targets! (Use group:GROUP_HERE)
-- Towny, for town targets! (Use towny:TOWN_HERE, nation:NATION_HERE, nationenemies:NATION_HERE, nationallies:NATION_HERE)
-- Factions, for faction targets! (Use factions:FACTION_HERE, factionsenemy:NAME, factionsally:NAME)
-- SimpleClans, for clan targets! (Use simpleclan:CLAN_NAME_HERE)
-- War, for war team targets! (Use war_team:WAR_TEAM_NAME)
-- CrackShot, to allow NPCs to fire CrackShot weapons.
+- Vault, for permission group targets! (Use `group:GROUP_HERE`)
+- Towny, for town targets! (Use `towny:TOWN_HERE`, `nation:NATION_HERE`, `nationenemies:NATION_HERE`, `nationallies:NATION_HERE`)
+- Factions, for faction targets! (Use `factions:FACTION_HERE`, `factionsenemy:NAME`, `factionsally:NAME`)
+- SimpleClans, for clan targets! (Use `simpleclan:CLAN_NAME_HERE`)
+- War, for war team targets! (Use `war_team:WAR_TEAM_NAME`)
+- CrackShot, to allow NPCs to fire CrackShot weapons (just put the weapon in their hand).
 
 Sentinel is integrated into by external plugins as well, including:
 
 - Denizen (using Depenizen as a bridge), for scriptable targeting!
-    - Use held_denizen_item:DENIZEN_ITEM_NAME for targeting based on targets holding a Denizen item
-    - or use denizen_proc:PROCEDURE_SCRIPT_NAME to fire a procedure script
-        - First procedure context (named 'entity' by default) is the entity that might be a target.
-        - Second procedure context (named 'context' by default) is the optional user-input context info.
-            - To use this, do: denizen_proc:PROCEDURE_SCRIPT_NAME:SOME_CONTEXT_HERE
-        - Determine 'true' or 'false' to indicate whether the entity is a target.
+    - Use `held_denizen_item:DENIZEN_ITEM_NAME` for targeting based on targets holding a Denizen item.
+    - or use `denizen_proc:PROCEDURE_SCRIPT_NAME` to fire a procedure script.
+        - First procedure context (named `entity` by default) is the entity that might be a target.
+        - Second procedure context (named `context` by default) is the optional user-input context info.
+            - To use this, do: `denizen_proc:PROCEDURE_SCRIPT_NAME:SOME_CONTEXT_HERE`
+        - Determine `true` or `false` to indicate whether the entity is a target.
     - Also check the Denizen meta docs - type `!search sentinel` in `#bot-spam` on the Denizen support Discord.
-- QualityArmory, to allow NPCs to fire QA weapons.
+- QualityArmory, to allow NPCs to fire QA weapons (just put the weapon in their hand).
 
 ### Commands
 
@@ -177,7 +177,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel warning WARNING - Sets a warning message for the NPC to say.
     - /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
     - /sentinel greetrate RATE - Sets how quickly (in seconds) the Sentinel may re-greet any player.
-    - /sentinel accuracy OFFSET - Sets the accuracy of an NPC, as a decimal number value.
+    - /sentinel accuracy OFFSET - Sets the accuracy of an NPC, as a decimal number value (0 means perfectly accurate, 5 means pretty inaccurate).
     - /sentinel squad SQUAD - Sets the NPC's squad name (null for none).
     - /sentinel reach REACH - Sets the NPC's reach (how far it can punch).
     - /sentinel projectilerange RANGE - Sets the NPC's projectile range (how far it is willing to shoot projectiles).
@@ -203,6 +203,9 @@ Sentinel is integrated into by external plugins as well, including:
 - Everything else is "sentinel.X" where "X" is the command name, EG "sentinel.damage".
 
 ### Targets
+
+There's a huge list of valid target types that can be used in the target commands (`addtarget`, `removetarget`, `addignore`, `removeignore`, `addavoid`, `removeavoid`).
+These are used, for example, like `/sentinel addtarget monsters` (to automatically attack the `MONSTERS` target type), or `/sentinel addavoid helditem:*_sword` (to run away from players holding swords using the `helditem:ITEM_MATCHER` target type).
 
 These are all valid targets and ignores:
 

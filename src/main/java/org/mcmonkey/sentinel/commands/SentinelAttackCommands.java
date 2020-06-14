@@ -33,7 +33,7 @@ public class SentinelAttackCommands {
     }
 
     @Command(aliases = {"sentinel"}, usage = "accuracy OFFSET",
-            desc = "Sets the accuracy of an NPC.",
+            desc = "Sets the accuracy of an NPC (0 means perfectly accurate, 5 means pretty inaccurate).",
             modifiers = {"accuracy"}, permission = "sentinel.accuracy", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void accuracy(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
