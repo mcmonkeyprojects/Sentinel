@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
-**Version 2.1.0**: Compatible with Spigot 1.8.8 through 1.15.2 (Primarily targeted at 1.15.2) - see info section below if on other supported versions)
+**Version 2.1.5**: Compatible with Spigot 1.8.8 through 1.16.1 (Primarily targeted at 1.16.1) - see info section below if on other supported versions)
 
 ### Downloads
 
@@ -49,7 +49,7 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
     - You may have a plugin or world setting blocking drops. If this is the case, the easiest solution is to just enable `workaround drops` in the config (Find your `Sentinel/config.yml` file, open it in a text editor, and change that value from `false` to `true`, then use `/sentinel reload`).
 - **"My NPCs aren't taking/giving damage in no-PvP zones!"**
     - If you're using WorldGuard for anti-PvP... update! WG 7.0.0 has patches to fix this issue! If you're using a different plugin or can't update, consider enabling the `workaround damage` (for melee damage issues) and/or `enforce damage` (for ranged damage issues) options in the config. You might also consider simply not putting combat NPCs in no-PvP regions (enable PvP in the region, or move them to dedicated combat areas).
-- **"My NPC's aren't taking/giving damage but it's not a non-PvP zone!"**
+- **"My NPC's aren't taking/giving damage but it's not a no-PvP zone!"**
     - You likely have *some plugin* or world setting screwing with PvP or damage in general, even if you don't realize it. Find out which plugin and fix it through [Plugin Conflict Testing & Fixing](https://wiki.citizensnpcs.co/Plugin_Conflict). If you can't fix it, consider enabling the `workaround damage` (for melee damage issues) and/or `enforce damage` (for ranged damage issues) options in the config.
 - Also: Note that back-support for older versions is sometimes limited. Compatibility is tested mainly on the most recent one or two versions. 1.8.8 servers are supported as the oldest option, but not fully functional. See notes here: https://wiki.citizensnpcs.co/Minecraft_1.8
 
@@ -216,7 +216,7 @@ These are all valid targets and ignores:
     - `passive_mobs` are all mobs that generally don't attack players
     - `mobs` are both passive and monsters
     - `monsters` are all mobs likely to attack players
-- Basic entities: PIGS, OCELOTS, COWS, RABBITS, SHEEP, CHICKENS, HORSES, MUSHROOM_COWS, IRON_GOLEMS, SQUIDS, VILLAGERS, WOLVES, SNOWMEN, WITCHES, GUARDIANS, SHULKERS, CREEPERS, SKELETONS, ZOMBIES, MAGMA_CUBES, ZOMBIE_PIGMEN, SILVERFISH, BATS, BLAZES, GHASTS, GIANTS, SLIMES, SPIDERS, CAVE_SPIDERS, ENDERMEN, ENDERMITES, WITHERS, ENDERDRAGONS
+- Basic entities: PIGS, OCELOTS, COWS, RABBITS, SHEEP, CHICKENS, HORSES, MUSHROOM_COWS, IRON_GOLEMS, SQUIDS, VILLAGERS, WOLVES, SNOWMEN, WITCHES, GUARDIANS, SHULKERS, CREEPERS, SKELETONS, ZOMBIES, MAGMA_CUBES, SILVERFISH, BATS, BLAZES, GHASTS, GIANTS, SLIMES, SPIDERS, CAVE_SPIDERS, ENDERMEN, ENDERMITES, WITHERS, ENDERDRAGONS
 - In 1.9 or higher: SHULKERS
 - In 1.10 or higher: POLAR_BEARS
 - In 1.11 or higher: VEXES, DONKEYS, LLAMAS, MULES, HUSKS, ELDER_GUARDIANS, EVOKERS, SKELETON_HORSES, STRAYS, ZOMBIE_VILLAGERS, ZOMBIE_HORSES, WITHER_SKELETONS, VINDICATORS
@@ -225,6 +225,8 @@ These are all valid targets and ignores:
 - 1.13 or higher special targets: FISH
 - In 1.14 or higher: PILLAGERS, RAVAGERS, CATS, PANDAS, TRADER_LLAMAS, WANDERING_TRADERS, FOXES
 - In 1.15 or higher: BEES
+- In 1.15 or LOWER: ZOMBIE_PIGMEN
+- In 1.16 or higher: HOGLINS, PIGLINS, STRIDERS, ZOGLINS
 - Also allowed: `player:NAME(REGEX)`, `npc:NAME(REGEX)`, `entityname:NAME(REGEX)`, `group:GROUPNAME(EXACT)`
     - These work like `player:bob` to target player named 'bob', or `npc:.*\sGuard` to target NPCs named "Space Guard" or "Town Guard" or anything else (uses [RegEx](https://www.rexegg.com/regex-quickstart.html)]).
 - Alo allowed: `helditem:ITEM_MATCHER`, `offhand:ITEM_MATCHER`, `equipped:ITEM_MATCHER`, `in_inventory:ITEM_MATCHER`
@@ -294,7 +296,7 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
         <dependency>
             <groupId>org.mcmonkey</groupId>
             <artifactId>sentinel</artifactId>
-            <version>2.1.0-SNAPSHOT</version>
+            <version>2.1.5-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>

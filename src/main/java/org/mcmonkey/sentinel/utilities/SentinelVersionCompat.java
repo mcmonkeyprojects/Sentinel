@@ -47,12 +47,13 @@ public class SentinelVersionCompat {
     /**
      * Boolean indicating if the server version is >= the named version.
      */
-    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14, v1_15, vFuture;
+    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14, v1_15, v1_16, vFuture;
 
     static {
         String vers = Bukkit.getBukkitVersion(); // Returns in format like: 1.12.2-R0.1-SNAPSHOT
-        vFuture = vers.startsWith("1.16") || vers.startsWith("1.17") || vers.startsWith("1.18");
-        v1_15 = vers.startsWith("1.15") || vFuture;
+        vFuture = vers.startsWith("1.17") || vers.startsWith("1.18") || vers.startsWith("1.19");
+        v1_16 = vers.startsWith("1.16") || vFuture;
+        v1_15 = vers.startsWith("1.15") || v1_16;
         v1_14 = vers.startsWith("1.14") || v1_15;
         v1_13 = vers.startsWith("1.13") || v1_14;
         v1_12 = vers.startsWith("1.12") || v1_13;
@@ -111,15 +112,15 @@ public class SentinelVersionCompat {
             SentinelTarget.MONSTERS = new SentinelTarget(v1_12_monsters(), "MONSTER");
         }
         if (v1_13) {
-            SentinelTarget.DOLPHIN = new SentinelTarget(new EntityType[]{EntityType.DOLPHIN}, "DOLPHIN");
+            SentinelTarget.DOLPHINS = new SentinelTarget(new EntityType[]{EntityType.DOLPHIN}, "DOLPHIN");
             SentinelTarget.DROWNED = new SentinelTarget(new EntityType[]{EntityType.DROWNED}, "DROWNED");
             SentinelTarget.COD = new SentinelTarget(new EntityType[]{EntityType.COD}, "COD");
             SentinelTarget.SALMON = new SentinelTarget(new EntityType[]{EntityType.SALMON}, "SALMON");
             SentinelTarget.PUFFERFISH = new SentinelTarget(new EntityType[]{EntityType.PUFFERFISH}, "PUFFERFISH", "PUFFERFISHE");
             SentinelTarget.TROPICAL_FISH = new SentinelTarget(new EntityType[]{EntityType.TROPICAL_FISH}, "TROPICAL_FISH", "TROPICALFISH", "TROPICAL_FISHE", "TROPICALFISHE");
             SentinelTarget.FISH = new SentinelTarget(new EntityType[]{EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SALMON, EntityType.COD}, "FISH", "FISHE");
-            SentinelTarget.PHANTOM = new SentinelTarget(new EntityType[]{EntityType.PHANTOM}, "PHANTOM");
-            SentinelTarget.TURTLE = new SentinelTarget(new EntityType[]{EntityType.TURTLE}, "TURTLE");
+            SentinelTarget.PHANTOMS = new SentinelTarget(new EntityType[]{EntityType.PHANTOM}, "PHANTOM");
+            SentinelTarget.TURTLES = new SentinelTarget(new EntityType[]{EntityType.TURTLE}, "TURTLE");
         }
         if (v1_13 && !v1_14) {
             SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_13_passive(), passiveNames());
@@ -144,13 +145,41 @@ public class SentinelVersionCompat {
         if (v1_15) {
             SentinelTarget.BEES = new SentinelTarget(new EntityType[]{EntityType.BEE}, "BEE");
         }
-        if (v1_15) { // && !v1_16
+        if (v1_15 && !v1_16) {
             SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_14_passive(), passiveNames()); // no new passives in 1.15
             SentinelTarget.MOBS = new SentinelTarget(combine(v1_14_passive(), v1_15_monsters()), "MOB");
             SentinelTarget.MONSTERS = new SentinelTarget(v1_14_monsters(), "MONSTER");
         }
+        if (!v1_16) {
+            SentinelTarget.ZOMBIE_PIGMEN = new SentinelTarget(new EntityType[]{EntityType.valueOf("PIG_ZOMBIE")}, "PIG_ZOMBIE", "PIGZOMBIE", "ZOMBIEPIGMAN", "ZOMBIEPIGMEN", "ZOMBIE_PIGMAN", "ZOMBIE_PIGMEN", "ZOMBIE_PIGMAN");
+        }
+        if (v1_16) {
+            SentinelTarget.HOGLINS = new SentinelTarget(new EntityType[]{EntityType.HOGLIN}, "HOGLIN");
+            SentinelTarget.PIGLINS = new SentinelTarget(new EntityType[]{EntityType.PIGLIN}, "PIGLIN");
+            SentinelTarget.STRIDERS = new SentinelTarget(new EntityType[]{EntityType.STRIDER}, "STRIDER");
+            SentinelTarget.ZOGLINS = new SentinelTarget(new EntityType[]{EntityType.ZOGLIN}, "ZOGLIN", "PIG_ZOMBIE", "PIGZOMBIE", "ZOMBIEPIGMAN", "ZOMBIEPIGMEN", "ZOMBIE_PIGMAN", "ZOMBIE_PIGMEN", "ZOMBIE_PIGMAN");
+        }
+        if (v1_16) { // && !v1_17
+            SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_16_passive(), passiveNames());
+            SentinelTarget.MOBS = new SentinelTarget(combine(v1_16_passive(), v1_16_monsters()), "MOB");
+            SentinelTarget.MONSTERS = new SentinelTarget(v1_16_monsters(), "MONSTER");
+        }
         // ========================== End Entities ==========================
         // ========================== Begin Materials ==========================
+        if (v1_16) {
+            addAllMaterials(SWORD_MATERIALS, "NETHERITE_SWORD");
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("NETHERITE_SWORD"), 8.0);
+            addAllMaterials(PICKAXE_MATERIALS, "NETHERITE_PICKAXE");
+            addAllMaterials(AXE_MATERIALS, "NETHERITE_AXE");
+            addAllMaterials(HELMET_MATERIALS, "NETHERITE_HELMET");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("NETHERITE_HELMET"), 0.12);
+            addAllMaterials(CHESTPLATE_MATERIALS, "NETHERITE_CHESTPLATE");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("NETHERITE_CHESTPLATE"), 0.32);
+            addAllMaterials(LEGGINGS_MATERIALS, "NETHERITE_LEGGINGS");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("NETHERITE_LEGGINGS"), 0.24);
+            addAllMaterials(BOOTS_MATERIALS, "NETHERITE_BOOTS");
+            ARMOR_PROTECTION_MULTIPLIERS.put(getMaterial("NETHERITE_BOOTS"), 0.12);
+        }
         if (v1_13) {
             // Sword
             addAllMaterials(SWORD_MATERIALS, "DIAMOND_SWORD", "IRON_SWORD", "STONE_SWORD", "GOLDEN_SWORD", "WOODEN_SWORD");
@@ -370,9 +399,13 @@ public class SentinelVersionCompat {
         return combine(v1_13_passive(), EntityType.CAT, EntityType.PANDA, EntityType.TRADER_LLAMA, EntityType.WANDERING_TRADER, EntityType.FOX);
     }
 
+    static EntityType[] v1_16_passive() {
+        return combine(v1_14_passive(), EntityType.STRIDER);
+    }
+
     static EntityType[] v1_8_monsters() {
         return new EntityType[]{EntityType.GUARDIAN, EntityType.CREEPER, EntityType.SKELETON, EntityType.ZOMBIE,
-                EntityType.MAGMA_CUBE, EntityType.PIG_ZOMBIE, EntityType.SILVERFISH, EntityType.BAT, EntityType.BLAZE,
+                EntityType.MAGMA_CUBE, EntityType.valueOf("PIG_ZOMBIE"), EntityType.SILVERFISH, EntityType.BAT, EntityType.BLAZE,
                 EntityType.GHAST, EntityType.GIANT, EntityType.SLIME, EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ENDERMAN,
                 EntityType.ENDERMITE, EntityType.WITHER, EntityType.ENDER_DRAGON, EntityType.WITCH};
     }
@@ -401,6 +434,32 @@ public class SentinelVersionCompat {
 
     static EntityType[] v1_15_monsters() {
         return combine(v1_14_monsters(), EntityType.BEE);
+    }
+
+    static EntityType[] v1_16_monsters() {
+        return new EntityType[]{
+                // 1.8 minus PigZombie
+                EntityType.GUARDIAN, EntityType.CREEPER, EntityType.SKELETON, EntityType.ZOMBIE,
+                EntityType.MAGMA_CUBE, EntityType.SILVERFISH, EntityType.BAT, EntityType.BLAZE,
+                EntityType.GHAST, EntityType.GIANT, EntityType.SLIME, EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ENDERMAN,
+                EntityType.ENDERMITE, EntityType.WITHER, EntityType.ENDER_DRAGON, EntityType.WITCH,
+                // 1.9
+                EntityType.SHULKER,
+                // 1.11
+                EntityType.VEX, EntityType.HUSK, EntityType.ELDER_GUARDIAN,
+                EntityType.EVOKER, EntityType.STRAY, EntityType.ZOMBIE_VILLAGER,
+                EntityType.WITHER_SKELETON, EntityType.VINDICATOR,
+                // 1.12
+                EntityType.ILLUSIONER,
+                // 1.13
+                EntityType.DROWNED, EntityType.PHANTOM,
+                // 1.14
+                EntityType.RAVAGER, EntityType.PILLAGER,
+                // 1.15
+                EntityType.BEE,
+                // 1.16
+                EntityType.HOGLIN, EntityType.PIGLIN, EntityType.ZOGLIN,
+        };
     }
 
     /**

@@ -17,6 +17,11 @@ public class SentinelCrackShot extends SentinelIntegration {
     }
 
     @Override
+    public String[] getTargetPrefixes() {
+        return new String[0];
+    }
+
+    @Override
     public boolean tryAttack(SentinelTrait st, LivingEntity ent) {
         if (!(st.getLivingEntity() instanceof Player)) {
             return false;

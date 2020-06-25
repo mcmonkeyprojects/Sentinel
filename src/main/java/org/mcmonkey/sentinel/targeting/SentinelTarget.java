@@ -43,27 +43,26 @@ public class SentinelTarget {
             IRON_GOLEMS = new SentinelTarget(new EntityType[]{EntityType.IRON_GOLEM}, "IRON_GOLEM", "IRONGOLEM"),
             SQUIDS = new SentinelTarget(new EntityType[]{EntityType.SQUID}, "SQUID"),
             VILLAGER = new SentinelTarget(new EntityType[]{EntityType.VILLAGER}, "VILLAGER"),
-            WOLF = new SentinelTarget(new EntityType[]{EntityType.WOLF}, "WOLF", "WOLVE"),
+            WOLVES = new SentinelTarget(new EntityType[]{EntityType.WOLF}, "WOLF", "WOLVE"),
             SNOWMEN = new SentinelTarget(new EntityType[]{EntityType.SNOWMAN}, "SNOWMAN", "SNOWMEN"),
-            WITCH = new SentinelTarget(new EntityType[]{EntityType.WITCH}, "WITCH"),
+            WITCHES = new SentinelTarget(new EntityType[]{EntityType.WITCH}, "WITCH"),
             GUARDIANS = new SentinelTarget(new EntityType[]{EntityType.GUARDIAN}, "GUARDIAN"),
             CREERERS = new SentinelTarget(new EntityType[]{EntityType.CREEPER}, "CREEPER"),
             SKELETONS = new SentinelTarget(new EntityType[]{EntityType.SKELETON}, "SKELETON"),
             ZOMBIES = new SentinelTarget(new EntityType[]{EntityType.ZOMBIE}, "ZOMBIE"),
             MAGMA_CUBES = new SentinelTarget(new EntityType[]{EntityType.MAGMA_CUBE}, "MAGMA_CUBE", "MAGMACUBE"),
-            ZOMBIE_PIGMEN = new SentinelTarget(new EntityType[]{EntityType.PIG_ZOMBIE}, "PIG_ZOMBIE", "PIGZOMBIE", "ZOMBIEPIGMAN", "ZOMBIEPIGMEN", "ZOMBIE_PIGMAN", "ZOMBIE_PIGMEN", "ZOMBIE_PIGMAN"),
             SILVERFISH = new SentinelTarget(new EntityType[]{EntityType.SILVERFISH}, "SILVERFISH", "SILVER_FISH", "SILVERFISHE", "SILVER_FISHE"),
             BATS = new SentinelTarget(new EntityType[]{EntityType.BAT}, "BAT"),
             BLAZES = new SentinelTarget(new EntityType[]{EntityType.BLAZE}, "BLAZE"),
             GHASTS = new SentinelTarget(new EntityType[]{EntityType.GHAST}, "GHAST"),
             GIANTS = new SentinelTarget(new EntityType[]{EntityType.GIANT}, "GIANT"),
-            SLIME = new SentinelTarget(new EntityType[]{EntityType.SLIME}, "SLIME"),
-            SPIDER = new SentinelTarget(new EntityType[]{EntityType.SPIDER}, "SPIDER"),
+            SLIMES = new SentinelTarget(new EntityType[]{EntityType.SLIME}, "SLIME"),
+            SPIDERS = new SentinelTarget(new EntityType[]{EntityType.SPIDER}, "SPIDER"),
             CAVE_SPIDERS = new SentinelTarget(new EntityType[]{EntityType.CAVE_SPIDER}, "CAVE_SPIDER", "CAVESPIDER"),
             ENDERMEN = new SentinelTarget(new EntityType[]{EntityType.ENDERMAN}, "ENDERMAN", "ENDER_MAN", "ENDERMEN", "ENDER_MEN"),
             ENDERMITES = new SentinelTarget(new EntityType[]{EntityType.ENDERMITE}, "ENDERMITE", "ENDER_MITE"),
-            WITHER = new SentinelTarget(new EntityType[]{EntityType.WITHER}, "WITHER"),
-            ENDERDRAGON = new SentinelTarget(new EntityType[]{EntityType.ENDER_DRAGON}, "ENDERDRAGON", "ENDER_DRAGON");
+            WITHERS = new SentinelTarget(new EntityType[]{EntityType.WITHER}, "WITHER"),
+            ENDERDRAGONS = new SentinelTarget(new EntityType[]{EntityType.ENDER_DRAGON}, "ENDERDRAGON", "ENDER_DRAGON");
 
     /**
      * Valid target types for 1.9 or higher.
@@ -89,7 +88,7 @@ public class SentinelTarget {
     /**
      * Valid target types for 1.13 or higher.
      */
-    public static SentinelTarget DOLPHIN, DROWNED, COD, SALMON, PUFFERFISH, TROPICAL_FISH, PHANTOM, TURTLE, FISH;
+    public static SentinelTarget DOLPHINS, DROWNED, COD, SALMON, PUFFERFISH, TROPICAL_FISH, PHANTOMS, TURTLES, FISH;
 
     /**
      * Valid target types for 1.14 or higher.
@@ -100,6 +99,16 @@ public class SentinelTarget {
      * Valid target types for 1.15 or higher.
      */
     public static SentinelTarget BEES;
+
+    /**
+     * Valid target types for 1.15 or LOWER.
+     */
+    public static SentinelTarget ZOMBIE_PIGMEN;
+
+    /**
+     * Valid target types for 1.16 or higher.
+     */
+    public static SentinelTarget HOGLINS, PIGLINS, STRIDERS, ZOGLINS;
 
     /**
      * Multiple-entity-type targets.

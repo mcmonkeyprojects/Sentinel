@@ -25,6 +25,7 @@ public class SentinelIntegration {
     /**
      * Gets the list of target prefixes that this integration handles.
      * For a "squad:SQUAD_NAME" target, this should return: new String[] { "squad" }
+     * For integrations that don't have targets, return new String[0];
      */
     public String[] getTargetPrefixes() {
         return new String[0];
