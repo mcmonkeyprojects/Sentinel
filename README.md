@@ -226,7 +226,7 @@ These are all valid targets and ignores:
 - In 1.14 or higher: PILLAGERS, RAVAGERS, CATS, PANDAS, TRADER_LLAMAS, WANDERING_TRADERS, FOXES
 - In 1.15 or higher: BEES
 - In 1.15 or LOWER: ZOMBIE_PIGMEN
-- In 1.16 or higher: HOGLINS, PIGLINS, STRIDERS, ZOGLINS
+- In 1.16 or higher: HOGLINS, PIGLINS, STRIDERS, ZOGLINS, ZOMBIFIED_PIGLINS
 - Also allowed: `player:NAME(REGEX)`, `npc:NAME(REGEX)`, `entityname:NAME(REGEX)`, `group:GROUPNAME(EXACT)`
     - These work like `player:bob` to target player named 'bob', or `npc:.*\sGuard` to target NPCs named "Space Guard" or "Town Guard" or anything else (uses [RegEx](https://www.rexegg.com/regex-quickstart.html)]).
 - Alo allowed: `helditem:ITEM_MATCHER`, `offhand:ITEM_MATCHER`, `equipped:ITEM_MATCHER`, `in_inventory:ITEM_MATCHER`
