@@ -211,15 +211,15 @@ public class SentinelEventHandler implements Listener {
         }
         SentinelTrait victim = SentinelUtilities.tryGetSentinel(event.getEntity());
         SentinelTrait attacker = SentinelUtilities.tryGetSentinel(damager);
-        if (victim != null) {
-            if (attacker != null && victim.getNPC().getId() == attacker.getNPC().getId()) {
+        if (attacker != null) {
+            if (victim != null && victim.getNPC().getId() == attacker.getNPC().getId()) {
                 event.setCancelled(true);
                 return;
             }
-            victim.whenAttacksHappened(event);
-        }
-        if (attacker != null) {
             attacker.whenAttacksHappened(event);
+        }
+        if (victim != null) {
+            victim.whenAttacksHappened(event);
         }
         for (SentinelTrait sentinel : cleanCurrentList()) {
             UUID guarding = sentinel.getGuarding();

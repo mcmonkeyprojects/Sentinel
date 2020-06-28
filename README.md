@@ -91,8 +91,8 @@ Here are a few examples of how you might setup and configure an NPC
     - `/npc create &b-Healer-`
     - `/trait sentinel`
     - `/npc equip` then give the NPC a health potion and any armor, then `/npc equip` again.
-    - `/sentinel addtarget allinone:player|healthbelow:19`
-    - `/sentinel addignore allinone:player|healthabove:19`
+    - `/sentinel addtarget allinone:player|healthbelow:90` to target players below 90% health.
+    - `/sentinel addignore allinone:player|healthabove:90` to ignore players who get above 90% health.
     - `/sentinel fightback false`
     - `/sentinel range 10`
     - `/sentinel removeignore owner`
