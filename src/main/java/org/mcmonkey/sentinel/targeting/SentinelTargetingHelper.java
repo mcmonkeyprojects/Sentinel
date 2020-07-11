@@ -287,7 +287,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (!pos.getWorld().equals(getLivingEntity().getWorld())) {
             // Emergency corrective measures...
             getNPC().getNavigator().cancelNavigation();
-            getLivingEntity().teleport(sentinel.getGuardZone());
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () ->  getLivingEntity().teleport(sentinel.getGuardZone()), 1);
             return null;
         }
         LivingEntity closestThreat = null;
@@ -395,7 +395,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (!pos.getWorld().equals(getLivingEntity().getWorld())) {
             // Emergency corrective measures...
             getNPC().getNavigator().cancelNavigation();
-            getLivingEntity().teleport(sentinel.getGuardZone());
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () ->  getLivingEntity().teleport(sentinel.getGuardZone()), 1);
             return null;
         }
         if (sentinel.chasing != null && sentinel.retainTarget) {
