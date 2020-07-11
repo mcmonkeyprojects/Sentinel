@@ -28,8 +28,8 @@ sentinel defaults:
     respawn time: 100
     # Whether enemy mobs killed by this NPC should drop items.
     enemy drops: false
-    # How long to target temporary enemies for, in ticks. 0 means never-forget.
-    enemy target time: 0
+    # How long to target temporary enemies for, in ticks. 0 means never-forget. Default 6000 = 5 minutes.
+    enemy target time: 6000
     # What movement (chase) speed should be used, as a multiple of the default speed.
     speed: 1.5
     # Whether to automatically switch to the most appropriate available weapon. (Bow at range, or sword up close).
