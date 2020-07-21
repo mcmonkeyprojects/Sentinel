@@ -462,6 +462,12 @@ public class SentinelTrait extends Trait {
     public boolean realistic = false;
 
     /**
+     * Whether this NPC should ignore Line of Sight requirement. If set true, the NPC can see targets through walls.
+     */
+    @Persist("ignore_los")
+    public boolean ignoreLOS = false;
+
+    /**
      * How far this NPC's punches can reach.
      */
     @Persist("reach")

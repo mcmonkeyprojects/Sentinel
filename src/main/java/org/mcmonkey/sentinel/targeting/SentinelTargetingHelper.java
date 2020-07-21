@@ -31,13 +31,11 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (getLivingEntity().getEyeLocation().distanceSquared(entity.getEyeLocation()) > sentinel.range * sentinel.range) {
             return false;
         }
-        if (!getLivingEntity().hasLineOfSight(entity)) {
+        if (!sentinel.ignoreLOS && !getLivingEntity().hasLineOfSight(entity)) {
             return false;
         }
-        if (sentinel.realistic) {
-            if (!SentinelUtilities.isLookingTowards(getLivingEntity().getEyeLocation(), entity.getLocation(), 90, 110)) {
-                return false;
-            }
+        if (sentinel.realistic && !SentinelUtilities.isLookingTowards(getLivingEntity().getEyeLocation(), entity.getLocation(), 90, 110)) {
+            return false;
         }
         return true;
     }
