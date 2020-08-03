@@ -67,7 +67,7 @@ random:
     # Whether to workaround potential issues with entity-follow pathfinding.
     workaround entity chase pathfinder: false
     # Whether to permit death messages to show for Sentinel NPC deaths.
-    death messages: true
+    death messages: false
     # How fast to try to shoot things (EG arrows).
     shoot speed minimum: 20
     # Whether to force damage through (particularly for ranged attacks).

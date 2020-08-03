@@ -19,7 +19,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
 
-**Join us on Discord!**: https://discord.gg/Q6pZGSR in the `#sentinel-lobby` channel.
+**Join us on Discord!**: https://discord.gg/Q6pZGSR in the `#sentinel` channel.
 
 ### Basic Usage
 
@@ -320,7 +320,7 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
 
 ### Need help using Sentinel? Try one of these places:
 
-- **Discord** (Modern): https://discord.gg/Q6pZGSR in the `#sentinel-lobby` channel.
+- **Discord** (Modern): https://discord.gg/Q6pZGSR in the `#sentinel` channel.
 - **Spigot Info Page** (Modern): https://www.spigotmc.org/resources/sentinel.22017/
 - The GitHub issues page
 
