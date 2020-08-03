@@ -46,7 +46,9 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             }
             getNPC().getNavigator().setTarget(entity, false);
         }
-        getNPC().getNavigator().getLocalParameters().stuckAction(null);
+        if (!sentinel.disableTeleporting) {
+            getNPC().getNavigator().getLocalParameters().stuckAction(null);
+        }
         sentinel.autoSpeedModifier();
     }
 

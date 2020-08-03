@@ -507,6 +507,13 @@ public class SentinelTrait extends Trait {
     public HashMap<String, String> weaponRedirects = new HashMap<>();
 
     /**
+     * If set 'true', the NPC will never teleport through Sentinel logic.
+     * When enabling this, you should set the Citizens "stuckAction" NavigatorParameter to "null" as well.
+     */
+    @Persist("disable_teleporting")
+    public boolean disableTeleporting = false;
+
+    /**
      * The target entity this NPC is chasing (if any).
      */
     public LivingEntity chasing = null;
@@ -1352,7 +1359,7 @@ public class SentinelTrait extends Trait {
             Location myLoc = getLivingEntity().getLocation();
             Location theirLoc = guarded.getLocation();
             double dist = theirLoc.getWorld().equals(myLoc.getWorld()) ? myLoc.distanceSquared(theirLoc) : MAX_DIST;
-            if (dist > 60 * 60) {
+            if (dist > 60 * 60 && !disableTeleporting) {
                 npc.teleport(guarded.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             }
             if (dist > guardDistanceMinimum * guardDistanceMinimum) {
@@ -1360,7 +1367,9 @@ public class SentinelTrait extends Trait {
                 if (ticksCountGuard >= 30) {
                     ticksCountGuard = 0;
                     npc.getNavigator().getDefaultParameters().range(100);
-                    npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
+                    if (!disableTeleporting) {
+                        npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
+                    }
                     Location picked = SentinelUtilities.pickNear(guarded.getLocation(), guardSelectionRange);
                     if (SentinelPlugin.debugMe) {
                         debug("Guard movement chosen to go to " + picked.toVector().toBlockVector().toString());
@@ -1389,7 +1398,9 @@ public class SentinelTrait extends Trait {
                         debug("screw you guys, I'm going home!");
                     }
                 }
-                npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
+                if (!disableTeleporting) {
+                    npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
+                }
                 npc.getNavigator().setTarget(near);
                 autoSpeedModifier();
                 needsSafeReturn = false;
@@ -1560,7 +1571,9 @@ public class SentinelTrait extends Trait {
      */
     public void onPlayerTeleports(final PlayerTeleportEvent event) {
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
-            npc.teleport(event.getTo(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            if (!disableTeleporting) {
+                npc.teleport(event.getTo(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            }
         }
         else { // World loading up can cause glitches.
             event.getFrom().getChunk().load();
