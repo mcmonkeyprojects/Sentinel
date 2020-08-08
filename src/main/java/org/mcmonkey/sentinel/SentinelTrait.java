@@ -514,6 +514,13 @@ public class SentinelTrait extends Trait {
     public boolean disableTeleporting = false;
 
     /**
+     * Ticks before a new target is properly noticed.
+     * 0 = no slowdown applied.
+     */
+    @Persist("reaction_slowdown")
+    public int reactionSlowdown = 0;
+
+    /**
      * The target entity this NPC is chasing (if any).
      */
     public LivingEntity chasing = null;
@@ -930,6 +937,7 @@ public class SentinelTrait extends Trait {
         greetRange = config.getDouble("sentinel defaults.greet range", 10);
         greetRate = config.getInt("sentinel defaults.greet rate", 100);
         retainTarget = config.getBoolean("random.retain target", false);
+        reactionSlowdown = config.getInt("sentinel defaults.reaction slowdown", 0);
         guardDistanceMinimum = SentinelPlugin.instance.guardDistanceMinimum;
         guardSelectionRange = SentinelPlugin.instance.guardDistanceSelectionRange;
         if (npc.isSpawned()) {

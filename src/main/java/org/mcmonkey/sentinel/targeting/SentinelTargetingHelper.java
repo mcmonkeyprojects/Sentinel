@@ -97,11 +97,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (!(SentinelUtilities.getEntityForID(id) instanceof LivingEntity)) {
             return;
         }
-        SentinelCurrentTarget target = new SentinelCurrentTarget();
-        target.targetID = id;
-        target.ticksLeft = sentinel.enemyTargetTime;
-        currentTargets.remove(target);
-        currentTargets.add(target);
+        addTargetNoBounce(id);
         if (sentinel.squad != null) {
             for (SentinelTrait squadMate : SentinelPlugin.instance.cleanCurrentList()) {
                 if (squadMate.squad != null && squadMate.squad.equals(sentinel.squad)) {
@@ -153,8 +149,16 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         SentinelCurrentTarget target = new SentinelCurrentTarget();
         target.targetID = id;
         target.ticksLeft = sentinel.enemyTargetTime;
-        currentTargets.remove(target);
-        currentTargets.add(target);
+        if (sentinel.reactionSlowdown == 0) {
+            currentTargets.remove(target);
+            currentTargets.add(target);
+        }
+        else {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () -> {
+                currentTargets.remove(target);
+                currentTargets.add(target);
+            }, sentinel.reactionSlowdown);
+        }
     }
 
     /**
@@ -418,6 +422,10 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             if (isExistingTarget || (dist < rangesquared && shouldTarget(ent))) {
                 boolean hasLos = canSee(ent);
                 if (!hasLos && !isExistingTarget) {
+                    continue;
+                }
+                if (!isExistingTarget && sentinel.reactionSlowdown != 0) {
+                    addTarget(ent.getUniqueId());
                     continue;
                 }
                 if (!wasLos || hasLos) {

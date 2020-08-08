@@ -50,6 +50,8 @@ sentinel defaults:
     greet range: 10
     # How fast the NPC will greet or warn players, in ticks.
     greet rate: 100
+    # How long (in ticks) it takes an NPC to react to sighting a new target. 0 = no delay.
+    reaction slowdown: 0
 
 random:
     # How long (in ticks) NPCs should run away for (when hit or told to avoid threats).
