@@ -1317,8 +1317,7 @@ public class SentinelTrait extends Trait {
             }
             if (crsq <= 0 || near == null || near.distanceSquared(target.getLocation()) <= crsq) {
                 if (SentinelPlugin.debugMe) {
-                    debug("Attack target within range of safe zone: "
-                            + (near == null ? "Any" : near.distanceSquared(target.getLocation())));
+                    debug("Attack target within range of safe zone: " + (near == null ? "Any" : near.distanceSquared(target.getLocation())));
                 }
                 if (chasing == null) {
                     specialMarkVision();

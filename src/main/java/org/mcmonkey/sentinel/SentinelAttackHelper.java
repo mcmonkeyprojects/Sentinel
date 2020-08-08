@@ -174,6 +174,9 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             return false;
         }
         if (!getLivingEntity().hasLineOfSight(entity)) {
+            if (sentinel.ignoreLOS) {
+                chase(entity);
+            }
             return false;
         }
         // TODO: Simplify this code!
