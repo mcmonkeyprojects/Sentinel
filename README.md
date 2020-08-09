@@ -275,7 +275,7 @@ These are all valid targets and ignores:
     - (To make a target glow ++ damage it, equip a bow + arm it with spectral arrows!)
 - Snowballs
 - Eggs
-- Ender Pearls (Causes the target to get flung into the air!)
+- Ender Pearls (Teleports to target, can cause the target to get flung into the air if `magic pearls` is true)
 - Skulls (Dangerous wither skull explosions!)
 - CrackShot guns!
 

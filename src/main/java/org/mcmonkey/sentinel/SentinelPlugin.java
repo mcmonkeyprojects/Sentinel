@@ -108,6 +108,11 @@ public class SentinelPlugin extends JavaPlugin {
     public boolean canUseSkull;
 
     /**
+     * Configuration option: whether pearls should apply velocity to target, rather than teleport the thrower.
+     */
+    public boolean enableMagicPearls;
+
+    /**
      * Configuration option: whether to block some events that may cause other plugins to have issues.
      */
     public boolean blockEvents;
@@ -237,6 +242,7 @@ public class SentinelPlugin extends JavaPlugin {
         reloadConfig();
         cleverTicks = getConfig().getInt("random.clever ticks", 10);
         canUseSkull = getConfig().getBoolean("random.skull allowed", true);
+        enableMagicPearls = getConfig().getBoolean("random.magic pearls", true);
         blockEvents = getConfig().getBoolean("random.workaround bukkit events", false);
         alternateDamage = getConfig().getBoolean("random.enforce damage", false);
         workaroundDamage = getConfig().getBoolean("random.workaround damage", false);

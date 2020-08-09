@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
@@ -194,9 +195,13 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
     public void firePearl(LivingEntity target) {
         sentinel.swingWeapon();
         sentinel.faceLocation(target.getEyeLocation());
-        // TODO: Maybe require entity is-on-ground?
         sentinel.stats_pearlsUsed++;
-        target.setVelocity(target.getVelocity().add(new Vector(0, sentinel.getDamage(true), 0)));
+        if(SentinelPlugin.instance.enableMagicPearls) {
+            // TODO: Maybe require entity is-on-ground?
+            target.setVelocity(target.getVelocity().add(new Vector(0, sentinel.getDamage(true), 0)));
+        } else {
+            getLivingEntity().launchProjectile(EnderPearl.class);
+        }
     }
 
     /**
