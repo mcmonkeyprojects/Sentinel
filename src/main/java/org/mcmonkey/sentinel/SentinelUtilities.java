@@ -181,7 +181,7 @@ public class SentinelUtilities {
      */
     public static String getItemTarget(ItemStack item, List<String> targets) {
         if (item == null || item.getType() == Material.AIR) {
-            return null;
+            return targets.contains("air") ? "air" : null;
         }
         for (String str : targets) {
             if (str.startsWith("name:")) {
