@@ -1,5 +1,6 @@
 package org.mcmonkey.sentinel;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -136,6 +137,17 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         }
         if (sentinel.itemHelper.getHeldItem().containsEnchantment(Enchantment.ARROW_FIRE)) {
             arrow.setFireTicks(10000);
+        }
+        if (SentinelPlugin.instance.arrowCleanupTime > 0) {
+            final Entity projectile = arrow;
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, new Runnable() {
+                @Override
+                public void run() {
+                    if (projectile.isValid()) {
+                        projectile.remove();
+                    }
+                }
+            }, SentinelPlugin.instance.arrowCleanupTime + 10 * 20);
         }
         sentinel.useItem();
     }
