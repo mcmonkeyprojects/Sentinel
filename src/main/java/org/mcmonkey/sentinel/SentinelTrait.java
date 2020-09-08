@@ -895,8 +895,16 @@ public class SentinelTrait extends Trait {
      */
     public void whenAnEnemyDies(UUID dead) {
         tempTarget.targetID = dead;
-        targetingHelper.currentTargets.remove(tempTarget);
+        targetingHelper.removeTargetNoBounce(tempTarget);
         targetingHelper.currentAvoids.remove(tempTarget);
+        if (chasing != null && chasing.getUniqueId().equals(dead)) {
+            chasing = null;
+        }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () -> {
+            tempTarget.targetID = dead;
+            targetingHelper.removeTargetNoBounce(tempTarget);
+            targetingHelper.currentAvoids.remove(tempTarget);
+        }, 4);
     }
 
     /**

@@ -578,24 +578,24 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         for (SentinelCurrentTarget curTarg : new HashSet<>(currentTargets)) {
             Entity e = SentinelUtilities.getEntityForID(curTarg.targetID);
             if (isUntargetable(e)) {
-                currentTargets.remove(curTarg);
+                removeTargetNoBounce(curTarg);
                 continue;
             }
             double d = e.getWorld().equals(getLivingEntity().getWorld()) ?
                     e.getLocation().distanceSquared(getLivingEntity().getLocation())
                     : 10000.0 * 10000.0;
             if (d > sentinel.range * sentinel.range * 4 && d > sentinel.chaseRange * sentinel.chaseRange * 4) {
-                currentTargets.remove(curTarg);
+                removeTargetNoBounce(curTarg);
                 continue;
             }
             if (e instanceof LivingEntity && isIgnored((LivingEntity) e)) {
-                currentTargets.remove(curTarg);
+                removeTargetNoBounce(curTarg);
                 continue;
             }
             if (curTarg.ticksLeft > 0) {
                 curTarg.ticksLeft -= SentinelPlugin.instance.tickRate;
                 if (curTarg.ticksLeft <= 0) {
-                    currentTargets.remove(curTarg);
+                    removeTargetNoBounce(curTarg);
                 }
             }
         }
