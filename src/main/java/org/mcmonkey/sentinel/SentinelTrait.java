@@ -1687,8 +1687,14 @@ public class SentinelTrait extends Trait {
             debug("Died! Death event received.");
         }
         event.getDrops().clear();
-        if (event instanceof PlayerDeathEvent && !SentinelPlugin.instance.deathMessages) {
-            ((PlayerDeathEvent) event).setDeathMessage("");
+        if (event instanceof PlayerDeathEvent) {
+            if (!SentinelPlugin.instance.deathMessages) {
+                ((PlayerDeathEvent) event).setDeathMessage("");
+            }
+            else if (npc.requiresNameHologram() && ((PlayerDeathEvent) event).getDeathMessage() != null) {
+                String message = ((PlayerDeathEvent) event).getDeathMessage().replace(event.getEntity().getName(), npc.getFullName());
+                ((PlayerDeathEvent) event).setDeathMessage(message);
+            }
         }
         if (!SentinelPlugin.instance.workaroundDrops) {
             event.getDrops().addAll(getDrops());
