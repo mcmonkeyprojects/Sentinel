@@ -256,6 +256,25 @@ public class SentinelEventHandler implements Listener {
     }
 
     /**
+     * Called when a player dies, to process handling of the message if a Sentinel caused it.
+     */
+    @EventHandler
+    public void whenAPlayerDies(PlayerDeathEvent event) {
+        if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+            Entity damager = ((EntityDamageByEntityEvent) event.getEntity().getLastDamageCause()).getDamager();
+            if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof Entity) {
+                damager = (Entity) ((Projectile) damager).getShooter();
+            }
+            if (damager instanceof Player && CitizensAPI.getNPCRegistry().isNPC(damager)) {
+                SentinelTrait sentinel = SentinelUtilities.tryGetSentinel(damager);
+                if (sentinel != null && sentinel.getNPC().requiresNameHologram() && event.getDeathMessage() != null) {
+                    event.setDeathMessage(event.getDeathMessage().replace(sentinel.getNPC().getEntity().getName(), sentinel.getNPC().getFullName()));
+                }
+            }
+        }
+    }
+
+    /**
      * Called when any entity dies, to process drops handling and targeting updates.
      */
     @EventHandler
