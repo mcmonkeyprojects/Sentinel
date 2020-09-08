@@ -108,7 +108,7 @@ public class SentinelTarget {
     /**
      * Valid target types for 1.16 or higher.
      */
-    public static SentinelTarget HOGLINS, PIGLINS, STRIDERS, ZOGLINS, ZOMBIFIED_PIGLINS;
+    public static SentinelTarget HOGLINS, PIGLINS, STRIDERS, ZOGLINS, ZOMBIFIED_PIGLINS, PIGLIN_BRUTE;
 
     /**
      * Multiple-entity-type targets.

@@ -158,6 +158,7 @@ public class SentinelVersionCompat {
             SentinelTarget.PIGLINS = new SentinelTarget(new EntityType[]{EntityType.PIGLIN}, "PIGLIN");
             SentinelTarget.STRIDERS = new SentinelTarget(new EntityType[]{EntityType.STRIDER}, "STRIDER");
             SentinelTarget.ZOGLINS = new SentinelTarget(new EntityType[]{EntityType.ZOGLIN}, "ZOGLIN");
+            SentinelTarget.PIGLIN_BRUTE = new SentinelTarget(new EntityType[]{EntityType.PIGLIN_BRUTE}, "PIGLIN_BRUTE");
             SentinelTarget.ZOMBIFIED_PIGLINS = new SentinelTarget(new EntityType[]{EntityType.ZOMBIFIED_PIGLIN}, "ZOMBIFIED_PIGLIN", "ZOMBIFIEDPIGLIN", "ZOMBIE_PIGLIN", "ZOMBIEPIGLIN", "PIG_ZOMBIE", "PIGZOMBIE", "ZOMBIEPIGMAN", "ZOMBIEPIGMEN", "ZOMBIE_PIGMAN", "ZOMBIE_PIGMEN", "ZOMBIE_PIGMAN");
         }
         if (v1_16) { // && !v1_17
@@ -459,7 +460,7 @@ public class SentinelVersionCompat {
                 // 1.15
                 EntityType.BEE,
                 // 1.16
-                EntityType.HOGLIN, EntityType.PIGLIN, EntityType.ZOGLIN, EntityType.ZOMBIFIED_PIGLIN
+                EntityType.HOGLIN, EntityType.PIGLIN, EntityType.ZOGLIN, EntityType.ZOMBIFIED_PIGLIN, EntityType.PIGLIN_BRUTE
         };
     }
 
