@@ -22,6 +22,7 @@ import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 import org.mcmonkey.sentinel.utilities.VelocityTracker;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -230,6 +231,20 @@ public class SentinelPlugin extends JavaPlugin {
         }
     }
 
+    private double findMaxHealth() {
+        try {
+            Class<?> clazz = Class.forName("org.spigotmc.SpigotConfig");
+            Field maxHealthField = clazz.getField("maxHealth");
+            maxHealthField.setAccessible(true);
+            return maxHealthField.getDouble(null);
+        }
+        catch (Throwable ex) {
+            getLogger().warning("Cannot find SpigotConfig to read the server's max health value.");
+            ex.printStackTrace();
+        }
+        return getConfig().getDouble("random.max health", 2000);
+    }
+
     /**
      * Reloads the config and updates settings fields accordingly.
      */
@@ -255,7 +270,7 @@ public class SentinelPlugin extends JavaPlugin {
         workaroundEntityChasePathfinder = getConfig().getBoolean("random.workaround entity chase pathfinder", false);
         protectFromIgnores = getConfig().getBoolean("random.protected", false);
         runAwayTime = getConfig().getInt("random.run away time");
-        maxHealth = getConfig().getDouble("random.max health", 2000);
+        maxHealth = findMaxHealth();
         noGuardDamage = getConfig().getBoolean("random.no guard damage", true);
         arrowCleanupTime = getConfig().getInt("random.arrow cleanup time", 200);
         blockSunburn = getConfig().getBoolean("random.block sunburn", true);
