@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
-**Version 2.2.0**: Compatible with Spigot 1.8.8 through 1.16.2 (Primarily targeted at 1.16.2) - see info section below if on other supported versions)
+**Version 2.2.0**: Compatible with Spigot 1.8.8 through 1.16.3 (Primarily targeted at 1.16.3) - see info section below if on other supported versions)
 
 ### Downloads
 
@@ -105,7 +105,8 @@ Here are a few examples of how you might setup and configure an NPC
 ### Useful Things To Know
 
 - Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
-- Sentinels will guard a point or path if either is set using the command "`/npc path`". This means they will still within their chaserange of that point or path, and return to it when out of combat.
+- Sentinels will guard a single point or entire path if either is set using the command `/npc path`. This means they will still within their chaserange of that point or path, and return to it when out of combat.
+- To give any non-equippable mob-type a weapon, use `/npc inventory` and add the item to the first (top-left) slot.
 - To make a ghast or blaze fire fireballs, give them a blazerod!
 - Damage value for a Sentinel NPC can be set to "-1" to auto-calculate from held item (otherwise, it will used as a raw HP damage amount).
 - Armor value can be set to "-1" to auto-calculate from equipped armor (otherwise, set a value between 0.0 and 1.0 to indicate how much of any damage will be blocked).
