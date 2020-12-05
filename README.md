@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
-**Version 2.2.0**: Compatible with Spigot 1.8.8 through 1.16.3 (Primarily targeted at 1.16.3) - see info section below if on other supported versions)
+**Version 2.2.0**: Compatible with Spigot 1.8.8 through 1.16.4 (Primarily targeted at 1.16.4) - see info section below if on other supported versions)
 
 ### Downloads
 
@@ -105,7 +105,7 @@ Here are a few examples of how you might setup and configure an NPC
 ### Useful Things To Know
 
 - Respawning can be set to "-1" to cause the NPC to delete itself on death, or "0" to prevent respawn.
-- Sentinels will guard a single point or entire path if either is set using the command `/npc path`. This means they will still within their chaserange of that point or path, and return to it when out of combat.
+- Sentinel NPCs will guard a single point or entire path if either is set using the command `/npc path`. This means they will still within their chaserange of that point or path, and return to it when out of combat.
 - To give any non-equippable mob-type a weapon, use `/npc inventory` and add the item to the first (top-left) slot.
 - To make a ghast or blaze fire fireballs, give them a blazerod!
 - Damage value for a Sentinel NPC can be set to "-1" to auto-calculate from held item (otherwise, it will used as a raw HP damage amount).
@@ -236,7 +236,7 @@ These are all valid targets and ignores:
     - For example, `offhand:name:Stick\d+` would target players holding an item in their offhand named like "Stick123".
 - Also, event:`pvp`/`pvnpc`/`pve`/`pvsentinel`/`eve` (pvp is Player-vs-Player, eve is Entity-vs-Entity, etc.)
 - Also, event:`pv:ENTITY`/`ev:ENTITY` (`pv:ENTITY` is used like `event:pv:chicken` for players attacking chickens)
-- Also, `guarded_fight` to attack whatever the guarded player attacks.
+- Also, `event:guarded_fight` to attack whatever the guarded player attacks.
 - Also, `event:message:SOMETEXT` will match chat messages that contain 'sometext'.
 - Also, `status:STATUS_TYPE`. Current status types:
     - `status:angry` for mobs (wolves, endermen, spiders, etc.) that are currently angry. This is handy with a combo like `allinone:enderman|status:angry`
