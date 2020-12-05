@@ -1005,6 +1005,9 @@ public class SentinelTrait extends Trait {
         if (type == EntityType.BLAZE) {
             return 3;
         }
+        if (type == EntityType.PLAYER && SentinelVersionCompat.v1_16) {
+            return 0.1;
+        }
         return 2;
     }
 
