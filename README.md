@@ -284,6 +284,7 @@ These are all valid targets and ignores:
 
 If you're building a separate plugin you would like to integrate into Sentinel, you should:
 
+- **Important note:** Sentinel is designed to be used from in-game, and the Java API provides ways to replicate in-game commands from code or expand upon them. If you have never tried using Sentinel from in-game, the API will not be helpful to you. Please do not guess at how Sentinel works, just try using it in-game so you can gain an actual understanding of what the different options are and how they work.
 - Use Maven to link the project properly...
 - Use the Citizens repository:
 ```xml
