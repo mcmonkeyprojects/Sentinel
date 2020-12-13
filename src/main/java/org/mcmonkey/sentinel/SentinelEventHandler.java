@@ -212,6 +212,10 @@ public class SentinelEventHandler implements Listener {
         SentinelTrait victim = SentinelUtilities.tryGetSentinel(event.getEntity());
         SentinelTrait attacker = SentinelUtilities.tryGetSentinel(damager);
         if (attacker != null) {
+            if (!(event.getEntity() instanceof LivingEntity)) {
+                event.setCancelled(true);
+                return;
+            }
             if (victim != null && victim.getNPC().getId() == attacker.getNPC().getId()) {
                 event.setCancelled(true);
                 return;
