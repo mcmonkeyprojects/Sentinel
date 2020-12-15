@@ -1223,7 +1223,10 @@ public class SentinelTrait extends Trait {
      * Pauses waypoint navigation if currrently navigating.
      */
     public void pauseWaypoints() {
-        Waypoints wp = npc.getTrait(Waypoints.class);
+        Waypoints wp = npc.getTraitNullable(Waypoints.class);
+        if (wp == null) {
+            return;
+        }
         if (!wp.getCurrentProvider().isPaused()) {
             wp.getCurrentProvider().setPaused(true);
         }
@@ -1305,7 +1308,7 @@ public class SentinelTrait extends Trait {
             pauseWaypoints();
         }
         else if (needsToUnpause && npc.hasTrait(Waypoints.class)) {
-            Waypoints wp = npc.getTrait(Waypoints.class);
+            Waypoints wp = npc.getOrAddTrait(Waypoints.class);
             wp.getCurrentProvider().setPaused(false);
             needsToUnpause = false;
         }
@@ -1497,7 +1500,7 @@ public class SentinelTrait extends Trait {
         Location baseloc = getLivingEntity().getLocation();
         Location nearest = null;
         double dist = MAX_DIST;
-        Waypoints wp = npc.getTrait(Waypoints.class);
+        Waypoints wp = npc.getOrAddTrait(Waypoints.class);
         if (wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider) {
             for (Waypoint wayp : ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()) {
                 Location l = wayp.getLocation();
@@ -1719,7 +1722,7 @@ public class SentinelTrait extends Trait {
      */
     public void generalDeathHandler(LivingEntity entity) {
         if (spawnPoint != null) {
-            npc.getTrait(CurrentLocation.class).setLocation(spawnPoint.clone());
+            npc.getOrAddTrait(CurrentLocation.class).setLocation(spawnPoint.clone());
         }
         if (SentinelPlugin.instance.workaroundDrops) {
             for (ItemStack item : getDrops()) {
@@ -1804,7 +1807,7 @@ public class SentinelTrait extends Trait {
             respawnMe.runTaskTimer(SentinelPlugin.instance, 10, 10);
         }
         else { // respawnTime == 0
-            npc.getTrait(Spawned.class).setSpawned(false);
+            npc.getOrAddTrait(Spawned.class).setSpawned(false);
         }
     }
 

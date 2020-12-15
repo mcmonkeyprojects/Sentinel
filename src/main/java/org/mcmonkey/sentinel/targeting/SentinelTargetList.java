@@ -65,7 +65,7 @@ public class SentinelTargetList {
      */
     public boolean isTarget(LivingEntity entity, SentinelTrait sentinel) {
         checkRecalculateTargetsCache();
-        if (targetsProcessed.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(sentinel.getNPC().getTrait(Owner.class).getOwnerId())) {
+        if (targetsProcessed.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(sentinel.getNPC().getOrAddTrait(Owner.class).getOwnerId())) {
             return true;
         }
         return isTargetNoCache(entity);

@@ -176,7 +176,7 @@ public class SentinelTarget {
             return true;
         }
         if (this == OWNER && sentinel != null
-            && entity.getUniqueId().equals(sentinel.getNPC().getTrait(Owner.class).getOwnerId())) {
+            && entity.getUniqueId().equals(sentinel.getNPC().getOrAddTrait(Owner.class).getOwnerId())) {
             return true;
         }
         return false;

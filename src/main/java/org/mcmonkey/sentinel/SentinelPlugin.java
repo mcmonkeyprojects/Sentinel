@@ -315,7 +315,7 @@ public class SentinelPlugin extends JavaPlugin {
             public void run() {
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (!npc.isSpawned() && npc.hasTrait(SentinelTrait.class)) {
-                        SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
+                        SentinelTrait sentinel = npc.getOrAddTrait(SentinelTrait.class);
                         if (sentinel.respawnTime > 0) {
                             if (sentinel.spawnPoint == null && npc.getStoredLocation() == null) {
                                 getLogger().warning("NPC " + npc.getId() + " has a null spawn point and can't be spawned. Perhaps the world was deleted?");
@@ -439,10 +439,7 @@ public class SentinelPlugin extends JavaPlugin {
         if (npc == null) {
             return null;
         }
-        if (npc.hasTrait(SentinelTrait.class)) {
-            return npc.getTrait(SentinelTrait.class);
-        }
-        return null;
+        return npc.getTraitNullable(SentinelTrait.class);
     }
 
     /**
@@ -457,11 +454,12 @@ public class SentinelPlugin extends JavaPlugin {
      * Gets the owner identity of an NPC for output (player name or "server").
      */
     public String getOwner(NPC npc) {
-        if (npc.getTrait(Owner.class).getOwnerId() == null) {
-            return npc.getTrait(Owner.class).getOwner();
+        Owner trait = npc.getOrAddTrait(Owner.class);
+        if (trait.getOwnerId() == null) {
+            return trait.getOwner();
         }
-        OfflinePlayer player = Bukkit.getOfflinePlayer(npc.getTrait(Owner.class).getOwnerId());
-        if (player == null) {
+        OfflinePlayer player = Bukkit.getOfflinePlayer(trait.getOwnerId());
+        if (player == null || !player.hasPlayedBefore() || player.getName() == null) {
             return "Server/Unknown";
         }
         return player.getName();

@@ -424,7 +424,7 @@ public class SentinelEventHandler implements Listener {
             int id = Integer.parseInt(invTitle.substring(InvPrefix.length()));
             NPC npc = CitizensAPI.getNPCRegistry().getById(id);
             if (npc != null && npc.hasTrait(SentinelTrait.class)) {
-                ArrayList<ItemStack> its = npc.getTrait(SentinelTrait.class).drops;
+                ArrayList<ItemStack> its = npc.getOrAddTrait(SentinelTrait.class).drops;
                 its.clear();
                 for (ItemStack it : event.getInventory().getContents()) {
                     if (it != null && it.getType() != Material.AIR) {

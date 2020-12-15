@@ -118,9 +118,7 @@ public class SentinelCommand {
             }
         }
         if (selected != null) {
-            if (selected.hasTrait(SentinelTrait.class)) {
-                sentinel = selected.getTrait(SentinelTrait.class);
-            }
+            sentinel = selected.getTraitNullable(SentinelTrait.class);
         }
         Object[] methodArgs;
         if (isSentinelRequired(command.getName(), modifier)) {
@@ -133,7 +131,7 @@ public class SentinelCommand {
                 }
                 return true;
             }
-            if (!selected.getTrait(Owner.class).isOwnedBy(sender) && !sender.hasPermission("citizens.admin")) {
+            if (!selected.getOrAddTrait(Owner.class).isOwnedBy(sender) && !sender.hasPermission("citizens.admin")) {
                 sender.sendMessage(prefixBad + "You do not own this NPC (and you are not an admin).");
                 return true;
             }

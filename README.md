@@ -314,7 +314,7 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
 - You might also benefit from events like the `SentinelAttackEvent`: [JavaDoc Here](https://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/events/package-summary.html)
 - Samples of a few common basic operations:
     - Check if NPC is a Sentinel: `if (npc.hasTrait(SentinelTrait.class)) { ...`
-    - Get the Sentinel trait from an NPC: `SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);`
+    - Get the Sentinel trait from an NPC: `SentinelTrait sentinel = npc.getOrAddTrait(SentinelTrait.class);`
     - Add a target to a Sentinel: `new SentinelTargetLabel("monsters").addToList(sentinel.allTargets);`
     - Set the Sentinel NPC's max health: `sentinel.setHealth(500);`
     - Set the Sentinel NPC's damage output: `sentinel.damage = 10;`

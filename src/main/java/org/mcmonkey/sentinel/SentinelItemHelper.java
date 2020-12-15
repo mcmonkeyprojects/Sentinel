@@ -19,7 +19,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
         if (!getNPC().hasTrait(Inventory.class)) {
             return sentinel.needsAmmo ? null : new ItemStack(Material.ARROW, 1);
         }
-        Inventory inv = getNPC().getTrait(Inventory.class);
+        Inventory inv = getNPC().getOrAddTrait(Inventory.class);
         ItemStack[] items = inv.getContents();
         for (ItemStack item : items) {
             if (item != null) {
@@ -67,7 +67,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
         if (!getNPC().hasTrait(Inventory.class)) {
             return;
         }
-        Inventory inv = getNPC().getTrait(Inventory.class);
+        Inventory inv = getNPC().getOrAddTrait(Inventory.class);
         ItemStack[] items = inv.getContents();
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
@@ -125,7 +125,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
         if (!getNPC().hasTrait(Inventory.class)) {
             return;
         }
-        Inventory inv = getNPC().getTrait(Inventory.class);
+        Inventory inv = getNPC().getOrAddTrait(Inventory.class);
         ItemStack[] items = inv.getContents();
         ItemStack held = items[0];
         if (held != null && held.getType() != Material.AIR) {
@@ -165,7 +165,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
         if (!getNPC().isSpawned() || !getNPC().hasTrait(Inventory.class)) {
             return;
         }
-        Inventory inv = getNPC().getTrait(Inventory.class);
+        Inventory inv = getNPC().getOrAddTrait(Inventory.class);
         ItemStack[] items = inv.getContents();
         ItemStack held = items[0] == null ? null : items[0].clone();
         if (isRanged(held)) {
@@ -196,7 +196,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
         if (!getNPC().isSpawned() || !getNPC().hasTrait(Inventory.class)) {
             return;
         }
-        Inventory inv = getNPC().getTrait(Inventory.class);
+        Inventory inv = getNPC().getOrAddTrait(Inventory.class);
         ItemStack[] items = inv.getContents();
         ItemStack held = items[0] == null ? null : items[0].clone();
         if (!isRanged(held)) {
@@ -284,7 +284,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
         }
         if (getNPC().hasTrait(Inventory.class)) {
             // Note: this allows entities that don't normally have equipment to still 'hold' weapons (eg a cow can hold a bow)
-            return autoRedirect(getNPC().getTrait(Inventory.class).getContents()[0]);
+            return autoRedirect(getNPC().getOrAddTrait(Inventory.class).getContents()[0]);
         }
         return null;
     }
