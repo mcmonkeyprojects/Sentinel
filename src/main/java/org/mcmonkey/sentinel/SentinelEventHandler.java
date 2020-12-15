@@ -16,10 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerStatisticIncrementEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.mcmonkey.sentinel.utilities.VelocityTracker;
@@ -276,6 +273,14 @@ public class SentinelEventHandler implements Listener {
                 }
             }
         }
+    }
+
+    /**
+     * Called when a player travels between worlds, mostly to clean some caches that might get confused about it.
+     */
+    @EventHandler
+    public void whenAPlayerChangesWorld(PlayerChangedWorldEvent event) {
+        VelocityTracker.playerVelocityEstimates.remove(event.getPlayer().getUniqueId());
     }
 
     /**
