@@ -50,6 +50,9 @@ public class SentinelTowny extends SentinelIntegration {
             else if (prefix.equals("nationenemies") && ent instanceof Player) {
                 if (TownyUniverse.getDataSource().hasNation(value)) {
                     Nation n = TownyUniverse.getDataSource().getNation(value);
+                    if (!TownyUniverse.getDataSource().hasResident(ent.getName())) {
+                        return false;
+                    }
                     Resident playerResident = TownyUniverse.getDataSource().getResident(ent.getName()); // TODO: Why no UUID support?!
                     if (playerResident.hasNation() && playerResident.getTown().getNation().hasEnemy(n)) {
                         return true;
@@ -63,6 +66,9 @@ public class SentinelTowny extends SentinelIntegration {
             else if (prefix.equals("nationallies") && ent instanceof Player) {
                 if (TownyUniverse.getDataSource().hasNation(value)) {
                     Nation n = TownyUniverse.getDataSource().getNation(value);
+                    if (!TownyUniverse.getDataSource().hasResident(ent.getName())) {
+                        return false;
+                    }
                     Resident playerResident = TownyUniverse.getDataSource().getResident(ent.getName()); // TODO: Why no UUID support?!
                     if (playerResident.hasNation() && playerResident.getTown().getNation().hasAlly(n)) {
                         return true;
