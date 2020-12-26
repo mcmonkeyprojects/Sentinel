@@ -147,6 +147,27 @@ public class SentinelHealthCommands {
         }
     }
 
+    @Command(aliases = {"sentinel"}, usage = "knockback ['true'/'false']",
+            desc = "Toggles whether the NPC can receive knockback.",
+            modifiers = {"knockback"}, permission = "sentinel.knockback", min = 1, max = 2)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void knockback(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        boolean mode = !sentinel.allowKnockback;
+        if (args.argsLength() > 1 && "true".equalsIgnoreCase(args.getString(1))) {
+            mode = true;
+        }
+        if (args.argsLength() > 1 && "false".equalsIgnoreCase(args.getString(1))) {
+            mode = false;
+        }
+        sentinel.allowKnockback = mode;
+        if (sentinel.allowKnockback) {
+            sender.sendMessage(SentinelCommand.prefixGood + "NPC can now receive knockback!");
+        }
+        else {
+            sender.sendMessage(SentinelCommand.prefixGood + "NPC no longer can receive knockback!");
+        }
+    }
+
     @Command(aliases = {"sentinel"}, usage = "kill",
             desc = "Kills the NPC.",
             modifiers = {"kill"}, permission = "sentinel.kill", min = 1, max = 1)

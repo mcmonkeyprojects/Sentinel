@@ -52,6 +52,8 @@ sentinel defaults:
     greet rate: 100
     # How long (in ticks) it takes an NPC to react to sighting a new target. 0 = no delay.
     reaction slowdown: 0
+    # Whether the NPC can be knocked back when hit. If set false, will try to force the NPC to remain in place after receiving damage.
+    allow knockback: true
 
 random:
     # How long (in ticks) NPCs should run away for (when hit or told to avoid threats).

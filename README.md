@@ -196,6 +196,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel enemydrops \['true'/'false'\] - Toggles whether enemy mobs of this NPC drop items.
     - /sentinel autoswitch \['true'/'false'\] - Toggles whether the NPC automatically switches items.
     - /sentinel realistic \['true'/'false'\] - Toggles whether the NPC should use "realistic" targeting logic (don't notice things hiding behind the NPC).
+    - /sentinel knockback \['true'/'false'\] - Toggles whether the NPC can receive knockback. If disabled, will try to force the NPC to remain in place after being hit.
 
 ### Permissions
 

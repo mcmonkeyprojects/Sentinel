@@ -521,6 +521,12 @@ public class SentinelTrait extends Trait {
     public int reactionSlowdown = 0;
 
     /**
+     * Whether the NPC can receive knockback.
+     */
+    @Persist("allow_knockback")
+    public boolean allowKnockback = true;
+
+    /**
      * The target entity this NPC is chasing (if any).
      */
     public LivingEntity chasing = null;
@@ -673,6 +679,8 @@ public class SentinelTrait extends Trait {
         return true;
     }
 
+    private static Vector VECTOR_ZERO = new Vector(0, 0, 0);
+
     /**
      * Called when this sentinel gets attacked, to correct the armor handling.
      */
@@ -697,6 +705,14 @@ public class SentinelTrait extends Trait {
             if (event.isApplicable(modifier)) {
                 event.setDamage(modifier, 0);
             }
+        }
+        if (!allowKnockback) {
+            getLivingEntity().setVelocity(VECTOR_ZERO);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () -> {
+                if (npc.isSpawned()) {
+                    getLivingEntity().setVelocity(VECTOR_ZERO);
+                }
+            }, 1);
         }
     }
 
@@ -946,6 +962,7 @@ public class SentinelTrait extends Trait {
         greetRate = config.getInt("sentinel defaults.greet rate", 100);
         retainTarget = config.getBoolean("random.retain target", false);
         reactionSlowdown = config.getInt("sentinel defaults.reaction slowdown", 0);
+        allowKnockback = config.getBoolean("sentinel defaults.allow knockback", true);
         guardDistanceMinimum = SentinelPlugin.instance.guardDistanceMinimum;
         guardSelectionRange = SentinelPlugin.instance.guardDistanceSelectionRange;
         if (npc.isSpawned()) {
