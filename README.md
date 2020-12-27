@@ -230,7 +230,7 @@ These are all valid targets and ignores:
 - In 1.15 or LOWER: ZOMBIE_PIGMEN
 - In 1.16 or higher: HOGLINS, PIGLINS, STRIDERS, ZOGLINS, ZOMBIFIED_PIGLINS
 - Also allowed: `player:NAME(REGEX)`, `npc:NAME(REGEX)`, `entityname:NAME(REGEX)`, `group:GROUPNAME(EXACT)`
-    - These work like `player:bob` to target player named 'bob', or `npc:.*\sGuard` to target NPCs named "Space Guard" or "Town Guard" or anything else (uses [RegEx](https://www.rexegg.com/regex-quickstart.html)]).
+    - These work like `player:bob` to target player named 'bob', or `npc:.*\sGuard` to target NPCs named "Space Guard" or "Town Guard" or anything else (uses [RegEx](https://www.rexegg.com/regex-quickstart.html)).
 - Alo allowed: `helditem:ITEM_MATCHER`, `offhand:ITEM_MATCHER`, `equipped:ITEM_MATCHER`, `in_inventory:ITEM_MATCHER`
     - These all use "ITEM_MATCHER"s, which, at their simplest, are just a regex that matches the material name. So, `helditem:diamond_sword` targets enemies that are holding a diamond sword.
     - However, you can also do `lore:LORE(REGEX)` as a matcher for a line of lore, or `name:NAME(REGEX)` as a matcher for the item display name.

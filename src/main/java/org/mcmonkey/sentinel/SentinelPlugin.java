@@ -328,8 +328,7 @@ public class SentinelPlugin extends JavaPlugin {
             }
         };
         postLoad.runTaskLater(this, 40);
-        getLogger().info("Sentinel loaded!");
-        SentinelCommand.buildCommandHandler();
+        new SentinelCommand().buildCommandHandler(getCommand("sentinel"));
         Bukkit.getPluginManager().registerEvents(new SentinelEventHandler(), this);
         // bstats.org
         try {
@@ -420,6 +419,7 @@ public class SentinelPlugin extends JavaPlugin {
             }
         }.runTaskTimer(this, 1, 1);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, VelocityTracker::runAll, 20, 20);
+        getLogger().info("Sentinel loaded!");
     }
 
     /**
@@ -440,14 +440,6 @@ public class SentinelPlugin extends JavaPlugin {
             return null;
         }
         return npc.getTraitNullable(SentinelTrait.class);
-    }
-
-    /**
-     * Handles a command given by a player or the server.
-     */
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return SentinelCommand.onCommand(this, sender, command, label, args);
     }
 
     /**

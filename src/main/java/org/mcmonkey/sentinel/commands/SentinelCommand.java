@@ -9,19 +9,18 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.mcmonkey.sentinel.SentinelPlugin;
+import org.bukkit.command.*;
 import org.mcmonkey.sentinel.SentinelTrait;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Helper class for the Sentinel command.
  */
-public class SentinelCommand {
+public class SentinelCommand implements CommandExecutor, TabCompleter {
 
     /**
      * Output string representing a message color.
@@ -41,12 +40,12 @@ public class SentinelCommand {
     /**
      * The "/sentinel" command manager.
      */
-    public static CommandManager manager;
+    public CommandManager manager;
 
     /**
      * Prepares the command handling system.
      */
-    public static void buildCommandHandler() {
+    public void buildCommandHandler(PluginCommand command) {
         manager = new CommandManager();
         manager.setInjector(new Injector());
         grabCommandMethodMap(manager);
@@ -57,6 +56,8 @@ public class SentinelCommand {
         manager.register(SentinelInfoCommands.class);
         manager.register(SentinelIntelligenceCommands.class);
         manager.register(SentinelTargetCommands.class);
+        command.setExecutor(this);
+        command.setTabCompleter(this);
     }
 
     private static Map<String, Method> sentinelCommandMethodMap;
@@ -92,7 +93,8 @@ public class SentinelCommand {
     /**
      * Handles a player or server command.
      */
-    public static boolean onCommand(SentinelPlugin instance, CommandSender sender, Command command, String label, String[] args) {
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         String modifier = args.length > 0 ? args[0] : "";
         if (!manager.hasCommand(command, modifier) && !modifier.isEmpty()) {
             String closest = manager.getClosestCommandModifier(command.getName(), modifier);
@@ -141,5 +143,13 @@ public class SentinelCommand {
             methodArgs = new Object[]{ sender };
         }
         return manager.executeSafe(command, args, sender, methodArgs);
+    }
+
+    /**
+     * Handles tab completion for a player or server command.
+     */
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        return manager.onTabComplete(commandSender, command, s, strings);
     }
 }
