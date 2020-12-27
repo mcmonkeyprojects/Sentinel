@@ -401,7 +401,7 @@ public class SentinelEventHandler implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        if (event.getTo().toVector().equals(event.getFrom().toVector())) {
+        if (event.getTo().toVector().toBlockVector().equals(event.getFrom().toVector().toBlockVector())) {
             return;
         }
         for (SentinelTrait sentinel : cleanCurrentList()) {

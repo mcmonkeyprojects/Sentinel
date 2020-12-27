@@ -454,13 +454,20 @@ public class SentinelPlugin extends JavaPlugin {
      * Gets the owner identity of an NPC for output (player name or "server").
      */
     public String getOwner(NPC npc) {
+        return getOwner(npc, "Server/Unknown");
+    }
+
+    /**
+     * Gets the owner identity of an NPC for output (player name or default String value).
+     */
+    public String getOwner(NPC npc, String defName) {
         Owner trait = npc.getOrAddTrait(Owner.class);
         if (trait.getOwnerId() == null) {
             return trait.getOwner();
         }
         OfflinePlayer player = Bukkit.getOfflinePlayer(trait.getOwnerId());
         if (player == null || !player.hasPlayedBefore() || player.getName() == null) {
-            return "Server/Unknown";
+            return defName;
         }
         return player.getName();
     }

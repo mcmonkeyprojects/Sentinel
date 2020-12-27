@@ -13,6 +13,10 @@ import org.bukkit.entity.LivingEntity;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
 public class SentinelInfoCommands {
 
     @Command(aliases = {"sentinel"}, usage = "info",
@@ -35,43 +39,41 @@ public class SentinelInfoCommands {
             }
         }
         Paginator paginator = new Paginator().header(SentinelCommand.prefixGood + sentinel.getNPC().getFullName());
-        paginator.addLine(SentinelCommand.prefixGood + "Owned by: " + ChatColor.AQUA + SentinelPlugin.instance.getOwner(sentinel.getNPC()));
-        paginator.addLine(SentinelCommand.prefixGood + "Guarding: " + ChatColor.AQUA + (guardName == null ? "Nobody" : guardName));
-        paginator.addLine(SentinelCommand.prefixGood + "Damage: " + ChatColor.AQUA + sentinel.damage
-                + SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getDamage(true));
-        paginator.addLine(SentinelCommand.prefixGood + "Armor: " + ChatColor.AQUA + sentinel.armor
-                + (sentinel.getNPC().isSpawned() ? SentinelCommand.colorBasic + " Calculated: "
-                + ChatColor.AQUA + sentinel.getArmor(sentinel.getLivingEntity()) : ""));
-        paginator.addLine(SentinelCommand.prefixGood + "Health: " + ChatColor.AQUA +
-                (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/" : "") + sentinel.health);
-        paginator.addLine(SentinelCommand.prefixGood + "Range: " + ChatColor.AQUA + sentinel.range);
-        paginator.addLine(SentinelCommand.prefixGood + "Avoidance Range: " + ChatColor.AQUA + sentinel.avoidRange);
-        paginator.addLine(SentinelCommand.prefixGood + "Attack Rate: " + ChatColor.AQUA + (sentinel.attackRate / 20.0));
-        paginator.addLine(SentinelCommand.prefixGood + "Ranged Attack Rate: " + ChatColor.AQUA + (sentinel.attackRateRanged / 20.0));
-        paginator.addLine(SentinelCommand.prefixGood + "Heal Rate: " + ChatColor.AQUA + (sentinel.healRate / 20.0));
-        paginator.addLine(SentinelCommand.prefixGood + "Respawn Time: " + ChatColor.AQUA + (sentinel.respawnTime / 20.0));
-        paginator.addLine(SentinelCommand.prefixGood + "Accuracy: " + ChatColor.AQUA + sentinel.accuracy);
-        paginator.addLine(SentinelCommand.prefixGood + "Reach: " + ChatColor.AQUA + sentinel.reach);
-        paginator.addLine(SentinelCommand.prefixGood + "Projectile Range: " + ChatColor.AQUA + sentinel.projectileRange);
-        paginator.addLine(SentinelCommand.prefixGood + "Greeting: " + ChatColor.AQUA + (sentinel.greetingText == null ? "None" : sentinel.greetingText));
-        paginator.addLine(SentinelCommand.prefixGood + "Warning: " + ChatColor.AQUA + (sentinel.warningText == null ? "None" : sentinel.warningText));
-        paginator.addLine(SentinelCommand.prefixGood + "Greeting Range: " + ChatColor.AQUA + sentinel.greetRange);
-        paginator.addLine(SentinelCommand.prefixGood + "Greeting Rate: " + ChatColor.AQUA + sentinel.greetRate);
-        paginator.addLine(SentinelCommand.prefixGood + "Guard Distance Minimum: " + ChatColor.AQUA + sentinel.guardDistanceMinimum);
-        paginator.addLine(SentinelCommand.prefixGood + "Guard Selection Range: " + ChatColor.AQUA + sentinel.guardSelectionRange);
-        paginator.addLine(SentinelCommand.prefixGood + "Invincibility Enabled: " + ChatColor.AQUA + sentinel.invincible);
-        paginator.addLine(SentinelCommand.prefixGood + "Fightback Enabled: " + ChatColor.AQUA + sentinel.fightback);
-        paginator.addLine(SentinelCommand.prefixGood + "Ranged Chasing Enabled: " + ChatColor.AQUA + sentinel.rangedChase);
-        paginator.addLine(SentinelCommand.prefixGood + "Close-Quarters Chasing Enabled: " + ChatColor.AQUA + sentinel.closeChase);
-        paginator.addLine(SentinelCommand.prefixGood + "Maximum chase range: " + ChatColor.AQUA + sentinel.chaseRange);
-        paginator.addLine(SentinelCommand.prefixGood + "Safe-Shot Enabled: " + ChatColor.AQUA + sentinel.safeShot);
-        paginator.addLine(SentinelCommand.prefixGood + "Enemy-Drops Enabled: " + ChatColor.AQUA + sentinel.enemyDrops);
-        paginator.addLine(SentinelCommand.prefixGood + "Autoswitch Enabled: " + ChatColor.AQUA + sentinel.autoswitch);
-        paginator.addLine(SentinelCommand.prefixGood + "Realistic Targeting Enabled: " + ChatColor.AQUA + sentinel.realistic);
-        paginator.addLine(SentinelCommand.prefixGood + "Run-Away Enabled: " + ChatColor.AQUA + sentinel.runaway);
-        paginator.addLine(SentinelCommand.prefixGood + "Squad: " + ChatColor.AQUA + (sentinel.squad == null ? "None" : sentinel.squad));
-        paginator.addLine(SentinelCommand.prefixGood + "Per-weapon damage values: " + ChatColor.AQUA + sentinel.weaponDamage.toString());
-        paginator.addLine(SentinelCommand.prefixGood + "Weapon redirections: " + ChatColor.AQUA + sentinel.weaponRedirects.toString());
+        addLineIfNeeded(paginator, "Owned by", SentinelPlugin.instance.getOwner(sentinel.getNPC(), ""));
+        addLineIfNeeded(paginator, "Guarding", (guardName == null ? "" : guardName));
+        addLineIfNeeded(paginator, "Damage", sentinel.damage + SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getDamage(true));
+        addLineIfNeeded(paginator, "Armor", sentinel.armor + (sentinel.getNPC().isSpawned() ? SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getArmor(sentinel.getLivingEntity()) : ""));
+        addLineIfNeeded(paginator, "Health", (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/" : "") + sentinel.health);
+        addLineIfNeeded(paginator, "Range", sentinel.range);
+        addLineIfNeeded(paginator, "Avoidance Range", sentinel.avoidRange);
+        addLineIfNeeded(paginator, "Attack Rate", (sentinel.attackRate / 20.0));
+        addLineIfNeeded(paginator, "Ranged Attack Rate", (sentinel.attackRateRanged / 20.0));
+        addLineIfNeeded(paginator, "Heal Rate", (sentinel.healRate / 20.0));
+        addLineIfNeeded(paginator, "Respawn Time", (sentinel.respawnTime / 20.0));
+        addLineIfNeeded(paginator, "Accuracy", sentinel.accuracy);
+        addLineIfNeeded(paginator, "Reach", sentinel.reach);
+        addLineIfNeeded(paginator, "Projectile Range", sentinel.projectileRange);
+        addLineIfNeeded(paginator, "Greeting", (sentinel.greetingText == null ? "" : sentinel.greetingText));
+        addLineIfNeeded(paginator, "Warning", (sentinel.warningText == null ? "" : sentinel.warningText));
+        addLineIfNeeded(paginator, "Greeting Range", sentinel.greetRange);
+        addLineIfNeeded(paginator, "Greeting Rate", sentinel.greetRate);
+        addLineIfNeeded(paginator, "Guard Distance Minimum", sentinel.guardDistanceMinimum);
+        addLineIfNeeded(paginator, "Guard Selection Range", sentinel.guardSelectionRange);
+        addLineIfNeeded(paginator, "Invincibility Enabled", sentinel.invincible);
+        addLineIfNeeded(paginator, "Fightback Enabled", sentinel.fightback);
+        addLineIfNeeded(paginator, "Ranged Chasing Enabled", sentinel.rangedChase);
+        addLineIfNeeded(paginator, "Close-Quarters Chasing Enabled", sentinel.closeChase);
+        addLineIfNeeded(paginator, "Maximum chase range", sentinel.chaseRange);
+        addLineIfNeeded(paginator, "Safe-Shot Enabled", sentinel.safeShot);
+        addLineIfNeeded(paginator, "Enemy-Drops Enabled", sentinel.enemyDrops);
+        addLineIfNeeded(paginator, "Autoswitch Enabled", sentinel.autoswitch);
+        addLineIfNeeded(paginator, "Realistic Targeting Enabled", sentinel.realistic);
+        addLineIfNeeded(paginator, "Knockback allowed", sentinel.allowKnockback);
+        addLineIfNeeded(paginator, "Run-Away Enabled", sentinel.runaway);
+        addLineIfNeeded(paginator, "Squad", (sentinel.squad == null ? "" : sentinel.squad));
+        addLineIfNeeded(paginator, "Spawnpoint", (sentinel.spawnPoint == null ? "" : sentinel.spawnPoint.toVector().toBlockVector().toString()));
+        addLineIfNeeded(paginator, "Per-weapon damage values", sentinel.weaponDamage.toString());
+        addLineIfNeeded(paginator, "Weapon redirections", sentinel.weaponRedirects.toString());
         int page = 1;
         if (args.argsLength() == 2) {
             try {
@@ -83,6 +85,15 @@ public class SentinelInfoCommands {
         }
         paginator.sendPage(sender, page);
     }
+
+    private static void addLineIfNeeded(Paginator paginator, String name, Object value) {
+        if (value instanceof String && (((String) value).isEmpty() || value.equals("{}"))) {
+            return;
+        }
+        paginator.addLine(SentinelCommand.prefixGood + name + ": " + ChatColor.AQUA + value);
+    }
+
+    private static DecimalFormat twoDigitFormat = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.US));
 
     @Command(aliases = {"sentinel"}, usage = "stats",
             desc = "Shows statistics about the current NPC.",
@@ -103,7 +114,7 @@ public class SentinelInfoCommands {
         sender.sendMessage(SentinelCommand.prefixGood + "Damage Given: " + ChatColor.AQUA + sentinel.stats_damageGiven);
         sender.sendMessage(SentinelCommand.prefixGood + "Damage Taken: " + ChatColor.AQUA + sentinel.stats_damageTaken);
         double minutesSpawned = sentinel.stats_ticksSpawned / (20.0 * 60.0);
-        sender.sendMessage(SentinelCommand.prefixGood + "Minutes spawned: " + ChatColor.AQUA + (((int) (minutesSpawned * 100)) * 0.01));
+        sender.sendMessage(SentinelCommand.prefixGood + "Minutes spawned: " + ChatColor.AQUA + twoDigitFormat.format(minutesSpawned));
     }
 
     @Command(aliases = {"sentinel"}, usage = "debug",
