@@ -1,6 +1,8 @@
 package org.mcmonkey.sentinel;
 
+import com.google.common.base.Function;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
 import net.citizensnpcs.api.event.DespawnReason;
@@ -1058,7 +1060,18 @@ public class SentinelTrait extends Trait {
      * Rotates an NPC to face a target location.
      */
     public void faceLocation(Location l) {
-        npc.faceLocation(l.clone().subtract(0, getLivingEntity().getEyeHeight(), 0));
+        Location faceTowards = l.clone().subtract(0, getLivingEntity().getEyeHeight(), 0);
+        npc.faceLocation(faceTowards);
+        if (npc.getNavigator().isNavigating()) {
+            Function<Navigator, Location> altLookFunction = n -> faceTowards;
+            Function<Navigator, Location> origLookFunction = npc.getNavigator().getLocalParameters().lookAtFunction();
+            npc.getNavigator().getLocalParameters().lookAtFunction(altLookFunction);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () -> {
+                if (npc.getNavigator().isNavigating() && npc.getNavigator().getLocalParameters().lookAtFunction() == altLookFunction) {
+                    npc.getNavigator().getLocalParameters().lookAtFunction(origLookFunction);
+                }
+            }, 2);
+        }
     }
 
     /**
