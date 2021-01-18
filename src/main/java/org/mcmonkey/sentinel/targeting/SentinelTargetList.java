@@ -1,6 +1,7 @@
 package org.mcmonkey.sentinel.targeting;
 
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.api.util.DataKey;
@@ -145,8 +146,14 @@ public class SentinelTargetList {
         }
         // Any NPCs cause instant return - things below should be non-NPC only target types
         if (entity.hasMetadata("NPC")) {
-            return targetsProcessed.contains(SentinelTarget.NPCS) ||
-                    SentinelUtilities.isRegexTargeted(CitizensAPI.getNPCRegistry().getNPC(entity).getName(), byNpcName);
+            if (targetsProcessed.contains(SentinelTarget.NPCS)) {
+                return true;
+            }
+            NPC theNPC = CitizensAPI.getNPCRegistry().getNPC(entity);
+            if (theNPC == null) { // ???
+                return false;
+            }
+            return SentinelUtilities.isRegexTargeted(theNPC.getName(), byNpcName);
         }
         if (entity instanceof Player) {
             if (SentinelUtilities.isRegexTargeted(((Player) entity).getName(), byPlayerName)) {
