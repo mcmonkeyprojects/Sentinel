@@ -23,7 +23,7 @@ public class SentinelSimpleClans extends SentinelIntegration {
         try {
             if (prefix.equals("simpleclan") && ent instanceof Player) {
                 Clan clan = SimpleClans.getInstance().getClanManager().getClanByPlayerUniqueId(ent.getUniqueId());
-                if (clan.getName().equalsIgnoreCase(value)) {
+                if (clan != null && clan.getName().equalsIgnoreCase(value)) {
                     return true;
                 }
                 else {
