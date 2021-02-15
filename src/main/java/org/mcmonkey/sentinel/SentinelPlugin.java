@@ -267,7 +267,7 @@ public class SentinelPlugin extends JavaPlugin {
         ignoreInvisible = getConfig().getBoolean("random.ignore invisible targets");
         guardDistanceMinimum = getConfig().getInt("random.guard follow distance.minimum", 7);
         guardDistanceSelectionRange = getConfig().getInt("random.guard follow distance.selection range", 4);
-        workaroundEntityChasePathfinder = getConfig().getBoolean("random.workaround entity chase pathfinder", false);
+        workaroundEntityChasePathfinder = getConfig().getBoolean("random.workaround entity chase pathfinder", true);
         protectFromIgnores = getConfig().getBoolean("random.protected", false);
         runAwayTime = getConfig().getInt("random.run away time");
         maxHealth = findMaxHealth();

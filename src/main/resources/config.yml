@@ -69,7 +69,7 @@ random:
     # Recommended to use this alongside other workaround options.
     workaround bukkit events: false
     # Whether to workaround potential issues with entity-follow pathfinding.
-    workaround entity chase pathfinder: false
+    workaround entity chase pathfinder: true
     # Whether to permit death messages to show for Sentinel NPC deaths.
     death messages: false
     # How fast to try to shoot things (EG arrows).
