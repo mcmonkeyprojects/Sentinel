@@ -280,6 +280,7 @@ These are all valid targets and ignores:
 - Ender Pearls (Causes the target to get flung into the air!)
 - Skulls (Dangerous wither skull explosions!)
 - White_Dye (Shoots llama spit!)
+- Shulker_Shell (Fires a shulker bullet!)
 - CrackShot guns!
 
 ### Integrating Your Plugin With Sentinel

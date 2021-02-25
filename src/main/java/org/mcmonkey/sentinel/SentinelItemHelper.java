@@ -251,7 +251,8 @@ public class SentinelItemHelper extends SentinelHelperObject {
                 || usesTrident(item)
                 || usesSpectral(item)
                 || usesPotion(item)
-                || usesLlamaSpit(item);
+                || usesLlamaSpit(item)
+                || usesShulkerBullet(item);
     }
 
     /**
@@ -461,6 +462,23 @@ public class SentinelItemHelper extends SentinelHelperObject {
             return false;
         }
         return it != null && it.getType() == Material.WHITE_DYE;
+    }
+
+    /**
+     * Returns whether the NPC is using a shulker bullet item.
+     */
+    public boolean usesShulkerBullet() {
+        return usesShulkerBullet(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using a shulker bullet item.
+     */
+    public boolean usesShulkerBullet(ItemStack it) {
+        if (!SentinelVersionCompat.v1_13) {
+            return false;
+        }
+        return it != null && it.getType() == Material.SHULKER_SHELL;
     }
 
     /**

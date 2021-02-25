@@ -206,7 +206,8 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                 return true;
             }
         }
-        if (itemHelper.usesBow()) {
+        ItemStack weapon = itemHelper.getHeldItem();
+        if (itemHelper.usesBow(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
             }
@@ -221,7 +222,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                 return true;
             }
         }
-        else if (itemHelper.usesSnowball()) {
+        else if (itemHelper.usesSnowball(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
             }
@@ -229,7 +230,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             rangedAmmoCalculation();
             return true;
         }
-        else if (itemHelper.usesTrident()) {
+        else if (itemHelper.usesTrident(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
             }
@@ -237,7 +238,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             rangedAmmoCalculation();
             return true;
         }
-        else if (itemHelper.usesPotion()) {
+        else if (itemHelper.usesPotion(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
             }
@@ -245,7 +246,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             rangedAmmoCalculation();
             return true;
         }
-        else if (itemHelper.usesEgg()) {
+        else if (itemHelper.usesEgg(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
             }
@@ -253,7 +254,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             rangedAmmoCalculation();
             return true;
         }
-        else if (itemHelper.usesLlamaSpit()) {
+        else if (itemHelper.usesLlamaSpit(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
             }
@@ -261,7 +262,15 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             rangedAmmoCalculation();
             return true;
         }
-        else if (itemHelper.usesPearl()) {
+        else if (itemHelper.usesShulkerBullet(weapon)) {
+            if (rangedPreCalculation(entity)) {
+                return false;
+            }
+            weaponHelper.fireShulkerBullet(entity);
+            rangedAmmoCalculation();
+            return true;
+        }
+        else if (itemHelper.usesPearl(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
             }
@@ -269,7 +278,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             rangedAmmoCalculation();
             return true;
         }
-        else if (itemHelper.usesWitherSkull()) {
+        else if (itemHelper.usesWitherSkull(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
             }
@@ -277,7 +286,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             rangedAmmoCalculation();
             return true;
         }
-        else if (itemHelper.usesFireball()) {
+        else if (itemHelper.usesFireball(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
             }
@@ -285,7 +294,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             rangedAmmoCalculation();
             return true;
         }
-        else if (itemHelper.usesLightning()) {
+        else if (itemHelper.usesLightning(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
             }
@@ -298,7 +307,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             rangedAmmoCalculation();
             return true;
         }
-        else if (itemHelper.usesSpectral()) {
+        else if (itemHelper.usesSpectral(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
             }

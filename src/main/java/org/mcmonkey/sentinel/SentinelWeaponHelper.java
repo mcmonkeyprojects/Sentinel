@@ -256,6 +256,21 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
     }
 
     /**
+     * Fires shulker bullet.
+     */
+    public void fireShulkerBullet(LivingEntity entity) {
+        sentinel.swingWeapon();
+        sentinel.stats_skullsThrown++;
+        sentinel.faceLocation(entity.getEyeLocation());
+        Vector forward = getLivingEntity().getEyeLocation().getDirection();
+        Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(sentinel.firingMinimumRange()));
+        Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.SHULKER_BULLET);
+        ((Projectile) ent).setShooter(getLivingEntity());
+        ent.setVelocity(sentinel.fixForAcc(entity.getEyeLocation().clone().subtract(spawnAt).toVector().normalize()));
+        ((ShulkerBullet) ent).setTarget(entity);
+    }
+
+    /**
      * Makes an NPC punch a target.
      */
     public void punch(LivingEntity entity) {
