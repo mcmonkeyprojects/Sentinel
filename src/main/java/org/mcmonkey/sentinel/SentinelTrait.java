@@ -1008,8 +1008,14 @@ public class SentinelTrait extends Trait {
      * Swings the NPC's weapon (plays an ARM_SWING animation if possible - otherwise, does nothing).
      */
     public void swingWeapon() {
-        if (npc.isSpawned() && getLivingEntity() instanceof Player) {
+        if (!npc.isSpawned()) {
+            return;
+        }
+        if (getLivingEntity() instanceof Player) {
             PlayerAnimation.ARM_SWING.play((Player) getLivingEntity());
+        }
+        else if (SentinelVersionCompat.v1_15) {
+            getLivingEntity().swingMainHand();
         }
     }
 

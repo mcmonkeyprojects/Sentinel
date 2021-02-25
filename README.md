@@ -311,7 +311,7 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
 - Add a `depend` or `softdepend` (as relevant) on `Sentinel` to your `plugin.yml` file. See sample of how Sentinel does this to depend on other plugins: [Sample Source Here](https://github.com/mcmonkeyprojects/Sentinel/blob/master/src/main/resources/plugin.yml)
 - When possible, take advantage of the `SentinelIntegration` class: [JavaDoc Here](https://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/SentinelIntegration.html)
     - Extend the class (with your own custom class) and implement whichever methods you need. See samples of integrations available: [Sample Source Here](https://github.com/mcmonkeyprojects/Sentinel/tree/master/src/main/java/org/mcmonkey/sentinel/integration)
-    - Within your plugin's `onEnable`, Register the class by calling `SentinelPlugin.registerIntegration(new YourIntegration());` where `YourIntegration` is the integration class you created.
+    - Within your plugin's `onEnable`, Register the class by calling `SentinelPlugin.instance.registerIntegration(new YourIntegration());` where `YourIntegration` is the integration class you created.
 - You might also benefit from events like the `SentinelAttackEvent`: [JavaDoc Here](https://ci.citizensnpcs.co/job/Sentinel/javadoc/org/mcmonkey/sentinel/events/package-summary.html)
 - Samples of a few common basic operations:
     - Check if NPC is a Sentinel: `if (npc.hasTrait(SentinelTrait.class)) { ...`
