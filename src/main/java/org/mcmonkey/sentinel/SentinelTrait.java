@@ -37,6 +37,7 @@ import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.targeting.SentinelTargetList;
 import org.mcmonkey.sentinel.targeting.SentinelTargetingHelper;
+import org.mcmonkey.sentinel.utilities.SentinelNMSHelper;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
 import java.util.*;
@@ -1013,6 +1014,9 @@ public class SentinelTrait extends Trait {
         }
         if (getLivingEntity() instanceof Player) {
             PlayerAnimation.ARM_SWING.play((Player) getLivingEntity());
+        }
+        else if (getLivingEntity() instanceof IronGolem) {
+            SentinelNMSHelper.animateIronGolemSwing((IronGolem) getLivingEntity());
         }
         else if (SentinelVersionCompat.v1_15) {
             getLivingEntity().swingMainHand();
