@@ -12,6 +12,7 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
+import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
 import java.util.HashMap;
@@ -247,21 +248,30 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         sentinel.swingWeapon();
         sentinel.stats_punches++;
         if (SentinelPlugin.instance.workaroundDamage) {
+            double damage = sentinel.getDamage(false);
             if (SentinelPlugin.debugMe) {
-                debug("workaround damage value at " + sentinel.getDamage(false) + " yields "
-                        + ((sentinel.getDamage(false) * (1.0 - sentinel.getArmor(entity)))));
+                debug("workaround damage value at " + damage + " yields " + ((damage * (1.0 - sentinel.getArmor(entity)))));
             }
-            entity.damage(sentinel.getDamage(false) * (1.0 - sentinel.getArmor(entity)));
+            entity.damage(damage * (1.0 - sentinel.getArmor(entity)));
             knockback(entity);
             if (!sentinel.enemyDrops) {
                 sentinel.needsDropsClear.add(entity.getUniqueId());
             }
         }
         else {
-            if (SentinelPlugin.debugMe) {
-                debug("Punch/natural for " + sentinel.getDamage(false));
+            if (sentinel.damage < 0 && SentinelVersionCompat.v1_15 && SentinelTarget.NATIVE_COMBAT_CAPABLE_TYPES.contains(getLivingEntity().getType())) {
+                if (SentinelPlugin.debugMe) {
+                    debug("Punch/native");
+                }
+                getLivingEntity().attack(entity);
             }
-            entity.damage(sentinel.getDamage(false), getLivingEntity());
+            else {
+                double damage = sentinel.getDamage(false);
+                if (SentinelPlugin.debugMe) {
+                    debug("Punch/natural for " + damage);
+                }
+                entity.damage(damage, getLivingEntity());
+            }
         }
     }
 

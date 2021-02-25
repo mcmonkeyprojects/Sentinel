@@ -30,6 +30,11 @@ public class SentinelTarget {
     public static SentinelTarget PLAYERS = new SentinelTarget(new EntityType[]{EntityType.PLAYER}, "PLAYER");
 
     /**
+     * Entity types known to support native melee combat.
+     */
+    public static HashSet<EntityType> NATIVE_COMBAT_CAPABLE_TYPES = new HashSet<>(Arrays.asList(EntityType.ZOMBIE, EntityType.SKELETON));
+
+    /**
      * Basic single-entity target types (that were added in Minecraft 1.8 or earlier).
      */
     public static SentinelTarget PIGS = new SentinelTarget(new EntityType[]{EntityType.PIG}, "PIG"),
