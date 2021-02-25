@@ -4,7 +4,6 @@ import net.citizensnpcs.api.trait.trait.Inventory;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
 /**
@@ -251,7 +250,8 @@ public class SentinelItemHelper extends SentinelHelperObject {
                 || usesWitherSkull(item)
                 || usesTrident(item)
                 || usesSpectral(item)
-                || usesPotion(item);
+                || usesPotion(item)
+                || usesLlamaSpit(item);
     }
 
     /**
@@ -444,6 +444,23 @@ public class SentinelItemHelper extends SentinelHelperObject {
      */
     public boolean usesPotion(ItemStack it) {
         return it != null && SentinelVersionCompat.POTION_MATERIALS.contains(it.getType());
+    }
+
+    /**
+     * Returns whether the NPC is using a llama spit item (white_dye).
+     */
+    public boolean usesLlamaSpit() {
+        return usesLlamaSpit(getHeldItem());
+    }
+
+    /**
+     * Returns whether the NPC is using a llama spit item (white_dye).
+     */
+    public boolean usesLlamaSpit(ItemStack it) {
+        if (!SentinelVersionCompat.v1_13) {
+            return false;
+        }
+        return it != null && it.getType() == Material.WHITE_DYE;
     }
 
     /**

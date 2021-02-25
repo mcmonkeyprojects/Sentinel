@@ -279,6 +279,7 @@ These are all valid targets and ignores:
 - Eggs
 - Ender Pearls (Causes the target to get flung into the air!)
 - Skulls (Dangerous wither skull explosions!)
+- White_Dye (Shoots llama spit!)
 - CrackShot guns!
 
 ### Integrating Your Plugin With Sentinel

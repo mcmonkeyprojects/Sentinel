@@ -242,6 +242,20 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
     }
 
     /**
+     * Fires llama spit.
+     */
+    public void fireLlamaSpit(Location target) {
+        sentinel.swingWeapon();
+        sentinel.stats_skullsThrown++;
+        sentinel.faceLocation(target);
+        Vector forward = getLivingEntity().getEyeLocation().getDirection();
+        Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(sentinel.firingMinimumRange()));
+        Entity ent = spawnAt.getWorld().spawnEntity(spawnAt, EntityType.LLAMA_SPIT);
+        ((Projectile) ent).setShooter(getLivingEntity());
+        ent.setVelocity(sentinel.fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(4))); // TODO: Fiddle with '4'.
+    }
+
+    /**
      * Makes an NPC punch a target.
      */
     public void punch(LivingEntity entity) {

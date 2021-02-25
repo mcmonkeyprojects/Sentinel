@@ -253,6 +253,14 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             rangedAmmoCalculation();
             return true;
         }
+        else if (itemHelper.usesLlamaSpit()) {
+            if (rangedPreCalculation(entity)) {
+                return false;
+            }
+            weaponHelper.fireLlamaSpit(entity.getEyeLocation());
+            rangedAmmoCalculation();
+            return true;
+        }
         else if (itemHelper.usesPearl()) {
             if (rangedPreCalculation(entity)) {
                 return false;
