@@ -735,7 +735,7 @@ public class SentinelTrait extends Trait {
                 if (!event.isCancelled()) {
                     ((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
                     if (event.getEntity() instanceof LivingEntity) {
-                        weaponHelper.knockback((LivingEntity) event.getEntity());
+                        weaponHelper.knockback((LivingEntity) event.getEntity(), 1f);
                     }
                 }
                 if (SentinelPlugin.debugMe) {
@@ -771,7 +771,7 @@ public class SentinelTrait extends Trait {
                 if (!event.isCancelled()) {
                     ((LivingEntity) event.getEntity()).damage(getDamage(true));
                     if (event.getEntity() instanceof LivingEntity) {
-                        weaponHelper.knockback((LivingEntity) event.getEntity());
+                        weaponHelper.knockback((LivingEntity) event.getEntity(), 1f);
                     }
                 }
                 if (SentinelPlugin.debugMe) {

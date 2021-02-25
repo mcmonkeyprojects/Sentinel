@@ -7,6 +7,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -244,6 +245,9 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
      * Makes an NPC punch a target.
      */
     public void punch(LivingEntity entity) {
+        if (!getNPC().isSpawned()) {
+            return;
+        }
         sentinel.faceLocation(entity.getEyeLocation());
         sentinel.swingWeapon();
         sentinel.stats_punches++;
@@ -253,10 +257,11 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
                 debug("workaround damage value at " + damage + " yields " + ((damage * (1.0 - sentinel.getArmor(entity)))));
             }
             entity.damage(damage * (1.0 - sentinel.getArmor(entity)));
-            knockback(entity);
+            knockback(entity, 1f);
             if (!sentinel.enemyDrops) {
                 sentinel.needsDropsClear.add(entity.getUniqueId());
             }
+            addedPunchEffects(entity);
         }
         else {
             if (sentinel.damage < 0 && SentinelVersionCompat.v1_15 && SentinelTarget.NATIVE_COMBAT_CAPABLE_TYPES.contains(getLivingEntity().getType())) {
@@ -271,20 +276,59 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
                     debug("Punch/natural for " + damage);
                 }
                 entity.damage(damage, getLivingEntity());
+                addedPunchEffects(entity);
             }
         }
     }
 
     /**
-     * Knocks a target back from damage received (for hacked-in damage applications when required by config).
+     * Processes any extra effects (item enchantments) to apply when punching an entity.
      */
-    public void knockback(LivingEntity entity) {
-        Vector relative = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector());
-        if (relative.lengthSquared() > 0) {
-            relative = relative.normalize();
+    public void addedPunchEffects(LivingEntity entity) {
+        if (entity == null || entity.isDead()) {
+            return;
         }
-        relative.setY(0.75);
+        if (!getNPC().isSpawned()) {
+            return;
+        }
+        ItemStack item = SentinelUtilities.getHeldItem(getLivingEntity());
+        if (item == null || item.getType() == Material.AIR || !item.hasItemMeta()) {
+            return;
+        }
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null || !meta.hasEnchants()) {
+            return;
+        }
+        if (meta.hasEnchant(Enchantment.FIRE_ASPECT)) {
+            int ticks = meta.getEnchantLevel(Enchantment.FIRE_ASPECT) * (4 * 20);
+            int prot = SentinelUtilities.getFireProtection(entity);
+            if (prot > 0) { // This math based on Minecraft's relevant NMS
+                ticks -= Math.floor((float) ticks * (float) prot * 0.15F);
+            }
+            if (ticks > 0) {
+                entity.setFireTicks(ticks);
+            }
+        }
+        if (meta.hasEnchant(Enchantment.KNOCKBACK)) {
+            knockback(entity, 1f + meta.getEnchantLevel(Enchantment.KNOCKBACK) * 0.5f);
+        }
+    }
+
+    /**
+     * Knocks a target back from damage received (for hacked-in damage applications when required by config, or knockback enchantment on an item).
+     */
+    public void knockback(LivingEntity entity, float force) {
+        if (entity == null || entity.isDead() || !getNPC().isSpawned()) {
+            return;
+        }
+        Vector direction = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector());
+        if (direction.lengthSquared() > 0) {
+            direction = direction.normalize();
+        }
+        Vector relative = direction.clone().setY(0.75);
         relative.multiply(0.5 / Math.max(1.0, entity.getVelocity().length()));
+        relative.setX(relative.getX() * force);
+        relative.setZ(relative.getZ() * force);
         entity.setVelocity(entity.getVelocity().multiply(0.25).add(relative));
         if (SentinelPlugin.debugMe) {
             debug("applied knockback velocity adder of " + relative);

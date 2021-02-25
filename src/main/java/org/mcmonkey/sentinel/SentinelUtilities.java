@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -93,6 +94,22 @@ public class SentinelUtilities {
         else {
             return null;
         }
+    }
+
+    /**
+     * Gets the fire protection level from an entity's armor.
+     */
+    public static int getFireProtection(LivingEntity entity) {
+        if (!SentinelVersionCompat.v1_9 || entity.getEquipment() == null) {
+            return 0;
+        }
+        int level = 0;
+        for (ItemStack item : entity.getEquipment().getArmorContents()) {
+            if (item != null && item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.PROTECTION_FIRE)) {
+                level = Math.max(level, item.getItemMeta().getEnchantLevel(Enchantment.PROTECTION_FIRE));
+            }
+        }
+        return level;
     }
 
     /**
