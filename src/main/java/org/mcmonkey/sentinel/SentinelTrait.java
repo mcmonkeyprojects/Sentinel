@@ -543,8 +543,10 @@ public class SentinelTrait extends Trait {
      * Causes the NPC to start blocking with a shield (if it has one).
      */
     public void startBlocking() {
-        if (!npc.isSpawned() || !(getLivingEntity() instanceof Player) || !itemHelper.hasShield()) {
-            isBlocking = false;
+        if (!npc.isSpawned() || !(getLivingEntity() instanceof Player) || !itemHelper.hasShield() || shieldAxeCooldown > stats_ticksSpawned) {
+            if (isBlocking) {
+                stopBlocking();
+            }
             return;
         }
         if (SentinelPlugin.debugMe && !isBlocking) {
@@ -563,7 +565,7 @@ public class SentinelTrait extends Trait {
             return;
         }
         if (SentinelPlugin.debugMe) {
-            debug("No more threat ahead. I'll put my shield down.");
+            debug("I'll put my shield down.");
         }
         isBlocking = false;
         if (!npc.isSpawned() || !(getLivingEntity() instanceof Player) || !itemHelper.hasShield()) {
@@ -663,6 +665,11 @@ public class SentinelTrait extends Trait {
     }
 
     /**
+     * When the shield can next be used (based on tick timer), if it has been disabled via axe strike.
+     */
+    public long shieldAxeCooldown = 0;
+
+    /**
      * Returns a boolean indicating whether a hit from the given damager should be blocked by a shield.
      */
     public boolean hitIsBlocked(Entity damager) {
@@ -678,6 +685,15 @@ public class SentinelTrait extends Trait {
         }
         if (SentinelVersionCompat.v1_14 && damager instanceof Arrow && ((Arrow) damager).getPierceLevel() > 0) {
             return false;
+        }
+        if (stats_ticksSpawned < shieldAxeCooldown) {
+            return false;
+        }
+        ItemStack held = damager instanceof LivingEntity ? SentinelUtilities.getHeldItem((LivingEntity) damager) : null;
+        if (held != null && SentinelVersionCompat.AXE_MATERIALS.contains(held.getType())) {
+            if (!(damager instanceof Player) || ((Player) damager).isSprinting() || SentinelUtilities.random.nextInt(4) == 1) {
+                shieldAxeCooldown = stats_ticksSpawned + (20 * 5);
+            }
         }
         return true;
     }
