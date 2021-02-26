@@ -111,6 +111,13 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/SimpleClans.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>simplepets.brainsynder</groupId>
+            <artifactId>SimplePets</artifactId>
+            <version>4.4</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/SimplePets.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <ciManagement>

@@ -413,6 +413,15 @@ public class SentinelPlugin extends JavaPlugin {
                 ex.printStackTrace();
             }
         }
+        if (Bukkit.getPluginManager().getPlugin("SimplePets") != null) {
+            try {
+                registerIntegration(new SentinelSimplePets());
+                getLogger().info("Sentinel found SimplePets! Adding support for it!");
+            }
+            catch (Throwable ex) {
+                ex.printStackTrace();
+            }
+        }
         new BukkitRunnable() {
             @Override
             public void run() {

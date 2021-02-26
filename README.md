@@ -120,6 +120,7 @@ Sentinel integrates with a few external plugins, including:
 - Factions, for faction targets! (Use `factions:FACTION_HERE`, `factionsenemy:NAME`, `factionsally:NAME`)
 - SimpleClans, for clan targets! (Use `simpleclan:CLAN_NAME_HERE`)
 - War, for war team targets! (Use `war_team:WAR_TEAM_NAME`)
+- SimplePets, for pet type targets! (Use `simplepet:PET_NAME_REGEX` ... in particular useful for `/sentinel addignore simplepet:.*` to ignore all pets)
 - CrackShot, to allow NPCs to fire CrackShot weapons (just put the weapon in their hand).
 
 Sentinel is integrated into by external plugins as well, including:
