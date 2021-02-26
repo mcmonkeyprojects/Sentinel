@@ -34,6 +34,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.mcmonkey.sentinel.events.SentinelWantsToPathEvent;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.targeting.SentinelTargetList;
 import org.mcmonkey.sentinel.targeting.SentinelTargetingHelper;
@@ -546,6 +547,17 @@ public class SentinelTrait extends Trait {
      */
     @Persist("allow_knockback")
     public boolean allowKnockback = true;
+
+    /**
+     * The name of a WorldGuard region this Sentinel must stay within (if any).
+     */
+    @Persist("worldguard_region")
+    public String worldguardRegion = null;
+
+    /**
+     * Cache object, {@see worldguardRegion}.
+     */
+    public Object worldguardRegionCache = null;
 
     /**
      * The target entity this NPC is chasing (if any).
@@ -1290,9 +1302,26 @@ public class SentinelTrait extends Trait {
     public Location pathingTo = null;
 
     /**
+     * Determines whether the NPC is allowed to path to a location, by checking chase range and firing an event.
+     */
+    public boolean canPathTo(Location loc) {
+        double crsq = chaseRange * chaseRange;
+        Location near = nearestPathPoint();
+        if (crsq > 0 && near != null && near.distanceSquared(loc) > crsq) {
+            return false;
+        }
+        SentinelWantsToPathEvent event = new SentinelWantsToPathEvent(getNPC(), loc);
+        Bukkit.getPluginManager().callEvent(event);
+        return !event.isCancelled();
+    }
+
+    /**
      * Causes the NPC to immediately path over to a position.
      */
     public void pathTo(Location target) {
+        if (!canPathTo(target)) {
+            return;
+        }
         pauseWaypoints();
         pathingTo = target;
         getNPC().getNavigator().setTarget(target);
@@ -1398,7 +1427,6 @@ public class SentinelTrait extends Trait {
         // Targets updating
         targetingHelper.updateTargets();
         targetingHelper.updateAvoids();
-        double crsq = chaseRange * chaseRange;
         boolean goHome = chased;
         if (chasing != null) {
             if (!chasing.isValid() || !targetingHelper.shouldTarget(chasing)) {
@@ -1408,12 +1436,12 @@ public class SentinelTrait extends Trait {
         targetingHelper.processAllMultiTargets();
         LivingEntity target = targetingHelper.findBestTarget();
         if (target != null) {
-            Location near = nearestPathPoint();
             if (SentinelPlugin.debugMe) {
                 debug("target selected to be " + target.getName());
             }
-            if (crsq <= 0 || near == null || near.distanceSquared(target.getLocation()) <= crsq) {
+            if (canPathTo(target.getLocation())) {
                 if (SentinelPlugin.debugMe) {
+                    Location near = nearestPathPoint();
                     debug("Attack target within range of safe zone: " + (near == null ? "Any" : near.distanceSquared(target.getLocation())));
                 }
                 if (chasing == null) {
@@ -1447,8 +1475,7 @@ public class SentinelTrait extends Trait {
                 chasing = null;
             }
             else {
-                Location near = nearestPathPoint();
-                if (crsq <= 0 || near == null || near.distanceSquared(chasing.getLocation()) <= crsq) {
+                if (canPathTo(chasing.getLocation())) {
                     attackHelper.tryDefendFrom(chasing);
                     attackHelper.tryAttack(chasing);
                     goHome = false;
@@ -1496,7 +1523,7 @@ public class SentinelTrait extends Trait {
         // Handling for when NPC has no targets
         if (goHome && chaseRange > 0 && target == null && needsSafeReturn) {
             Location near = nearestPathPoint();
-            if (near != null && (chasing == null || near.distanceSquared(chasing.getLocation()) > crsq)) {
+            if (near != null && (chasing == null || !canPathTo(chasing.getLocation()))) {
                 if (SentinelPlugin.debugMe) {
                     if (near.distanceSquared(getLivingEntity().getLocation()) > 3 * 3) {
                         debug("screw you guys, I'm going home!");

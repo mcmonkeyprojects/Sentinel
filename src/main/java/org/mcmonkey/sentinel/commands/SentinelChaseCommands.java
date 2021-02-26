@@ -5,7 +5,9 @@ import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
+import org.mcmonkey.sentinel.utilities.SentinelWorldGuardHelper;
 
 public class SentinelChaseCommands {
 
@@ -50,6 +52,31 @@ public class SentinelChaseCommands {
         catch (NumberFormatException ex) {
             sender.sendMessage(SentinelCommand.prefixBad + "Invalid range number: " + ex.getMessage());
         }
+    }
+
+    @Command(aliases = {"sentinel"}, usage = "wgregion REGION_NAME",
+            desc = "Limits the NPC to only chase inside of a WorldGuard region.",
+            modifiers = {"wgregion"}, permission = "sentinel.wgregion", min = 1, max = 2)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void wgRegion(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (!SentinelPlugin.instance.hasWorldGuard) {
+            sender.sendMessage(SentinelCommand.prefixBad + "WorldGuard not loaded! This command does nothing!");
+            return;
+        }
+        if (args.argsLength() <= 1) {
+            sentinel.worldguardRegionCache = null;
+            sentinel.worldguardRegion = null;
+            sender.sendMessage(SentinelCommand.prefixGood + "WorldGuard region limit disabled.");
+            return;
+        }
+        Object region = SentinelWorldGuardHelper.getRegionFor(args.getString(1), sentinel.getNPC().getStoredLocation().getWorld());
+        if (region == null) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid WorldGuard region name!");
+            return;
+        }
+        sentinel.worldguardRegion = args.getString(1);
+        sentinel.worldguardRegionCache = region;
+        sender.sendMessage(SentinelCommand.prefixGood + "WorldGuard region limit set!");
     }
 
     @Command(aliases = {"sentinel"}, usage = "chaseclose ['true'/'false']",

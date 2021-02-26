@@ -402,7 +402,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         }
         if (sentinel.chasing != null && sentinel.retainTarget) {
             double dist = sentinel.chasing.getEyeLocation().distanceSquared(pos);
-            if (dist < crsq && shouldTarget(sentinel.chasing)) {
+            if (dist < crsq && shouldTarget(sentinel.chasing) && sentinel.canPathTo(sentinel.chasing.getLocation())) {
                 return sentinel.chasing;
             }
         }
@@ -418,7 +418,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             }
             double dist = ent.getEyeLocation().distanceSquared(pos);
             tempTarget.targetID = ent.getUniqueId();
-            boolean isExistingTarget = dist < crsq && dist < rangesquared && currentTargets.contains(tempTarget);
+            boolean isExistingTarget = dist < crsq && dist < rangesquared && currentTargets.contains(tempTarget) && sentinel.canPathTo(ent.getLocation());
             if (isExistingTarget || (dist < rangesquared && shouldTarget(ent))) {
                 boolean hasLos = canSee(ent);
                 if (!hasLos && !isExistingTarget) {
@@ -581,9 +581,11 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
                 removeTargetNoBounce(curTarg);
                 continue;
             }
-            double d = e.getWorld().equals(getLivingEntity().getWorld()) ?
-                    e.getLocation().distanceSquared(getLivingEntity().getLocation())
-                    : 10000.0 * 10000.0;
+            if (!e.getWorld().equals(getLivingEntity().getWorld())) {
+                removeTargetNoBounce(curTarg);
+                continue;
+            }
+            double d = e.getLocation().distanceSquared(getLivingEntity().getLocation());
             if (d > sentinel.range * sentinel.range * 4 && d > sentinel.chaseRange * sentinel.chaseRange * 4) {
                 removeTargetNoBounce(curTarg);
                 continue;

@@ -122,6 +122,7 @@ Sentinel integrates with a few external plugins, including:
 - War, for war team targets! (Use `war_team:WAR_TEAM_NAME`)
 - SimplePets, for pet type targets! (Use `simplepet:PET_NAME_REGEX` ... in particular useful for `/sentinel addignore simplepet:.*` to ignore all pets)
 - CrackShot, to allow NPCs to fire CrackShot weapons (just put the weapon in their hand).
+- WorldGuard, to define WorldGuard region limits! Use `/sentinel wgregion [region name]` to force the NPC to stay inside that region.
 
 Sentinel is integrated into by external plugins as well, including:
 

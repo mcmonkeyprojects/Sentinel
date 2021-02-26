@@ -74,6 +74,9 @@ public class SentinelInfoCommands {
         addLineIfNeeded(paginator, "Spawnpoint", (sentinel.spawnPoint == null ? "" : sentinel.spawnPoint.toVector().toBlockVector().toString()));
         addLineIfNeeded(paginator, "Per-weapon damage values", sentinel.weaponDamage.toString());
         addLineIfNeeded(paginator, "Weapon redirections", sentinel.weaponRedirects.toString());
+        if (SentinelPlugin.instance.hasWorldGuard) {
+            addLineIfNeeded(paginator, "WorldGuard region limit", sentinel.worldguardRegion);
+        }
         int page = 1;
         if (args.argsLength() == 2) {
             try {

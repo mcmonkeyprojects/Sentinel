@@ -17,10 +17,7 @@ import org.mcmonkey.sentinel.integration.*;
 import org.mcmonkey.sentinel.metrics.BStatsMetricsLite;
 import org.mcmonkey.sentinel.metrics.StatsRecord;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
-import org.mcmonkey.sentinel.utilities.ConfigUpdater;
-import org.mcmonkey.sentinel.utilities.SentinelNMSHelper;
-import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
-import org.mcmonkey.sentinel.utilities.VelocityTracker;
+import org.mcmonkey.sentinel.utilities.*;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -193,6 +190,11 @@ public class SentinelPlugin extends JavaPlugin {
      * Configuration option: time until arrow cleanup.
      */
     public int arrowCleanupTime;
+
+    /**
+     * Whether WorldGuard support is loaded and enabled.
+     */
+    public boolean hasWorldGuard;
 
     /**
      * Fills the {@code vaultPerms} object if possible.
@@ -417,6 +419,16 @@ public class SentinelPlugin extends JavaPlugin {
             try {
                 registerIntegration(new SentinelSimplePets());
                 getLogger().info("Sentinel found SimplePets! Adding support for it!");
+            }
+            catch (Throwable ex) {
+                ex.printStackTrace();
+            }
+        }
+        if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
+            try {
+                new SentinelWorldGuardHelper();
+                hasWorldGuard = true;
+                getLogger().info("Sentinel found WorldGuard! Adding support for it!");
             }
             catch (Throwable ex) {
                 ex.printStackTrace();
