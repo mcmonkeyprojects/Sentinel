@@ -1228,6 +1228,9 @@ public class SentinelTrait extends Trait {
         if (SentinelVersionCompat.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
             NMS.setPeekShulker(getLivingEntity(), 100);
         }
+        else if (getLivingEntity().getType() == EntityType.ENDERMAN) {
+            SentinelNMSHelper.setEndermanAngry((Enderman) getLivingEntity(), true);
+        }
         visionMarked = true;
     }
 
@@ -1242,6 +1245,9 @@ public class SentinelTrait extends Trait {
         }
         if (SentinelVersionCompat.v1_11 && getLivingEntity().getType() == EntityType.SHULKER) {
             NMS.setPeekShulker(getLivingEntity(), 0);
+        }
+        else if (getLivingEntity().getType() == EntityType.ENDERMAN) {
+            SentinelNMSHelper.setEndermanAngry((Enderman) getLivingEntity(), false);
         }
         visionMarked = false;
     }

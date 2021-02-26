@@ -18,6 +18,7 @@ import org.mcmonkey.sentinel.metrics.BStatsMetricsLite;
 import org.mcmonkey.sentinel.metrics.StatsRecord;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.utilities.ConfigUpdater;
+import org.mcmonkey.sentinel.utilities.SentinelNMSHelper;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 import org.mcmonkey.sentinel.utilities.VelocityTracker;
 
@@ -419,6 +420,7 @@ public class SentinelPlugin extends JavaPlugin {
             }
         }.runTaskTimer(this, 1, 1);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, VelocityTracker::runAll, 20, 20);
+        SentinelNMSHelper.init();
         getLogger().info("Sentinel loaded!");
     }
 
