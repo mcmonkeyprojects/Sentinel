@@ -285,13 +285,6 @@ public class SentinelItemHelper extends SentinelHelperObject {
     /**
      * Returns whether the NPC is using a bow item.
      */
-    public boolean usesBow() {
-        return usesBow(getHeldItem());
-    }
-
-    /**
-     * Returns whether the NPC is using a bow item.
-     */
     public boolean usesBow(ItemStack it) {
         if (it == null) {
             return false;
@@ -307,22 +300,8 @@ public class SentinelItemHelper extends SentinelHelperObject {
     /**
      * Returns whether the NPC is using a fireball item.
      */
-    public boolean usesFireball() {
-        return usesFireball(getHeldItem());
-    }
-
-    /**
-     * Returns whether the NPC is using a fireball item.
-     */
     public boolean usesFireball(ItemStack it) {
         return it != null && it.getType() == SentinelVersionCompat.MATERIAL_BLAZE_ROD;
-    }
-
-    /**
-     * Returns whether the NPC is using a snowball item.
-     */
-    public boolean usesSnowball() {
-        return usesSnowball(getHeldItem());
     }
 
     /**
@@ -335,22 +314,8 @@ public class SentinelItemHelper extends SentinelHelperObject {
     /**
      * Returns whether the NPC is using a lightning-attack item.
      */
-    public boolean usesLightning() {
-        return usesLightning(getHeldItem());
-    }
-
-    /**
-     * Returns whether the NPC is using a lightning-attack item.
-     */
     public boolean usesLightning(ItemStack it) {
         return it != null && it.getType() == SentinelVersionCompat.MATERIAL_NETHER_STAR;
-    }
-
-    /**
-     * Returns whether the NPC is using an egg item.
-     */
-    public boolean usesEgg() {
-        return usesEgg(getHeldItem());
     }
 
     /**
@@ -363,22 +328,8 @@ public class SentinelItemHelper extends SentinelHelperObject {
     /**
      * Returns whether the NPC is using a pearl item.
      */
-    public boolean usesPearl() {
-        return usesPearl(getHeldItem());
-    }
-
-    /**
-     * Returns whether the NPC is using a pearl item.
-     */
     public boolean usesPearl(ItemStack it) {
         return it != null && it.getType() == Material.ENDER_PEARL;
-    }
-
-    /**
-     * Returns whether the NPC is using a wither-skull item.
-     */
-    public boolean usesWitherSkull() {
-        return usesWitherSkull(getHeldItem());
     }
 
     /**
@@ -394,25 +345,11 @@ public class SentinelItemHelper extends SentinelHelperObject {
     /**
      * Returns whether the NPC is using a trident item.
      */
-    public boolean usesTrident() {
-        return usesTrident(getHeldItem());
-    }
-
-    /**
-     * Returns whether the NPC is using a trident item.
-     */
     public boolean usesTrident(ItemStack it) {
         if (!SentinelVersionCompat.v1_13) {
             return false;
         }
         return it != null && it.getType() == Material.TRIDENT;
-    }
-
-    /**
-     * Returns whether the NPC is using a spectral-effect-attack item.
-     */
-    public boolean usesSpectral() {
-        return usesSpectral(getHeldItem());
     }
 
     /**
@@ -428,22 +365,8 @@ public class SentinelItemHelper extends SentinelHelperObject {
     /**
      * Returns whether the NPC is using a potion item.
      */
-    public boolean usesPotion() {
-        return usesPotion(getHeldItem());
-    }
-
-    /**
-     * Returns whether the NPC is using a potion item.
-     */
     public boolean usesPotion(ItemStack it) {
         return it != null && SentinelVersionCompat.POTION_MATERIALS.contains(it.getType());
-    }
-
-    /**
-     * Returns whether the NPC is using a llama spit item (white_dye).
-     */
-    public boolean usesLlamaSpit() {
-        return usesLlamaSpit(getHeldItem());
     }
 
     /**
@@ -459,18 +382,27 @@ public class SentinelItemHelper extends SentinelHelperObject {
     /**
      * Returns whether the NPC is using a shulker bullet item.
      */
-    public boolean usesShulkerBullet() {
-        return usesShulkerBullet(getHeldItem());
-    }
-
-    /**
-     * Returns whether the NPC is using a shulker bullet item.
-     */
     public boolean usesShulkerBullet(ItemStack it) {
+        if (!SentinelPlugin.instance.canUseSkull) {
+            return false;
+        }
         if (!SentinelVersionCompat.v1_13) {
             return false;
         }
         return it != null && it.getType() == Material.SHULKER_SHELL;
+    }
+
+    /**
+     * Returns whether the NPC is using an evoker fangs attack book.
+     */
+    public boolean usesFangsBook(ItemStack it) {
+        if (!SentinelPlugin.instance.canUseSkull) {
+            return false;
+        }
+        if (!SentinelVersionCompat.v1_13) {
+            return false;
+        }
+        return it != null && it.getType() == Material.BOOK;
     }
 
     /**

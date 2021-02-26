@@ -109,6 +109,9 @@ public class SentinelInfoCommands {
         sender.sendMessage(SentinelCommand.prefixGood + "Eggs thrown: " + ChatColor.AQUA + sentinel.stats_eggsThrown);
         sender.sendMessage(SentinelCommand.prefixGood + "Pearls used: " + ChatColor.AQUA + sentinel.stats_pearlsUsed);
         sender.sendMessage(SentinelCommand.prefixGood + "Skulls thrown: " + ChatColor.AQUA + sentinel.stats_skullsThrown);
+        sender.sendMessage(SentinelCommand.prefixGood + "Llama spits spat: " + ChatColor.AQUA + sentinel.stats_llamaSpitShot);
+        sender.sendMessage(SentinelCommand.prefixGood + "Shulker bullets shot: " + ChatColor.AQUA + sentinel.stats_shulkerBulletsShot);
+        sender.sendMessage(SentinelCommand.prefixGood + "Evoker fangs spawned: " + ChatColor.AQUA + sentinel.stats_evokerFangsSpawned);
         sender.sendMessage(SentinelCommand.prefixGood + "Punches: " + ChatColor.AQUA + sentinel.stats_punches);
         sender.sendMessage(SentinelCommand.prefixGood + "Times spawned: " + ChatColor.AQUA + sentinel.stats_timesSpawned);
         sender.sendMessage(SentinelCommand.prefixGood + "Damage Given: " + ChatColor.AQUA + sentinel.stats_damageGiven);

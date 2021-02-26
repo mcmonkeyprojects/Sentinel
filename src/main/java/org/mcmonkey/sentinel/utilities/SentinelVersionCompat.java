@@ -191,6 +191,7 @@ public class SentinelVersionCompat {
             WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("GOLDEN_SWORD"), 4.0);
             WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("WOODEN_SWORD"), 4.0);
             WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("TRIDENT"), 8.0);
+            WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("BOOK"), 6.0);
             OTHER_RANGED_MATERIALS.add(getMaterial("TRIDENT"));
             // Pickaxe
             addAllMaterials(PICKAXE_MATERIALS, "DIAMOND_PICKAXE", "IRON_PICKAXE", "STONE_PICKAXE", "GOLDEN_PICKAXE", "WOODEN_PICKAXE");

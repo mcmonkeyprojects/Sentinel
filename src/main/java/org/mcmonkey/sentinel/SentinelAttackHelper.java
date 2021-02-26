@@ -294,6 +294,14 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             rangedAmmoCalculation();
             return true;
         }
+        else if (itemHelper.usesFangsBook(weapon)) {
+            if (rangedPreCalculation(entity)) {
+                return false;
+            }
+            weaponHelper.fireEvokerFangs(entity.getEyeLocation());
+            rangedAmmoCalculation();
+            return true;
+        }
         else if (itemHelper.usesLightning(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;

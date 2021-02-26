@@ -79,7 +79,7 @@ random:
     enforce damage: false
     # Whether NPCs are protected from damage by ignore targets.
     protected: false
-    # Whether skull attack is allowed.
+    # Whether skull attack, evoker fang, or shulker bullets are allowed.
     skull allowed: true
     # How many calculation cycles before an NPC will give up on a good target.
     clever ticks: 10

@@ -281,6 +281,7 @@ These are all valid targets and ignores:
 - Skulls (Dangerous wither skull explosions!)
 - White_Dye (Shoots llama spit!)
 - Shulker_Shell (Fires a shulker bullet!)
+- Books (Will do evoker fang spell attacks!)
 - CrackShot guns!
 
 ### Integrating Your Plugin With Sentinel

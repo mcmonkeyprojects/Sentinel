@@ -3,6 +3,7 @@ package org.mcmonkey.sentinel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -246,7 +247,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
      */
     public void fireLlamaSpit(Location target) {
         sentinel.swingWeapon();
-        sentinel.stats_skullsThrown++;
+        sentinel.stats_llamaSpitShot++;
         sentinel.faceLocation(target);
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(sentinel.firingMinimumRange()));
@@ -260,7 +261,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
      */
     public void fireShulkerBullet(LivingEntity entity) {
         sentinel.swingWeapon();
-        sentinel.stats_skullsThrown++;
+        sentinel.stats_shulkerBulletsShot++;
         sentinel.faceLocation(entity.getEyeLocation());
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(sentinel.firingMinimumRange()));
@@ -268,6 +269,32 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         ((Projectile) ent).setShooter(getLivingEntity());
         ent.setVelocity(sentinel.fixForAcc(entity.getEyeLocation().clone().subtract(spawnAt).toVector().normalize()));
         ((ShulkerBullet) ent).setTarget(entity);
+    }
+
+    /**
+     * Spawns a line of evoker fangs towards the target.
+     */
+    public void fireEvokerFangs(Location target) {
+        sentinel.swingWeapon();
+        sentinel.stats_evokerFangsSpawned++;
+        sentinel.faceLocation(target);
+        if (SentinelVersionCompat.v1_13) {
+            getLivingEntity().getWorld().spawnParticle(Particle.SPELL, getLivingEntity().getEyeLocation().add(0, 1, 0), 10, 1, 1, 1);
+        }
+        Vector forward = getLivingEntity().getEyeLocation().getDirection().setY(0).normalize();
+        Location start = getLivingEntity().getLocation().clone().add(forward.clone().multiply(Math.max(1, sentinel.firingMinimumRange())));
+        int count = (int) getLivingEntity().getLocation().distance(target) + 2;
+        final double damage = sentinel.getDamage(true);
+        for (int i = 0; i < count; i++) {
+            final int index = i;
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () -> {
+                if (!getNPC().isSpawned()) {
+                    return;
+                }
+                Location loc = start.clone().add(forward.clone().multiply(index));
+                start.getWorld().spawnEntity(loc, EntityType.EVOKER_FANGS);
+            }, i * 3 + 5);
+        }
     }
 
     /**
@@ -285,11 +312,11 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
             if (SentinelPlugin.debugMe) {
                 debug("workaround damage value at " + damage + " yields " + ((damage * (1.0 - sentinel.getArmor(entity)))));
             }
-            entity.damage(damage * (1.0 - sentinel.getArmor(entity)));
-            knockback(entity, 1f);
             if (!sentinel.enemyDrops) {
                 sentinel.needsDropsClear.add(entity.getUniqueId());
             }
+            entity.damage(damage * (1.0 - sentinel.getArmor(entity)));
+            knockback(entity, 1f);
             addedPunchEffects(entity);
         }
         else {

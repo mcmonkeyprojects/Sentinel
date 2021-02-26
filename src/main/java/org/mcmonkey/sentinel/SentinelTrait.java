@@ -147,6 +147,24 @@ public class SentinelTrait extends Trait {
     public long stats_skullsThrown = 0;
 
     /**
+     * Statistics value: how many llama spits this NPC has spit.
+     */
+    @Persist("stats_llamaSpitShot")
+    public long stats_llamaSpitShot = 0;
+
+    /**
+     * Statistics value: how many shulker bullets this NPC has shot.
+     */
+    @Persist("stats_shulkerBulletsShot")
+    public long stats_shulkerBulletsShot = 0;
+
+    /**
+     * Statistics value: how many evoker fangs this NPC has spawned.
+     */
+    @Persist("stats_evokerFangsSpawned")
+    public long stats_evokerFangsSpawned = 0;
+
+    /**
      * Statistics value: how many pearls this NPC has used.
      */
     @Persist("stats_pearlsUsed")
