@@ -1219,7 +1219,7 @@ public class SentinelTrait extends Trait {
     public boolean chased = false;
 
     /**
-     * Marks that the NPC can see a target (Changes the state of som entity types, eg opening a shulker box).
+     * Marks that the NPC can see a target (Changes the state of some entity types, eg opening a shulker box).
      */
     public void specialMarkVision() {
         if (SentinelPlugin.debugMe && !visionMarked) {
@@ -1237,7 +1237,7 @@ public class SentinelTrait extends Trait {
     private boolean visionMarked;
 
     /**
-     * Marks that the NPC can no longer see a target (Changes the state of som entity types, eg closing a shulker box).
+     * Marks that the NPC can no longer see a target (Changes the state of some entity types, eg closing a shulker box).
      */
     public void specialUnmarkVision() {
         if (SentinelPlugin.debugMe && visionMarked) {
@@ -1248,6 +1248,9 @@ public class SentinelTrait extends Trait {
         }
         else if (getLivingEntity().getType() == EntityType.ENDERMAN) {
             SentinelNMSHelper.setEndermanAngry((Enderman) getLivingEntity(), false);
+        }
+        if (autoswitch) {
+            itemHelper.swapToOpenHand();
         }
         visionMarked = false;
     }
