@@ -282,9 +282,8 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
             getLivingEntity().getWorld().spawnParticle(Particle.SPELL, getLivingEntity().getEyeLocation().add(0, 1, 0), 10, 1, 1, 1);
         }
         Vector forward = getLivingEntity().getEyeLocation().getDirection().setY(0).normalize();
-        Location start = getLivingEntity().getLocation().clone().add(forward.clone().multiply(Math.max(1, sentinel.firingMinimumRange())));
+        Location start = getLivingEntity().getLocation().clone().add(forward.clone().multiply(Math.max(3, sentinel.firingMinimumRange())));
         int count = (int) getLivingEntity().getLocation().distance(target) + 2;
-        final double damage = sentinel.getDamage(true);
         for (int i = 0; i < count; i++) {
             final int index = i;
             Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () -> {

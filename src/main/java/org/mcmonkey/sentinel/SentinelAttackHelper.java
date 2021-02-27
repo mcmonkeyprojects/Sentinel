@@ -6,6 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.mcmonkey.sentinel.events.SentinelAttackEvent;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
@@ -330,7 +332,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                 catch (Exception e) {
                     // Do nothing!
                 }
-                entity.setGlowing(true);
+                entity.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20 * 60, 1));
             }
             rangedAmmoCalculation();
             return true;
