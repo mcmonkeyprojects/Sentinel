@@ -78,7 +78,7 @@
         <dependency>
             <groupId>com.palmergames.bukkit</groupId>
             <artifactId>towny</artifactId>
-            <version>1.0</version>
+            <version>0.96.7.4</version>
             <type>jar</type>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/towny.jar</systemPath>

@@ -110,6 +110,7 @@ Here are a few examples of how you might setup and configure an NPC
 - To make a ghast or blaze fire fireballs, give them a blazerod!
 - Damage value for a Sentinel NPC can be set to "-1" to auto-calculate from held item (otherwise, it will used as a raw HP damage amount).
 - Armor value can be set to "-1" to auto-calculate from equipped armor (otherwise, set a value between 0.0 and 1.0 to indicate how much of any damage will be blocked).
+- To make mobs target or ignore the Sentinel NPC, use `/npc targetable`
 
 ### Plugin Integrations
 

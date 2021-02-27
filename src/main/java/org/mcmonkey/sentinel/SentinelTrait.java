@@ -555,7 +555,7 @@ public class SentinelTrait extends Trait {
     public String worldguardRegion = null;
 
     /**
-     * Cache object, {@see worldguardRegion}.
+     * Cache object, refer to 'worldguardRegion'.
      */
     public Object worldguardRegionCache = null;
 
