@@ -288,6 +288,7 @@ public class SentinelPlugin extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Sentinel loading...");
         instance = this;
+        getLogger().info("Running on java version: " + System.getProperty("java.version"));
         SentinelVersionCompat.init();
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SentinelTrait.class).withName("sentinel"));
         saveDefaultConfig();
