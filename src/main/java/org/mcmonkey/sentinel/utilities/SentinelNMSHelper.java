@@ -21,6 +21,10 @@ public class SentinelNMSHelper {
 
     public static void init() {
         try {
+            if (!SentinelVersionCompat.v1_12) {
+                nmsWorks = false;
+                return;
+            }
             // Will be like "org.bukkit.craftbukkit.v1_16_R3"
             String bukkitPackageName = Bukkit.getServer().getClass().getPackage().getName();
             // Should be like "v1_16_R3"
