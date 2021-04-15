@@ -3,7 +3,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
-**Version 2.2.5**: Compatible with Spigot 1.8.8 through 1.16.5 (Primarily targeted at 1.16.5) - see info section below if on other supported versions)
+**Version 2.2.6**: Compatible with Spigot 1.8.8 through 1.16.5 (Primarily targeted at 1.16.5) - see info section below if on other supported versions)
 
 ### Downloads
 
@@ -305,7 +305,7 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
         <dependency>
             <groupId>org.mcmonkey</groupId>
             <artifactId>sentinel</artifactId>
-            <version>2.2.5-SNAPSHOT</version>
+            <version>2.2.6-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
@@ -322,7 +322,8 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
 - Samples of a few common basic operations:
     - Check if NPC is a Sentinel: `if (npc.hasTrait(SentinelTrait.class)) { ...`
     - Get the Sentinel trait from an NPC: `SentinelTrait sentinel = npc.getOrAddTrait(SentinelTrait.class);`
-    - Add a target to a Sentinel: `new SentinelTargetLabel("monsters").addToList(sentinel.allTargets);`
+    - Add a target to a Sentinel NPC by basic type: `sentinel.addTarget("monsters");`
+    - Add a very specific target to a Sentinel NPC: `sentinel.addTarget("uuid:" + player.getUniqueId());`
     - Set the Sentinel NPC's max health: `sentinel.setHealth(500);`
     - Set the Sentinel NPC's damage output: `sentinel.damage = 10;`
 - If you're lost, feel free to ask for help using the help channels listed below.

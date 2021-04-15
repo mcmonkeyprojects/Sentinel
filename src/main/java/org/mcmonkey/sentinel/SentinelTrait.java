@@ -36,6 +36,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.events.SentinelWantsToPathEvent;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
+import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 import org.mcmonkey.sentinel.targeting.SentinelTargetList;
 import org.mcmonkey.sentinel.targeting.SentinelTargetingHelper;
 import org.mcmonkey.sentinel.utilities.SentinelNMSHelper;
@@ -271,6 +272,27 @@ public class SentinelTrait extends Trait {
 
     static {
         PersistenceLoader.registerPersistDelegate(SentinelTargetList.class, SentinelTargetListPersister.class);
+    }
+
+    /**
+     * Adds a new target (by target description string).
+     */
+    public void addTarget(String target) {
+        new SentinelTargetLabel(target).addToList(allTargets);
+    }
+
+    /**
+     * Adds a new ignore (by target description string).
+     */
+    public void addIgnore(String target) {
+        new SentinelTargetLabel(target).addToList(allIgnores);
+    }
+
+    /**
+     * Adds a new avoid-target (by target description string).
+     */
+    public void addAvoid(String target) {
+        new SentinelTargetLabel(target).addToList(allAvoids);
     }
 
     /**

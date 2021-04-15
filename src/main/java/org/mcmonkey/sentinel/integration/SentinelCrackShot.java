@@ -8,6 +8,7 @@ import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.SentinelIntegration;
 import org.mcmonkey.sentinel.SentinelTrait;
 import com.shampaggon.crackshot.CSDirector;
+import org.mcmonkey.sentinel.SentinelUtilities;
 
 public class SentinelCrackShot extends SentinelIntegration {
 
@@ -37,7 +38,7 @@ public class SentinelCrackShot extends SentinelIntegration {
         }
         faceAcc = st.fixForAcc(faceAcc);
         st.faceLocation(st.getLivingEntity().getEyeLocation().clone().add(faceAcc.multiply(10)));
-        ItemStack itm = ((Player) st.getLivingEntity()).getItemInHand();
+        ItemStack itm = SentinelUtilities.getHeldItem(st.getLivingEntity());
         direc.csminion.weaponInteraction((Player) st.getLivingEntity(), node, false);
         ((Player) st.getLivingEntity()).setItemInHand(itm);
         if (st.rangedChase) {
