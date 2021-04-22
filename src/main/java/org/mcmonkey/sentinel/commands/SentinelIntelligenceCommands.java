@@ -21,7 +21,7 @@ public class SentinelIntelligenceCommands {
             modifiers = {"squad"}, permission = "sentinel.squad", min = 1, max = 9999)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void squad(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
-        sentinel.squad = SentinelUtilities.concatWithSpaces(args.getSlice(1), 1).toLowerCase(Locale.ENGLISH);
+        sentinel.squad = SentinelUtilities.concatWithSpaces(args.getSlice(1), 0).toLowerCase(Locale.ENGLISH);
         if (sentinel.squad.equals("null") || sentinel.squad.length() == 0) {
             sentinel.squad = null;
         }
