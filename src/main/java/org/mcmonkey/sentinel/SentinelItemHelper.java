@@ -373,7 +373,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is using a llama spit item (white_dye).
      */
     public boolean usesLlamaSpit(ItemStack it) {
-        if (!SentinelVersionCompat.v1_13) {
+        if (!SentinelVersionCompat.v1_16) {
             return false;
         }
         return it != null && it.getType() == Material.WHITE_DYE;
