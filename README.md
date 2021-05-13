@@ -130,9 +130,10 @@ Sentinel is integrated into by external plugins as well, including:
 - Denizen (using Depenizen as a bridge), for scriptable targeting!
     - Use `held_denizen_item:DENIZEN_ITEM_NAME` for targeting based on targets holding a Denizen item.
     - or use `denizen_proc:PROCEDURE_SCRIPT_NAME` to fire a procedure script.
-        - First procedure context (named `entity` by default) is the entity that might be a target.
-        - Second procedure context (named `context` by default) is the optional user-input context info.
+        - First procedure context (named `entity`) is the entity that might be a target.
+        - Second procedure context (named `context`) is the optional user-input context info.
             - To use this, do: `denizen_proc:PROCEDURE_SCRIPT_NAME:SOME_CONTEXT_HERE`
+        - Recommended that you add to the proc `definitions: entity|context` to avoid script-checker errors.
         - Determine `true` or `false` to indicate whether the entity is a target.
     - Also check the Denizen meta docs - type `!search sentinel` in `#bot-spam` on the Denizen support Discord.
 - QualityArmory, to allow NPCs to fire QA weapons (just put the weapon in their hand).
@@ -281,7 +282,7 @@ These are all valid targets and ignores:
 - Snowballs
 - Eggs
 - Ender Pearls (Causes the target to get flung into the air!)
-- Skulls (Dangerous wither skull explosions!)
+- Wither skulls (Dangerous wither skull explosions!)
 - White_Dye (Shoots llama spit!)
 - Shulker_Shell (Fires a shulker bullet!)
 - Books (Will do evoker fang spell attacks!)

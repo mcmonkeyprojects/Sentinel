@@ -1700,6 +1700,7 @@ public class SentinelTrait extends Trait {
      */
     @Override
     public void onSpawn() {
+        isBlocking = false;
         lastEntityUUID = getLivingEntity().getUniqueId();
         stats_timesSpawned++;
         setHealth(health);

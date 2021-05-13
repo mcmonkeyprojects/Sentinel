@@ -331,7 +331,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
 
     /**
      * Returns a spot to run to if running in a certain direction.
-     * Returns null if can't reasonable run that direction.
+     * Returns null if can't reasonably run that direction.
      */
     public static Location findSpotForRunDirection(Location start, double distance, Vector direction) {
         VectorGoal goal = new VectorGoal(start.clone().add(direction.clone().multiply(distance)), 4);
