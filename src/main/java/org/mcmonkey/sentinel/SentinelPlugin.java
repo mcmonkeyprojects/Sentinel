@@ -231,6 +231,7 @@ public class SentinelPlugin extends JavaPlugin {
         integrations.add(integration);
         for (String prefix : integration.getTargetPrefixes()) {
             integrationPrefixMap.put(prefix, integration);
+            SentinelCommand.addTargetTabCompletions.add(prefix + ":");
         }
     }
 

@@ -9,13 +9,15 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.*;
+import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Helper class for the Sentinel command.
@@ -145,11 +147,57 @@ public class SentinelCommand implements CommandExecutor, TabCompleter {
         return manager.executeSafe(command, args, sender, methodArgs);
     }
 
+    private static List<String> filterForArg(Collection<String> output, String arg1) {
+        String low = arg1.toLowerCase();
+        return output.stream().filter(s -> s.startsWith(low)).collect(Collectors.toList());
+    }
+
+    public static HashSet<String> addTargetTabCompletions = new HashSet<>();
+    public static HashSet<String> itemPrefixes = new HashSet<>(Arrays.asList("helditem", "offhand", "equipped", "in_inventory"));
+    public static List<String> materialNames = Arrays.stream(Material.values()).map(m -> m.name().toLowerCase()).collect(Collectors.toList());
+
+    static {
+        addTargetTabCompletions.addAll(Arrays.asList("player:", "npc:", "entityname:", "group:"));
+        addTargetTabCompletions.addAll(Arrays.asList("helditem:", "offhand:", "equipped:", "in_inventory:"));
+        addTargetTabCompletions.addAll(Arrays.asList("status:angry", "status:passive"));
+        addTargetTabCompletions.addAll(Arrays.asList("event:", "event:pvp", "event:pve", "event:pvnpc", "event:pvsentinel", "event:eve", "event:pv:", "event:ev:", "event:guarded_fight", "event:message:"));
+        addTargetTabCompletions.addAll(SentinelPlugin.targetOptions.keySet().stream().map(String::toLowerCase).collect(Collectors.toList()));
+    }
+
     /**
      * Handles tab completion for a player or server command.
      */
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (s.equals("sentinel") && strings.length == 2) {
+            NPC npc = CitizensAPI.getDefaultNPCSelector().getSelected(commandSender);
+            if (npc != null && npc.hasTrait(SentinelTrait.class)) {
+                SentinelTrait sentinel = npc.getOrAddTrait(SentinelTrait.class);
+                switch (strings[0].toLowerCase()) {
+                    case "addtarget":
+                    case "addignore":
+                    case "addavoid":
+                        String low = strings[1].toLowerCase();
+                        int colon = low.indexOf(':');
+                        if (colon != -1 && colon + 1 < low.length()) {
+                            String prefix = low.substring(0, colon);
+                            if (itemPrefixes.contains(prefix)) {
+                                List<String> materials = filterForArg(materialNames, low.substring(colon + 1));
+                                materials.add("lore:");
+                                materials.add("name:");
+                                return filterForArg(materials.stream().map(m -> prefix + ":" + m).collect(Collectors.toList()), low);
+                            }
+                        }
+                        return filterForArg(addTargetTabCompletions, low);
+                    case "removetarget":
+                        return filterForArg(sentinel.allTargets.getTargetRemovableStrings(), strings[1]);
+                    case "removeignore":
+                        return filterForArg(sentinel.allIgnores.getTargetRemovableStrings(), strings[1]);
+                    case "removeavoid":
+                        return filterForArg(sentinel.allAvoids.getTargetRemovableStrings(), strings[1]);
+                }
+            }
+        }
         return manager.onTabComplete(commandSender, command, s, strings);
     }
 }

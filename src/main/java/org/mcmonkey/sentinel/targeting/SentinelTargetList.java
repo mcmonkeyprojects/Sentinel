@@ -18,10 +18,7 @@ import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.SentinelUtilities;
 import org.mcmonkey.sentinel.commands.SentinelCommand;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class SentinelTargetList {
 
@@ -595,6 +592,43 @@ public class SentinelTargetList {
             return "";
         }
         return sb.substring(0, sb.length() - (SentinelCommand.colorBasic + " . " + ChatColor.AQUA.toString()).length());
+    }
+
+    private static void addRemovableString(ArrayList<String> output, ArrayList<String> targets, String prefix) {
+        for (String target : targets) {
+            if (prefix == null) {
+                output.add(target);
+            }
+            else {
+                output.add(prefix + ":" + target);
+            }
+        }
+    }
+
+    /**
+     * Gets a list of target strings, fit for input to a remove command.
+     */
+    public List<String> getTargetRemovableStrings() {
+        ArrayList<String> output = new ArrayList<>();
+        addRemovableString(output, targets, null);
+        addRemovableString(output, byPlayerName, "player");
+        addRemovableString(output, byNpcName, "npc");
+        addRemovableString(output, byEntityName, "entityname");
+        addRemovableString(output, byHeldItem, "helditem");
+        addRemovableString(output, byOffhandItem, "offhand");
+        addRemovableString(output, byEquippedItem, "equipped");
+        addRemovableString(output, byInventoryItem, "in_inventory");
+        addRemovableString(output, byGroup, "group");
+        addRemovableString(output, byEvent, "event");
+        addRemovableString(output, byStatus, "status");
+        addRemovableString(output, byOther, null);
+        for (SentinelTargetList list : byAllInOne) {
+            output.add("allinone:" + ChatColor.stripColor(list.toAllInOneString().replace(" ", "")));
+        }
+        for (SentinelTargetList list : byMultiple) {
+            output.add("multi:" + ChatColor.stripColor(list.toMultiTargetString().replace(" ", "")));
+        }
+        return output;
     }
 
     /**
