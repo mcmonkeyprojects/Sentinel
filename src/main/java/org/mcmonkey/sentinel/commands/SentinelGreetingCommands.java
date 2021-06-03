@@ -65,7 +65,7 @@ public class SentinelGreetingCommands {
             modifiers = {"greeting"}, permission = "sentinel.greet", min = 1, max = 9999)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void greeting(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
-        sentinel.greetingText = SentinelUtilities.concatWithSpaces(args.getSlice(1), 1);
+        sentinel.greetingText = SentinelUtilities.concatWithSpaces(args.getSlice(1), 0);
         sender.sendMessage(SentinelCommand.prefixGood + "Set!");
     }
 
@@ -74,7 +74,7 @@ public class SentinelGreetingCommands {
             modifiers = {"warning"}, permission = "sentinel.greet", min = 1, max = 9999)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void warning(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
-        sentinel.warningText = SentinelUtilities.concatWithSpaces(args.getSlice(1), 1);
+        sentinel.warningText = SentinelUtilities.concatWithSpaces(args.getSlice(1), 0);
         sender.sendMessage(SentinelCommand.prefixGood + "Set!");
     }
 }

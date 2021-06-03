@@ -597,10 +597,10 @@ public class SentinelTargetList {
     private static void addRemovableString(ArrayList<String> output, ArrayList<String> targets, String prefix) {
         for (String target : targets) {
             if (prefix == null) {
-                output.add(target);
+                output.add(target.toLowerCase());
             }
             else {
-                output.add(prefix + ":" + target);
+                output.add(prefix + ":" + target.toLowerCase());
             }
         }
     }
@@ -623,10 +623,10 @@ public class SentinelTargetList {
         addRemovableString(output, byStatus, "status");
         addRemovableString(output, byOther, null);
         for (SentinelTargetList list : byAllInOne) {
-            output.add("allinone:" + ChatColor.stripColor(list.toAllInOneString().replace(" ", "")));
+            output.add("allinone:" + ChatColor.stripColor(list.toAllInOneString().toLowerCase().replace(" ", "")));
         }
         for (SentinelTargetList list : byMultiple) {
-            output.add("multi:" + ChatColor.stripColor(list.toMultiTargetString().replace(" ", "")));
+            output.add("multi:" + ChatColor.stripColor(list.toMultiTargetString().toLowerCase().replace(" ", "")));
         }
         return output;
     }

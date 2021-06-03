@@ -144,7 +144,7 @@ public class SentinelIntelligenceCommands {
         try {
             double dist = Double.parseDouble(args.getString(1));
             double selDist = dist * 0.5;
-            if (args.argsLength() > 1) {
+            if (args.argsLength() > 2) {
                 selDist = Double.parseDouble(args.getString(2));
                 if ((selDist < 1) || (selDist > 25)) {
                     throw new NumberFormatException("Selection_Range number out of range (must be >= 1 and <= 25).");
