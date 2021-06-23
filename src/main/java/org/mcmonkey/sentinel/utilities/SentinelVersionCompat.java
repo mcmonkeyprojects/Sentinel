@@ -47,12 +47,13 @@ public class SentinelVersionCompat {
     /**
      * Boolean indicating if the server version is >= the named version.
      */
-    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14, v1_15, v1_16, vFuture;
+    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14, v1_15, v1_16, v1_17, vFuture;
 
     static {
         String vers = Bukkit.getBukkitVersion(); // Returns in format like: 1.12.2-R0.1-SNAPSHOT
-        vFuture = vers.startsWith("1.17") || vers.startsWith("1.18") || vers.startsWith("1.19");
-        v1_16 = vers.startsWith("1.16") || vFuture;
+        vFuture = vers.startsWith("1.18") || vers.startsWith("1.19") || vers.startsWith("1.20");
+        v1_17 = vers.startsWith("1.17") || vFuture;
+        v1_16 = vers.startsWith("1.16") || v1_17;
         v1_15 = vers.startsWith("1.15") || v1_16;
         v1_14 = vers.startsWith("1.14") || v1_15;
         v1_13 = vers.startsWith("1.13") || v1_14;
@@ -161,9 +162,18 @@ public class SentinelVersionCompat {
             SentinelTarget.PIGLIN_BRUTE = new SentinelTarget(new EntityType[]{EntityType.PIGLIN_BRUTE}, "PIGLIN_BRUTE");
             SentinelTarget.ZOMBIFIED_PIGLINS = new SentinelTarget(new EntityType[]{EntityType.ZOMBIFIED_PIGLIN}, "ZOMBIFIED_PIGLIN", "ZOMBIFIEDPIGLIN", "ZOMBIE_PIGLIN", "ZOMBIEPIGLIN", "PIG_ZOMBIE", "PIGZOMBIE", "ZOMBIEPIGMAN", "ZOMBIEPIGMEN", "ZOMBIE_PIGMAN", "ZOMBIE_PIGMEN", "ZOMBIE_PIGMAN");
         }
-        if (v1_16) { // && !v1_17
+        if (v1_16 && !v1_17) { // && !v1_17
             SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_16_passive(), passiveNames());
             SentinelTarget.MOBS = new SentinelTarget(combine(v1_16_passive(), v1_16_monsters()), "MOB");
+            SentinelTarget.MONSTERS = new SentinelTarget(v1_16_monsters(), "MONSTER");
+        }
+        if (v1_17) {
+            SentinelTarget.HOGLINS = new SentinelTarget(new EntityType[]{EntityType.GOAT}, "GOAT");
+            SentinelTarget.PIGLINS = new SentinelTarget(new EntityType[]{EntityType.AXOLOTL}, "AXOLOTL");
+        }
+        if (v1_17) { // && !v1_18
+            SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_17_passive(), passiveNames());
+            SentinelTarget.MOBS = new SentinelTarget(combine(v1_17_passive(), v1_16_monsters()), "MOB");
             SentinelTarget.MONSTERS = new SentinelTarget(v1_16_monsters(), "MONSTER");
         }
         // ========================== End Entities ==========================
@@ -404,6 +414,10 @@ public class SentinelVersionCompat {
 
     static EntityType[] v1_16_passive() {
         return combine(v1_14_passive(), EntityType.STRIDER);
+    }
+
+    static EntityType[] v1_17_passive() {
+        return combine(v1_16_passive(), EntityType.GOAT, EntityType.AXOLOTL);
     }
 
     static EntityType[] v1_8_monsters() {
