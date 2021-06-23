@@ -31,38 +31,38 @@ public class SentinelNMSHelper {
             String packageVersion = bukkitPackageName.substring(bukkitPackageName.lastIndexOf('.') + 1);
             Class craftEntity = Class.forName(bukkitPackageName + ".entity.CraftEntity");
             CRAFTENTITY_GETHANDLE = NMS.getMethodHandle(craftEntity, "getHandle", true);
-            if (SentinelVersionCompat.v1_17) {
-                Class nmsEntity = Class.forName("net.minecraft.world.entity.Entity");
-                Class nmsWorld = Class.forName("net.minecraft.world.level.World");
-                Class nmsDataWatcher = Class.forName("net.minecraft.network.syncher.DataWatcher");
-                Class nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject");
-                NMSENTITY_WORLDGETTER = NMS.getFirstGetter(nmsEntity, nmsWorld);
-                NMSENTITY_GETDATAWATCHER = NMS.getFirstGetter(nmsEntity, nmsDataWatcher);
-                NMSWORLD_BROADCASTENTITYEFFECT = NMS.getMethodHandle(nmsWorld, "broadcastEntityEffect", true, nmsEntity, byte.class);
-                DATWATCHER_SET = NMS.getMethodHandle(nmsDataWatcher, "set", true, nmsDataWatcherObject, Object.class);
-                Class nmsEntityEnderman = Class.forName("net.minecraft.world.entity.monster.EntityEnderman");
-                Field dataWatcherAngryField = NMS.getField(nmsEntityEnderman, "bU");
+            Class nmsEntity, nmsWorld, nmsDataWatcher, nmsDataWatcherObject, nmsEntityEnderman;
+            String endermanAngryField = null;
+            if (SentinelVersionCompat.v1_17) { // 1.17+ - Mojang mappings update
+                nmsEntity = Class.forName("net.minecraft.world.entity.Entity");
+                nmsWorld = Class.forName("net.minecraft.world.level.World");
+                nmsDataWatcher = Class.forName("net.minecraft.network.syncher.DataWatcher");
+                nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject");
+                nmsEntityEnderman = Class.forName("net.minecraft.world.entity.monster.EntityEnderman");
+                if (!SentinelVersionCompat.vFuture) {
+                    endermanAngryField = "bU"; // 1.17
+                }
+            }
+            else { // 1.8 through 1.16 - Original Spigot NMS versioned mappings
+                String nmsPackageName = "net.minecraft.server." + packageVersion;
+                nmsEntity = Class.forName(nmsPackageName + ".Entity");
+                nmsWorld = Class.forName(nmsPackageName + ".World");
+                nmsDataWatcher = Class.forName(nmsPackageName + ".DataWatcher");
+                nmsDataWatcherObject = Class.forName(nmsPackageName + ".DataWatcherObject");
+                nmsEntityEnderman = Class.forName(nmsPackageName + ".EntityEnderman");
+                if (SentinelVersionCompat.v1_16) {
+                    endermanAngryField = "bo";
+                }
+            }
+            NMSENTITY_WORLDGETTER = NMS.getFirstGetter(nmsEntity, nmsWorld);
+            NMSENTITY_GETDATAWATCHER = NMS.getFirstGetter(nmsEntity, nmsDataWatcher);
+            NMSWORLD_BROADCASTENTITYEFFECT = NMS.getMethodHandle(nmsWorld, "broadcastEntityEffect", true, nmsEntity, byte.class);
+            DATWATCHER_SET = NMS.getMethodHandle(nmsDataWatcher, "set", true, nmsDataWatcherObject, Object.class);
+            if (endermanAngryField != null && nmsEntityEnderman != null) {
+                Field dataWatcherAngryField = NMS.getField(nmsEntityEnderman, endermanAngryField);
                 dataWatcherAngryField.setAccessible(true);
                 ENTITYENDERMAN_DATAWATCHER_ANGRY = dataWatcherAngryField.get(null);
                 endermanValid = true;
-            }
-            else {
-                String nmsPackageName = "net.minecraft.server." + packageVersion;
-                Class nmsEntity = Class.forName(nmsPackageName + ".Entity");
-                NMSENTITY_WORLDGETTER = NMS.getGetter(nmsEntity, "world");
-                NMSENTITY_GETDATAWATCHER = NMS.getMethodHandle(nmsEntity, "getDataWatcher", true);
-                Class nmsWorld = Class.forName(nmsPackageName + ".World");
-                NMSWORLD_BROADCASTENTITYEFFECT = NMS.getMethodHandle(nmsWorld, "broadcastEntityEffect", true, nmsEntity, byte.class);
-                Class nmsDataWatcher = Class.forName(nmsPackageName + ".DataWatcher");
-                Class nmsDataWatcherObject = Class.forName(nmsPackageName + ".DataWatcherObject");
-                DATWATCHER_SET = NMS.getMethodHandle(nmsDataWatcher, "set", true, nmsDataWatcherObject, Object.class);
-                if (SentinelVersionCompat.v1_16) {
-                    Class nmsEntityEnderman = Class.forName(nmsPackageName + ".EntityEnderman");
-                    Field dataWatcherAngryField = NMS.getField(nmsEntityEnderman, "bo");
-                    dataWatcherAngryField.setAccessible(true);
-                    ENTITYENDERMAN_DATAWATCHER_ANGRY = dataWatcherAngryField.get(null);
-                    endermanValid = true;
-                }
             }
         }
         catch (Throwable ex) {
