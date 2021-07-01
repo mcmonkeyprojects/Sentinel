@@ -205,7 +205,9 @@ public class SentinelHealthCommands {
         }
         Inventory inv = Bukkit.createInventory(null, 9 * 4, SentinelEventHandler.InvPrefix + sentinel.getNPC().getId());
         ItemStack[] items = new ItemStack[sentinel.drops.size()];
-        inv.addItem(sentinel.drops.toArray(items));
+        for (int i = 0; i < items.length; i++) {
+            inv.setItem(i, items[i].clone());
+        }
         ((Player) sender).openInventory(inv);
     }
 

@@ -43,7 +43,7 @@ public class SentinelNMSHelper {
                     endermanAngryField = "bU"; // 1.17
                 }
             }
-            else { // 1.8 through 1.16 - Original Spigot NMS versioned mappings
+            else { // 1.12 through 1.16 - Original Spigot NMS versioned mappings
                 String nmsPackageName = "net.minecraft.server." + packageVersion;
                 nmsEntity = Class.forName(nmsPackageName + ".Entity");
                 nmsWorld = Class.forName(nmsPackageName + ".World");
