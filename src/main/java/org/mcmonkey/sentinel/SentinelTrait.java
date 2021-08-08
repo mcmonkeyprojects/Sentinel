@@ -296,6 +296,27 @@ public class SentinelTrait extends Trait {
     }
 
     /**
+     * Removes a target (by target description string).
+     */
+    public void removeTarget(String target) {
+        new SentinelTargetLabel(target).removeFromList(allTargets);
+    }
+
+    /**
+     * Removes an ignore (by target description string).
+     */
+    public void removeIgnore(String target) {
+        new SentinelTargetLabel(target).removeFromList(allIgnores);
+    }
+
+    /**
+     * Removes an avoid-target (by target description string).
+     */
+    public void removeAvoid(String target) {
+        new SentinelTargetLabel(target).removeFromList(allAvoids);
+    }
+
+    /**
      * How far to stay from avoid targets.
      */
     @Persist
