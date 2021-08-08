@@ -1,6 +1,8 @@
 package org.mcmonkey.sentinel;
 
 import net.citizensnpcs.api.ai.TargetType;
+import net.citizensnpcs.api.ai.flocking.*;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -8,6 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.events.SentinelAttackEvent;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
@@ -20,6 +23,9 @@ public class SentinelAttackHelper extends SentinelHelperObject {
      * Causes the NPC to chase a target.
      */
     public void chase(LivingEntity entity) {
+        if (SentinelPlugin.debugMe) {
+            debug("Begin chasing " + entity.getUniqueId() + "/" + entity.getType().name());
+        }
         sentinel.cleverTicks = 0;
         sentinel.chasing = entity;
         sentinel.chased = true;
@@ -35,23 +41,42 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     && getNPC().getNavigator().getTargetAsLocation() != null
                     && ((getNPC().getNavigator().getTargetAsLocation().getWorld().equals(entity.getWorld())
                     && getNPC().getNavigator().getTargetAsLocation().distanceSquared(targetLocation) < 2 * 2))) {
+                debug("Cancel chase: already chasing close");
                 return;
             }
-            getNPC().getNavigator().setTarget(targetLocation);
+            debug("Chase/location begin");
+            getNPC().getNavigator().setTarget(targetLocation.add(new Vector(SentinelUtilities.randomDecimal(-1, 1), 0, SentinelUtilities.randomDecimal(-1, 1))));
             final Location entityEyeLoc = entity.getEyeLocation();
             getNPC().getNavigator().getLocalParameters().lookAtFunction(n -> entityEyeLoc);
         }
         else {
             if (getNPC().getNavigator().getTargetType() == TargetType.ENTITY
                     && SentinelUtilities.getTargetFor(getNPC().getNavigator().getEntityTarget()).getUniqueId().equals(entity.getUniqueId())) {
+                debug("Cancel chase: already chasing entity");
                 return;
             }
+            debug("Chase/entity begin");
             getNPC().getNavigator().setTarget(entity, false);
+            getNPC().getNavigator().getLocalParameters().addRunCallback(generateNewFlocker(getNPC(), FLOCK_RADIUS));
         }
         if (!sentinel.disableTeleporting) {
             getNPC().getNavigator().getLocalParameters().stuckAction(null);
         }
         sentinel.autoSpeedModifier();
+    }
+
+    /**
+     * Flocker influence constants, for "generateNewFlocker".
+     */
+    public static double HIGH_INFLUENCE = 1.0 / 20.0, LOW_INFLUENCE = 1.0 / 200.0, FLOCK_RADIUS = 3;
+
+    /**
+     * Generates a Citizens flocker instance to help keep NPCs from clumping.
+     */
+    public static Flocker generateNewFlocker(NPC npc, double radius) {
+        NPCFlock flock = new RadiusNPCFlock(radius);
+        return new Flocker(npc, flock, new SeparationBehavior(LOW_INFLUENCE),
+                new CohesionBehavior(LOW_INFLUENCE), new AlignmentBehavior(HIGH_INFLUENCE));
     }
 
     /**
@@ -137,9 +162,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         double dist = getLivingEntity().getEyeLocation().distanceSquared(entity.getEyeLocation());
         if (dist < sentinel.projectileRange * sentinel.projectileRange && targetingHelper.canSee(entity)) {
             if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                if (SentinelPlugin.debugMe) {
-                    debug("tryAttack refused, timeSinceAttack");
-                }
+                debug("tryAttack refused, timeSinceAttack");
                 if (sentinel.rangedChase) {
                     rechase();
                 }
@@ -149,9 +172,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             return false;
         }
         else if (sentinel.rangedChase) {
-            if (SentinelPlugin.debugMe) {
-                debug("tryAttack refused, range or visibility");
-            }
+            debug("tryAttack refused, range or visibility");
             chase(entity);
             return true;
         }
@@ -197,9 +218,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         SentinelAttackEvent sat = new SentinelAttackEvent(getNPC(), entity);
         Bukkit.getPluginManager().callEvent(sat);
         if (sat.isCancelled()) {
-            if (SentinelPlugin.debugMe) {
-                debug("tryAttack refused, event cancellation");
-            }
+            debug("tryAttack refused, event cancellation");
             return false;
         }
         targetingHelper.addTarget(entity.getUniqueId());
@@ -340,9 +359,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         else {
             if (dist < sentinel.reach * sentinel.reach) {
                 if (sentinel.timeSinceAttack < sentinel.attackRate) {
-                    if (SentinelPlugin.debugMe) {
-                        debug("tryAttack refused, timeSinceAttack");
-                    }
+                    debug("tryAttack refused, timeSinceAttack");
                     if (sentinel.closeChase) {
                         rechase();
                     }
@@ -350,9 +367,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                 }
                 sentinel.timeSinceAttack = 0;
                 // TODO: Damage sword if needed!
-                if (SentinelPlugin.debugMe) {
-                    debug("tryAttack passed!");
-                }
+                debug("tryAttack passed!");
                 weaponHelper.punch(entity);
                 if (sentinel.needsAmmo && itemHelper.shouldTakeDura()) {
                     itemHelper.reduceDurability();
@@ -361,9 +376,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                 return true;
             }
             else if (sentinel.closeChase) {
-                if (SentinelPlugin.debugMe) {
-                    debug("tryAttack refused, range");
-                }
+                debug("tryAttack refused, range");
                 chase(entity);
                 return false;
             }
