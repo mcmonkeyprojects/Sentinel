@@ -1042,7 +1042,7 @@ public class SentinelTrait extends Trait {
         safeShot = config.getBoolean("sentinel defaults.safe shot", true);
         enemyDrops = config.getBoolean("sentinel defaults.enemy drops", false);
         enemyTargetTime = config.getInt("sentinel defaults.enemy target time", 0);
-        speed = config.getInt("sentinel defaults.speed", 1);
+        speed = config.getDouble("sentinel defaults.speed", 1.5);
         if (speed <= 0) {
             speed = 1;
         }
