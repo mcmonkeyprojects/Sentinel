@@ -940,9 +940,7 @@ public class SentinelTrait extends Trait {
             }
             if (getGuarding() != null && damager.getUniqueId().equals(getGuarding())) {
                 if (isMe && SentinelPlugin.instance.noGuardDamage) {
-                    if (SentinelPlugin.debugMe) {
-                        debug("Ignoring damage from the player we're guarding.");
-                    }
+                    debug("Ignoring damage from the player we're guarding.");
                     event.setCancelled(true);
                 }
                 return;
@@ -950,9 +948,7 @@ public class SentinelTrait extends Trait {
             if (isMe) {
                 stats_damageTaken += event.getFinalDamage();
                 if (runaway) {
-                    if (SentinelPlugin.debugMe) {
-                        debug("Ow! They hit me! Run!");
-                    }
+                    debug("Ow! They hit me! Run!");
                     targetingHelper.addAvoid(damager.getUniqueId());
                 }
             }
@@ -961,18 +957,18 @@ public class SentinelTrait extends Trait {
                     debug("Fighting back against attacker: " + damager.getUniqueId() + "! They hurt " + (isMe ? "me!" : "my friend!"));
                 }
                 targetingHelper.addTarget(damager.getUniqueId());
+                if (chasing == null) {
+                    attackHelper.chase((LivingEntity) damager);
+                }
             }
             if (SentinelPlugin.debugMe && isMe) {
-                debug("Took damage of " + event.getFinalDamage() + " with currently remaining health " + getLivingEntity().getHealth()
-                    + (isKilling ? ". This will kill me." : "."));
+                debug("Took damage of " + event.getFinalDamage() + " with currently remaining health " + getLivingEntity().getHealth() + (isKilling ? ". This will kill me." : "."));
             }
             if (isKilling && isMe && SentinelPlugin.instance.blockEvents) {
                 // We're going to die but we've been requested to avoid letting a death event fire.
                 // The solution at this point is to fake our death: remove the NPC entity from existence and trigger our internal death handling sequence.
                 // We also mark the damage event cancelled to reduce trouble (ensure event doesn't try to apply damage to our now-gone entity).
-                if (SentinelPlugin.debugMe) {
-                    debug("Died! Applying death workaround (due to config setting)");
-                }
+                debug("Died! Applying death workaround (due to config setting)");
                 generalDeathHandler(getLivingEntity());
                 npc.despawn(DespawnReason.PLUGIN);
                 event.setCancelled(true);
