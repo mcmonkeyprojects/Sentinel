@@ -958,7 +958,9 @@ public class SentinelTrait extends Trait {
                 }
                 targetingHelper.addTarget(damager.getUniqueId());
                 if (chasing == null) {
-                    attackHelper.chase((LivingEntity) damager);
+                    if (itemHelper.isRanged() ? rangedChase : closeChase) {
+                        attackHelper.chase((LivingEntity) damager);
+                    }
                 }
             }
             if (SentinelPlugin.debugMe && isMe) {
