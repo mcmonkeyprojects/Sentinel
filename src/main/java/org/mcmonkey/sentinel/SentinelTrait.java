@@ -818,6 +818,11 @@ public class SentinelTrait extends Trait {
         if (!npc.isSpawned()) {
             return;
         }
+        // NPCs can mis-invoke sweep damage - this is never a wanted/intended effect, so discard it asap.
+        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
+            event.setCancelled(true);
+            return;
+        }
         if (SentinelPlugin.instance.alternateDamage) {
             if (canEnforce) {
                 canEnforce = false;

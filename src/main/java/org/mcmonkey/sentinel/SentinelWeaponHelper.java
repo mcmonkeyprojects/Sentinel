@@ -15,6 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
+import org.mcmonkey.sentinel.utilities.SentinelNMSHelper;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
 import java.util.HashMap;
@@ -319,20 +320,26 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
             addedPunchEffects(entity);
         }
         else {
-            if (sentinel.damage < 0 && SentinelVersionCompat.v1_15 && SentinelTarget.NATIVE_COMBAT_CAPABLE_TYPES.contains(getLivingEntity().getType())) {
-                if (SentinelPlugin.debugMe) {
-                    debug("Punch/native");
+            if (sentinel.damage < 0 && SentinelVersionCompat.v1_15 && SentinelPlugin.instance.doNativeAttack) {
+                if (SentinelTarget.NATIVE_COMBAT_CAPABLE_TYPES.contains(getLivingEntity().getType())) {
+                    debug("Punch/native/mob");
+                    getLivingEntity().attack(entity);
+                    return;
                 }
-                getLivingEntity().attack(entity);
-            }
-            else {
-                double damage = sentinel.getDamage(false);
-                if (SentinelPlugin.debugMe) {
-                    debug("Punch/natural for " + damage);
+                else if (getLivingEntity() instanceof Player && SentinelVersionCompat.v1_17) {
+                    debug("Punch/native/player");
+                    if (SentinelNMSHelper.doPlayerAttack((Player) getLivingEntity(), entity)) {
+                        return;
+                    }
+                    debug("Native player punch failed. Error?");
                 }
-                entity.damage(damage, getLivingEntity());
-                addedPunchEffects(entity);
             }
+            double damage = sentinel.getDamage(false);
+            if (SentinelPlugin.debugMe) {
+                debug("Punch/natural for " + damage);
+            }
+            entity.damage(damage, getLivingEntity());
+            addedPunchEffects(entity);
         }
     }
 

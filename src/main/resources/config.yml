@@ -39,7 +39,7 @@ sentinel defaults:
     # "Realistic" logic, don't attack targets we can't see, if enabled.
     realistic: false
     # How far the NPC can reach.
-    reach: 3
+    reach: 4.5
     # How far the NPC is willing to fire projectiles.
     projectile range: 100
     # How far the NPC should stay away from threats (listed by 'addavoid' command).
@@ -63,6 +63,10 @@ random:
     # Whether to use 'workaround' mode of melee damage.
     # If enabled, this can cause unwanted side effects, like mobs not aggroing or some armor effects not applying.
     workaround damage: false
+    # If set 'true', native (Spigot or NMS) driven attack handlers will be used for melee attacks from some NPC entity types when that NPC's damage value is -1.
+    # If the damage value is manually specified, or the NPC is not a supported type, or this config key is set to 'false', a direct damage induction will be used instead.
+    # If 'workaround damage' is enabled, neither native nor direct damage will be used, and the workaround hack will apply instead.
+    do native attacks: true
     # Whether to enforce drops even when 'keepInventory' or similar are enabled.
     workaround drops: false
     # Whether to block some Bukkit events related to Sentinel NPCs from ever running. Will cause weirdness with basic functionality.

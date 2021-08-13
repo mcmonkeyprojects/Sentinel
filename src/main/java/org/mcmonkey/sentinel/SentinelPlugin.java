@@ -122,6 +122,11 @@ public class SentinelPlugin extends JavaPlugin {
     public boolean workaroundDamage;
 
     /**
+     * Configuration option: whether to do native attack instead of direct damage for melee.
+     */
+    public boolean doNativeAttack;
+
+    /**
      * Configuration option: minimum arrow shooting speed.
      */
     public double minShootSpeed;
@@ -259,6 +264,7 @@ public class SentinelPlugin extends JavaPlugin {
         blockEvents = getConfig().getBoolean("random.workaround bukkit events", false);
         alternateDamage = getConfig().getBoolean("random.enforce damage", false);
         workaroundDamage = getConfig().getBoolean("random.workaround damage", false);
+        doNativeAttack = getConfig().getBoolean("random.do native attacks", true);
         minShootSpeed = getConfig().getDouble("random.shoot speed minimum", 20);
         workaroundDrops = getConfig().getBoolean("random.workaround drops", false) || blockEvents;
         deathMessages = getConfig().getBoolean("random.death messages", true);

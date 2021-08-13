@@ -3,7 +3,9 @@ package org.mcmonkey.sentinel.utilities;
 import net.citizensnpcs.util.NMS;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.IronGolem;
+import org.bukkit.entity.Player;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -13,7 +15,8 @@ import java.lang.reflect.Field;
  */
 public class SentinelNMSHelper {
 
-    public static MethodHandle CRAFTENTITY_GETHANDLE, NMSENTITY_WORLDGETTER, NMSWORLD_BROADCASTENTITYEFFECT, NMSENTITY_GETDATAWATCHER, DATWATCHER_SET;
+    public static MethodHandle CRAFTENTITY_GETHANDLE, NMSENTITY_WORLDGETTER, NMSWORLD_BROADCASTENTITYEFFECT, NMSENTITY_GETDATAWATCHER, DATWATCHER_SET,
+            SERVERPLAYER_ATTACK, LIVINGENTITY_ATTACKSTRENGTHTICKS;
 
     public static Object ENTITYENDERMAN_DATAWATCHER_ANGRY;
 
@@ -31,7 +34,7 @@ public class SentinelNMSHelper {
             String packageVersion = bukkitPackageName.substring(bukkitPackageName.lastIndexOf('.') + 1);
             Class craftEntity = Class.forName(bukkitPackageName + ".entity.CraftEntity");
             CRAFTENTITY_GETHANDLE = NMS.getMethodHandle(craftEntity, "getHandle", true);
-            Class nmsEntity, nmsWorld, nmsDataWatcher, nmsDataWatcherObject, nmsEntityEnderman;
+            Class nmsEntity, nmsWorld, nmsDataWatcher, nmsDataWatcherObject, nmsEntityEnderman, nmsHuman, nmsLivingEntity;
             String endermanAngryField = null;
             if (SentinelVersionCompat.v1_17) { // 1.17+ - Mojang mappings update
                 nmsEntity = Class.forName("net.minecraft.world.entity.Entity");
@@ -39,8 +42,19 @@ public class SentinelNMSHelper {
                 nmsDataWatcher = Class.forName("net.minecraft.network.syncher.DataWatcher");
                 nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject");
                 nmsEntityEnderman = Class.forName("net.minecraft.world.entity.monster.EntityEnderman");
-                if (!SentinelVersionCompat.vFuture) {
-                    endermanAngryField = "bU"; // 1.17
+                nmsHuman = Class.forName("net.minecraft.world.entity.player.EntityHuman");
+                nmsLivingEntity = Class.forName("net.minecraft.world.entity.EntityLiving");
+                String playerAttackMethod = null, attackStrengthField = null;
+                boolean isCompat = false;
+                if (!SentinelVersionCompat.vFuture) { // 1.17 names
+                    endermanAngryField = "bU"; // EnderMan#DATA_CREEPY
+                    playerAttackMethod = "attack"; // Player#attack(Entity)
+                    attackStrengthField = "aQ"; // LivingEntity#attackStrengthTicker
+                    isCompat = true;
+                }
+                if (isCompat) {
+                    SERVERPLAYER_ATTACK = NMS.getMethodHandle(nmsHuman, playerAttackMethod, true, nmsEntity);
+                    LIVINGENTITY_ATTACKSTRENGTHTICKS = NMS.getSetter(nmsLivingEntity, attackStrengthField);
                 }
             }
             else { // 1.12 through 1.16 - Original Spigot NMS versioned mappings
@@ -69,6 +83,25 @@ public class SentinelNMSHelper {
             ex.printStackTrace();
             nmsWorks = false;
             endermanValid = false;
+        }
+    }
+
+    public static boolean doPlayerAttack(Player attacker, Entity victim) {
+        if (!nmsWorks || SERVERPLAYER_ATTACK == null) {
+            return false;
+        }
+        try {
+            Object nmsHandleAttacker = CRAFTENTITY_GETHANDLE.invoke(attacker);
+            Object nmsHandleVictim = CRAFTENTITY_GETHANDLE.invoke(victim);
+            // 100 is just a random high value - attack strength doesn't tick itself for NPCs, so just set it a value too high to matter.
+            LIVINGENTITY_ATTACKSTRENGTHTICKS.invoke(nmsHandleAttacker, 100);
+            SERVERPLAYER_ATTACK.invoke(nmsHandleAttacker, nmsHandleVictim);
+            return true;
+        }
+        catch (Throwable ex) {
+            nmsWorks = false;
+            ex.printStackTrace();
+            return false;
         }
     }
 
