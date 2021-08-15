@@ -652,6 +652,9 @@ public class SentinelTrait extends Trait {
      * Sets the NPC's local parameter speed modifier to its proper current value.
      */
     public void autoSpeedModifier() {
+        if (!getNPC().getNavigator().isNavigating()) {
+            return;
+        }
         double speedMod = isBlocking ? 0.6 : 1.0;
         getNPC().getNavigator().getLocalParameters().speedModifier((float) (speed * speedMod));
     }
