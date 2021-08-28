@@ -34,6 +34,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.mcmonkey.sentinel.events.SentinelCombatStateChangeEvent;
 import org.mcmonkey.sentinel.events.SentinelWantsToPathEvent;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
@@ -822,7 +823,7 @@ public class SentinelTrait extends Trait {
             return;
         }
         // NPCs can mis-invoke sweep damage - this is never a wanted/intended effect, so discard it asap.
-        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
+        if (SentinelVersionCompat.v1_9 && event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
             event.setCancelled(true);
             return;
         }
@@ -1346,6 +1347,12 @@ public class SentinelTrait extends Trait {
     public boolean needsToUnpause = false;
 
     /**
+     * If true: other behavior (unrelated to Sentinel) should be paused, as Sentinel is engaged in combat.
+     * Consider also listening to event 'SentinelCombatStateChangeEvent'.
+     */
+    public boolean otherBehaviorPaused = false;
+
+    /**
      * Special case for where the NPC has been forced to run to in certain situations.
      */
     public Location pathingTo = null;
@@ -1381,18 +1388,32 @@ public class SentinelTrait extends Trait {
     }
 
     /**
-     * Pauses waypoint navigation if currrently navigating.
+     * Pauses waypoint navigation if currrently navigating, and fires the pause event.
      */
     public void pauseWaypoints() {
+        otherBehaviorPaused = true;
         Waypoints wp = npc.getTraitNullable(Waypoints.class);
-        if (wp == null) {
-            return;
+        if (wp != null) {
+            if (!wp.getCurrentProvider().isPaused()) {
+                wp.getCurrentProvider().setPaused(true);
+            }
+            needsToUnpause = true;
+            needsSafeReturn = true;
         }
-        if (!wp.getCurrentProvider().isPaused()) {
-            wp.getCurrentProvider().setPaused(true);
+        Bukkit.getPluginManager().callEvent(new SentinelCombatStateChangeEvent(getNPC(), true));
+    }
+
+    /**
+     * Un-Pauses (resumes) waypoint navigation if currrently navigating, and fires the un-pause event.
+     */
+    public void unpauseWaypoints() {
+        otherBehaviorPaused = false;
+        if (needsToUnpause && npc.hasTrait(Waypoints.class)) {
+            Waypoints wp = npc.getOrAddTrait(Waypoints.class);
+            wp.getCurrentProvider().setPaused(false);
+            needsToUnpause = false;
         }
-        needsToUnpause = true;
-        needsSafeReturn = true;
+        Bukkit.getPluginManager().callEvent(new SentinelCombatStateChangeEvent(getNPC(), false));
     }
 
     /**
@@ -1468,10 +1489,8 @@ public class SentinelTrait extends Trait {
         if ((guarded != null || chasing != null || pathingTo != null) && npc.hasTrait(Waypoints.class)) {
             pauseWaypoints();
         }
-        else if (needsToUnpause && npc.hasTrait(Waypoints.class)) {
-            Waypoints wp = npc.getOrAddTrait(Waypoints.class);
-            wp.getCurrentProvider().setPaused(false);
-            needsToUnpause = false;
+        else {
+            unpauseWaypoints();
         }
         // Targets updating
         targetingHelper.updateTargets();
@@ -1504,9 +1523,7 @@ public class SentinelTrait extends Trait {
                 goHome = false;
             }
             else {
-                if (SentinelPlugin.debugMe) {
-                    debug("Actually, that target is bad!");
-                }
+                debug("Actually, that target is bad!");
                 specialUnmarkVision();
                 target = null;
                 chasing = null;
@@ -1627,29 +1644,9 @@ public class SentinelTrait extends Trait {
     }
 
     /**
-     * Whether the waypoints helper (up-to-date Citizens) is available.
-     */
-    private Boolean waypointHelperAvailable = null;
-
-    /**
      * Gets the nearest pathing point to this NPC.
      */
     public Location nearestPathPoint() {
-        if (!SentinelVersionCompat.v1_9) {
-            if (waypointHelperAvailable == null) {
-                try {
-                    Class.forName("net.citizensnpcs.trait.waypoint.WaypointProvider$EnumerableWaypointProvider");
-                    waypointHelperAvailable = true;
-                }
-                catch (ClassNotFoundException ex) {
-                    waypointHelperAvailable = false;
-                    SentinelPlugin.instance.getLogger().warning("Citizens installation is **very outdated** and does not contain newer useful APIs. Please update your installation of the Citizens plugin!");
-                }
-            }
-            if (!waypointHelperAvailable) {
-                return null;
-            }
-        }
         if (!npc.hasTrait(Waypoints.class)) {
             return null;
         }

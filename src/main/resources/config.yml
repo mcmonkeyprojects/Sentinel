@@ -72,7 +72,8 @@ random:
     # Whether to block some Bukkit events related to Sentinel NPCs from ever running. Will cause weirdness with basic functionality.
     # Recommended to use this alongside other workaround options.
     workaround bukkit events: false
-    # Whether to workaround potential issues with entity-follow pathfinding.
+    # Whether to use Sentinel's entity chase pathfinder.
+    # If set to 'false', will use the Citizens built-in one instead.
     workaround entity chase pathfinder: true
     # Whether to permit death messages to show for Sentinel NPC deaths.
     death messages: false
