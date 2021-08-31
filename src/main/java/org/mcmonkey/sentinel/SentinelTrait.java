@@ -1486,10 +1486,10 @@ public class SentinelTrait extends Trait {
         if (!npc.getNavigator().isNavigating()) {
             pathingTo = null;
         }
-        if ((guarded != null || chasing != null || pathingTo != null) && npc.hasTrait(Waypoints.class)) {
+        if ((guarded != null || chasing != null || pathingTo != null) && !otherBehaviorPaused) {
             pauseWaypoints();
         }
-        else {
+        else if (otherBehaviorPaused) {
             unpauseWaypoints();
         }
         // Targets updating

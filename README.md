@@ -301,7 +301,7 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
             <url>https://repo.citizensnpcs.co</url>
         </repository>
 ```
-- And add Sentinel as a `provided` dependency (be sure to change the version to match the current version available):
+- And add Sentinel as a `provided` dependency (be sure to change the version to match the current version available) (note that the `exclusions` block can help to prevent maven issues):
 ```xml
         <dependency>
             <groupId>org.mcmonkey</groupId>
@@ -309,6 +309,12 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
             <version>2.3.0-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 ```
 - You will also want to link Citizens in Maven if you haven't already - see https://wiki.citizensnpcs.co/API for relevant information on that.
