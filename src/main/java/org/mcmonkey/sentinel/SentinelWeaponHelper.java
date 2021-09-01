@@ -46,6 +46,10 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
      * Fires a potion from the NPC at a target.
      */
     public void firePotion(ItemStack potion, Location target, Vector lead) {
+        if (SentinelVersionCompat.v1_9 && potion.getType() == Material.POTION) {
+            potion = potion.clone();
+            potion.setType(Material.SPLASH_POTION);
+        }
         sentinel.stats_potionsThrown++;
         HashMap.SimpleEntry<Location, Vector> start = sentinel.getLaunchDetail(target, lead);
         Entity entpotion;
