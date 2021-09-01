@@ -205,10 +205,10 @@ public class SentinelVersionCompat {
             OTHER_RANGED_MATERIALS.add(getMaterial("TRIDENT"));
             // Pickaxe
             addAllMaterials(PICKAXE_MATERIALS, "DIAMOND_PICKAXE", "IRON_PICKAXE", "STONE_PICKAXE", "GOLDEN_PICKAXE", "WOODEN_PICKAXE");
-            allMaterialsTo(WEAPON_DAMAGE_MULTIPLIERS, PICKAXE_MATERIALS, 2.0);
+            allMaterialsTo(WEAPON_DAMAGE_MULTIPLIERS, PICKAXE_MATERIALS, 3.0);
             // Axe
             addAllMaterials(AXE_MATERIALS, "DIAMOND_AXE", "IRON_AXE", "STONE_AXE", "GOLDEN_AXE", "WOODEN_AXE");
-            allMaterialsTo(WEAPON_DAMAGE_MULTIPLIERS, AXE_MATERIALS, 3.0);
+            allMaterialsTo(WEAPON_DAMAGE_MULTIPLIERS, AXE_MATERIALS, 9.0);
             // Bow
             BOW_MATERIALS.add(getMaterial("BOW"));
             // Helmet
