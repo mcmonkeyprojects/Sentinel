@@ -399,6 +399,9 @@ public class SentinelTargetList {
         if (CitizensAPI.getNPCRegistry().isNPC(damager)) {
             return false;
         }
+        if (damager.equals(event.getEntity())) {
+            return false; // Players can accidentally hurt themselves - that's not PvP
+        }
         for (String evt : byEvent) {
             if (evt.equals("pvp")
                     && event.getEntity() instanceof Player
