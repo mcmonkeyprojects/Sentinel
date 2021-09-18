@@ -24,7 +24,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
      */
     public void chase(LivingEntity entity) {
         if (SentinelPlugin.debugMe) {
-            debug("Begin chasing " + entity.getUniqueId() + "/" + entity.getType().name());
+            debug("Try to begin chasing " + entity.getUniqueId() + "/" + entity.getType().name());
         }
         sentinel.cleverTicks = 0;
         sentinel.chasing = entity;
@@ -41,10 +41,10 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     && getNPC().getNavigator().getTargetAsLocation() != null
                     && ((getNPC().getNavigator().getTargetAsLocation().getWorld().equals(entity.getWorld())
                     && getNPC().getNavigator().getTargetAsLocation().distanceSquared(targetLocation) < 2 * 2))) {
-                debug("Cancel chase: already chasing close");
+                debug("Refuse re-chase: already chasing close");
                 return;
             }
-            debug("Chase/location begin");
+            debug("Chase/location accepted, begin");
             getNPC().getNavigator().setTarget(targetLocation.add(new Vector(SentinelUtilities.randomDecimal(-1, 1), 0, SentinelUtilities.randomDecimal(-1, 1))));
             final Location entityEyeLoc = entity.getEyeLocation();
             getNPC().getNavigator().getLocalParameters().lookAtFunction(n -> entityEyeLoc);
@@ -52,10 +52,10 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         else {
             if (getNPC().getNavigator().getTargetType() == TargetType.ENTITY
                     && SentinelUtilities.getTargetFor(getNPC().getNavigator().getEntityTarget()).getUniqueId().equals(entity.getUniqueId())) {
-                debug("Cancel chase: already chasing entity");
+                debug("Refuse re-chase: already chasing entity");
                 return;
             }
-            debug("Chase/entity begin");
+            debug("Chase/entity accepted, begin");
             getNPC().getNavigator().setTarget(entity, false);
             getNPC().getNavigator().getLocalParameters().addRunCallback(generateNewFlocker(getNPC(), FLOCK_RADIUS));
         }

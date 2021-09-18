@@ -178,7 +178,7 @@ public class SentinelTargetCommands {
     }
 
     @Command(aliases = {"sentinel"}, usage = "removeavoid TYPE",
-            desc = "Stops avoding a target.",
+            desc = "Stops avoiding a target.",
             modifiers = {"removeavoid"}, permission = "sentinel.removeavoid", min = 2, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void removeAvoid(CommandContext args, CommandSender sender, SentinelTrait sentinel) {

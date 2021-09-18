@@ -111,6 +111,7 @@ Here are a few examples of how you might setup and configure an NPC
 - Damage value for a Sentinel NPC can be set to "-1" to auto-calculate from held item (otherwise, it will used as a raw HP damage amount).
 - Armor value can be set to "-1" to auto-calculate from equipped armor (otherwise, set a value between 0.0 and 1.0 to indicate how much of any damage will be blocked).
 - To make mobs target or ignore the Sentinel NPC, use `/npc targetable`
+- To use spaces in target names, simply wrap the argument in "quotes", like `/sentinel addtarget "npc:some long name here"`
 
 ### Plugin Integrations
 
@@ -137,6 +138,7 @@ Sentinel is integrated into by external plugins as well, including:
         - Determine `true` or `false` to indicate whether the entity is a target.
     - Also check the Denizen meta docs - type `!search sentinel` in `#bot-spam` on the Denizen support Discord.
 - QualityArmory, to allow NPCs to fire QA weapons (just put the weapon in their hand).
+- If you develop a publicly available Spigot plugin that has a Sentinel integration, please [let me known on Discord](https://discord.gg/Q6pZGSR) so I can add it here!
 
 ### Commands
 

@@ -1604,6 +1604,7 @@ public class SentinelTrait extends Trait {
                 autoSpeedModifier();
                 needsSafeReturn = false;
                 chased = false;
+                chasing = null;
             }
             else {
                 if (pathingTo == null && npc.getNavigator().isNavigating() && guarded == null) {
