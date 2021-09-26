@@ -162,7 +162,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
     /**
      * Swaps weapon to the first item that matches the input function.
      */
-    public void swapToMatch(Function<ItemStack, Boolean> doSwap) {
+    public void swapToMatch(Function<ItemStack, Boolean> doSwap, boolean isRanged) {
         if (!getNPC().isSpawned() || !getNPC().hasTrait(Inventory.class)) {
             return;
         }
@@ -172,20 +172,28 @@ public class SentinelItemHelper extends SentinelHelperObject {
         if (doSwap.apply(held)) {
             return;
         }
+        int bestIndex = -1;
+        double bestDamage = -1;
         for (int i = 0; i < items.length; i++) {
             if (sentinel.getLivingEntity() instanceof Player && i >= 36 && i <= 39) {
                 // Patch for armor, which is "in the inventory" but not really tracked through it
                 continue;
             }
             if (doSwap.apply(items[i])) {
-                items[0] = items[i] == null ? null : items[i].clone();
-                items[i] = held == null ? null : held.clone();
-                inv.setContents(items);
-                if (sentinel.getLivingEntity() instanceof Player && i == 40 && SentinelVersionCompat.v1_9 && sentinel.getLivingEntity().getEquipment() != null) {
-                    // Patch for offhand, which is "in the inventory" but not really tracked through it
-                    sentinel.getLivingEntity().getEquipment().setItemInOffHand(items[i]);
+                double possibleDamage = sentinel.getDamage(isRanged, items[i]);
+                if (possibleDamage > bestDamage) {
+                    bestDamage = possibleDamage;
+                    bestIndex = i;
                 }
-                return;
+            }
+        }
+        if (bestIndex != -1) {
+            items[0] = items[bestIndex] == null ? null : items[bestIndex].clone();
+            items[bestIndex] = held == null ? null : held.clone();
+            inv.setContents(items);
+            if (sentinel.getLivingEntity() instanceof Player && bestIndex == 40 && SentinelVersionCompat.v1_9 && sentinel.getLivingEntity().getEquipment() != null) {
+                // Patch for offhand, which is "in the inventory" but not really tracked through it
+                sentinel.getLivingEntity().getEquipment().setItemInOffHand(items[bestIndex]);
             }
         }
     }
@@ -194,21 +202,21 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Swaps the NPC to an open hand if possible.
      */
     public void swapToOpenHand() {
-        swapToMatch(i -> i == null || i.getType() == Material.AIR);
+        swapToMatch(i -> i == null || i.getType() == Material.AIR, false);
     }
 
     /**
      * Swaps the NPC to a ranged weapon if possible.
      */
     public void swapToRanged() {
-        swapToMatch(i -> i != null && i.getType() != Material.AIR && isRanged(i));
+        swapToMatch(i -> i != null && i.getType() != Material.AIR && isRanged(i), true);
     }
 
     /**
      * Swaps the NPC to a melee weapon if possible.
      */
     public void swapToMelee() {
-        swapToMatch(i -> i != null && i.getType() != Material.AIR && !isRanged(i));
+        swapToMatch(i -> i != null && i.getType() != Material.AIR && !isRanged(i), false);
     }
 
     /**

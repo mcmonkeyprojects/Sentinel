@@ -1192,6 +1192,13 @@ public class SentinelTrait extends Trait {
      */
     public double getDamage(boolean forRangedAttacks) {
         ItemStack weapon = itemHelper.getHeldItem();
+        return getDamage(forRangedAttacks, weapon);
+    }
+
+    /**
+     * Gets the NPC's current damage value (based on a specific weapon if calculation is required).
+     */
+    public double getDamage(boolean forRangedAttacks, ItemStack weapon) {
         if (weapon == null) {
             if (damage >= 0) {
                 return damage;
