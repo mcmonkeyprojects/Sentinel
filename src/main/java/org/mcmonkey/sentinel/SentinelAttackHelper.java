@@ -5,6 +5,7 @@ import net.citizensnpcs.api.ai.flocking.*;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -115,6 +116,9 @@ public class SentinelAttackHelper extends SentinelHelperObject {
      * This will raise the NPC's shield (if it has one).
      */
     public void tryDefendFrom(LivingEntity entity) {
+        if (SentinelVersionCompat.v1_9 && sentinel.autoswitch && sentinel.getLivingEntity().getEquipment() != null && sentinel.getLivingEntity().getEquipment().getItemInOffHand().getType() != Material.AIR) {
+            itemHelper.swapToShield();
+        }
         if (!itemHelper.hasShield()) {
             return;
         }
