@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -156,6 +158,29 @@ public class SentinelItemHelper extends SentinelHelperObject {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Swaps offhand to shield for defense
+     */
+    public void swapToShield() {
+        if (!SentinelVersionCompat.v1_9) return;
+        if (!getNPC().isSpawned() || !getNPC().hasTrait(Inventory.class)) {
+            return;
+        }
+        Inventory inv = getNPC().getOrAddTrait(Inventory.class);
+        ItemStack[] items = inv.getContents();
+        Optional<ItemStack> shield = Arrays.stream(items).filter(s -> s.getType().equals(Material.SHIELD)).findFirst();
+        if (!shield.isPresent() || sentinel.getLivingEntity().getEquipment() == null) return;
+        ItemStack shieldStack = shield.get();
+        ItemStack offhand = sentinel.getLivingEntity().getEquipment().getItemInOffHand().clone();
+        sentinel.getLivingEntity().getEquipment().setItemInOffHand(shieldStack.clone());
+        if (!offhand.getType().equals(Material.AIR)) {
+            shieldStack.setType(offhand.getType());
+            shieldStack.setItemMeta(offhand.getItemMeta());
+            shieldStack.setData(offhand.getData());
+            shieldStack.setAmount(offhand.getAmount());
         }
     }
 
