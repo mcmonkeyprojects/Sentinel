@@ -1595,6 +1595,10 @@ public class SentinelTrait extends Trait {
             goHome = false;
             needsSafeReturn = true;
         }
+        // Clear shield blocking if needed
+        if (isBlocking && target == null && chasing == null) {
+            stopBlocking();
+        }
         // Handling for when NPC has no targets
         if (goHome && chaseRange > 0 && target == null && needsSafeReturn) {
             Location near = nearestPathPoint();

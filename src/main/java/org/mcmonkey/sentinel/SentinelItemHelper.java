@@ -246,7 +246,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Swaps the NPC to a melee weapon if possible.
      */
     public void swapToMelee() {
-        swapToMatch(i -> i != null && i.getType() != Material.AIR && !isRanged(i), false);
+        swapToMatch(this::isMeleeWeapon, false);
     }
 
     /**
@@ -256,6 +256,20 @@ public class SentinelItemHelper extends SentinelHelperObject {
         if (SentinelVersionCompat.v1_9) {
             ItemStack item = SentinelUtilities.getOffhandItem(sentinel.getLivingEntity());
             return item != null && item.getType() == Material.SHIELD;
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether the item is some form of melee weapon.
+     */
+    public boolean isMeleeWeapon(ItemStack item) {
+        if (item == null || item.getType() == Material.AIR) {
+            return false;
+        }
+        item = autoRedirect(item);
+        if (SentinelVersionCompat.isWeapon(item.getType()) && !isRanged(item)) {
+            return true;
         }
         return false;
     }
