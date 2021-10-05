@@ -113,7 +113,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
                             (type.getType() == Material.TIPPED_ARROW ? TippedArrow.class : Arrow.class);
                     arrow = launchStart.getWorld().spawnArrow(launchStart, velocity.multiply(1.0 / length), (float) length, 0f, toShoot);
                     ((Projectile) arrow).setShooter(getLivingEntity());
-                    ((Arrow) arrow).setPickupStatus(Arrow.PickupStatus.DISALLOWED);
+                    ((AbstractArrow) arrow).setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                     if (type.getItemMeta() instanceof PotionMeta) {
                         PotionData data = ((PotionMeta) type.getItemMeta()).getBasePotionData();
                         if (data.getType() == null || data.getType() == PotionType.UNCRAFTABLE) {

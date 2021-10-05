@@ -187,7 +187,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel greetrange RANGE - Sets how far a player can be from an NPC before they are greeted.
     - /sentinel greetrate RATE - Sets how quickly (in seconds) the Sentinel may re-greet any player.
     - /sentinel accuracy OFFSET - Sets the accuracy of an NPC, as a decimal number value (0 means perfectly accurate, 5 means pretty inaccurate).
-    - /sentinel squad SQUAD - Sets the NPC's squad name (null for none).
+    - /sentinel squad SQUAD - Sets the NPC's squad name (null for none). NPCs with the same squad name share aggro (if a player angers one NPC, the rest get angry too).
     - /sentinel reach REACH - Sets the NPC's reach (how far it can punch).
     - /sentinel projectilerange RANGE - Sets the NPC's projectile range (how far it is willing to shoot projectiles).
     - /sentinel avoidreturnpoint - Changes the location the NPC runs to when avoid mode is activated, or removes it if the NPC is already there.
