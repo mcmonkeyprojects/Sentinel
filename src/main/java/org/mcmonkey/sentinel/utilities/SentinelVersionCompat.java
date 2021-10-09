@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -309,24 +310,25 @@ public class SentinelVersionCompat {
         }
     }
 
-    static void warnOldVersion(String versionName, String yearsOld, String extra) {
+    static void warnOldVersion(String versionName, int yearsOld, String extra) {
         SentinelPlugin.instance.getLogger().warning("The version " + versionName + " is " + yearsOld + " years old (as of 2020) and therefore cannot be supported."
                 + " Sentinel will work on this version, but we will not provide support if you have running it."
                 + " Please update your server to a more recent minecraft version as soon as you are able." + extra);
     }
 
     public static void init() {
-        if (v1_8 && !v1_9) { // 2014
-            warnOldVersion("1.8", "6", "See also https://wiki.citizensnpcs.co/Minecraft_1.8");
+        int currentYear = Math.min(LocalDate.now().getYear(), 2021); // min in case clock is mis-set to some default like 2000 or something.
+        if (v1_8 && !v1_9) {
+            warnOldVersion("1.8", currentYear - 2014, " See also https://wiki.citizensnpcs.co/Minecraft_1.8");
         }
-        else if (v1_9 && !v1_10) { // 2016
-            warnOldVersion("1.9", "4", "");
+        else if (v1_9 && !v1_10) {
+            warnOldVersion("1.9", currentYear - 2016, "");
         }
-        else if (v1_10 && !v1_11) { // 2016
-            warnOldVersion("1.10", "4", "");
+        else if (v1_10 && !v1_11) {
+            warnOldVersion("1.10", currentYear - 2016, "");
         }
         else if (v1_11 && !v1_12) { // 2016
-            warnOldVersion("1.11", "4", "");
+            warnOldVersion("1.11", currentYear - 2016, "");
         }
         else if (v1_12 && !vFuture) {
             SentinelPlugin.instance.getLogger().info("Sentinel loaded on a fully supported Minecraft version."
