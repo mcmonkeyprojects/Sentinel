@@ -54,6 +54,8 @@ sentinel defaults:
     reaction slowdown: 0
     # Whether the NPC can be knocked back when hit. If set false, will try to force the NPC to remain in place after receiving damage.
     allow knockback: true
+    # How much XP to drop when the NPC dies.
+    death xp: 0
 
 random:
     # How long (in ticks) NPCs should run away for (when hit or told to avoid threats).

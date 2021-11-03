@@ -259,6 +259,30 @@ public class SentinelHealthCommands {
         sender.sendMessage(SentinelCommand.prefixGood + "Drop chance for " + sentinel.drops.get(id).getType().name() + " set to " + chance + "%.");
     }
 
+    @Command(aliases = {"sentinel"}, usage = "deathxp XP",
+            desc = "Sets the amount of XP to be dropped when the NPC dies..",
+            modifiers = {"deathxp"}, permission = "sentinel.deathxp", min = 1, max = 2)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void deathxp(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current death XP: " + ChatColor.AQUA + sentinel.deathXP);
+            return;
+        }
+        try {
+            int xp = Integer.parseInt(args.getString(1));
+            if (xp < 0) {
+                sentinel.deathXP = xp;
+                sender.sendMessage(SentinelCommand.prefixGood + "Death XP set!");
+            }
+            else {
+                throw new NumberFormatException("Number out of range (must be >= 0).");
+            }
+        }
+        catch (NumberFormatException ex) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid XP number: " + ex.getMessage());
+        }
+    }
+
     @Command(aliases = {"sentinel"}, usage = "spawnpoint",
             desc = "Changes the NPC's spawn point to its current location, or removes it if it's already there.",
             modifiers = {"spawnpoint"}, permission = "sentinel.spawnpoint", min = 1, max = 1)

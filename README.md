@@ -178,6 +178,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel chaserange RANGE - Changes the maximum distance an NPC will run before returning to base.
     - /sentinel drops - Changes the drops of the current NPC.
     - /sentinel dropchance ID CHANCE - Changes the chance of a drop. Use "/sentinel dropchance" to see the drops list with IDs, then do like "/sentinel dropchance 3 50" (that puts a 50% chance on item with ID 3).
+    - /sentinel deathxp XP - Sets the amount of XP dropped when the NPC dies.
     - /sentinel targettime TIME - Sets the NPC's enemy target time limit in seconds.
     - /sentinel speed SPEED - Sets the NPC's movement speed modifier.
     - /sentinel guarddistance MINIMUM_DISTANCE \[SELECTION_RANGE\] - Sets the NPC's minimum guard distance (how far you must go before the NPC moves to keep up) and selection range (how close it will try to get to you).
@@ -235,9 +236,11 @@ These are all valid targets and ignores:
 - In 1.15 or higher: BEES
 - In 1.15 or LOWER: ZOMBIE_PIGMEN
 - In 1.16 or higher: HOGLINS, PIGLINS, STRIDERS, ZOGLINS, ZOMBIFIED_PIGLINS
-- Also allowed: `player:NAME(REGEX)`, `npc:NAME(REGEX)`, `entityname:NAME(REGEX)`, `group:GROUPNAME(EXACT)`
+- Also allowed: `player:NAME(REGEX)`, `npc:NAME(REGEX)`, `entityname:NAME(REGEX)`
     - These work like `player:bob` to target player named 'bob', or `npc:.*\sGuard` to target NPCs named "Space Guard" or "Town Guard" or anything else (uses [RegEx](https://www.rexegg.com/regex-quickstart.html)).
-- Also allowed: `helditem:ITEM_MATCHER`, `offhand:ITEM_MATCHER`, `equipped:ITEM_MATCHER`, `in_inventory:ITEM_MATCHER`
+- Also: `group:GROUPNAME` to target a Vault-compatible permission group by name
+    - Requires [Vault](https://www.spigotmc.org/resources/vault.34315/) and any vault-compatible permission plugin (such as [LuckPerms](https://www.spigotmc.org/resources/luckperms.28140/))
+- Also: `helditem:ITEM_MATCHER`, `offhand:ITEM_MATCHER`, `equipped:ITEM_MATCHER`, `in_inventory:ITEM_MATCHER`
     - These all use "ITEM_MATCHER"s, which, at their simplest, are just a regex that matches the material name. So, `helditem:diamond_sword` targets enemies that are holding a diamond sword.
     - However, you can also do `lore:LORE(REGEX)` as a matcher for a line of lore, or `name:NAME(REGEX)` as a matcher for the item display name.
     - For example, `offhand:name:Stick\d+` would target players holding an item in their offhand named like "Stick123".

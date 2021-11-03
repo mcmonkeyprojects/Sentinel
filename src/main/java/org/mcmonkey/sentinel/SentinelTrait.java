@@ -599,6 +599,12 @@ public class SentinelTrait extends Trait {
     public String worldguardRegion = null;
 
     /**
+     * How much XP to drop when the NPC dies.
+     */
+    @Persist("death_xp")
+    public int deathXP = 0;
+
+    /**
      * Cache object, refer to 'worldguardRegion'.
      */
     public Object worldguardRegionCache = null;
@@ -1061,6 +1067,7 @@ public class SentinelTrait extends Trait {
         greetRate = config.getInt("sentinel defaults.greet rate", 100);
         retainTarget = config.getBoolean("random.retain target", false);
         reactionSlowdown = config.getInt("sentinel defaults.reaction slowdown", 0);
+        deathXP = config.getInt("sentinel defaults.death xp", 0);
         allowKnockback = config.getBoolean("sentinel defaults.allow knockback", true);
         guardDistanceMinimum = SentinelPlugin.instance.guardDistanceMinimum;
         guardSelectionRange = SentinelPlugin.instance.guardDistanceSelectionRange;
@@ -1884,7 +1891,7 @@ public class SentinelTrait extends Trait {
         if (!SentinelPlugin.instance.workaroundDrops) {
             event.getDrops().addAll(getDrops());
         }
-        event.setDroppedExp(0);
+        event.setDroppedExp(deathXP);
         generalDeathHandler(event.getEntity());
     }
 
