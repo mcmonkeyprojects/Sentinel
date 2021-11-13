@@ -270,7 +270,7 @@ public class SentinelHealthCommands {
         }
         try {
             int xp = Integer.parseInt(args.getString(1));
-            if (xp < 0) {
+            if (xp >= 0) {
                 sentinel.deathXP = xp;
                 sender.sendMessage(SentinelCommand.prefixGood + "Death XP set!");
             }
