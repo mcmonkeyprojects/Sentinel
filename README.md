@@ -1,6 +1,26 @@
 Sentinel NPCs: Combat NPCs for Spigot!
 --------------------------------------
 
+### Table Of Contents
+* [Downloads](#downloads)
+* [Donations](#donations)
+* [Info](#info)
+* [Basic Usage](#basic-usage)
+* [Common Issues](#common-issues)
+* [Example NPC Setups](#Example-NPC-Setups)
+* [Useful Things To Know](#Useful-Things-To-Know)
+* [Plugin Integrations](#Plugin-Integrations)
+* [Commands](#Commands)
+* [Permissions](#Permissions)
+* [Targets](#Targets)
+* [Supported Weapon Types](#Supported-Weapon-Types)
+* [Integrating Your Plugin With Sentinel](#Integrating-Your-Plugin-With-Sentinel)
+* [Need help using Sentinel?](#Need-help-using-Sentinel?-Try-one-of-these-places)
+* [Dependencies](#Dependencies)
+* [Sentry user?](#Sentry-user?)
+* [Update Warnings](#Update-Warnings)
+* [License](#Licensing-pre-note)
+
 ![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
 **Version 2.3.5**: Compatible with Spigot 1.8.8 through 1.17.1 (Primarily targeted at 1.17.1) - see 'Common Issues' section below if on older supported versions)
