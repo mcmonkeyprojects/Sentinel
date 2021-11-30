@@ -46,7 +46,13 @@ public class SentinelNMSHelper {
                 nmsLivingEntity = Class.forName("net.minecraft.world.entity.EntityLiving");
                 String playerAttackMethod = null, attackStrengthField = null;
                 boolean isCompat = false;
-                if (!SentinelVersionCompat.vFuture) { // 1.17 names
+                if (!SentinelVersionCompat.vFuture) { // 1.18 names
+                    endermanAngryField = "bY"; // EnderMan#DATA_CREEPY
+                    playerAttackMethod = "d"; // Player#attack(Entity)
+                    attackStrengthField = "aR"; // LivingEntity#attackStrengthTicker
+                    isCompat = true;
+                }
+                else if (!SentinelVersionCompat.v1_18) { // 1.17 names
                     endermanAngryField = "bU"; // EnderMan#DATA_CREEPY
                     playerAttackMethod = "attack"; // Player#attack(Entity)
                     attackStrengthField = "aQ"; // LivingEntity#attackStrengthTicker
