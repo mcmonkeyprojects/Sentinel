@@ -36,11 +36,12 @@ public class SentinelNMSHelper {
             CRAFTENTITY_GETHANDLE = NMS.getMethodHandle(craftEntity, "getHandle", true);
             Class nmsEntity, nmsWorld, nmsDataWatcher, nmsDataWatcherObject, nmsEntityEnderman, nmsHuman, nmsLivingEntity;
             String endermanAngryField = null;
+            String broadcastEffectMethod = "broadcastEntityEffect", dataWatcherSet = "set";
             if (SentinelVersionCompat.v1_17) { // 1.17+ - Mojang mappings update
                 nmsEntity = Class.forName("net.minecraft.world.entity.Entity");
-                nmsWorld = Class.forName("net.minecraft.world.level.World");
-                nmsDataWatcher = Class.forName("net.minecraft.network.syncher.DataWatcher");
-                nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject");
+                nmsWorld = Class.forName("net.minecraft.world.level.World"); // Level
+                nmsDataWatcher = Class.forName("net.minecraft.network.syncher.DataWatcher"); // SynchedEntityData
+                nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject"); // EntityDataAccessor
                 nmsEntityEnderman = Class.forName("net.minecraft.world.entity.monster.EntityEnderman");
                 nmsHuman = Class.forName("net.minecraft.world.entity.player.EntityHuman");
                 nmsLivingEntity = Class.forName("net.minecraft.world.entity.EntityLiving");
@@ -50,6 +51,8 @@ public class SentinelNMSHelper {
                     endermanAngryField = "bY"; // EnderMan#DATA_CREEPY
                     playerAttackMethod = "d"; // Player#attack(Entity)
                     attackStrengthField = "aR"; // LivingEntity#attackStrengthTicker
+                    broadcastEffectMethod = "a"; // Level#broadcastEntityEvent
+                    dataWatcherSet = "b"; // SynchedEntityData#set
                     isCompat = true;
                 }
                 else if (!SentinelVersionCompat.v1_18) { // 1.17 names
@@ -76,8 +79,8 @@ public class SentinelNMSHelper {
             }
             NMSENTITY_WORLDGETTER = NMS.getFirstGetter(nmsEntity, nmsWorld);
             NMSENTITY_GETDATAWATCHER = NMS.getFirstGetter(nmsEntity, nmsDataWatcher);
-            NMSWORLD_BROADCASTENTITYEFFECT = NMS.getMethodHandle(nmsWorld, "broadcastEntityEffect", true, nmsEntity, byte.class);
-            DATWATCHER_SET = NMS.getMethodHandle(nmsDataWatcher, "set", true, nmsDataWatcherObject, Object.class);
+            NMSWORLD_BROADCASTENTITYEFFECT = NMS.getMethodHandle(nmsWorld, broadcastEffectMethod, true, nmsEntity, byte.class);
+            DATWATCHER_SET = NMS.getMethodHandle(nmsDataWatcher, dataWatcherSet, true, nmsDataWatcherObject, Object.class);
             if (endermanAngryField != null && nmsEntityEnderman != null) {
                 Field dataWatcherAngryField = NMS.getField(nmsEntityEnderman, endermanAngryField);
                 dataWatcherAngryField.setAccessible(true);
