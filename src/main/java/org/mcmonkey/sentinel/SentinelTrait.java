@@ -1473,7 +1473,7 @@ public class SentinelTrait extends Trait {
         timeSinceHeal += SentinelPlugin.instance.tickRate;
         LivingEntity guarded = getGuardingEntity();
         // Protection against falling below the world
-        if (getLivingEntity().getLocation().getY() <= 0) {
+        if (getLivingEntity().getLocation().getY() <= SentinelUtilities.getMinWorldHeight(getLivingEntity().getWorld())) {
             if (SentinelPlugin.debugMe) {
                 debug("Injuring self, I'm below the map!");
             }

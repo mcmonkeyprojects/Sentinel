@@ -33,6 +33,16 @@ public class SentinelUtilities {
     public static Random random = new Random();
 
     /**
+     * Gets the minimum height for a world (as of 1.17 can go below 0).
+     */
+    public static int getMinWorldHeight(World world) {
+        if (!SentinelVersionCompat.v1_17) {
+            return 0;
+        }
+        return world.getMinHeight();
+    }
+
+    /**
      * Gets the title of an inventory in an InventoryCloseEvent (compensates for code change between Spigot versions).
      */
     public static String getInventoryTitle(InventoryCloseEvent event) {
