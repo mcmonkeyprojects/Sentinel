@@ -190,6 +190,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             return true;
         }
+        if (entity.getType() == EntityType.ARMOR_STAND) {
+            return true;
+        }
         if (sentinel.getGuarding() != null && entity.getUniqueId().equals(sentinel.getGuarding())) {
             return true;
         }
