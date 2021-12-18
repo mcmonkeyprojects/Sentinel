@@ -23,7 +23,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 
 ![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
-**Version 2.4.0**: Compatible with Spigot 1.8.8 through 1.18 (Primarily targeted at 1.18) - see 'Common Issues' section below if on older supported versions)
+**Version 2.4.0**: Compatible with Spigot 1.8.8 through 1.18.1 (Primarily targeted at 1.18.1) - see 'Common Issues' section below if on older supported versions)
 
 ### Downloads
 

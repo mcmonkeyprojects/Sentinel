@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -47,6 +48,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             return false;
         }
+        if (entity.getType() == EntityType.ARMOR_STAND) {
+            return false;
+        }
         return isTargeted(entity) && !isIgnored(entity);
     }
 
@@ -55,6 +59,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      */
     public boolean shouldAvoid(LivingEntity entity) {
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
+            return false;
+        }
+        if (entity.getType() == EntityType.ARMOR_STAND) {
             return false;
         }
         return isAvoided(entity) && !isIgnored(entity);
@@ -443,6 +450,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
 
     /**
      * Process all current multi-targets.
+     * This is an internal call as part of the main logic loop.
      */
     public void processAllMultiTargets() {
         processMultiTargets(sentinel.allTargets, TargetListType.TARGETS);
@@ -458,6 +466,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
 
     /**
      * Process a specific set of multi-targets.
+     * This is an internal call as part of the main logic loop.
      */
     public void processMultiTargets(SentinelTargetList baseList, TargetListType type) {
         if (type == null) {
@@ -531,6 +540,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
 
     /**
      * Updates the current avoids set for the NPC.
+     * This is an internal call as part of the main logic loop.
      */
     public void updateAvoids() {
         for (SentinelCurrentTarget curTarg : new HashSet<>(currentAvoids)) {
@@ -573,6 +583,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
 
     /**
      * Updates the current targets set for the NPC.
+     * This is an internal call as part of the main logic loop.
      */
     public void updateTargets() {
         for (SentinelCurrentTarget curTarg : new HashSet<>(currentTargets)) {
