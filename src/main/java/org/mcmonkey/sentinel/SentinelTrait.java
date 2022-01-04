@@ -11,6 +11,7 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.persistence.PersistenceLoader;
 import net.citizensnpcs.api.persistence.Persister;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.api.trait.trait.Spawned;
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.trait.CurrentLocation;
@@ -34,6 +35,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.mcmonkey.sentinel.commands.SentinelCommand;
 import org.mcmonkey.sentinel.events.SentinelCombatStateChangeEvent;
 import org.mcmonkey.sentinel.events.SentinelWantsToPathEvent;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
@@ -783,6 +785,8 @@ public class SentinelTrait extends Trait {
 
     private static Vector VECTOR_ZERO = new Vector(0, 0, 0);
 
+    private boolean hasShownFreshInitWarn = false;
+
     /**
      * Called when this sentinel gets attacked, to correct the armor handling.
      */
@@ -792,6 +796,19 @@ public class SentinelTrait extends Trait {
         }
         if (!getNPC().isSpawned()) {
             return;
+        }
+        // Init notice: Only show maximum of once, within 5 minutes of creation, if default fightback is on,
+        // if the attacker is the owning player, who still has the NPC selected, and the ignore list is unmodified
+        // Essentially just a giant heuristic for *new user wants to test the NPC on themself but doesn't know there's a default ignore protection check*
+        if (!hasShownFreshInitWarn && stats_ticksSpawned < 20 * 60 * 5 && fightback
+                && event.getDamager() instanceof Player && npc.getOrAddTrait(Owner.class).isOwnedBy(event.getDamager().getUniqueId())
+                && CitizensAPI.getDefaultNPCSelector().getSelected(event.getDamager()) == npc) {
+            hasShownFreshInitWarn = true;
+            if (allIgnores.totalTargetsCount() == 1 && allIgnores.targetsProcessed.contains(SentinelTarget.OWNER)) {
+                event.getDamager().sendMessage(SentinelCommand.prefixGood + "Notice: if this is your first time setting up this NPC, don't forget to use "
+                        + SentinelCommand.colorEmphasis + "/sentinel removeignore owner" + SentinelCommand.colorBasic
+                        + " once you're done configuring the NPC, if you want it to be able to attack you.");
+            }
         }
         double armorLevel = getArmor(getLivingEntity());
         if (hitIsBlocked(event.getDamager())) {
