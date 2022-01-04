@@ -56,7 +56,7 @@ public class SentinelNMSHelper {
                     isCompat = true;
                 }
                 else if (!SentinelVersionCompat.v1_18) { // 1.17 names
-                    endermanAngryField = "bU"; // EnderMan#DATA_CREEPY
+                    endermanAngryField = "bV"; // EnderMan#DATA_CREEPY
                     playerAttackMethod = "attack"; // Player#attack(Entity)
                     attackStrengthField = "aQ"; // LivingEntity#attackStrengthTicker
                     isCompat = true;
