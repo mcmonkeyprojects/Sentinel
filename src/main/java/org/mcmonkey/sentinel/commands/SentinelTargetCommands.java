@@ -35,16 +35,16 @@ public class SentinelTargetCommands {
         if (!list.byAllInOne.isEmpty()) {
             for (int i = 0; i < list.byAllInOne.size(); i++) {
                 sender.sendMessage(SentinelCommand.prefixGood + prefixType + " by All-In-One ("
-                        + ChatColor.AQUA + i + SentinelCommand.colorBasic + "): "
-                        + ChatColor.AQUA + list.byAllInOne.get(i).toAllInOneString());
+                        + SentinelCommand.colorEmphasis + i + SentinelCommand.colorBasic + "): "
+                        + SentinelCommand.colorEmphasis + list.byAllInOne.get(i).toAllInOneString());
             }
             any = true;
         }
         if (!list.byMultiple.isEmpty()) {
             for (int i = 0; i < list.byMultiple.size(); i++) {
                 sender.sendMessage(SentinelCommand.prefixGood + prefixType + " by Multiple ("
-                        + ChatColor.AQUA + i + SentinelCommand.colorBasic + "): "
-                        + ChatColor.AQUA + list.byMultiple.get(i).toMultiTargetString());
+                        + SentinelCommand.colorEmphasis + i + SentinelCommand.colorBasic + "): "
+                        + SentinelCommand.colorEmphasis + list.byMultiple.get(i).toMultiTargetString());
             }
             any = true;
         }
@@ -55,7 +55,7 @@ public class SentinelTargetCommands {
 
     public static boolean outputTargetsList(CommandSender sender, String label, Collection<String> targets) {
         if (!targets.isEmpty()) {
-            sender.sendMessage(SentinelCommand.prefixGood + label + ": " + ChatColor.AQUA + getNameTargetString(targets));
+            sender.sendMessage(SentinelCommand.prefixGood + label + ": " + SentinelCommand.colorEmphasis + getNameTargetString(targets));
             return true;
         }
         return false;
@@ -200,7 +200,7 @@ public class SentinelTargetCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void avoidRange(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current avoid range: " + ChatColor.AQUA + sentinel.avoidRange);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current avoid range: " + SentinelCommand.colorEmphasis + sentinel.avoidRange);
             return;
         }
         try {
@@ -224,7 +224,7 @@ public class SentinelTargetCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void targetTime(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current target time: " + ChatColor.AQUA + (sentinel.enemyTargetTime / 20.0));
+            sender.sendMessage(SentinelCommand.prefixGood + "Current target time: " + SentinelCommand.colorEmphasis + (sentinel.enemyTargetTime / 20.0));
             return;
         }
         try {

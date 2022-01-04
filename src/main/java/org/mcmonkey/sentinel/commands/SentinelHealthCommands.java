@@ -23,9 +23,9 @@ public class SentinelHealthCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void armor(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current armor: " + ChatColor.AQUA + sentinel.armor
+            sender.sendMessage(SentinelCommand.prefixGood + "Current armor: " + SentinelCommand.colorEmphasis + sentinel.armor
                     + (sentinel.getNPC().isSpawned() ? SentinelCommand.colorBasic + " Calculated: "
-                    + ChatColor.AQUA + sentinel.getArmor(sentinel.getLivingEntity()) : ""));
+                    + SentinelCommand.colorEmphasis + sentinel.getArmor(sentinel.getLivingEntity()) : ""));
             return;
         }
         try {
@@ -45,7 +45,7 @@ public class SentinelHealthCommands {
                 else {
                     armorInfo = (d * 100) + "%";
                 }
-                sender.sendMessage(SentinelCommand.prefixGood + "Armor set to " + ChatColor.AQUA + d
+                sender.sendMessage(SentinelCommand.prefixGood + "Armor set to " + SentinelCommand.colorEmphasis + d
                         + SentinelCommand.colorBasic + "! (" + armorInfo + ")");
             }
             else {
@@ -63,7 +63,7 @@ public class SentinelHealthCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void health(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current max health: " + ChatColor.AQUA + sentinel.health);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current max health: " + SentinelCommand.colorEmphasis + sentinel.health);
             return;
         }
         try {
@@ -87,7 +87,7 @@ public class SentinelHealthCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void healRate(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current heal rate: " + ChatColor.AQUA + (sentinel.healRate / 20.0));
+            sender.sendMessage(SentinelCommand.prefixGood + "Current heal rate: " + SentinelCommand.colorEmphasis + (sentinel.healRate / 20.0));
             return;
         }
         try {
@@ -113,7 +113,7 @@ public class SentinelHealthCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void respawnTime(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current respawn time: " + ChatColor.AQUA + (sentinel.respawnTime / 20.0));
+            sender.sendMessage(SentinelCommand.prefixGood + "Current respawn time: " + SentinelCommand.colorEmphasis + (sentinel.respawnTime / 20.0));
             return;
         }
         try {
@@ -265,7 +265,7 @@ public class SentinelHealthCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void deathxp(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current death XP: " + ChatColor.AQUA + sentinel.deathXP);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current death XP: " + SentinelCommand.colorEmphasis + sentinel.deathXP);
             return;
         }
         try {

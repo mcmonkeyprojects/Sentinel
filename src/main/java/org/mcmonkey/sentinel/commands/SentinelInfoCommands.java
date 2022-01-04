@@ -41,8 +41,8 @@ public class SentinelInfoCommands {
         Paginator paginator = new Paginator().header(SentinelCommand.prefixGood + sentinel.getNPC().getFullName());
         addLineIfNeeded(paginator, "Owned by", SentinelPlugin.instance.getOwner(sentinel.getNPC(), ""));
         addLineIfNeeded(paginator, "Guarding", (guardName == null ? "" : guardName));
-        addLineIfNeeded(paginator, "Damage", sentinel.damage + SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getDamage(true));
-        addLineIfNeeded(paginator, "Armor", sentinel.armor + (sentinel.getNPC().isSpawned() ? SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getArmor(sentinel.getLivingEntity()) : ""));
+        addLineIfNeeded(paginator, "Damage", sentinel.damage + SentinelCommand.colorBasic + " Calculated: " + SentinelCommand.colorEmphasis + sentinel.getDamage(true));
+        addLineIfNeeded(paginator, "Armor", sentinel.armor + (sentinel.getNPC().isSpawned() ? SentinelCommand.colorBasic + " Calculated: " + SentinelCommand.colorEmphasis + sentinel.getArmor(sentinel.getLivingEntity()) : ""));
         addLineIfNeeded(paginator, "Health", (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/" : "") + sentinel.health);
         addLineIfNeeded(paginator, "Range", sentinel.range);
         addLineIfNeeded(paginator, "Avoidance Range", sentinel.avoidRange);
@@ -95,7 +95,7 @@ public class SentinelInfoCommands {
         if (value instanceof String && (((String) value).isEmpty() || value.equals("{}"))) {
             return;
         }
-        paginator.addLine(SentinelCommand.prefixGood + name + ": " + ChatColor.AQUA + value);
+        paginator.addLine(SentinelCommand.prefixGood + name + ": " + SentinelCommand.colorEmphasis + value);
     }
 
     private static DecimalFormat twoDigitFormat = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.US));
@@ -107,22 +107,22 @@ public class SentinelInfoCommands {
     public void stats(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         sender.sendMessage(SentinelCommand.prefixGood + ChatColor.RESET + sentinel.getNPC().getFullName() + SentinelCommand.colorBasic
                 + ": owned by " + ChatColor.RESET + SentinelPlugin.instance.getOwner(sentinel.getNPC()));
-        sender.sendMessage(SentinelCommand.prefixGood + "Arrows fired: " + ChatColor.AQUA + sentinel.stats_arrowsFired);
-        sender.sendMessage(SentinelCommand.prefixGood + "Potions thrown: " + ChatColor.AQUA + sentinel.stats_potionsThrown);
-        sender.sendMessage(SentinelCommand.prefixGood + "Fireballs launched: " + ChatColor.AQUA + sentinel.stats_fireballsFired);
-        sender.sendMessage(SentinelCommand.prefixGood + "Snowballs thrown: " + ChatColor.AQUA + sentinel.stats_snowballsThrown);
-        sender.sendMessage(SentinelCommand.prefixGood + "Eggs thrown: " + ChatColor.AQUA + sentinel.stats_eggsThrown);
-        sender.sendMessage(SentinelCommand.prefixGood + "Pearls used: " + ChatColor.AQUA + sentinel.stats_pearlsUsed);
-        sender.sendMessage(SentinelCommand.prefixGood + "Skulls thrown: " + ChatColor.AQUA + sentinel.stats_skullsThrown);
-        sender.sendMessage(SentinelCommand.prefixGood + "Llama spits spat: " + ChatColor.AQUA + sentinel.stats_llamaSpitShot);
-        sender.sendMessage(SentinelCommand.prefixGood + "Shulker bullets shot: " + ChatColor.AQUA + sentinel.stats_shulkerBulletsShot);
-        sender.sendMessage(SentinelCommand.prefixGood + "Evoker fangs spawned: " + ChatColor.AQUA + sentinel.stats_evokerFangsSpawned);
-        sender.sendMessage(SentinelCommand.prefixGood + "Punches: " + ChatColor.AQUA + sentinel.stats_punches);
-        sender.sendMessage(SentinelCommand.prefixGood + "Times spawned: " + ChatColor.AQUA + sentinel.stats_timesSpawned);
-        sender.sendMessage(SentinelCommand.prefixGood + "Damage Given: " + ChatColor.AQUA + sentinel.stats_damageGiven);
-        sender.sendMessage(SentinelCommand.prefixGood + "Damage Taken: " + ChatColor.AQUA + sentinel.stats_damageTaken);
+        sender.sendMessage(SentinelCommand.prefixGood + "Arrows fired: " + SentinelCommand.colorEmphasis + sentinel.stats_arrowsFired);
+        sender.sendMessage(SentinelCommand.prefixGood + "Potions thrown: " + SentinelCommand.colorEmphasis + sentinel.stats_potionsThrown);
+        sender.sendMessage(SentinelCommand.prefixGood + "Fireballs launched: " + SentinelCommand.colorEmphasis + sentinel.stats_fireballsFired);
+        sender.sendMessage(SentinelCommand.prefixGood + "Snowballs thrown: " + SentinelCommand.colorEmphasis + sentinel.stats_snowballsThrown);
+        sender.sendMessage(SentinelCommand.prefixGood + "Eggs thrown: " + SentinelCommand.colorEmphasis + sentinel.stats_eggsThrown);
+        sender.sendMessage(SentinelCommand.prefixGood + "Pearls used: " + SentinelCommand.colorEmphasis + sentinel.stats_pearlsUsed);
+        sender.sendMessage(SentinelCommand.prefixGood + "Skulls thrown: " + SentinelCommand.colorEmphasis + sentinel.stats_skullsThrown);
+        sender.sendMessage(SentinelCommand.prefixGood + "Llama spits spat: " + SentinelCommand.colorEmphasis + sentinel.stats_llamaSpitShot);
+        sender.sendMessage(SentinelCommand.prefixGood + "Shulker bullets shot: " + SentinelCommand.colorEmphasis + sentinel.stats_shulkerBulletsShot);
+        sender.sendMessage(SentinelCommand.prefixGood + "Evoker fangs spawned: " + SentinelCommand.colorEmphasis + sentinel.stats_evokerFangsSpawned);
+        sender.sendMessage(SentinelCommand.prefixGood + "Punches: " + SentinelCommand.colorEmphasis + sentinel.stats_punches);
+        sender.sendMessage(SentinelCommand.prefixGood + "Times spawned: " + SentinelCommand.colorEmphasis + sentinel.stats_timesSpawned);
+        sender.sendMessage(SentinelCommand.prefixGood + "Damage Given: " + SentinelCommand.colorEmphasis + sentinel.stats_damageGiven);
+        sender.sendMessage(SentinelCommand.prefixGood + "Damage Taken: " + SentinelCommand.colorEmphasis + sentinel.stats_damageTaken);
         double minutesSpawned = sentinel.stats_ticksSpawned / (20.0 * 60.0);
-        sender.sendMessage(SentinelCommand.prefixGood + "Minutes spawned: " + ChatColor.AQUA + twoDigitFormat.format(minutesSpawned));
+        sender.sendMessage(SentinelCommand.prefixGood + "Minutes spawned: " + SentinelCommand.colorEmphasis + twoDigitFormat.format(minutesSpawned));
     }
 
     @Command(aliases = {"sentinel"}, usage = "debug",

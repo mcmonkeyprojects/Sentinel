@@ -563,7 +563,7 @@ public class SentinelTargetList {
                 if (prefix != null) {
                     builder.append(prefix).append(":");
                 }
-                builder.append(str).append(SentinelCommand.colorBasic).append(" ").append((char) 0x01).append(" ").append(ChatColor.AQUA);
+                builder.append(str).append(SentinelCommand.colorBasic).append(" ").append((char) 0x01).append(" ").append(SentinelCommand.colorEmphasis);
             }
         }
     }
@@ -588,13 +588,13 @@ public class SentinelTargetList {
         if (!byAllInOne.isEmpty()) {
             for (SentinelTargetList list : byAllInOne) {
                 sb.append("allinone:").append(list.toAllInOneString()).append(SentinelCommand.colorBasic)
-                        .append(" ").append((char) 0x01).append(" ").append(ChatColor.AQUA);
+                        .append(" ").append((char) 0x01).append(" ").append(SentinelCommand.colorEmphasis);
             }
         }
         if (sb.length() == 0) {
             return "";
         }
-        return sb.substring(0, sb.length() - (SentinelCommand.colorBasic + " . " + ChatColor.AQUA.toString()).length());
+        return sb.substring(0, sb.length() - (SentinelCommand.colorBasic + " . " + SentinelCommand.colorEmphasis.toString()).length());
     }
 
     private static void addRemovableString(ArrayList<String> output, ArrayList<String> targets, String prefix) {

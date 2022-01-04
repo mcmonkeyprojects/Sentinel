@@ -38,7 +38,7 @@ public class SentinelAttackCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void accuracy(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current accuracy offset: " + ChatColor.AQUA + sentinel.accuracy);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current accuracy offset: " + SentinelCommand.colorEmphasis + sentinel.accuracy);
             return;
         }
         try {
@@ -62,7 +62,7 @@ public class SentinelAttackCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void reach(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current reach: " + ChatColor.AQUA + sentinel.reach);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current reach: " + SentinelCommand.colorEmphasis + sentinel.reach);
             return;
         }
         try {
@@ -86,7 +86,7 @@ public class SentinelAttackCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void projectileRange(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current projectile range: " + ChatColor.AQUA + sentinel.projectileRange);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current projectile range: " + SentinelCommand.colorEmphasis + sentinel.projectileRange);
             return;
         }
         try {
@@ -110,8 +110,8 @@ public class SentinelAttackCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void attackRate(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current attack rate (close): " + ChatColor.AQUA + (sentinel.attackRate / 20.0));
-            sender.sendMessage(SentinelCommand.prefixGood + "Current attack rate (ranged): " + ChatColor.AQUA + (sentinel.attackRateRanged / 20.0));
+            sender.sendMessage(SentinelCommand.prefixGood + "Current attack rate (close): " + SentinelCommand.colorEmphasis + (sentinel.attackRate / 20.0));
+            sender.sendMessage(SentinelCommand.prefixGood + "Current attack rate (ranged): " + SentinelCommand.colorEmphasis + (sentinel.attackRateRanged / 20.0));
             return;
         }
         try {
@@ -142,7 +142,7 @@ public class SentinelAttackCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void range(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current range: " + ChatColor.AQUA + sentinel.range);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current range: " + SentinelCommand.colorEmphasis + sentinel.range);
             return;
         }
         try {
@@ -166,8 +166,8 @@ public class SentinelAttackCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void damage(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current damage: " + ChatColor.AQUA + sentinel.damage
-                    + SentinelCommand.colorBasic + " Calculated: " + ChatColor.AQUA + sentinel.getDamage(true));
+            sender.sendMessage(SentinelCommand.prefixGood + "Current damage: " + SentinelCommand.colorEmphasis + sentinel.damage
+                    + SentinelCommand.colorBasic + " Calculated: " + SentinelCommand.colorEmphasis + sentinel.getDamage(true));
             return;
         }
         try {
@@ -200,7 +200,7 @@ public class SentinelAttackCommands {
         }
         if (args.argsLength() <= 2) {
             Double damage = sentinel.weaponDamage.get(weapon);
-            sender.sendMessage(SentinelCommand.prefixGood + "Current weapon damage for '" + weapon + "': " + ChatColor.AQUA + (damage == null ? "Unset" : damage));
+            sender.sendMessage(SentinelCommand.prefixGood + "Current weapon damage for '" + weapon + "': " + SentinelCommand.colorEmphasis + (damage == null ? "Unset" : damage));
             return;
         }
         try {
@@ -239,7 +239,7 @@ public class SentinelAttackCommands {
         }
         if (args.argsLength() <= 2) {
             String redirect = sentinel.weaponRedirects.get(weaponOne);
-            sender.sendMessage(SentinelCommand.prefixGood + "Current weapon redirect for '" + weaponOne + "': " + ChatColor.AQUA + (redirect == null ? "Unset" : redirect));
+            sender.sendMessage(SentinelCommand.prefixGood + "Current weapon redirect for '" + weaponOne + "': " + SentinelCommand.colorEmphasis + (redirect == null ? "Unset" : redirect));
             return;
         }
         String weaponTwo = args.getString(2).toLowerCase();

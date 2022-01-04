@@ -137,8 +137,8 @@ public class SentinelIntelligenceCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void guardDistance(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current guard minimum distance: " + ChatColor.AQUA + sentinel.guardDistanceMinimum);
-            sender.sendMessage(SentinelCommand.prefixGood + "Current guard selection range: " + ChatColor.AQUA + sentinel.guardSelectionRange);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current guard minimum distance: " + SentinelCommand.colorEmphasis + sentinel.guardDistanceMinimum);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current guard selection range: " + SentinelCommand.colorEmphasis + sentinel.guardSelectionRange);
             return;
         }
         try {

@@ -17,7 +17,7 @@ public class SentinelChaseCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void speed(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current speed: " + ChatColor.AQUA + sentinel.speed);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current speed: " + SentinelCommand.colorEmphasis + sentinel.speed);
             return;
         }
         try {
@@ -41,7 +41,7 @@ public class SentinelChaseCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void chaseRange(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current chase range: " + ChatColor.AQUA + sentinel.chaseRange);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current chase range: " + SentinelCommand.colorEmphasis + sentinel.chaseRange);
             return;
         }
         try {

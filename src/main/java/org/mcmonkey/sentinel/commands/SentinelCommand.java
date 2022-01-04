@@ -27,7 +27,7 @@ public class SentinelCommand implements CommandExecutor, TabCompleter {
     /**
      * Output string representing a message color.
      */
-    public static final String colorBasic = ChatColor.YELLOW.toString();
+    public static final String colorBasic = ChatColor.YELLOW.toString(), colorBad = ChatColor.RED.toString(), colorEmphasis = ChatColor.AQUA.toString();
 
     /**
      * Output string representing a success prefix.
@@ -37,7 +37,7 @@ public class SentinelCommand implements CommandExecutor, TabCompleter {
     /**
      * Output string representing a failure prefix.
      */
-    public static final String prefixBad = ChatColor.DARK_GREEN + "[Sentinel] " + ChatColor.RED;
+    public static final String prefixBad = ChatColor.DARK_GREEN + "[Sentinel] " + colorBad;
 
     /**
      * The "/sentinel" command manager.

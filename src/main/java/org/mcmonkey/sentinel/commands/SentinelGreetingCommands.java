@@ -16,7 +16,7 @@ public class SentinelGreetingCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void greetRange(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current greet range: " + ChatColor.AQUA + sentinel.greetRange);
+            sender.sendMessage(SentinelCommand.prefixGood + "Current greet range: " + SentinelCommand.colorEmphasis + sentinel.greetRange);
             return;
         }
         try {
@@ -41,7 +41,7 @@ public class SentinelGreetingCommands {
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void greetRate(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         if (args.argsLength() <= 1) {
-            sender.sendMessage(SentinelCommand.prefixGood + "Current rate: " + ChatColor.AQUA + (sentinel.greetRate / 20.0));
+            sender.sendMessage(SentinelCommand.prefixGood + "Current rate: " + SentinelCommand.colorEmphasis + (sentinel.greetRate / 20.0));
             return;
         }
         try {
