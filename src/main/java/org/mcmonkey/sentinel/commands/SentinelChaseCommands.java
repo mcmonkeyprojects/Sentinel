@@ -3,7 +3,6 @@ package org.mcmonkey.sentinel.commands;
 import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
@@ -21,7 +20,7 @@ public class SentinelChaseCommands {
             return;
         }
         try {
-            Double d = Double.parseDouble(args.getString(1));
+            double d = Double.parseDouble(args.getString(1));
             if (d < 1000 && d >= 0) {
                 sentinel.speed = d;
                 sender.sendMessage(SentinelCommand.prefixGood + "Speed set!");

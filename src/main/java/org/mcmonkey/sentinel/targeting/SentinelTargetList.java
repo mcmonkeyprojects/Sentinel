@@ -594,7 +594,7 @@ public class SentinelTargetList {
         if (sb.length() == 0) {
             return "";
         }
-        return sb.substring(0, sb.length() - (SentinelCommand.colorBasic + " . " + SentinelCommand.colorEmphasis.toString()).length());
+        return sb.substring(0, sb.length() - (SentinelCommand.colorBasic + " . " + SentinelCommand.colorEmphasis).length());
     }
 
     private static void addRemovableString(ArrayList<String> output, ArrayList<String> targets, String prefix) {

@@ -3,7 +3,6 @@ package org.mcmonkey.sentinel.commands;
 import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.mcmonkey.sentinel.SentinelPlugin;

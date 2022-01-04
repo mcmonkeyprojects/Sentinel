@@ -4,7 +4,6 @@ import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -104,7 +103,6 @@ public class SentinelHealthCommands {
         catch (NumberFormatException ex) {
             sender.sendMessage(SentinelCommand.prefixBad + "Invalid rate number: " + ex.getMessage());
         }
-        return;
     }
 
     @Command(aliases = {"sentinel"}, usage = "respawntime TIME",

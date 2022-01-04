@@ -6,7 +6,6 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.*;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -32,7 +31,7 @@ import java.util.HashSet;
 public class SentinelPlugin extends JavaPlugin {
 
     /**
-     * A map of of all valid event targets.
+     * A map of all valid event targets.
      */
     public static HashSet<String> validEventTargets = new HashSet<>(
             Arrays.asList("pvp", "pve", "pv", "pvnpc", "pvsentinel", "guarded_fight", "eve", "ev", "message")

@@ -3,7 +3,6 @@ package org.mcmonkey.sentinel.commands;
 import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.SentinelUtilities;
@@ -20,7 +19,7 @@ public class SentinelGreetingCommands {
             return;
         }
         try {
-            Double d = args.getDouble(1);
+            double d = args.getDouble(1);
             if (d < 100) {
                 sentinel.greetRange = d;
                 sender.sendMessage(SentinelCommand.prefixGood + "Range set!");
@@ -32,7 +31,6 @@ public class SentinelGreetingCommands {
         catch (NumberFormatException ex) {
             sender.sendMessage(SentinelCommand.prefixBad + "Invalid range number: " + ex.getMessage());
         }
-        return;
     }
 
     @Command(aliases = {"sentinel"}, usage = "greetrate GREETRATE",
@@ -45,7 +43,7 @@ public class SentinelGreetingCommands {
             return;
         }
         try {
-            Double d = args.getDouble(1);
+            double d = args.getDouble(1);
             if (d >= 0) {
                 sentinel.greetRate = (int) (d * 20);
                 sender.sendMessage(SentinelCommand.prefixGood + "Rate set!");
@@ -57,7 +55,6 @@ public class SentinelGreetingCommands {
         catch (NumberFormatException ex) {
             sender.sendMessage(SentinelCommand.prefixBad + "Invalid rate number: " + ex.getMessage());
         }
-        return;
     }
 
     @Command(aliases = {"sentinel"}, usage = "greeting GREETING",

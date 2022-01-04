@@ -15,11 +15,11 @@ Sentinel NPCs: Combat NPCs for Spigot!
 * [Targets](#Targets)
 * [Supported Weapon Types](#Supported-Weapon-Types)
 * [Integrating Your Plugin With Sentinel](#Integrating-Your-Plugin-With-Sentinel)
-* [Need help using Sentinel?](#Need-help-using-Sentinel?-Try-one-of-these-places)
+* [Need help using Sentinel?](#need-help-using-sentinel-try-one-of-these-places)
 * [Dependencies](#Dependencies)
 * [Sentry user?](#Sentry-user?)
 * [Update Warnings](#Update-Warnings)
-* [License](#Licensing-pre-note)
+* [License](#licensing-pre-note)
 
 ![AnimatedSentinel](https://i.imgur.com/VDwTzrs.gif)
 
