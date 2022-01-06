@@ -28,7 +28,8 @@ public class SentinelVersionCompat {
             BOW_MATERIALS = new HashSet<>(),
             POTION_MATERIALS = new HashSet<>(),
             SKULL_MATERIALS = new HashSet<>(),
-            OTHER_RANGED_MATERIALS = new HashSet<>();
+            OTHER_RANGED_MATERIALS = new HashSet<>(),
+            TRANSPARENT_BLOCKS = new HashSet<>();
 
     /**
      * A map of weapon materials to their damage multipliers.
@@ -180,6 +181,9 @@ public class SentinelVersionCompat {
         }
         // ========================== End Entities ==========================
         // ========================== Begin Materials ==========================
+        if (v1_17) {
+            TRANSPARENT_BLOCKS.add(getMaterial("LIGHT"));
+        }
         if (v1_16) {
             addAllMaterials(SWORD_MATERIALS, "NETHERITE_SWORD");
             WEAPON_DAMAGE_MULTIPLIERS.put(getMaterial("NETHERITE_SWORD"), 8.0);
@@ -248,6 +252,8 @@ public class SentinelVersionCompat {
             addAllMaterials(SKULL_MATERIALS, "WITHER_SKELETON_SKULL", "WITHER_SKELETON_WALL_SKULL");
             // Weapons
             MATERIAL_SNOW_BALL = getMaterial("SNOWBALL");
+            // Transparents
+            addAllMaterials(TRANSPARENT_BLOCKS, "CAVE_AIR", "VOID_AIR");
         }
         else { // v1_12 or lower
             // Sword
@@ -307,6 +313,15 @@ public class SentinelVersionCompat {
         }
         MATERIAL_NETHER_STAR = getMaterial("NETHER_STAR");
         MATERIAL_BLAZE_ROD = getMaterial("BLAZE_ROD");
+        for (Material mat : Material.values()) {
+            if (mat.name().startsWith("LEGACY_") || !mat.isBlock()) {
+                continue;
+            }
+            if (mat.isTransparent() || !mat.isSolid() || mat.name().contains("GLASS") || mat.name().contains("LEAVES") || mat.name().contains("FENCE") || mat.name().contains("SAPLING")) {
+                TRANSPARENT_BLOCKS.add(mat);
+            }
+        }
+        addAllMaterials(TRANSPARENT_BLOCKS, "COBWEB", "IRON_BARS", "FIRE", "AIR", "BARRIER", "WATER", "LAVA");
     }
 
     static void warnOldVersion(String versionName, int yearsOld, String extra) {

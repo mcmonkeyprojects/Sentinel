@@ -2,10 +2,8 @@ package org.mcmonkey.sentinel;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.EntityTarget;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -14,6 +12,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 import org.mcmonkey.sentinel.utilities.VelocityTracker;
@@ -40,6 +39,16 @@ public class SentinelUtilities {
             return 0;
         }
         return world.getMinHeight();
+    }
+
+    /**
+     * Gets the maximum height for a world (as of 1.17 can go above 255).
+     */
+    public static int getMaxWorldHeight(World world) {
+        if (!SentinelVersionCompat.v1_17) {
+            return 255;
+        }
+        return world.getMaxHeight();
     }
 
     /**
@@ -513,5 +522,52 @@ public class SentinelUtilities {
         catch (Exception ex) {
             return null;
         }
+    }
+
+    /**
+     * Does a line-of-sight check between entities, allowing for transparent blocks (like glass).
+     */
+    public static boolean checkLineOfSightWithTransparency(LivingEntity start, LivingEntity end) {
+        if (!SentinelVersionCompat.v1_13) {
+            return start.hasLineOfSight(end);
+        }
+        return checkLineOfSightWithTransparency(start.getEyeLocation(), end.getEyeLocation());
+    }
+
+    /**
+     * Does a line-of-sight check between locations, allowing for transparent blocks (like glass).
+     */
+    public static boolean checkLineOfSightWithTransparency(Location start, Location end) {
+        Vector relative = end.toVector().subtract(start.toVector());
+        double len = relative.length();
+        if (Double.isInfinite(len) || Double.isNaN(len) || len < 1) {
+            return true;
+        }
+        if (len > 128) {
+            return false;
+        }
+        relative = relative.multiply(1.0 / len);
+        RayTraceResult result = start.getWorld().rayTraceBlocks(start, relative, len, FluidCollisionMode.NEVER, true);
+        if (result == null || result.getHitBlock() == null) {
+            return true;
+        }
+        if (!SentinelVersionCompat.TRANSPARENT_BLOCKS.contains(result.getHitBlock().getType())) {
+            return false;
+        }
+        // There's a better way to calculate this but... eh, this works too.
+        Vector hitVec = result.getHitPosition();
+        int startX = hitVec.getBlockX(), startY = hitVec.getBlockY(), startZ = hitVec.getBlockZ();
+        Vector bumpForward = relative.multiply(0.1);
+        while (hitVec.getBlockX() == startX && hitVec.getBlockY() == startY && hitVec.getBlockZ() == startZ) {
+            hitVec = hitVec.add(bumpForward);
+        }
+        if (hitVec.getBlockY() <= getMinWorldHeight(start.getWorld()) || hitVec.getBlockY() >= getMaxWorldHeight(start.getWorld())) {
+            return false;
+        }
+        Location hit = new Location(start.getWorld(), hitVec.getX(), hitVec.getY(), hitVec.getZ());
+        if (!SentinelVersionCompat.TRANSPARENT_BLOCKS.contains(hit.getBlock().getType())) {
+            return false;
+        }
+        return checkLineOfSightWithTransparency(hit, end);
     }
 }

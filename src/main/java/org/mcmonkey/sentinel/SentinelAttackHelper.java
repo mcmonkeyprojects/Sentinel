@@ -202,7 +202,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             return false;
         }
         if (!getLivingEntity().hasLineOfSight(entity)) {
-            if (sentinel.ignoreLOS) {
+            if (sentinel.ignoreLOS || SentinelUtilities.checkLineOfSightWithTransparency(getLivingEntity(), entity)) {
                 chase(entity);
             }
             return false;
