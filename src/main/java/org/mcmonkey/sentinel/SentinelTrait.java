@@ -1480,6 +1480,11 @@ public class SentinelTrait extends Trait {
     }
 
     /**
+     * Ticks since last removal of arrows from the NPC.
+     */
+    public int arrowResetTicker = 0;
+
+    /**
      * Runs a full update cycle on the NPC.
      */
     public void runUpdate() {
@@ -1512,6 +1517,13 @@ public class SentinelTrait extends Trait {
         if (healRate > 0 && timeSinceHeal > healRate && getLivingEntity().getHealth() < health) {
             getLivingEntity().setHealth(Math.min(getLivingEntity().getHealth() + 1.0, health));
             timeSinceHeal = 0;
+        }
+        if (SentinelVersionCompat.v1_16 && arrowResetTicker++ > 100) {
+            arrowResetTicker = 0;
+            if (getLivingEntity().getArrowsInBody() > 0) {
+                // Aggressively reduce by more than half each 5 seconds until zero.
+                getLivingEntity().setArrowsInBody(Math.max(0, (getLivingEntity().getArrowsInBody() / 2) - 1));
+            }
         }
         // Pathing and waypoints management
         if (!npc.getNavigator().isNavigating()) {
