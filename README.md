@@ -6,6 +6,7 @@ Sentinel NPCs: Combat NPCs for Spigot!
 * [Donations](#donations)
 * [Info](#info)
 * [Basic Usage](#basic-usage)
+* [Frequently Asked Questions](#frequently-asked-questions)
 * [Common Issues](#common-issues)
 * [Example NPC Setups](#Example-NPC-Setups)
 * [Useful Things To Know](#Useful-Things-To-Know)
@@ -58,6 +59,13 @@ Created by mcmonkey4eva on behalf of the Citizens and Denizen teams.
             - Play with them freely, just be careful if you have other players around!
             - Do note, they won't attack you unless you run command: `/sentinel removeignore owner`.
     - Look through the commands on this readme and the example NPC setups.
+
+### Frequently Asked Questions
+
+- **"How Do I Make The NPC Go Back To A Spot After It's Done Fighting?"**
+    - Set a single point in `/npc path`. It will stand and guard that spot, and return there when not in combat. Consider also setting `/sentinel spawnpoint` there.
+- **"How Do I Make An NPC Run Commands When It Dies?"** or **"How Do I Make An NPC Do Some Custom Behavior At Some Custom Time?"**
+    - Sentinel is a plugin that adds combat features to Citizens NPCs. It is not a general purpose scripting engine and doesn't try to be. If you want custom scripted behavior with NPCs, use [Denizen](https://guide.denizenscript.com/) for that.
 
 ### Common Issues
 
