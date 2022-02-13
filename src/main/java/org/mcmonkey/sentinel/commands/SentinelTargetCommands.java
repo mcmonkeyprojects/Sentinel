@@ -266,7 +266,7 @@ public class SentinelTargetCommands {
 
     @Command(aliases = {"sentinel"}, usage = "protectFromIgnores ['true'/'false']",
             desc = "Toggles whether the NPC cannot be harmed by ignored targets.",
-            modifiers = {"protectFromIgnores"}, permission = "sentinel.fightback", min = 1, max = 2)
+            modifiers = {"protectFromIgnores"}, permission = "sentinel.protectfromignores", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void protectfromignores(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
         boolean mode = !sentinel.protectFromIgnores;
