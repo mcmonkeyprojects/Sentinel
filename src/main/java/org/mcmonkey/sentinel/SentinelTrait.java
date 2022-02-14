@@ -1070,6 +1070,7 @@ public class SentinelTrait extends Trait {
             getLivingEntity().setHealth(health);
         }
         setInvincible(config.getBoolean("sentinel defaults.invincible", false));
+        protectFromIgnores = config.getBoolean("sentinel defaults.protected", false);
         fightback = config.getBoolean("sentinel defaults.fightback", true);
         needsAmmo = config.getBoolean("sentinel defaults.needs ammo", false);
         safeShot = config.getBoolean("sentinel defaults.safe shot", true);
