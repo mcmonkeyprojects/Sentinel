@@ -366,6 +366,12 @@ public class SentinelTrait extends Trait {
      */
     @Persist("invincible")
     public boolean invincible = false;
+    
+    /**
+     * Whether the NPC cannot be harmed by ignored targets
+     */
+    @Persist ("protectFromIgnores")
+    public boolean protectFromIgnores = false;
 
     /**
      * Whether the NPC "fights back" against attacks (targets anyone that damages it).
@@ -946,7 +952,7 @@ public class SentinelTrait extends Trait {
             }
         }
         boolean isMe = event.getEntity().getUniqueId().equals(getLivingEntity().getUniqueId());
-        if (SentinelPlugin.instance.protectFromIgnores && isMe) {
+        if (isMe && (SentinelPlugin.instance.protectFromIgnores || protectFromIgnores)) {
             if (damager instanceof LivingEntity && targetingHelper.isIgnored((LivingEntity) damager)) {
                 event.setCancelled(true);
                 return;
@@ -1064,6 +1070,7 @@ public class SentinelTrait extends Trait {
             getLivingEntity().setHealth(health);
         }
         setInvincible(config.getBoolean("sentinel defaults.invincible", false));
+        protectFromIgnores = config.getBoolean("sentinel defaults.protected", false);
         fightback = config.getBoolean("sentinel defaults.fightback", true);
         needsAmmo = config.getBoolean("sentinel defaults.needs ammo", false);
         safeShot = config.getBoolean("sentinel defaults.safe shot", true);

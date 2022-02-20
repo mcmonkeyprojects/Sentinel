@@ -60,6 +60,7 @@ public class SentinelInfoCommands {
         addLineIfNeeded(paginator, "Guard Distance Minimum", sentinel.guardDistanceMinimum);
         addLineIfNeeded(paginator, "Guard Selection Range", sentinel.guardSelectionRange);
         addLineIfNeeded(paginator, "Invincibility Enabled", sentinel.invincible);
+        addLineIfNeeded(paginator, "Protected Enabled", sentinel.protectFromIgnores);
         addLineIfNeeded(paginator, "Fightback Enabled", sentinel.fightback);
         addLineIfNeeded(paginator, "Ranged Chasing Enabled", sentinel.rangedChase);
         addLineIfNeeded(paginator, "Close-Quarters Chasing Enabled", sentinel.closeChase);
