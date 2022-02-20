@@ -1,6 +1,8 @@
 package org.mcmonkey.sentinel.commands;
 
-import java.util.Collection;
+import net.citizensnpcs.api.command.Command;
+import net.citizensnpcs.api.command.CommandContext;
+import net.citizensnpcs.api.command.Requirements;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -10,9 +12,7 @@ import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 import org.mcmonkey.sentinel.targeting.SentinelTargetList;
 
-import net.citizensnpcs.api.command.Command;
-import net.citizensnpcs.api.command.CommandContext;
-import net.citizensnpcs.api.command.Requirements;
+import java.util.Collection;
 
 /**
  * Commands related to targeting.
@@ -265,7 +265,7 @@ public class SentinelTargetCommands {
     }
 
     @Command(aliases = {"sentinel"}, usage = "protected ['true'/'false']",
-            desc = "Toggles whether the NPC cannot be harmed by ignored targets.",
+            desc = "Toggles whether the NPC should be protected from damage by ignore targets.",
             modifiers = { "protected" }, permission = "sentinel.protected", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void protectedFromIgnores(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
@@ -278,13 +278,13 @@ public class SentinelTargetCommands {
         }
         sentinel.protectFromIgnores = mode;
         if (sentinel.protectFromIgnores) {
-            sender.sendMessage(SentinelCommand.prefixGood + "NPC is now protected from ignored targets!");
+            sender.sendMessage(SentinelCommand.prefixGood + "NPC is now protected from ignore targets!");
         }
         else {
-            sender.sendMessage(SentinelCommand.prefixGood + "NPC no longer protected from ignored targets!");
+            sender.sendMessage(SentinelCommand.prefixGood + "NPC no longer protected from ignore targets!");
         }
     }
-    
+
     @Command(aliases = {"sentinel"}, usage = "fightback ['true'/'false']",
             desc = "Toggles whether the NPC will fight back.",
             modifiers = {"fightback"}, permission = "sentinel.fightback", min = 1, max = 2)

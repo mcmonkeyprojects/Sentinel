@@ -366,11 +366,11 @@ public class SentinelTrait extends Trait {
      */
     @Persist("invincible")
     public boolean invincible = false;
-    
+
     /**
-     * Whether the NPC cannot be harmed by ignored targets
+     * Whether the NPC should be protected from damage by ignore targets.
      */
-    @Persist ("protectFromIgnores")
+    @Persist ("protected")
     public boolean protectFromIgnores = false;
 
     /**

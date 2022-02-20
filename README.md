@@ -222,7 +222,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel avoidreturnpoint - Changes the location the NPC runs to when avoid mode is activated, or removes it if the NPC is already there.
 - **Toggleable NPC configuration commands:**
     - /sentinel invincible \['true'/'false'\] - Toggles whether the NPC is invincible.
-    - /sentinel protectfromignores \['true'/'false'\] - Toggles whether the NPC cannot be harmed by ignored targets.
+    - /sentinel protected \['true'/'false'\] - Toggles whether the NPC is protected from damage by ignore targets.
     - /sentinel fightback \['true'/'false'\] - Toggles whether the NPC will fight back.
     - /sentinel runaway \['true'/'false'\] - Toggles whether the NPC will run away when attacked.
     - /sentinel needammo \['true'/'false'\] - Toggles whether the NPC will need ammo.

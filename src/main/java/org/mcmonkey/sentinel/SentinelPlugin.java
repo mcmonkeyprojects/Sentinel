@@ -161,8 +161,9 @@ public class SentinelPlugin extends JavaPlugin {
     public boolean workaroundEntityChasePathfinder;
 
     /**
-     * Configuration option: whether to protect the NPC from being harmed by ignored entities.
+     * Legacy configuration option: whether to protect all NPCs from being harmed by ignored entities.
      */
+    @Deprecated
     public boolean protectFromIgnores;
 
     /**

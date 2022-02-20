@@ -18,7 +18,7 @@ sentinel defaults:
     attack rate: 30
     # Heal rate, in ticks.
     heal rate: 100
-    # Whether NPCs are protected from damage by ignore targets.
+    # Whether the NPC should be protected from damage by ignore targets.
     protected: true
     # Whether this NPC fights back.
     fightback: true
@@ -86,9 +86,6 @@ random:
     # Whether to force damage through (particularly for ranged attacks).
     # If enabled, this can cause unwanted side effects, like mobs not aggroing or some armor effects not applying.
     enforce damage: false
-    # Whether NPCs are protected from damage by ignore targets.
-    # DEPRECATED - please use the default settings instead
-    protected: false
     # Whether skull attack, evoker fang, or shulker bullets are allowed.
     skull allowed: true
     # How many calculation cycles before an NPC will give up on a good target.
