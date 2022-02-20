@@ -145,18 +145,18 @@ Here are a few examples of how you might setup and configure an NPC
 
 Sentinel integrates with a few external plugins, including:
 
-- Vault, for permission group targets! (Use `group:GROUP_HERE`)
-- Towny, for town targets! (Use `towny:TOWN_HERE`, `nation:NATION_HERE`, `nationenemies:NATION_HERE`, `nationallies:NATION_HERE`)
-- Factions, for faction targets! (Use `factions:FACTION_HERE`, `factionsenemy:NAME`, `factionsally:NAME`)
-- SimpleClans, for clan targets! (Use `simpleclan:CLAN_NAME_HERE`)
-- War, for war team targets! (Use `war_team:WAR_TEAM_NAME`)
-- SimplePets, for pet type targets! (Use `simplepet:PET_NAME_REGEX` ... in particular useful for `/sentinel addignore simplepet:.*` to ignore all pets)
-- CrackShot, to allow NPCs to fire CrackShot weapons (just put the weapon in their hand).
-- WorldGuard, to define WorldGuard region limits! Use `/sentinel wgregion [region name]` to force the NPC to stay inside that region.
+- [Vault](https://www.spigotmc.org/resources/vault.34315/), for permission group targets! (Use `group:GROUP_HERE`)
+- [Towny](https://www.spigotmc.org/resources/towny-advanced.72694/), for town targets! (Use `towny:TOWN_HERE`, `nation:NATION_HERE`, `nationenemies:NATION_HERE`, `nationallies:NATION_HERE`)
+- [Factions](https://www.spigotmc.org/resources/factions.1900/), for faction targets! (Use `factions:FACTION_HERE`, `factionsenemy:NAME`, `factionsally:NAME`)
+- [SimpleClans](https://www.spigotmc.org/resources/simpleclans.71242/), for clan targets! (Use `simpleclan:CLAN_NAME_HERE`)
+- [War](https://www.spigotmc.org/resources/war.11413/), for war team targets! (Use `war_team:WAR_TEAM_NAME`)
+- [SimplePets](https://www.spigotmc.org/resources/simplepets.14124/), for pet type targets! (Use `simplepet:PET_NAME_REGEX` ... in particular useful for `/sentinel addignore simplepet:.*` to ignore all pets)
+- [CrackShot](https://www.spigotmc.org/resources/crackshot-guns.48301/), to allow NPCs to fire CrackShot weapons (just put the weapon in their hand).
+- [WorldGuard](https://enginehub.org/worldguard/), to define WorldGuard region limits! Use `/sentinel wgregion [region name]` to force the NPC to stay inside that region.
 
 Sentinel is integrated into by external plugins as well, including:
 
-- Denizen (using Depenizen as a bridge), for scriptable targeting!
+- [Denizen](https://denizenscript.com/) (using [Depenizen](https://github.com/DenizenScript/Depenizen/blob/master/README.md) as a bridge), for scriptable targeting!
     - Use `held_denizen_item:DENIZEN_ITEM_NAME` for targeting based on targets holding a Denizen item.
     - or use `denizen_proc:PROCEDURE_SCRIPT_NAME` to fire a procedure script.
         - First procedure context (named `entity`) is the entity that might be a target.
@@ -165,7 +165,10 @@ Sentinel is integrated into by external plugins as well, including:
         - Recommended that you add to the proc `definitions: entity|context` to avoid script-checker errors.
         - Determine `true` or `false` to indicate whether the entity is a target.
     - Also check the Denizen meta docs - type `!search sentinel` in `#bot-spam` on the Denizen support Discord.
-- QualityArmory, to allow NPCs to fire QA weapons (just put the weapon in their hand).
+- [BeautyQuests](https://www.spigotmc.org/resources/beautyquests.39255/) for Quest-based targeting
+    - Use `quest_in:QUEST_ID` to target players with the given quest started.
+    - Use `quest_finished:QUEST_ID` to target players who have already finished the given quest.
+- [QualityArmory](https://www.spigotmc.org/resources/quality-armory.47561/), to allow NPCs to fire QA weapons (just put the weapon in their hand).
 - If you develop a publicly available Spigot plugin that has a Sentinel integration, please [let me known on Discord](https://discord.gg/Q6pZGSR) so I can add it here!
 
 ### Commands
