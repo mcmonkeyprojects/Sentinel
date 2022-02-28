@@ -1198,6 +1198,11 @@ public class SentinelTrait extends Trait {
      */
     public void faceLocation(Location l) {
         Location faceTowards = l.clone().subtract(0, getLivingEntity().getEyeHeight(), 0);
+        // Error protection: do not try to face straight up or straight down
+        Vector validator = l.toVector().subtract(getLivingEntity().getLocation().toVector());
+        if (validator.lengthSquared() < 0.1 || Math.abs(validator.getX()) + Math.abs(validator.getZ()) < 0.01) {
+            return;
+        }
         npc.faceLocation(faceTowards);
         if (npc.getNavigator().isNavigating()) {
             Function<Navigator, Location> altLookFunction = n -> faceTowards;
