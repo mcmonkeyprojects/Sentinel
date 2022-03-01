@@ -48,11 +48,12 @@ public class SentinelNMSHelper {
                 String playerAttackMethod = null, attackStrengthField = null;
                 boolean isCompat = false;
                 if (SentinelVersionCompat.v1_18 && !SentinelVersionCompat.vFuture) { // 1.18 names
-                    endermanAngryField = "bY"; // EnderMan#DATA_CREEPY
-                    playerAttackMethod = "d"; // Player#attack(Entity)
-                    attackStrengthField = "aR"; // LivingEntity#attackStrengthTicker
-                    broadcastEffectMethod = "a"; // Level#broadcastEntityEvent
-                    dataWatcherSet = "b"; // SynchedEntityData#set
+                    // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.18.2
+                    endermanAngryField = "bX"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
+                    playerAttackMethod = "d"; // net.minecraft.world.entity.player.Player#attack(Entity)
+                    attackStrengthField = "aQ"; // net.minecraft.world.entity.LivingEntity#attackStrengthTicker
+                    broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
+                    dataWatcherSet = "b"; // net.minecraft.network.syncher.SynchedEntityData#set
                     isCompat = true;
                 }
                 else if (!SentinelVersionCompat.v1_18) { // 1.17 names
