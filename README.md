@@ -284,12 +284,13 @@ These are all valid targets and ignores:
     - `status:angry` for mobs (wolves, endermen, spiders, etc.) that are currently angry. This is handy with a combo like `allinone:enderman|status:angry`
     - `status:passive` for non-angry
 - Also, via internal sample integrations:
-    - `sbteam:SCOREBOARD_TEAM_HERE`
-    - `healthabove:PERCENTAGE` and `healthbelow:PERCENTAGE`
-    - `permission:PERM.KEY`
+    - `sbteam:SCOREBOARD_TEAM_HERE` (for vanilla scoreboard teams) (WARNING: scoreboards in vanilla minecraft can be cheated by changing your username)
+    - `sbscoreabove:OBJECTIVE:MIN_VALUE, sbscorebelow:OBJECTIVE:MAX_VALUE` (for vanilla scoreboard objective scores)
+    - `healthabove:PERCENTAGE` and `healthbelow:PERCENTAGE` (for targeting based on current health, useful for example for a healer NPC)
+    - `permission:PERM.KEY` (for permission based targets, requires a permissions plugin of course)
     - `squad:SENTINEL_SQUAD_NAME` (to target another Sentinel SQUAD)
     - `uuid:UUID` (to target one single specific entity)
-    - `potion:POTION_EFFECT` ( effect name must be on <https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>)
+    - `potion:POTION_EFFECT` (effect name must be on <https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>)
 - Also anything listed in the integrations section above!
 - You can also add multi-targets - that is, `multi:TARGET_ONE,TARGET_TWO,...` to have multiple targets required together.
     - For example: `multi:PLAYER,PLAYER,CHICKEN` will make the NPC angry at 2 players and a chicken if they are all together.

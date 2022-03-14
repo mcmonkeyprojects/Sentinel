@@ -1,6 +1,7 @@
 # Sentinel plugin configuration file
 
 # Default settings for a new NPC
+# Generally these should be edited per-NPC via command, unless you really want this apply to every NPC ever
 sentinel defaults:
     # Whether 'close quarters' NPCs should chase targets.
     close chase target: true

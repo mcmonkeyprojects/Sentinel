@@ -361,6 +361,7 @@ public class SentinelPlugin extends JavaPlugin {
         registerIntegration(new SentinelHealth());
         registerIntegration(new SentinelPermissions());
         registerIntegration(new SentinelPotion());
+        registerIntegration(new SentinelSBScore());
         registerIntegration(new SentinelSBTeams());
         registerIntegration(new SentinelSquads());
         registerIntegration(new SentinelUUID());
