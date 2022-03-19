@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -386,6 +387,12 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
     public void knockback(LivingEntity entity, float force) {
         if (entity == null || entity.isDead() || !getNPC().isSpawned()) {
             return;
+        }
+        if (SentinelVersionCompat.v1_12) {
+            float resist = (float) entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue();
+            if (resist > 0.0 && resist <= 1.0) {
+                force *= (1.0 - resist);
+            }
         }
         Vector direction = entity.getLocation().toVector().subtract(getLivingEntity().getLocation().toVector());
         if (direction.lengthSquared() > 0) {
