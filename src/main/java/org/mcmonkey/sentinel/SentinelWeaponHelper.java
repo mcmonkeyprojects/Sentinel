@@ -54,15 +54,12 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         sentinel.stats_potionsThrown++;
         HashMap.SimpleEntry<Location, Vector> start = sentinel.getLaunchDetail(target, lead);
         Entity entpotion;
-        if (SentinelVersionCompat.v1_14) {
+        if (SentinelVersionCompat.v1_14 || !SentinelVersionCompat.v1_9) {
             entpotion = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.SPLASH_POTION);
         }
-        else if (SentinelVersionCompat.v1_9) {
+        else { // 1_9 to 1_13 temporarily had a unique type for lingering
             entpotion = start.getKey().getWorld().spawnEntity(start.getKey(),
                     potion.getType() == Material.SPLASH_POTION ? EntityType.SPLASH_POTION : LINGERING_POTION);
-        }
-        else {
-            entpotion = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.SPLASH_POTION);
         }
         ((ThrownPotion) entpotion).setShooter(getLivingEntity());
         ((ThrownPotion) entpotion).setItem(potion);

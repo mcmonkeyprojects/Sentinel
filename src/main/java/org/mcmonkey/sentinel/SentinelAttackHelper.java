@@ -83,7 +83,10 @@ public class SentinelAttackHelper extends SentinelHelperObject {
      * Repeats the last chase instruction (to ensure the NPC keeps going for a target).
      */
     public void rechase() {
-        if (sentinel.chasing != null) {
+        if (sentinel.chasing != null && (itemHelper.isRanged() ? sentinel.rangedChase : sentinel.closeChase)) {
+            if (SentinelPlugin.debugMe) {
+                sentinel.debug("Re-chasing own current target");
+            }
             chase(sentinel.chasing);
         }
     }
@@ -151,10 +154,14 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                 }
             }
             if (tryAttackInternal(quickTarget)) {
-                chase(target);
+                if (itemHelper.isRanged() ? sentinel.rangedChase : sentinel.closeChase) {
+                    chase(target);
+                }
                 return true;
             }
-            chase(target);
+            if (itemHelper.isRanged() ? sentinel.rangedChase : sentinel.closeChase) {
+                chase(target);
+            }
         }
         return false;
     }
@@ -167,7 +174,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         double dist = getLivingEntity().getEyeLocation().distanceSquared(entity.getEyeLocation());
         if (dist < sentinel.projectileRange * sentinel.projectileRange && targetingHelper.canSee(entity)) {
             if (sentinel.timeSinceAttack < sentinel.attackRateRanged) {
-                debug("tryAttack refused, timeSinceAttack");
+                debug("tryAttack ranged refused, timeSinceAttack");
                 if (sentinel.rangedChase) {
                     rechase();
                 }
@@ -177,7 +184,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             return false;
         }
         else if (sentinel.rangedChase) {
-            debug("tryAttack refused, range or visibility");
+            debug("tryAttack ranged refused, range or visibility");
             chase(entity);
             return true;
         }
@@ -203,7 +210,9 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         }
         if (!getLivingEntity().hasLineOfSight(entity)) {
             if (sentinel.ignoreLOS || SentinelUtilities.checkLineOfSightWithTransparency(getLivingEntity(), entity)) {
-                chase(entity);
+                if (itemHelper.isRanged() ? sentinel.rangedChase : sentinel.closeChase) {
+                    chase(entity);
+                }
             }
             return false;
         }
@@ -229,10 +238,16 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         targetingHelper.addTarget(entity.getUniqueId());
         for (SentinelIntegration si : SentinelPlugin.integrations) {
             if (si.tryAttack(sentinel, entity)) {
+                if (SentinelPlugin.debugMe) {
+                    debug("tryAttack overridden by integration " + si.getClass().getName());
+                }
                 return true;
             }
         }
         ItemStack weapon = itemHelper.getHeldItem();
+        if (SentinelPlugin.debugMe) {
+            debug("tryAttack will try weapon " + weapon.getType().name());
+        }
         if (itemHelper.usesBow(weapon)) {
             if (rangedPreCalculation(entity)) {
                 return false;
@@ -364,7 +379,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         else {
             if (dist < sentinel.reach * sentinel.reach) {
                 if (sentinel.timeSinceAttack < sentinel.attackRate) {
-                    debug("tryAttack refused, timeSinceAttack");
+                    debug("tryAttack melee refused, timeSinceAttack");
                     if (sentinel.closeChase) {
                         rechase();
                     }
@@ -372,7 +387,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                 }
                 sentinel.timeSinceAttack = 0;
                 // TODO: Damage sword if needed!
-                debug("tryAttack passed!");
+                debug("tryAttack melee passed!");
                 weaponHelper.punch(entity);
                 if (sentinel.needsAmmo && itemHelper.shouldTakeDura()) {
                     itemHelper.reduceDurability();
@@ -381,7 +396,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                 return true;
             }
             else if (sentinel.closeChase) {
-                debug("tryAttack refused, range");
+                debug("tryAttack melee refused, range");
                 chase(entity);
                 return false;
             }
