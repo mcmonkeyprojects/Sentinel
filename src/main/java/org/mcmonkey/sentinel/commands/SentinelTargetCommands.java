@@ -4,15 +4,19 @@ import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.mcmonkey.sentinel.SentinelCurrentTarget;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 import org.mcmonkey.sentinel.targeting.SentinelTargetList;
 
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * Commands related to targeting.
@@ -306,15 +310,48 @@ public class SentinelTargetCommands {
         }
     }
 
-    @Command(aliases = {"sentinel"}, usage = "forgive",
+    @Command(aliases = {"sentinel"}, usage = "forgive (id)",
             desc = "Forgives all current targets.",
-            modifiers = {"forgive"}, permission = "sentinel.forgive", min = 1, max = 1)
+            modifiers = {"forgive"}, permission = "sentinel.forgive", min = 1, max = 2)
     @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
     public void forgive(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
-        sentinel.targetingHelper.currentTargets.clear();
-        sentinel.targetingHelper.currentAvoids.clear();
-        sentinel.chasing = null;
-        sender.sendMessage(SentinelCommand.prefixGood + "Targets forgiven.");
+        if (args.argsLength() > 1) {
+            UUID id = null;
+            String forgivable = args.getString(1);
+            if (forgivable.length() == 36 && forgivable.contains("-")) {
+                id = UUID.fromString(forgivable);
+            }
+            else {
+                Player player = Bukkit.getPlayer(forgivable);
+                if (player != null) {
+                    id = player.getUniqueId();
+                }
+            }
+            if (id == null) {
+                sender.sendMessage(SentinelCommand.prefixBad + "Invalid player target input.");
+                return;
+            }
+            SentinelCurrentTarget toRemove = new SentinelCurrentTarget();
+            toRemove.targetID = id;
+            boolean rem1 = sentinel.targetingHelper.currentTargets.remove(toRemove);
+            boolean rem2 = sentinel.targetingHelper.currentAvoids.remove(toRemove);
+            boolean rem3 = sentinel.chasing != null && sentinel.chasing.getUniqueId().equals(id);
+            if (rem3) {
+                sentinel.chasing = null;
+            }
+            if (rem1 || rem2 || rem3) {
+                sender.sendMessage(SentinelCommand.prefixGood + "Specified target forgiven.");
+            }
+            else {
+                sender.sendMessage(SentinelCommand.prefixGood + "Specified entity is already not a current target.");
+            }
+        }
+        else {
+            sentinel.targetingHelper.currentTargets.clear();
+            sentinel.targetingHelper.currentAvoids.clear();
+            sentinel.chasing = null;
+            sender.sendMessage(SentinelCommand.prefixGood + "Targets forgiven.");
+        }
     }
 
     @Command(aliases = {"sentinel"}, usage = "targets",
