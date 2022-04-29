@@ -185,10 +185,10 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         Vector forward = getLivingEntity().getEyeLocation().getDirection();
         Location spawnAt = getLivingEntity().getEyeLocation().clone().add(forward.clone().multiply(sentinel.firingMinimumRange() + 2));
         Trident ent = (Trident) spawnAt.getWorld().spawnEntity(spawnAt, EntityType.TRIDENT);
+        ent.setShooter(getLivingEntity());
         if (SentinelVersionCompat.v1_14) {
             ent.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
         }
-        ent.setShooter(getLivingEntity());
         ent.setVelocity(sentinel.fixForAcc(target.clone().subtract(spawnAt).toVector().normalize().multiply(2.0))); // TODO: Fiddle with '2.0'.
     }
 
