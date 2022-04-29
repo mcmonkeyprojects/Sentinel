@@ -302,7 +302,7 @@ public class SentinelHealthCommands {
         else {
             sentinel.spawnPoint = pos.add(0.5, 0.0, 0.5);
             sentinel.spawnPoint.setYaw(sentinel.getLivingEntity().getLocation().getYaw());
-            sender.sendMessage(SentinelCommand.prefixGood + "Spawn point updated!");
+            sender.sendMessage(SentinelCommand.prefixGood + "Spawn point updated to the NPC's current location: " + pos.getBlockX() + ", " + pos.getBlockY() + ", " + pos.getBlockZ());
         }
     }
 }

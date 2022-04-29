@@ -246,7 +246,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         }
         ItemStack weapon = itemHelper.getHeldItem();
         if (SentinelPlugin.debugMe) {
-            debug("tryAttack will try weapon " + weapon.getType().name());
+            debug("tryAttack will try weapon " + (weapon == null ? "air" : weapon.getType().name()));
         }
         if (itemHelper.usesBow(weapon)) {
             if (rangedPreCalculation(entity)) {

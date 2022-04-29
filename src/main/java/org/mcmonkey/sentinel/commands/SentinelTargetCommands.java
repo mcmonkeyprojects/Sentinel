@@ -400,11 +400,11 @@ public class SentinelTargetCommands {
                 && pos.getBlockZ() == sentinel.avoidReturnPoint.getBlockZ()
                 && pos.getWorld().getName().equals(sentinel.avoidReturnPoint.getWorld().getName())) {
             sentinel.avoidReturnPoint = null;
-            sender.sendMessage(SentinelCommand.prefixGood + "Spawn point removed!");
+            sender.sendMessage(SentinelCommand.prefixGood + "Avoid-return point removed!");
         }
         else {
             sentinel.avoidReturnPoint = pos.add(0.5, 0.0, 0.5);
-            sender.sendMessage(SentinelCommand.prefixGood + "Spawn point updated!");
+            sender.sendMessage(SentinelCommand.prefixGood + "Avoid-return point updated!");
         }
     }
 }
