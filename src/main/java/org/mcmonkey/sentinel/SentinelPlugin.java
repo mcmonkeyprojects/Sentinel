@@ -353,10 +353,10 @@ public class SentinelPlugin extends JavaPlugin {
             @Override
             public void run() {
                 if (!getConfig().getBoolean("stats_opt_out", false)) {
-                    new StatsRecord().start();
+                    StatsRecord.trigger();
                 }
             }
-        }.runTaskTimer(this, 100, 20 * 60 * 60);
+        }.runTaskTimer(this, 200, 20 * 60 * 60);
         tryGetPerms();
         registerIntegration(new SentinelHealth());
         registerIntegration(new SentinelPermissions());
