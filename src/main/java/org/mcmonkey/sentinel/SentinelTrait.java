@@ -1921,12 +1921,12 @@ public class SentinelTrait extends Trait {
         }
         event.getDrops().clear();
         if (event instanceof PlayerDeathEvent) {
+            PlayerDeathEvent pEvent = (PlayerDeathEvent) event;
             if (!SentinelPlugin.instance.deathMessages) {
-                ((PlayerDeathEvent) event).setDeathMessage("");
+                pEvent.setDeathMessage(null);
             }
-            else if (npc.requiresNameHologram() && ((PlayerDeathEvent) event).getDeathMessage() != null) {
-                String message = ((PlayerDeathEvent) event).getDeathMessage().replace(event.getEntity().getName(), npc.getFullName());
-                ((PlayerDeathEvent) event).setDeathMessage(message);
+            else if (npc.requiresNameHologram() && pEvent.getDeathMessage() != null) {
+                pEvent.setDeathMessage(pEvent.getDeathMessage().replace(event.getEntity().getName(), npc.getFullName()));
             }
         }
         if (!SentinelPlugin.instance.workaroundDrops) {
