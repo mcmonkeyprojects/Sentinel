@@ -116,6 +116,11 @@ public class SentinelTarget {
     public static SentinelTarget HOGLINS, PIGLINS, STRIDERS, ZOGLINS, ZOMBIFIED_PIGLINS, PIGLIN_BRUTE;
 
     /**
+     * Valid target types for 1.19 or higher.
+     */
+    public static SentinelTarget TADPOLES, FROGS, ALLAYS, WARDENS;
+
+    /**
      * Multiple-entity-type targets.
      */
     public static SentinelTarget PASSIVE_MOBS, MONSTERS, MOBS;

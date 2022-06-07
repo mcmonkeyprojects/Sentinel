@@ -851,8 +851,12 @@ public class SentinelTrait extends Trait {
         if (!npc.isSpawned()) {
             return;
         }
+        if (SentinelPlugin.debugMe) {
+            debug("Damage from me to " + event.getEntityType().name() + " of cause " + event.getCause().name());
+        }
         // NPCs can mis-invoke sweep damage - this is never a wanted/intended effect, so discard it asap.
         if (SentinelVersionCompat.v1_9 && event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
+            debug("Discard sweep damage");
             event.setCancelled(true);
             return;
         }
@@ -871,15 +875,17 @@ public class SentinelTrait extends Trait {
                 }
             }
             else {
-                if (SentinelPlugin.debugMe) {
-                    debug("refuse damage enforcement");
-                }
+                debug("refuse damage enforcement");
             }
             event.setDamage(0);
             event.setCancelled(true);
             return;
         }
-        event.setDamage(EntityDamageEvent.DamageModifier.BASE, getDamage(false));
+        double damage = getDamage(false);
+        if (SentinelPlugin.debugMe) {
+            debug("correct base damage to " + damage);
+        }
+        event.setDamage(EntityDamageEvent.DamageModifier.BASE, damage);
     }
 
     /**
@@ -891,6 +897,9 @@ public class SentinelTrait extends Trait {
         }
         if (!npc.isSpawned()) {
             return;
+        }
+        if (SentinelPlugin.debugMe) {
+            debug("Damage from my projectile to " + event.getEntityType().name() + " of cause " + event.getCause().name());
         }
         if (SentinelPlugin.instance.alternateDamage) {
             if (canEnforce) {
