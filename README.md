@@ -292,6 +292,7 @@ These are all valid targets and ignores:
     - `squad:SENTINEL_SQUAD_NAME` (to target another Sentinel SQUAD)
     - `uuid:UUID` (to target one single specific entity)
     - `potion:POTION_EFFECT` (effect name must be on <https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>)
+    - `npc_owned_by:TARGETER` (to target NPCs that are owned by online players that match certain target data, like `npc_owned_by:player:Bob`)
 - Also anything listed in the integrations section above!
 - You can also add multi-targets - that is, `multi:TARGET_ONE,TARGET_TWO,...` to have multiple targets required together.
     - For example: `multi:PLAYER,PLAYER,CHICKEN` will make the NPC angry at 2 players and a chicken if they are all together.

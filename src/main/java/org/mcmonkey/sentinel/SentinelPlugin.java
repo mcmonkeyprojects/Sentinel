@@ -359,6 +359,7 @@ public class SentinelPlugin extends JavaPlugin {
         }.runTaskTimer(this, 200, 20 * 60 * 60);
         tryGetPerms();
         registerIntegration(new SentinelHealth());
+        registerIntegration(new SentinelNPCOwnedBy());
         registerIntegration(new SentinelPermissions());
         registerIntegration(new SentinelPotion());
         registerIntegration(new SentinelSBScore());
