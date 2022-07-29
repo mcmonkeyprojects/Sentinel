@@ -42,7 +42,7 @@ public class StatsRecord extends Thread {
         int endPart = mcPart == -1 ? -1 : mcVersion.indexOf(")", mcPart);
         String platform = secondDash == -1 ? "" : mcVersion.substring(firstDash + 1, secondDash);
         mcVersion = (endPart == -1) ? "" : mcVersion.substring(mcPart + "(MC: ".length(), endPart);
-        content = "postid=pluginstats&plugin=Denizen"
+        content = "postid=pluginstats&plugin=Sentinel"
                 + "&differentiator=" + differentiator
                 + "&pl_plugin_version=" + URLEncoder.encode(SentinelPlugin.instance.getDescription().getVersion())
                 + "&pl_platform=" + URLEncoder.encode(platform)
