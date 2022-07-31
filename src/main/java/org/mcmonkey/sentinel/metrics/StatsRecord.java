@@ -57,8 +57,7 @@ public class StatsRecord extends Thread {
         BufferedReader in = null;
         try {
             // Open a connection to the stats server
-            URL url = new URL("https://stats.mcmonkey.org/Stats/Submit"
-                    + URLEncoder.encode(SentinelPlugin.instance.getDescription().getVersion()));
+            URL url = new URL("https://stats.mcmonkey.org/Stats/Submit");
             HttpURLConnection uc = (HttpURLConnection) url.openConnection();
             uc.setDoInput(true);
             uc.setDoOutput(true);
@@ -77,7 +76,7 @@ public class StatsRecord extends Thread {
         }
         catch (Exception e) {
             if (SentinelPlugin.debugMe) {
-                System.out.println("Sentinel stat issue: " + e.getMessage());
+                System.out.println("Sentinel stat issue: " + e.getClass().getName() + ": " + e.getMessage());
             }
         }
         finally {
@@ -88,7 +87,7 @@ public class StatsRecord extends Thread {
             }
             catch (Exception e) {
                 if (SentinelPlugin.debugMe) {
-                    System.out.println("Sentinel stat issue (backup): " + e.getMessage());
+                    System.out.println("Sentinel stat issue (backup): " + e.getClass().getName() + ": " + e.getMessage());
                 }
             }
         }
