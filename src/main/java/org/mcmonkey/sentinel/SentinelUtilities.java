@@ -570,4 +570,13 @@ public class SentinelUtilities {
         }
         return checkLineOfSightWithTransparency(hit, end);
     }
+
+    private final static double EPSILON = 0.0000001;
+
+    /**
+     * Returns true if "a == b" within a small epsilon margin (to compensate for Double value inaccuracies).
+     */
+    public static boolean approxEquals(double a, double b) {
+        return Math.abs(a - b) < EPSILON;
+    }
 }

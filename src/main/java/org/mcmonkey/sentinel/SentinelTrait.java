@@ -925,6 +925,9 @@ public class SentinelTrait extends Trait {
             return;
         }
         double dam = getDamage(true);
+        if (damage < 0 && SentinelUtilities.approxEquals(dam, 1)) { // Allow default damage through for custom / external weapons
+            return;
+        }
         double modder = event.getDamage(EntityDamageEvent.DamageModifier.BASE);
         double rel = modder == 0.0 ? 1.0 : dam / modder;
         event.setDamage(EntityDamageEvent.DamageModifier.BASE, dam);
