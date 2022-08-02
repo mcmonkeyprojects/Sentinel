@@ -80,7 +80,7 @@ public class SentinelLands extends SentinelIntegration {
 
     private MemberHolder getTarget(String name, LandPlayer landPlayer) {
         MemberHolder target = getTarget(name);
-        return target == null ? null : target.isMember(landPlayer) ? target : null;
+        return target == null ? null : target.isTrusted(landPlayer) ? target : null;
     }
 
     private MemberHolder getTarget(String name) {
