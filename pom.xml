@@ -99,9 +99,10 @@
         </dependency>
         <dependency>
             <groupId>com.github.angeschossen</groupId>
-            <artifactId>LandsAPI</artifactId>
+            <artifactId>landsapi</artifactId>
             <version>6.8.2</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/LandsAPI.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.shampaggon</groupId>
