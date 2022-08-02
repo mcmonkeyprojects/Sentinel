@@ -416,6 +416,15 @@ public class SentinelPlugin extends JavaPlugin {
                 ex.printStackTrace();
             }
         }
+        if (Bukkit.getPluginManager().getPlugin("Lands") != null) {
+            try {
+                registerIntegration(new SentinelLands(this));
+                getLogger().info("Sentinel found Lands! Adding support for it!");
+            }
+            catch (Throwable ex) {
+                ex.printStackTrace();
+            }
+        }
         if (Bukkit.getPluginManager().getPlugin("War") != null) {
             try {
                 registerIntegration(new SentinelWar());

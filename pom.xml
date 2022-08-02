@@ -98,6 +98,12 @@
             <systemPath>${basedir}/lib/MassiveCore.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>com.github.angeschossen</groupId>
+            <artifactId>LandsAPI</artifactId>
+            <version>6.8.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.shampaggon</groupId>
             <artifactId>crackshot</artifactId>
             <version>0.98.5</version>
