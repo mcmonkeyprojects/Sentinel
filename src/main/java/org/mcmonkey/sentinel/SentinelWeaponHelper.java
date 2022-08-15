@@ -330,7 +330,9 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
                 }
                 else if (getLivingEntity() instanceof Player && SentinelVersionCompat.v1_17) {
                     debug("Punch/native/player");
+                    ItemStack hand = getLivingEntity().getEquipment().getItemInMainHand().clone();
                     if (SentinelNMSHelper.doPlayerAttack((Player) getLivingEntity(), entity)) {
+                        getLivingEntity().getEquipment().setItemInMainHand(hand); // Copy back the raw held item, as modern native attack can take durability
                         return;
                     }
                     debug("Native player punch failed. Error?");
