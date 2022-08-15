@@ -161,6 +161,11 @@ public class SentinelPlugin extends JavaPlugin {
     public boolean workaroundEntityChasePathfinder;
 
     /**
+     * Configuration option: whether to auto-enable use-new-finder.
+     */
+    public boolean autoCorrectpathfinderMode;
+
+    /**
      * Legacy configuration option: whether to protect all NPCs from being harmed by ignored entities.
      */
     @Deprecated
@@ -286,6 +291,7 @@ public class SentinelPlugin extends JavaPlugin {
         blockSunburn = getConfig().getBoolean("random.block sunburn", true);
         preventExplosionBlockDamage = getConfig().getBoolean("random.prevent explosion block damage", true);
         tickRate = getConfig().getInt("update rate", 10);
+        autoCorrectpathfinderMode = getConfig().getBoolean("random.auto correct pathfinder mode", true);
     }
 
     /**

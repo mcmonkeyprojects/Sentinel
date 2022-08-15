@@ -110,6 +110,8 @@ random:
     retain target: false
     # Whether to prevent block damage caused by Sentinel weapons.
     prevent explosion block damage: true
+    # (Experimental) If enabled, will automatically change the NPC's pathfinding mode if the NPC appears to be getting stuck.
+    auto correct pathfinder mode: true
 
 # How fast to recalculate, in ticks.
 update rate: 10

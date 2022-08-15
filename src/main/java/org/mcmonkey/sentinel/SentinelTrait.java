@@ -1508,10 +1508,39 @@ public class SentinelTrait extends Trait {
      */
     public int arrowResetTicker = 0;
 
+    private Location lastLocationOnUpdate;
+    private int ticksSinceMoved = 0;
+    private boolean didCorrection = false;
+
     /**
      * Runs a full update cycle on the NPC.
      */
     public void runUpdate() {
+        if (lastLocationOnUpdate == null || lastLocationOnUpdate.distanceSquared(getLivingEntity().getLocation()) > 0.1) {
+            ticksSinceMoved = 0;
+            lastLocationOnUpdate = getLivingEntity().getLocation();
+        }
+        else if (npc.getNavigator().isNavigating()) {
+            ticksSinceMoved += SentinelPlugin.instance.tickRate;
+            if (ticksSinceMoved > 100 && !npc.getNavigator().getDefaultParameters().useNewPathfinder() && !didCorrection) {
+                if (spawnPoint != null && lastLocationOnUpdate.distanceSquared(spawnPoint) < 1) {
+                    didCorrection = true;
+                    String prefix = SentinelCommand.prefixBad + "NPC " + npc.getId() + " (" + npc.getName() + SentinelCommand.colorBad + ") ";
+                    if (SentinelPlugin.instance.autoCorrectpathfinderMode) {
+                        SentinelUtilities.broadcastToSelected(npc, prefix + "is unable to move - likely due to a minecraft navigator bug, and so will have its "
+                                + "pathfinder mode autocorrected to use-new-finder=true (if you don't want this correction logic, disable Config option 'auto correct pathfinder mode')."
+                                + " Consider enabling 'use-new-finder: true' in your 'plugins/Citizens/config.yml'.");
+                        npc.getNavigator().getDefaultParameters().useNewPathfinder(true);
+                    }
+                    else {
+                        SentinelUtilities.broadcastToSelected(npc, prefix + "is unable to move due to a minecraft navigator bug, but auto-correction of this bug is disabled in your config.");
+                    }
+                }
+            }
+        }
+        else {
+            ticksSinceMoved = 0;
+        }
         // Basic prep and tracking
         canEnforce = true;
         ticksSinceLastBurn += SentinelPlugin.instance.tickRate;

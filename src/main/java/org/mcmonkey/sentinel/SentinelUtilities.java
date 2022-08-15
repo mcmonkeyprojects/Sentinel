@@ -2,6 +2,7 @@ package org.mcmonkey.sentinel;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.EntityTarget;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -578,5 +579,23 @@ public class SentinelUtilities {
      */
     public static boolean approxEquals(double a, double b) {
         return Math.abs(a - b) < EPSILON;
+    }
+
+    /**
+     * Broadcasts a message to the console and to any player(s) that have an NPC selected.
+     */
+    public static void broadcastToSelected(NPC npc, String message) {
+        Bukkit.getConsoleSender().sendMessage(message);
+        if (!npc.isSpawned()) {
+            return;
+        }
+        for (Player player : npc.getEntity().getLocation().getWorld().getPlayers()) {
+            if (player.isOnline()) {
+                NPC selected = CitizensAPI.getDefaultNPCSelector().getSelected(player);
+                if (selected != null && selected.equals(npc)) {
+                    player.sendMessage(message);
+                }
+            }
+        }
     }
 }
