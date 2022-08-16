@@ -50,6 +50,9 @@ public class SentinelInfoCommands {
         addLineIfNeeded(paginator, "Ranged Attack Rate", (sentinel.attackRateRanged / 20.0));
         addLineIfNeeded(paginator, "Heal Rate", (sentinel.healRate / 20.0));
         addLineIfNeeded(paginator, "Respawn Time", (sentinel.respawnTime / 20.0));
+        addLineIfNeeded(paginator, "Reaction Slowdown", (sentinel.reactionSlowdown / 20.0));
+        float walkSpeed = sentinel.getNPC().getNavigator().getDefaultParameters().speedModifier();
+        addLineIfNeeded(paginator, "Move Speed",SentinelCommand.colorBasic + "Walking: " + SentinelCommand.colorEmphasis + walkSpeed + SentinelCommand.colorBasic + ", Attacking: " + SentinelCommand.colorEmphasis + sentinel.speed);
         addLineIfNeeded(paginator, "Accuracy", sentinel.accuracy);
         addLineIfNeeded(paginator, "Reach", sentinel.reach);
         addLineIfNeeded(paginator, "Projectile Range", sentinel.projectileRange);
@@ -67,7 +70,9 @@ public class SentinelInfoCommands {
         addLineIfNeeded(paginator, "Maximum chase range", sentinel.chaseRange);
         addLineIfNeeded(paginator, "Safe-Shot Enabled", sentinel.safeShot);
         addLineIfNeeded(paginator, "Enemy-Drops Enabled", sentinel.enemyDrops);
+        addLineIfNeeded(paginator, "Enemy Target Time", (sentinel.enemyTargetTime / 20.0));
         addLineIfNeeded(paginator, "Autoswitch Enabled", sentinel.autoswitch);
+        addLineIfNeeded(paginator, "Needs-Ammo Enabled", sentinel.needsAmmo);
         addLineIfNeeded(paginator, "Realistic Targeting Enabled", sentinel.realistic);
         addLineIfNeeded(paginator, "Knockback allowed", sentinel.allowKnockback);
         addLineIfNeeded(paginator, "Run-Away Enabled", sentinel.runaway);
