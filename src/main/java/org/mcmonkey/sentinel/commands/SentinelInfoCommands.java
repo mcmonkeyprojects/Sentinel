@@ -38,9 +38,9 @@ public class SentinelInfoCommands {
                 guardName = player.getName();
             }
         }
-        Paginator paginator = new Paginator().header(SentinelCommand.prefixGood + sentinel.getNPC().getFullName());
+        Paginator paginator = new Paginator().header(SentinelCommand.prefixGood + sentinel.getNPC().getFullName()).enablePageSwitcher("/sentinel info $page");
         addLineIfNeeded(paginator, "Owned by", SentinelPlugin.instance.getOwner(sentinel.getNPC(), ""));
-        addLineIfNeeded(paginator, "Guarding", (guardName == null ? "" : guardName));
+        addLineIfNeeded(paginator, "Guarding", guardName);
         addLineIfNeeded(paginator, "Damage", sentinel.damage + SentinelCommand.colorBasic + " Calculated: " + SentinelCommand.colorEmphasis + sentinel.getDamage(true));
         addLineIfNeeded(paginator, "Armor", sentinel.armor + (sentinel.getNPC().isSpawned() ? SentinelCommand.colorBasic + " Calculated: " + SentinelCommand.colorEmphasis + sentinel.getArmor(sentinel.getLivingEntity()) : ""));
         addLineIfNeeded(paginator, "Health", (sentinel.getNPC().isSpawned() ? sentinel.getLivingEntity().getHealth() + "/" : "") + sentinel.health);
@@ -56,8 +56,8 @@ public class SentinelInfoCommands {
         addLineIfNeeded(paginator, "Accuracy", sentinel.accuracy);
         addLineIfNeeded(paginator, "Reach", sentinel.reach);
         addLineIfNeeded(paginator, "Projectile Range", sentinel.projectileRange);
-        addLineIfNeeded(paginator, "Greeting", (sentinel.greetingText == null ? "" : sentinel.greetingText));
-        addLineIfNeeded(paginator, "Warning", (sentinel.warningText == null ? "" : sentinel.warningText));
+        addLineIfNeeded(paginator, "Greeting", sentinel.greetingText);
+        addLineIfNeeded(paginator, "Warning", sentinel.warningText);
         addLineIfNeeded(paginator, "Greeting Range", sentinel.greetRange);
         addLineIfNeeded(paginator, "Greeting Rate", sentinel.greetRate);
         addLineIfNeeded(paginator, "Guard Distance Minimum", sentinel.guardDistanceMinimum);
@@ -76,7 +76,7 @@ public class SentinelInfoCommands {
         addLineIfNeeded(paginator, "Realistic Targeting Enabled", sentinel.realistic);
         addLineIfNeeded(paginator, "Knockback allowed", sentinel.allowKnockback);
         addLineIfNeeded(paginator, "Run-Away Enabled", sentinel.runaway);
-        addLineIfNeeded(paginator, "Squad", (sentinel.squad == null ? "" : sentinel.squad));
+        addLineIfNeeded(paginator, "Squad", sentinel.squad);
         addLineIfNeeded(paginator, "Spawnpoint", (sentinel.spawnPoint == null ? "" : sentinel.spawnPoint.toVector().toBlockVector().toString()));
         addLineIfNeeded(paginator, "Per-weapon damage values", sentinel.weaponDamage.toString());
         addLineIfNeeded(paginator, "Weapon redirections", sentinel.weaponRedirects.toString());
@@ -98,7 +98,7 @@ public class SentinelInfoCommands {
     }
 
     private static void addLineIfNeeded(Paginator paginator, String name, Object value) {
-        if (value instanceof String && (((String) value).isEmpty() || value.equals("{}"))) {
+        if (value == null || (value instanceof String && (((String) value).isEmpty() || value.equals("{}")))) {
             return;
         }
         paginator.addLine(SentinelCommand.prefixGood + name + ": " + SentinelCommand.colorEmphasis + value);
