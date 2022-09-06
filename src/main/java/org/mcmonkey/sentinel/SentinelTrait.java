@@ -1526,6 +1526,7 @@ public class SentinelTrait extends Trait {
                 if (spawnPoint != null && lastLocationOnUpdate.distanceSquared(spawnPoint) < 1) {
                     didCorrection = true;
                     String prefix = SentinelCommand.prefixBad + "NPC " + npc.getId() + " (" + npc.getName() + SentinelCommand.colorBad + ") ";
+                    // TODO: Remove auto-corrector if Citizens patch is reliable
                     if (SentinelPlugin.instance.autoCorrectpathfinderMode) {
                         SentinelUtilities.broadcastToSelected(npc, prefix + "is unable to move - likely due to a minecraft navigator bug, and so will have its "
                                 + "pathfinder mode autocorrected to use-new-finder=true (if you don't want this correction logic, disable Config option 'auto correct pathfinder mode')."

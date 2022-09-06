@@ -324,18 +324,16 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         else {
             if (sentinel.damage < 0 && SentinelVersionCompat.v1_15 && SentinelPlugin.instance.doNativeAttack) {
                 if (SentinelTarget.NATIVE_COMBAT_CAPABLE_TYPES.contains(getLivingEntity().getType())) {
-                    debug("Punch/native/mob");
+                    debug("Punch/native/living-entity");
                     getLivingEntity().attack(entity);
                     return;
                 }
                 else if (getLivingEntity() instanceof Player && SentinelVersionCompat.v1_17) {
                     debug("Punch/native/player");
                     ItemStack hand = getLivingEntity().getEquipment().getItemInMainHand().clone();
-                    if (SentinelNMSHelper.doPlayerAttack((Player) getLivingEntity(), entity)) {
-                        getLivingEntity().getEquipment().setItemInMainHand(hand); // Copy back the raw held item, as modern native attack can take durability
-                        return;
-                    }
-                    debug("Native player punch failed. Error?");
+                    getLivingEntity().attack(entity);
+                    getLivingEntity().getEquipment().setItemInMainHand(hand); // Copy back the raw held item, as modern native attack can take durability
+                    return;
                 }
             }
             double damage = sentinel.getDamage(false);

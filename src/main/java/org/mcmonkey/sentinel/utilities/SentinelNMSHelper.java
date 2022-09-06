@@ -3,9 +3,7 @@ package org.mcmonkey.sentinel.utilities;
 import net.citizensnpcs.util.NMS;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.IronGolem;
-import org.bukkit.entity.Player;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -15,8 +13,7 @@ import java.lang.reflect.Field;
  */
 public class SentinelNMSHelper {
 
-    public static MethodHandle CRAFTENTITY_GETHANDLE, NMSENTITY_WORLDGETTER, NMSWORLD_BROADCASTENTITYEFFECT, NMSENTITY_GETDATAWATCHER, DATWATCHER_SET,
-            SERVERPLAYER_ATTACK, LIVINGENTITY_ATTACKSTRENGTHTICKS;
+    public static MethodHandle CRAFTENTITY_GETHANDLE, NMSENTITY_WORLDGETTER, NMSWORLD_BROADCASTENTITYEFFECT, NMSENTITY_GETDATAWATCHER, DATWATCHER_SET, LIVINGENTITY_ATTACKSTRENGTHTICKS;
 
     public static Object ENTITYENDERMAN_DATAWATCHER_ANGRY;
 
@@ -43,14 +40,12 @@ public class SentinelNMSHelper {
                 nmsDataWatcher = Class.forName("net.minecraft.network.syncher.DataWatcher"); // SynchedEntityData
                 nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject"); // EntityDataAccessor
                 nmsEntityEnderman = Class.forName("net.minecraft.world.entity.monster.EntityEnderman");
-                nmsHuman = Class.forName("net.minecraft.world.entity.player.EntityHuman");
                 nmsLivingEntity = Class.forName("net.minecraft.world.entity.EntityLiving");
-                String playerAttackMethod = null, attackStrengthField = null;
+                String attackStrengthField = null;
                 boolean isCompat = false;
                 if (SentinelVersionCompat.v1_19 && !SentinelVersionCompat.vFuture) { // 1.19 names
                     // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.19
                     endermanAngryField = "bZ"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
-                    playerAttackMethod = "d"; // net.minecraft.world.entity.player.Player#attack(Entity)
                     attackStrengthField = "aQ"; // net.minecraft.world.entity.LivingEntity#attackStrengthTicker
                     broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
                     dataWatcherSet = "b"; // net.minecraft.network.syncher.SynchedEntityData#set
@@ -59,7 +54,6 @@ public class SentinelNMSHelper {
                 else if (SentinelVersionCompat.v1_18 && !SentinelVersionCompat.v1_19) { // 1.18 names
                     // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.18.2
                     endermanAngryField = "bX"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
-                    playerAttackMethod = "d"; // net.minecraft.world.entity.player.Player#attack(Entity)
                     attackStrengthField = "aQ"; // net.minecraft.world.entity.LivingEntity#attackStrengthTicker
                     broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
                     dataWatcherSet = "b"; // net.minecraft.network.syncher.SynchedEntityData#set
@@ -67,12 +61,10 @@ public class SentinelNMSHelper {
                 }
                 else if (!SentinelVersionCompat.v1_18) { // 1.17 names
                     endermanAngryField = "bV"; // EnderMan#DATA_CREEPY
-                    playerAttackMethod = "attack"; // Player#attack(Entity)
                     attackStrengthField = "aQ"; // LivingEntity#attackStrengthTicker
                     isCompat = true;
                 }
                 if (isCompat) {
-                    SERVERPLAYER_ATTACK = NMS.getMethodHandle(nmsHuman, playerAttackMethod, true, nmsEntity);
                     LIVINGENTITY_ATTACKSTRENGTHTICKS = NMS.getSetter(nmsLivingEntity, attackStrengthField);
                 }
             }
@@ -102,25 +94,6 @@ public class SentinelNMSHelper {
             ex.printStackTrace();
             nmsWorks = false;
             endermanValid = false;
-        }
-    }
-
-    public static boolean doPlayerAttack(Player attacker, Entity victim) {
-        if (!nmsWorks || SERVERPLAYER_ATTACK == null) {
-            return false;
-        }
-        try {
-            Object nmsHandleAttacker = CRAFTENTITY_GETHANDLE.invoke(attacker);
-            Object nmsHandleVictim = CRAFTENTITY_GETHANDLE.invoke(victim);
-            // 100 is just a random high value - attack strength doesn't tick itself for NPCs, so just set it a value too high to matter.
-            LIVINGENTITY_ATTACKSTRENGTHTICKS.invoke(nmsHandleAttacker, 100);
-            SERVERPLAYER_ATTACK.invoke(nmsHandleAttacker, nmsHandleVictim);
-            return true;
-        }
-        catch (Throwable ex) {
-            nmsWorks = false;
-            ex.printStackTrace();
-            return false;
         }
     }
 
