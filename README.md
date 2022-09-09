@@ -338,7 +338,7 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
 ```xml
         <repository>
             <id>citizens-repo</id>
-            <url>https://repo.citizensnpcs.co</url>
+            <url>https://maven.citizensnpcs.co/repo</url>
         </repository>
 ```
 - And add Sentinel as a `provided` dependency (be sure to change the version to match the current version available) (note that the `exclusions` block can help to prevent maven issues):
