@@ -21,7 +21,7 @@
     <repositories>
         <repository>
             <id>citizens-repo</id>
-            <url>http://repo.citizensnpcs.co</url>
+            <url>http://maven.citizensnpcs.co</url>
         </repository>
         <repository>
             <id>FreneticLLC-public</id>
@@ -143,6 +143,12 @@
         <developerConnection>scm:git:git:@github.com:mcmonkey4eva/Sentinel.git</developerConnection>
         <url>https://github.com/mcmonkey4eva/Sentinel/tree/master/</url>
     </scm>
+    <distributionManagement>
+        <repository>
+            <id>citizens-repo</id>
+            <url>https://maven.citizensnpcs.co/repo</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <defaultGoal>clean package install javadoc:javadoc</defaultGoal>
@@ -212,6 +218,17 @@
                     <author>false</author>
                     <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
