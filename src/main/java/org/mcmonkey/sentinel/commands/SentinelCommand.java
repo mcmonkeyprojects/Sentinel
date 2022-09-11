@@ -45,12 +45,18 @@ public class SentinelCommand implements CommandExecutor, TabCompleter {
     public CommandManager manager;
 
     /**
+     * The main instance of this class.
+     */
+    public static SentinelCommand instance;
+
+    /**
      * Prepares the command handling system.
      */
     public void buildCommandHandler(PluginCommand command) {
+        instance = this;
         manager = new CommandManager();
         manager.setInjector(new Injector());
-        grabCommandMethodMap(manager);
+        grabCommandField();
         manager.register(SentinelAttackCommands.class);
         manager.register(SentinelChaseCommands.class);
         manager.register(SentinelGreetingCommands.class);
@@ -62,32 +68,38 @@ public class SentinelCommand implements CommandExecutor, TabCompleter {
         command.setTabCompleter(this);
     }
 
-    private static Map<String, Method> sentinelCommandMethodMap;
+    private static Field commandInfoMethodField;
 
-    private static void grabCommandMethodMap(CommandManager instance) {
+    private void grabCommandField() {
         try {
-            Field field = CommandManager.class.getDeclaredField("commands");
+            Field field = CommandManager.CommandInfo.class.getDeclaredField("method");
             field.setAccessible(true);
-            sentinelCommandMethodMap = (Map<String, Method>) field.get(instance);
+            commandInfoMethodField = field;
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private static boolean isSentinelRequired(String command, String modifier) {
-        Method method = sentinelCommandMethodMap.get((command + " " + modifier).toLowerCase());
-        if (method == null) {
+    private boolean isSentinelRequired(String command, String modifier) {
+        CommandManager.CommandInfo info = manager.getCommand(command, modifier);
+        if (info == null) {
             return false;
         }
-        Requirements[] req = method.getDeclaredAnnotationsByType(Requirements.class);
-        if (req == null || req.length == 0) {
-            return false;
-        }
-        for (Class<? extends Trait> traitClass : req[0].traits()) {
-            if (traitClass.equals(SentinelTrait.class)) {
-                return true;
+        try {
+            Method method = (Method) commandInfoMethodField.get(info);
+            Requirements[] req = method.getDeclaredAnnotationsByType(Requirements.class);
+            if (req == null || req.length == 0) {
+                return false;
             }
+            for (Class<? extends Trait> traitClass : req[0].traits()) {
+                if (traitClass.equals(SentinelTrait.class)) {
+                    return true;
+                }
+            }
+        }
+        catch (IllegalAccessException ex) {
+            ex.printStackTrace();
         }
         return false;
     }
