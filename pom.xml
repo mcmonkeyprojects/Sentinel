@@ -21,7 +21,7 @@
     <repositories>
         <repository>
             <id>citizens-repo</id>
-            <url>http://maven.citizensnpcs.co</url>
+            <url>https://maven.citizensnpcs.co</url>
         </repository>
         <repository>
             <id>FreneticLLC-public</id>
