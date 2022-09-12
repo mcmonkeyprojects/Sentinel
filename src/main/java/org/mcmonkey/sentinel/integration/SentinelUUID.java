@@ -2,6 +2,7 @@ package org.mcmonkey.sentinel.integration;
 
 import org.bukkit.entity.LivingEntity;
 import org.mcmonkey.sentinel.SentinelIntegration;
+import org.mcmonkey.sentinel.SentinelUtilities;
 
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class SentinelUUID extends SentinelIntegration {
     public boolean isTarget(LivingEntity ent, String prefix, String value) {
         try {
             if (prefix.equals("uuid")) {
-                return ent.getUniqueId().equals(UUID.fromString(value));
+                return SentinelUtilities.uuidEquals(ent.getUniqueId(), UUID.fromString(value));
             }
         }
         catch (IllegalArgumentException ex) {

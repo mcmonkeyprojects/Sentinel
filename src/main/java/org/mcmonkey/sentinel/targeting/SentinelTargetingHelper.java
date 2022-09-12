@@ -193,7 +193,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (entity.getType() == EntityType.ARMOR_STAND) {
             return true;
         }
-        if (sentinel.getGuarding() != null && entity.getUniqueId().equals(sentinel.getGuarding())) {
+        if (sentinel.getGuarding() != null && SentinelUtilities.uuidEquals(entity.getUniqueId(), sentinel.getGuarding())) {
             return true;
         }
         return sentinel.allIgnores.isTarget(entity, sentinel);
@@ -212,7 +212,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             return false;
         }
-        if (sentinel.getGuarding() != null && entity.getUniqueId().equals(sentinel.getGuarding())) {
+        if (sentinel.getGuarding() != null && SentinelUtilities.uuidEquals(entity.getUniqueId(), sentinel.getGuarding())) {
             return false;
         }
         if (isUntargetable(entity)) {
@@ -235,7 +235,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             return false;
         }
-        if (sentinel.getGuarding() != null && entity.getUniqueId().equals(sentinel.getGuarding())) {
+        if (sentinel.getGuarding() != null && SentinelUtilities.uuidEquals(entity.getUniqueId(), sentinel.getGuarding())) {
             return false;
         }
         tempTarget.targetID = entity.getUniqueId();

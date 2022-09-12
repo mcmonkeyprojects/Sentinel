@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.mcmonkey.sentinel.SentinelCurrentTarget;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
+import org.mcmonkey.sentinel.SentinelUtilities;
 import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 import org.mcmonkey.sentinel.targeting.SentinelTargetList;
 
@@ -335,7 +336,7 @@ public class SentinelTargetCommands {
             toRemove.targetID = id;
             boolean rem1 = sentinel.targetingHelper.currentTargets.remove(toRemove);
             boolean rem2 = sentinel.targetingHelper.currentAvoids.remove(toRemove);
-            boolean rem3 = sentinel.chasing != null && sentinel.chasing.getUniqueId().equals(id);
+            boolean rem3 = sentinel.chasing != null && SentinelUtilities.uuidEquals(sentinel.chasing.getUniqueId(), id);
             if (rem3) {
                 sentinel.chasing = null;
             }

@@ -224,7 +224,7 @@ public class SentinelEventHandler implements Listener {
         }
         for (SentinelTrait sentinel : cleanCurrentList()) {
             UUID guarding = sentinel.getGuarding();
-            if (guarding != null && event.getEntity().getUniqueId().equals(guarding)) {
+            if (guarding != null && SentinelUtilities.uuidEquals(event.getEntity().getUniqueId(), guarding)) {
                 sentinel.whenAttacksHappened(event);
             }
         }

@@ -975,7 +975,7 @@ public class SentinelTrait extends Trait {
             }
         }
         boolean isKilling = event.getEntity() instanceof LivingEntity && event.getFinalDamage() >= ((LivingEntity) event.getEntity()).getHealth();
-        boolean isFriend = getGuarding() != null && event.getEntity().getUniqueId().equals(getGuarding());
+        boolean isFriend = getGuarding() != null && SentinelUtilities.uuidEquals(event.getEntity().getUniqueId(), getGuarding());
         boolean attackerIsMe = damager.getUniqueId().equals(getLivingEntity().getUniqueId());
         if (projectileSource != null && projectileSource.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             attackerIsMe = true;
@@ -988,7 +988,7 @@ public class SentinelTrait extends Trait {
                 event.setCancelled(true);
                 return;
             }
-            if (getGuarding() != null && damager.getUniqueId().equals(getGuarding())) {
+            if (getGuarding() != null && SentinelUtilities.uuidEquals(damager.getUniqueId(), getGuarding())) {
                 if (isMe && SentinelPlugin.instance.noGuardDamage) {
                     debug("Ignoring damage from the player we're guarding.");
                     event.setCancelled(true);

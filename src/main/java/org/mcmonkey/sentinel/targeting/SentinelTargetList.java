@@ -63,7 +63,7 @@ public class SentinelTargetList {
      */
     public boolean isTarget(LivingEntity entity, SentinelTrait sentinel) {
         checkRecalculateTargetsCache();
-        if (targetsProcessed.contains(SentinelTarget.OWNER) && entity.getUniqueId().equals(sentinel.getNPC().getOrAddTrait(Owner.class).getOwnerId())) {
+        if (targetsProcessed.contains(SentinelTarget.OWNER) && SentinelUtilities.uuidEquals(entity.getUniqueId(), sentinel.getNPC().getOrAddTrait(Owner.class).getOwnerId())) {
             return true;
         }
         return isTargetNoCache(entity);
@@ -379,7 +379,7 @@ public class SentinelTargetList {
     public boolean isReverseEventTarget(SentinelTrait sentinel, EntityDamageByEntityEvent event) {
         if (byEvent.contains("guarded_fight")
                 && sentinel.getGuarding() != null
-                && event.getDamager().getUniqueId().equals(sentinel.getGuarding())) {
+                && SentinelUtilities.uuidEquals(event.getDamager().getUniqueId(), sentinel.getGuarding())) {
             return true;
         }
         return false;

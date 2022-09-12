@@ -598,4 +598,17 @@ public class SentinelUtilities {
             }
         }
     }
+
+    private static final long UUID_VERSION_BITMASK = 0x0000000000007000L;
+
+    /**
+     * Equivalent to "UUID#equals(...)" but ignoring the UUID version flag, to make NPC UUIDs (v4) and entity UUIDS (v2) of the same value be considered equivalent.
+     */
+    public static boolean uuidEquals(UUID a, UUID b) {
+        if (a.getLeastSignificantBits() != b.getLeastSignificantBits()) {
+            return false;
+        }
+        long mA = a.getMostSignificantBits() & ~UUID_VERSION_BITMASK, mB = b.getMostSignificantBits() & ~UUID_VERSION_BITMASK;
+        return mA == mB;
+    }
 }
