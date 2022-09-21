@@ -1516,7 +1516,7 @@ public class SentinelTrait extends Trait {
      * Runs a full update cycle on the NPC.
      */
     public void runUpdate() {
-        if (lastLocationOnUpdate == null || lastLocationOnUpdate.distanceSquared(getLivingEntity().getLocation()) > 0.1) {
+        if (lastLocationOnUpdate == null || !lastLocationOnUpdate.getWorld().equals(getLivingEntity().getWorld()) || lastLocationOnUpdate.distanceSquared(getLivingEntity().getLocation()) > 0.1) {
             ticksSinceMoved = 0;
             lastLocationOnUpdate = getLivingEntity().getLocation();
         }
