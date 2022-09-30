@@ -605,6 +605,9 @@ public class SentinelUtilities {
      * Equivalent to "UUID#equals(...)" but ignoring the UUID version flag, to make NPC UUIDs (v4) and entity UUIDS (v2) of the same value be considered equivalent.
      */
     public static boolean uuidEquals(UUID a, UUID b) {
+        if (a == null || b == null) {
+            return a == null && b == null;
+        }
         if (a.getLeastSignificantBits() != b.getLeastSignificantBits()) {
             return false;
         }
