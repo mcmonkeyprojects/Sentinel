@@ -1694,9 +1694,7 @@ public class SentinelTrait extends Trait {
             Location near = nearestPathPoint();
             if (near != null && (chasing == null || !canPathTo(chasing.getLocation()))) {
                 if (SentinelPlugin.debugMe) {
-                    if (near.distanceSquared(getLivingEntity().getLocation()) > 3 * 3) {
-                        debug("screw you guys, I'm going home!");
-                    }
+                    debug("Returning to nearest path point.");
                 }
                 if (!disableTeleporting) {
                     npc.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
@@ -1719,8 +1717,11 @@ public class SentinelTrait extends Trait {
                 }
             }
         }
-        else if (chasing == null && guarded == null && pathingTo == null && npc.getNavigator().isNavigating() && needsSafeReturn) {
-            npc.getNavigator().cancelNavigation();
+        else if (chasing == null && guarded == null && pathingTo == null && needsSafeReturn) {
+            if (npc.getNavigator().isNavigating()) {
+                debug("Cancelling navigation, combat is over.");
+                npc.getNavigator().cancelNavigation();
+            }
             needsSafeReturn = false;
         }
     }
