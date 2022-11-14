@@ -619,8 +619,9 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             SentinelCurrentTarget cte = new SentinelCurrentTarget();
             cte.targetID = sentinel.chasing.getUniqueId();
             if (!currentTargets.contains(cte)) {
-                sentinel.chasing = null;
-                getNPC().getNavigator().cancelNavigation();
+                if (sentinel.tryUpdateChaseTarget(null)) {
+                    getNPC().getNavigator().cancelNavigation();
+                }
             }
         }
     }

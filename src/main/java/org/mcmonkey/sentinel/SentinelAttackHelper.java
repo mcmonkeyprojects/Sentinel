@@ -27,7 +27,9 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             debug("Try to begin chasing " + entity.getUniqueId() + "/" + entity.getType().name());
         }
         sentinel.cleverTicks = 0;
-        sentinel.chasing = entity;
+        if (!sentinel.tryUpdateChaseTarget(entity)) {
+            return;
+        }
         sentinel.chased = true;
         sentinel.needsSafeReturn = true;
         /*
@@ -228,7 +230,10 @@ public class SentinelAttackHelper extends SentinelHelperObject {
         else if (sentinel.autoswitch && dist < sentinel.reach * sentinel.reach) {
             itemHelper.swapToMelee();
         }
-        sentinel.chasing = entity;
+        if (!sentinel.tryUpdateChaseTarget(entity)) {
+            debug("tryAttack refused, cannot update target.");
+            return false;
+        }
         SentinelAttackEvent sat = new SentinelAttackEvent(getNPC(), entity);
         Bukkit.getPluginManager().callEvent(sat);
         if (sat.isCancelled()) {

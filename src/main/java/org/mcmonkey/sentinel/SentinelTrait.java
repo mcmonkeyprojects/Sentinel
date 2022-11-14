@@ -36,6 +36,8 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.commands.SentinelCommand;
+import org.mcmonkey.sentinel.events.SentinelChaseEndEvent;
+import org.mcmonkey.sentinel.events.SentinelChaseNewTargetEvent;
 import org.mcmonkey.sentinel.events.SentinelCombatStateChangeEvent;
 import org.mcmonkey.sentinel.events.SentinelWantsToPathEvent;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
@@ -1054,7 +1056,7 @@ public class SentinelTrait extends Trait {
         targetingHelper.removeTargetNoBounce(tempTarget);
         targetingHelper.currentAvoids.remove(tempTarget);
         if (chasing != null && chasing.getUniqueId().equals(dead)) {
-            chasing = null;
+            tryUpdateChaseTarget(null);
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () -> {
             tempTarget.targetID = dead;
@@ -1438,7 +1440,7 @@ public class SentinelTrait extends Trait {
         getNPC().getNavigator().setTarget(target);
         npc.getNavigator().getLocalParameters().distanceMargin(1.5);
         autoSpeedModifier();
-        chasing = null;
+        tryUpdateChaseTarget(null);
         needsSafeReturn = true;
     }
 
@@ -1597,7 +1599,7 @@ public class SentinelTrait extends Trait {
         boolean goHome = chased;
         if (chasing != null) {
             if (!chasing.isValid() || !targetingHelper.shouldTarget(chasing)) {
-                chasing = null;
+                tryUpdateChaseTarget(null);
             }
         }
         targetingHelper.processAllMultiTargets();
@@ -1614,18 +1616,19 @@ public class SentinelTrait extends Trait {
                 if (chasing == null) {
                     specialMarkVision();
                 }
-                chasing = target;
-                needsSafeReturn = true;
-                cleverTicks = 0;
-                attackHelper.tryDefendFrom(target);
-                attackHelper.tryAttack(target);
-                goHome = false;
+                if (tryUpdateChaseTarget(target)) {
+                    needsSafeReturn = true;
+                    cleverTicks = 0;
+                    attackHelper.tryDefendFrom(target);
+                    attackHelper.tryAttack(target);
+                    goHome = false;
+                }
             }
             else {
                 debug("Actually, that target is bad!");
                 specialUnmarkVision();
                 target = null;
-                chasing = null;
+                tryUpdateChaseTarget(null);
                 cleverTicks = 0;
             }
         }
@@ -1637,7 +1640,7 @@ public class SentinelTrait extends Trait {
             cleverTicks++;
             if (cleverTicks >= SentinelPlugin.instance.cleverTicks) {
                 specialUnmarkVision();
-                chasing = null;
+                tryUpdateChaseTarget(null);
             }
             else {
                 if (canPathTo(chasing.getLocation())) {
@@ -1703,7 +1706,7 @@ public class SentinelTrait extends Trait {
                 autoSpeedModifier();
                 needsSafeReturn = false;
                 chased = false;
-                chasing = null;
+                tryUpdateChaseTarget(null);
             }
             else {
                 if (pathingTo == null && npc.getNavigator().isNavigating() && guarded == null) {
@@ -2111,6 +2114,40 @@ public class SentinelTrait extends Trait {
     public boolean validateOnList() {
         if (npc == null || !npc.isSpawned() || getLivingEntity() == null) {
             SentinelPlugin.instance.currentSentinelNPCs.remove(this);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Attempts to update the chasing target, calling the needed events and checking for modifications.
+     */
+    public boolean tryUpdateChaseTarget(LivingEntity newTarget) {
+        if (newTarget == chasing) {
+            return true;
+        }
+        if (newTarget == null) {
+            SentinelChaseEndEvent event = new SentinelChaseEndEvent(npc);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.cancelled) {
+                debug("ChaseEndEvent cancelled");
+                return false;
+            }
+            chasing = null;
+            return true;
+        }
+        SentinelChaseNewTargetEvent event = new SentinelChaseNewTargetEvent(npc, newTarget);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.cancelled) {
+            debug("ChaseNewTarget event cancelled");
+            return false;
+        }
+        if (newTarget != event.newTarget) {
+            debug("ChaseNewTarget modified externally to different target");
+        }
+        chasing = event.newTarget;
+        if (chasing == null) {
+            debug("ChaseNewTarget event modified to null externally");
             return false;
         }
         return true;

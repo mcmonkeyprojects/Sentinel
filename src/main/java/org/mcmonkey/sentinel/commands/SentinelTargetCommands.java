@@ -338,7 +338,7 @@ public class SentinelTargetCommands {
             boolean rem2 = sentinel.targetingHelper.currentAvoids.remove(toRemove);
             boolean rem3 = sentinel.chasing != null && SentinelUtilities.uuidEquals(sentinel.chasing.getUniqueId(), id);
             if (rem3) {
-                sentinel.chasing = null;
+                sentinel.tryUpdateChaseTarget(null);
             }
             if (rem1 || rem2 || rem3) {
                 sender.sendMessage(SentinelCommand.prefixGood + "Specified target forgiven.");
@@ -350,7 +350,7 @@ public class SentinelTargetCommands {
         else {
             sentinel.targetingHelper.currentTargets.clear();
             sentinel.targetingHelper.currentAvoids.clear();
-            sentinel.chasing = null;
+            sentinel.tryUpdateChaseTarget(null);
             sender.sendMessage(SentinelCommand.prefixGood + "Targets forgiven.");
         }
     }
