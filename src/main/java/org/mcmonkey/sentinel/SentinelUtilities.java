@@ -272,7 +272,7 @@ public class SentinelUtilities {
         }
         float pitch = myLoc.getPitch();
         float pitchHelp = getPitch(rel);
-        if (!(Math.abs(pitchHelp - pitch) < yawLimit)) {
+        if (!(Math.abs(pitchHelp - pitch) < pitchLimit)) {
             return false;
         }
         return true;

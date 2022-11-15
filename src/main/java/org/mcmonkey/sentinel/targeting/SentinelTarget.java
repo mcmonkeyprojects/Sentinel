@@ -6,6 +6,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
+import org.mcmonkey.sentinel.SentinelUtilities;
 
 import java.util.*;
 
@@ -186,7 +187,7 @@ public class SentinelTarget {
             return true;
         }
         if (this == OWNER && sentinel != null
-            && entity.getUniqueId().equals(sentinel.getNPC().getOrAddTrait(Owner.class).getOwnerId())) {
+            && SentinelUtilities.uuidEquals(entity.getUniqueId(), sentinel.getNPC().getOrAddTrait(Owner.class).getOwnerId())) {
             return true;
         }
         return false;

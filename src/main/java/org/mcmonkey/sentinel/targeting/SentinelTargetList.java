@@ -174,9 +174,11 @@ public class SentinelTargetList {
             return true;
         }
         HashSet<SentinelTarget> possible = SentinelPlugin.entityToTargets.get(entity.getType());
-        for (SentinelTarget poss : possible) {
-            if (targetsProcessed.contains(poss)) {
-                return true;
+        if (possible != null) {
+            for (SentinelTarget poss : possible) {
+                if (targetsProcessed.contains(poss)) {
+                    return true;
+                }
             }
         }
         return false;

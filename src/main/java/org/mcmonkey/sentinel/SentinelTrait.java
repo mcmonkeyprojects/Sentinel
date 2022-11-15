@@ -621,6 +621,7 @@ public class SentinelTrait extends Trait {
 
     /**
      * The target entity this NPC is chasing (if any).
+     * Do not alter directly, prefer attackHelper.chase(...)
      */
     public LivingEntity chasing = null;
 
@@ -1352,6 +1353,7 @@ public class SentinelTrait extends Trait {
 
     /**
      * Whether the NPC has chased a target during the most recent update.
+     * Do not alter directly, prefer attackHelper.chase(...)
      */
     public boolean chased = false;
 
