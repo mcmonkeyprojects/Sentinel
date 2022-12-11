@@ -185,6 +185,7 @@ public class SentinelVersionCompat {
             SentinelTarget.FROGS = new SentinelTarget(new EntityType[]{EntityType.FROG}, "FROG");
             SentinelTarget.ALLAYS = new SentinelTarget(new EntityType[]{EntityType.ALLAY}, "ALLAY");
             SentinelTarget.WARDENS = new SentinelTarget(new EntityType[]{EntityType.WARDEN}, "WARDEN");
+            SentinelTarget.CAMELS = new SentinelTarget(new EntityType[]{EntityType.CAMEL}, "CAMEL");
         }
         if (v1_19) { // && !v1_20
             SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_19_passive(), passiveNames());

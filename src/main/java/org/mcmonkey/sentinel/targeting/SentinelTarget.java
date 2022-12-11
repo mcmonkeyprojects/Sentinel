@@ -119,7 +119,7 @@ public class SentinelTarget {
     /**
      * Valid target types for 1.19 or higher.
      */
-    public static SentinelTarget TADPOLES, FROGS, ALLAYS, WARDENS;
+    public static SentinelTarget TADPOLES, FROGS, ALLAYS, WARDENS, CAMELS;
 
     /**
      * Multiple-entity-type targets.
