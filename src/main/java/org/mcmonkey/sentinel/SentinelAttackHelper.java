@@ -49,7 +49,7 @@ public class SentinelAttackHelper extends SentinelHelperObject {
             debug("Chase/location accepted, begin");
             getNPC().getNavigator().setTarget(targetLocation.add(new Vector(SentinelUtilities.randomDecimal(-1, 1), 0, SentinelUtilities.randomDecimal(-1, 1))));
             final Location entityEyeLoc = entity.getEyeLocation();
-            getNPC().getNavigator().getLocalParameters().lookAtFunction(n -> entityEyeLoc);
+            //getNPC().getNavigator().getLocalParameters().lookAtFunction(n -> entityEyeLoc);
         }
         else {
             if (getNPC().getNavigator().getTargetType() == TargetType.ENTITY

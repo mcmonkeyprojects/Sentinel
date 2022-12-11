@@ -1220,14 +1220,14 @@ public class SentinelTrait extends Trait {
         }
         npc.faceLocation(faceTowards);
         if (npc.getNavigator().isNavigating()) {
-            Function<Navigator, Location> altLookFunction = n -> faceTowards;
+            /*Function<Navigator, Location> altLookFunction = n -> faceTowards;
             Function<Navigator, Location> origLookFunction = npc.getNavigator().getLocalParameters().lookAtFunction();
             npc.getNavigator().getLocalParameters().lookAtFunction(altLookFunction);
             Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () -> {
                 if (npc.getNavigator().isNavigating() && npc.getNavigator().getLocalParameters().lookAtFunction() == altLookFunction) {
                     npc.getNavigator().getLocalParameters().lookAtFunction(origLookFunction);
                 }
-            }, 2);
+            }, 2);*/
         }
     }
 
