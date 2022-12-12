@@ -185,7 +185,12 @@ public class SentinelVersionCompat {
             SentinelTarget.FROGS = new SentinelTarget(new EntityType[]{EntityType.FROG}, "FROG");
             SentinelTarget.ALLAYS = new SentinelTarget(new EntityType[]{EntityType.ALLAY}, "ALLAY");
             SentinelTarget.WARDENS = new SentinelTarget(new EntityType[]{EntityType.WARDEN}, "WARDEN");
-            SentinelTarget.CAMELS = new SentinelTarget(new EntityType[]{EntityType.CAMEL}, "CAMEL");
+            try {
+                SentinelTarget.CAMELS = new SentinelTarget(new EntityType[]{EntityType.valueOf("CAMEL")}, "CAMEL");
+            }
+            catch (Throwable ex) {
+                // ignore: 1.19.2 lacked camels.
+            }
         }
         if (v1_19) { // && !v1_20
             SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_19_passive(), passiveNames());
@@ -446,7 +451,11 @@ public class SentinelVersionCompat {
     }
 
     static EntityType[] v1_19_passive() {
-        return combine(v1_17_passive(), EntityType.TADPOLE, EntityType.FROG, EntityType.ALLAY);
+        EntityType[] res = combine(v1_17_passive(), EntityType.TADPOLE, EntityType.FROG, EntityType.ALLAY);
+        if (SentinelTarget.CAMELS != null) {
+            res = combine(res, EntityType.valueOf("CAMEL"));
+        }
+        return res;
     }
 
     static EntityType[] v1_8_monsters() {
