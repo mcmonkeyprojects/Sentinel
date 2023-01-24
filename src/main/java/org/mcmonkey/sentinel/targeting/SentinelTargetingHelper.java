@@ -14,7 +14,7 @@ import org.mcmonkey.sentinel.*;
 import org.mcmonkey.sentinel.events.SentinelNoMoreTargetsEvent;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -70,12 +70,12 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
     /**
      * The set of all current targets for this NPC.
      */
-    public HashSet<SentinelCurrentTarget> currentTargets = new HashSet<>();
+    public HashMap<UUID, SentinelCurrentTarget> currentTargets = new HashMap<>();
 
     /**
      * The set of all current avoids for this NPC.
      */
-    public HashSet<SentinelCurrentTarget> currentAvoids = new HashSet<>();
+    public HashMap<UUID, SentinelCurrentTarget> currentAvoids = new HashMap<>();
 
     /**
      * Adds a temporary avoid to this NPC.
@@ -87,11 +87,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (!(SentinelUtilities.getEntityForID(id) instanceof LivingEntity)) {
             return;
         }
-        SentinelCurrentTarget target = new SentinelCurrentTarget();
-        target.targetID = id;
-        target.ticksLeft = SentinelPlugin.instance.runAwayTime;
-        currentAvoids.remove(target);
-        currentAvoids.add(target);
+        ensureTargetDirect(currentAvoids, SentinelPlugin.instance.runAwayTime, id);
     }
 
     /**
@@ -119,13 +115,11 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Returns whether anything was removed.
      */
     public boolean removeTarget(UUID id) {
-        SentinelCurrentTarget target = new SentinelCurrentTarget();
-        target.targetID = id;
-        boolean removed = removeTargetNoBounce(target);
+        boolean removed = removeTargetNoBounce(id);
         if (removed && sentinel.squad != null) {
             for (SentinelTrait squadMate : SentinelPlugin.instance.cleanCurrentList()) {
                 if (squadMate.squad != null && squadMate.squad.equals(sentinel.squad)) {
-                    squadMate.targetingHelper.removeTargetNoBounce(target);
+                    squadMate.targetingHelper.removeTargetNoBounce(id);
                 }
             }
         }
@@ -136,11 +130,11 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Removes a target directly from the NPC. Prefer {@code removeTarget} over this in most cases.
      * Returns whether anything was removed.
      */
-    public boolean removeTargetNoBounce(SentinelCurrentTarget target) {
+    public boolean removeTargetNoBounce(UUID target) {
         if (currentTargets.isEmpty()) {
             return false;
         }
-        if (currentTargets.remove(target)) {
+        if (currentTargets.remove(target) != null) {
             if (currentTargets.isEmpty()) {
                 Bukkit.getPluginManager().callEvent(new SentinelNoMoreTargetsEvent(getNPC()));
             }
@@ -149,21 +143,27 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         return false;
     }
 
+    private void ensureTargetDirect(HashMap<UUID, SentinelCurrentTarget> set, long time, UUID id) {
+        SentinelCurrentTarget target = set.get(id);
+        if (target == null) {
+            target = new SentinelCurrentTarget();
+            target.targetID = id;
+            target.hasLos = true;
+            set.put(id, target);
+        }
+        target.ticksLeft = time;
+    }
+
     /**
      * Adds a target directly to the NPC. Prefer {@code addTarget} over this in most cases.
      */
     public void addTargetNoBounce(UUID id) {
-        SentinelCurrentTarget target = new SentinelCurrentTarget();
-        target.targetID = id;
-        target.ticksLeft = sentinel.enemyTargetTime;
         if (sentinel.reactionSlowdown == 0) {
-            currentTargets.remove(target);
-            currentTargets.add(target);
+            ensureTargetDirect(currentTargets, sentinel.enemyTargetTime, id);
         }
         else {
             Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () -> {
-                currentTargets.remove(target);
-                currentTargets.add(target);
+                ensureTargetDirect(currentTargets, sentinel.enemyTargetTime, id);
             }, sentinel.reactionSlowdown);
         }
     }
@@ -172,9 +172,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Returns whether an entity is invisible to this NPC.
      */
     public boolean isInvisible(LivingEntity entity) {
-        SentinelCurrentTarget sct = new SentinelCurrentTarget();
-        sct.targetID = entity.getUniqueId();
-        return !currentTargets.contains(sct) && SentinelUtilities.isInvisible(entity);
+        return !currentTargets.containsKey(entity.getUniqueId()) && SentinelUtilities.isInvisible(entity);
     }
 
     /**
@@ -199,8 +197,6 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         return sentinel.allIgnores.isTarget(entity, sentinel);
     }
 
-    private SentinelCurrentTarget tempTarget = new SentinelCurrentTarget();
-
     /**
      * Returns whether an entity is targeted by this NPC's target lists.
      * Consider calling 'shouldTarget' instead.
@@ -218,8 +214,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (isUntargetable(entity)) {
             return false;
         }
-        tempTarget.targetID = entity.getUniqueId();
-        if (currentTargets.contains(tempTarget)) {
+        if (currentTargets.containsKey(entity.getUniqueId())) {
             return true;
         }
         return sentinel.allTargets.isTarget(entity, sentinel);
@@ -238,8 +233,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (sentinel.getGuarding() != null && SentinelUtilities.uuidEquals(entity.getUniqueId(), sentinel.getGuarding())) {
             return false;
         }
-        tempTarget.targetID = entity.getUniqueId();
-        if (currentAvoids.contains(tempTarget)) {
+        if (currentAvoids.containsKey(entity.getUniqueId())) {
             return true;
         }
         return sentinel.allAvoids.isTarget(entity, sentinel);
@@ -260,9 +254,8 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             if (!(entity instanceof LivingEntity)) {
                 continue;
             }
-            tempTarget.targetID = entity.getUniqueId();
             if (shouldAvoid((LivingEntity) entity)) {
-                if (!currentAvoids.contains(tempTarget) && !canSee((LivingEntity) entity)) {
+                if (!currentAvoids.containsKey(entity.getUniqueId()) && !canSee((LivingEntity) entity)) {
                     continue;
                 }
                 avoidanceList.add((LivingEntity) entity);
@@ -427,8 +420,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
                 continue;
             }
             double dist = ent.getEyeLocation().distanceSquared(pos);
-            tempTarget.targetID = ent.getUniqueId();
-            boolean isExistingTarget = dist < crsq && dist < rangesquared && currentTargets.contains(tempTarget) && sentinel.canPathTo(ent.getLocation());
+            boolean isExistingTarget = dist < crsq && dist < rangesquared && currentTargets.containsKey(ent.getUniqueId()) && sentinel.canPathTo(ent.getLocation());
             if (isExistingTarget || (dist < rangesquared && shouldTarget(ent))) {
                 boolean hasLos = canSee(ent);
                 if (!hasLos && !isExistingTarget) {
@@ -546,20 +538,20 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * This is an internal call as part of the main logic loop.
      */
     public void updateAvoids() {
-        for (SentinelCurrentTarget curTarg : new HashSet<>(currentAvoids)) {
+        for (SentinelCurrentTarget curTarg : new ArrayList<>(currentAvoids.values())) {
             Entity e = SentinelUtilities.getEntityForID(curTarg.targetID);
             if (e == null) {
-                currentAvoids.remove(curTarg);
+                currentAvoids.remove(curTarg.targetID);
                 continue;
             }
             if (e.isDead()) {
-                currentAvoids.remove(curTarg);
+                currentAvoids.remove(curTarg.targetID);
                 continue;
             }
             if (curTarg.ticksLeft > 0) {
                 curTarg.ticksLeft -= SentinelPlugin.instance.tickRate;
                 if (curTarg.ticksLeft <= 0) {
-                    currentAvoids.remove(curTarg);
+                    currentAvoids.remove(curTarg.targetID);
                 }
             }
         }
@@ -589,36 +581,34 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * This is an internal call as part of the main logic loop.
      */
     public void updateTargets() {
-        for (SentinelCurrentTarget curTarg : new HashSet<>(currentTargets)) {
+        for (SentinelCurrentTarget curTarg : new ArrayList<>(currentTargets.values())) {
             Entity e = SentinelUtilities.getEntityForID(curTarg.targetID);
             if (isUntargetable(e)) {
-                removeTargetNoBounce(curTarg);
+                removeTargetNoBounce(curTarg.targetID);
                 continue;
             }
             if (!e.getWorld().equals(getLivingEntity().getWorld())) {
-                removeTargetNoBounce(curTarg);
+                removeTargetNoBounce(curTarg.targetID);
                 continue;
             }
             double d = e.getLocation().distanceSquared(getLivingEntity().getLocation());
             if (d > sentinel.range * sentinel.range * 4 && d > sentinel.chaseRange * sentinel.chaseRange * 4) {
-                removeTargetNoBounce(curTarg);
+                removeTargetNoBounce(curTarg.targetID);
                 continue;
             }
             if (e instanceof LivingEntity && isIgnored((LivingEntity) e)) {
-                removeTargetNoBounce(curTarg);
+                removeTargetNoBounce(curTarg.targetID);
                 continue;
             }
             if (curTarg.ticksLeft > 0) {
                 curTarg.ticksLeft -= SentinelPlugin.instance.tickRate;
                 if (curTarg.ticksLeft <= 0) {
-                    removeTargetNoBounce(curTarg);
+                    removeTargetNoBounce(curTarg.targetID);
                 }
             }
         }
         if (sentinel.chasing != null) {
-            SentinelCurrentTarget cte = new SentinelCurrentTarget();
-            cte.targetID = sentinel.chasing.getUniqueId();
-            if (!currentTargets.contains(cte)) {
+            if (!currentTargets.containsKey(sentinel.chasing.getUniqueId())) {
                 if (sentinel.tryUpdateChaseTarget(null)) {
                     getNPC().getNavigator().cancelNavigation();
                 }

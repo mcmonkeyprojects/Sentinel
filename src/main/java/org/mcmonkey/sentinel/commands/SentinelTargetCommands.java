@@ -9,7 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.mcmonkey.sentinel.SentinelCurrentTarget;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.SentinelUtilities;
@@ -332,10 +331,8 @@ public class SentinelTargetCommands {
                 sender.sendMessage(SentinelCommand.prefixBad + "Invalid player target input.");
                 return;
             }
-            SentinelCurrentTarget toRemove = new SentinelCurrentTarget();
-            toRemove.targetID = id;
-            boolean rem1 = sentinel.targetingHelper.currentTargets.remove(toRemove);
-            boolean rem2 = sentinel.targetingHelper.currentAvoids.remove(toRemove);
+            boolean rem1 = sentinel.targetingHelper.currentTargets.remove(id) != null;
+            boolean rem2 = sentinel.targetingHelper.currentAvoids.remove(id) != null;
             boolean rem3 = sentinel.chasing != null && SentinelUtilities.uuidEquals(sentinel.chasing.getUniqueId(), id);
             if (rem3) {
                 sentinel.tryUpdateChaseTarget(null);

@@ -1047,22 +1047,18 @@ public class SentinelTrait extends Trait {
         }
     }
 
-    private SentinelCurrentTarget tempTarget = new SentinelCurrentTarget();
-
     /**
      * Called when a target dies to remove them from the target list.
      */
     public void whenAnEnemyDies(UUID dead) {
-        tempTarget.targetID = dead;
-        targetingHelper.removeTargetNoBounce(tempTarget);
-        targetingHelper.currentAvoids.remove(tempTarget);
+        targetingHelper.removeTargetNoBounce(dead);
+        targetingHelper.currentAvoids.remove(dead);
         if (chasing != null && chasing.getUniqueId().equals(dead)) {
             tryUpdateChaseTarget(null);
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () -> {
-            tempTarget.targetID = dead;
-            targetingHelper.removeTargetNoBounce(tempTarget);
-            targetingHelper.currentAvoids.remove(tempTarget);
+            targetingHelper.removeTargetNoBounce(dead);
+            targetingHelper.currentAvoids.remove(dead);
         }, 4);
     }
 
