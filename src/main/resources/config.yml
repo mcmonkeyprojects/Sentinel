@@ -95,6 +95,9 @@ random:
     ignore invisible targets: true
     # Whether to prevent players from damaging NPCs that are guarding them.
     no guard damage: true
+    # If false: checks from NPC eye to target eye. If true: checks from NPC eye to multiple points on target body.
+    # 'true' is smarter at checking, at the cost of performance.
+    enhance los traces: true
     # Distances used for NPCs following their guarded player
     guard follow distance:
         # Maximum possible distance of point to choose (relative to the guarded player)

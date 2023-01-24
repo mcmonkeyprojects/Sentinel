@@ -532,7 +532,14 @@ public class SentinelUtilities {
         if (!SentinelVersionCompat.v1_13) {
             return start.hasLineOfSight(end);
         }
-        return checkLineOfSightWithTransparency(start.getEyeLocation(), end.getEyeLocation());
+        if (checkLineOfSightWithTransparency(start.getEyeLocation(), end.getEyeLocation())) {
+            return true;
+        }
+        if (!SentinelPlugin.instance.enhanceLosTraces) {
+            return false;
+        }
+        return checkLineOfSightWithTransparency(start.getEyeLocation(), end.getLocation())
+                || checkLineOfSightWithTransparency(start.getEyeLocation(), end.getLocation().add(0, 1.05, 0));
     }
 
     /**

@@ -207,6 +207,11 @@ public class SentinelPlugin extends JavaPlugin {
     public boolean hasWorldGuard;
 
     /**
+     * Whether to use smarter LOS tracing.
+     */
+    public boolean enhanceLosTraces;
+
+    /**
      * Fills the {@code vaultPerms} object if possible.
      */
     public void tryGetPerms() {
@@ -273,6 +278,7 @@ public class SentinelPlugin extends JavaPlugin {
         minShootSpeed = getConfig().getDouble("random.shoot speed minimum", 20);
         workaroundDrops = getConfig().getBoolean("random.workaround drops", false) || blockEvents;
         deathMessages = getConfig().getBoolean("random.death messages", true);
+        enhanceLosTraces = getConfig().getBoolean("random.enhance los traces", true);
         try {
             spectralSound = Sound.valueOf(getConfig().getString("random.spectral sound", "ENTITY_VILLAGER_YES"));
         }
