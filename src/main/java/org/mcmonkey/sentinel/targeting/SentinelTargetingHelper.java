@@ -131,9 +131,6 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      * Returns whether anything was removed.
      */
     public boolean removeTargetNoBounce(UUID target) {
-        if (currentTargets.isEmpty()) {
-            return false;
-        }
         if (currentTargets.remove(target) != null) {
             if (currentTargets.isEmpty()) {
                 Bukkit.getPluginManager().callEvent(new SentinelNoMoreTargetsEvent(getNPC()));
@@ -152,6 +149,16 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             set.put(id, target);
         }
         target.ticksLeft = time;
+    }
+
+    /**
+     * Informs the tracker that the given currentTarget UUID is an entity that cannot currently be seen.
+     */
+    public void informTargetHasNoLos(UUID id) {
+        SentinelCurrentTarget target = currentTargets.get(id);
+        if (target != null) {
+            target.hasLos = false;
+        }
     }
 
     /**
@@ -420,13 +427,22 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
                 continue;
             }
             double dist = ent.getEyeLocation().distanceSquared(pos);
-            boolean isExistingTarget = dist < crsq && dist < rangesquared && currentTargets.containsKey(ent.getUniqueId()) && sentinel.canPathTo(ent.getLocation());
-            if (isExistingTarget || (dist < rangesquared && shouldTarget(ent))) {
+            SentinelCurrentTarget curTarg = null;
+            if (dist < crsq && dist < rangesquared) {
+                curTarg = currentTargets.get(ent.getUniqueId());
+                if (curTarg != null && !sentinel.canPathTo(ent.getLocation())) {
+                    curTarg = null;
+                }
+            }
+            if (curTarg != null || (dist < rangesquared && shouldTarget(ent))) {
                 boolean hasLos = canSee(ent);
-                if (!hasLos && !isExistingTarget) {
+                if (!hasLos && (curTarg == null || !curTarg.hasLos)) {
                     continue;
                 }
-                if (!isExistingTarget && sentinel.reactionSlowdown != 0) {
+                if (hasLos && curTarg != null) {
+                    curTarg.hasLos = true;
+                }
+                if (curTarg == null && sentinel.reactionSlowdown != 0) {
                     addTarget(ent.getUniqueId());
                     continue;
                 }

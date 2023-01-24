@@ -18,6 +18,12 @@ public class SentinelCurrentTarget {
     public long ticksLeft;
 
     /**
+     * If true: the target is in line-of-sight and/or reachable and/or never been calculated.
+     * If false: the target is out of LOS or unreachable.
+     */
+    public boolean hasLos;
+
+    /**
      * Returns a hashcode for this instance.
      */
     @Override

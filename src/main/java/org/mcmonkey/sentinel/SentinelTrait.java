@@ -1632,7 +1632,7 @@ public class SentinelTrait extends Trait {
         }
         else if (chasing != null && chasing.isValid()) {
             needsSafeReturn = true;
-            if (SentinelPlugin.instance.workaroundEntityChasePathfinder) {
+            if (targetingHelper.canSee(chasing) && SentinelPlugin.instance.workaroundEntityChasePathfinder) {
                 attackHelper.rechase();
             }
             cleverTicks++;

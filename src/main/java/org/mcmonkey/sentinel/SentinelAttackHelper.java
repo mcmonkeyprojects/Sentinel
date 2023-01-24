@@ -216,6 +216,9 @@ public class SentinelAttackHelper extends SentinelHelperObject {
                     chase(entity);
                 }
             }
+            else if (!sentinel.getNPC().getNavigator().isNavigating()) {
+                targetingHelper.informTargetHasNoLos(entity.getUniqueId());
+            }
             return false;
         }
         // TODO: Simplify this code!
