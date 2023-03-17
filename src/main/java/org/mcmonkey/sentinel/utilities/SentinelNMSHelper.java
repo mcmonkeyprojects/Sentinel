@@ -43,10 +43,10 @@ public class SentinelNMSHelper {
                 nmsLivingEntity = Class.forName("net.minecraft.world.entity.EntityLiving");
                 String attackStrengthField = null;
                 boolean isCompat = false;
-                if (SentinelVersionCompat.v1_19 && !SentinelVersionCompat.vFuture) { // 1.19.3 names
-                    // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.19.3
-                    endermanAngryField = "bZ"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
-                    attackStrengthField = "aQ"; // net.minecraft.world.entity.LivingEntity#attackStrengthTicker
+                if (SentinelVersionCompat.v1_19 && !SentinelVersionCompat.vFuture) { // 1.19.4 names
+                    // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.19.4
+                    endermanAngryField = "bU"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
+                    attackStrengthField = "aO"; // net.minecraft.world.entity.LivingEntity#attackStrengthTicker
                     broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
                     dataWatcherSet = "b"; // net.minecraft.network.syncher.SynchedEntityData#set
                     isCompat = true;

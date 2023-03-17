@@ -187,9 +187,10 @@ public class SentinelVersionCompat {
             SentinelTarget.WARDENS = new SentinelTarget(new EntityType[]{EntityType.WARDEN}, "WARDEN");
             try {
                 SentinelTarget.CAMELS = new SentinelTarget(new EntityType[]{EntityType.valueOf("CAMEL")}, "CAMEL");
+                SentinelTarget.SNIFFERS = new SentinelTarget(new EntityType[]{EntityType.valueOf("SNIFFER")}, "SNIFFER");
             }
             catch (Throwable ex) {
-                // ignore: 1.19.2 lacked camels.
+                // ignore: 1.19.2 lacked camels, 1.19.3 lacked sniffers.
             }
         }
         if (v1_19) { // && !v1_20
@@ -454,6 +455,9 @@ public class SentinelVersionCompat {
         EntityType[] res = combine(v1_17_passive(), EntityType.TADPOLE, EntityType.FROG, EntityType.ALLAY);
         if (SentinelTarget.CAMELS != null) {
             res = combine(res, EntityType.valueOf("CAMEL"));
+        }
+        if (SentinelTarget.SNIFFERS != null) {
+            res = combine(res, EntityType.valueOf("SNIFFER"));
         }
         return res;
     }
