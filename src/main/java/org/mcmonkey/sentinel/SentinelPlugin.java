@@ -212,6 +212,11 @@ public class SentinelPlugin extends JavaPlugin {
     public boolean enhanceLosTraces;
 
     /**
+     * Whether NPCs should be able to target armor stands.
+     */
+    public boolean allowArmorStandTargets;
+
+    /**
      * Fills the {@code vaultPerms} object if possible.
      */
     public void tryGetPerms() {
@@ -298,6 +303,7 @@ public class SentinelPlugin extends JavaPlugin {
         preventExplosionBlockDamage = getConfig().getBoolean("random.prevent explosion block damage", true);
         tickRate = getConfig().getInt("update rate", 10);
         autoCorrectpathfinderMode = getConfig().getBoolean("random.auto correct pathfinder mode", true);
+        allowArmorStandTargets = getConfig().getBoolean("random.allow armor stand targets", false);
     }
 
     /**

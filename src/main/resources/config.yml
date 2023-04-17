@@ -115,6 +115,8 @@ random:
     prevent explosion block damage: true
     # (Experimental) If enabled, will automatically change the NPC's pathfinding mode if the NPC appears to be getting stuck.
     auto correct pathfinder mode: true
+    # If true, armor stands can be targeted. Unexpected behavior may result.
+    allow armor stand targets: false
 
 # How fast to recalculate, in ticks.
 update rate: 10

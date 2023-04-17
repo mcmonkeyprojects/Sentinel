@@ -68,7 +68,8 @@ public class SentinelTarget {
             ENDERMEN = new SentinelTarget(new EntityType[]{EntityType.ENDERMAN}, "ENDERMAN", "ENDER_MAN", "ENDERMEN", "ENDER_MEN"),
             ENDERMITES = new SentinelTarget(new EntityType[]{EntityType.ENDERMITE}, "ENDERMITE", "ENDER_MITE"),
             WITHERS = new SentinelTarget(new EntityType[]{EntityType.WITHER}, "WITHER"),
-            ENDERDRAGONS = new SentinelTarget(new EntityType[]{EntityType.ENDER_DRAGON}, "ENDERDRAGON", "ENDER_DRAGON");
+            ENDERDRAGONS = new SentinelTarget(new EntityType[]{EntityType.ENDER_DRAGON}, "ENDERDRAGON", "ENDER_DRAGON"),
+            ARMOR_STAND = new SentinelTarget(new EntityType[]{EntityType.ARMOR_STAND}, "ARMORSTAND", "ARMOR_STAND");
 
     /**
      * Valid target types for 1.9 or higher.

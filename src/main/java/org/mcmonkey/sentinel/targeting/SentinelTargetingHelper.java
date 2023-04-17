@@ -48,7 +48,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             return false;
         }
-        if (entity.getType() == EntityType.ARMOR_STAND) {
+        if (entity.getType() == EntityType.ARMOR_STAND && !SentinelPlugin.instance.allowArmorStandTargets) {
             return false;
         }
         return isTargeted(entity) && !isIgnored(entity);
@@ -61,7 +61,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             return false;
         }
-        if (entity.getType() == EntityType.ARMOR_STAND) {
+        if (entity.getType() == EntityType.ARMOR_STAND && !SentinelPlugin.instance.allowArmorStandTargets) {
             return false;
         }
         return isAvoided(entity) && !isIgnored(entity);
@@ -195,7 +195,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
         if (entity.getUniqueId().equals(getLivingEntity().getUniqueId())) {
             return true;
         }
-        if (entity.getType() == EntityType.ARMOR_STAND) {
+        if (entity.getType() == EntityType.ARMOR_STAND && !SentinelPlugin.instance.allowArmorStandTargets) {
             return true;
         }
         if (sentinel.getGuarding() != null && SentinelUtilities.uuidEquals(entity.getUniqueId(), sentinel.getGuarding())) {
