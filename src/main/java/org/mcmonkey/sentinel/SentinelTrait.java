@@ -1847,7 +1847,7 @@ public class SentinelTrait extends Trait {
      */
     public void sayTo(Player player, String message) {
         SpeechContext sc = new SpeechContext(npc, message, player);
-        npc.getDefaultSpeechController().speak(sc, "chat");
+        npc.getDefaultSpeechController().speak(sc);
     }
 
     /**
