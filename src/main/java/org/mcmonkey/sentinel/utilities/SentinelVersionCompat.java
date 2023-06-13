@@ -49,12 +49,13 @@ public class SentinelVersionCompat {
     /**
      * Boolean indicating if the server version is >= the named version.
      */
-    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14, v1_15, v1_16, v1_17, v1_18, v1_19, vFuture;
+    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14, v1_15, v1_16, v1_17, v1_18, v1_19, v1_20, vFuture;
 
     static {
         String vers = Bukkit.getBukkitVersion(); // Returns in format like: 1.12.2-R0.1-SNAPSHOT
-        vFuture = vers.startsWith("1.20") || vers.startsWith("1.21") || vers.startsWith("1.22");
-        v1_19 = vers.startsWith("1.19") || vFuture;
+        vFuture = vers.startsWith("1.21") || vers.startsWith("1.22") || vers.startsWith("1.23");
+        v1_20 = vers.startsWith("1.20") || vFuture;
+        v1_19 = vers.startsWith("1.19") || v1_20;
         v1_18 = vers.startsWith("1.18") || v1_19;
         v1_17 = vers.startsWith("1.17") || v1_18;
         v1_16 = vers.startsWith("1.16") || v1_17;
@@ -193,7 +194,13 @@ public class SentinelVersionCompat {
                 // ignore: 1.19.2 lacked camels, 1.19.3 lacked sniffers.
             }
         }
-        if (v1_19) { // && !v1_20
+        if (v1_19 && !v1_20) {
+            SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_19_passive(), passiveNames());
+            SentinelTarget.MOBS = new SentinelTarget(combine(v1_19_passive(), v1_19_monsters()), "MOB");
+            SentinelTarget.MONSTERS = new SentinelTarget(v1_19_monsters(), "MONSTER");
+        }
+        // 1.20 didn't add new mobs
+        if (v1_20) { // && !v1_21
             SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_19_passive(), passiveNames());
             SentinelTarget.MOBS = new SentinelTarget(combine(v1_19_passive(), v1_19_monsters()), "MOB");
             SentinelTarget.MONSTERS = new SentinelTarget(v1_19_monsters(), "MONSTER");
