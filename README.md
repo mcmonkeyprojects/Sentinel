@@ -390,18 +390,6 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
 
 - **Denizen (Powerful script engine)**: https://github.com/DenizenScript/Denizen-For-Bukkit
 
-### Sentry user?
-
-- Type "/sentinel sentryimport" on a server running both Sentry and Sentinel to instantly transfer all data to Sentinel!
-- Sentinel 1.7.2 is the last version that contained the **Sentry importer**. If you need to import old Sentry data, you must use a 1.7.2 build.
-    - You can get that build here: https://ci.citizensnpcs.co/job/Sentinel/201/
-
-### Update Warnings
-
-- Sentinel 1.7 **changes the API** structure of Sentinel - and adds documentation and **JavaDocs**, which can be found here: https://ci.citizensnpcs.co/job/Sentinel/javadoc/overview-tree.html
-    - Save data structure is also changed in the 1.7 updates.
-    - If you need a pre-API rewrite version of Sentinel, you can get the last version of Sentinel (1.6.2) here: https://ci.citizensnpcs.co/job/Sentinel/191/
-
 ### Licensing pre-note:
 
 This is an open source project, provided entirely freely, for everyone to use and contribute to.
