@@ -434,4 +434,15 @@ public class SentinelEventHandler implements Listener {
             }
         }
     }
+
+    /**
+     * Called when armor or weapons are damaged, used to block unwanted item damage.
+     */
+    @EventHandler
+    public void onItemDamage(PlayerItemDamageEvent event) {
+        SentinelTrait sentinel = SentinelUtilities.tryGetSentinel(event.getPlayer());
+        if (sentinel != null && !sentinel.needsAmmo) {
+            event.setCancelled(true);
+        }
+    }
 }
