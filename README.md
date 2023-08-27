@@ -398,7 +398,7 @@ If you're building a separate plugin you would like to integrate into Sentinel, 
 
 ### Update Warnings
 
-- Sentinel 1.7 **changes the API** structure of Sentinel - and adds documentation and **JavaDocs**, which can be found here: https://ci.citizensnpcs.co/job/Sentinel/javadoc/overview-summary.html
+- Sentinel 1.7 **changes the API** structure of Sentinel - and adds documentation and **JavaDocs**, which can be found here: https://ci.citizensnpcs.co/job/Sentinel/javadoc/overview-tree.html
     - Save data structure is also changed in the 1.7 updates.
     - If you need a pre-API rewrite version of Sentinel, you can get the last version of Sentinel (1.6.2) here: https://ci.citizensnpcs.co/job/Sentinel/191/
 
