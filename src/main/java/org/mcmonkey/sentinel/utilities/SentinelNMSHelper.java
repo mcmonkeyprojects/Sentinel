@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
  */
 public class SentinelNMSHelper {
 
-    public static MethodHandle CRAFTENTITY_GETHANDLE, NMSENTITY_WORLDGETTER, NMSWORLD_BROADCASTENTITYEFFECT, NMSENTITY_GETDATAWATCHER, DATWATCHER_SET, LIVINGENTITY_ATTACKSTRENGTHTICKS;
+    public static MethodHandle CRAFTENTITY_GETHANDLE, NMSENTITY_WORLDGETTER, NMSWORLD_BROADCASTENTITYEFFECT, NMSENTITY_GETDATAWATCHER, DATWATCHER_SET;
 
     public static Object ENTITYENDERMAN_DATAWATCHER_ANGRY;
 
@@ -27,8 +27,6 @@ public class SentinelNMSHelper {
             }
             // Will be like "org.bukkit.craftbukkit.v1_16_R3"
             String bukkitPackageName = Bukkit.getServer().getClass().getPackage().getName();
-            // Should be like "v1_16_R3"
-            String packageVersion = bukkitPackageName.substring(bukkitPackageName.lastIndexOf('.') + 1);
             Class craftEntity = Class.forName(bukkitPackageName + ".entity.CraftEntity");
             CRAFTENTITY_GETHANDLE = NMS.getMethodHandle(craftEntity, "getHandle", true);
             Class nmsEntity, nmsWorld, nmsDataWatcher, nmsDataWatcherObject, nmsEntityEnderman, nmsHuman, nmsLivingEntity;
@@ -40,43 +38,30 @@ public class SentinelNMSHelper {
                 nmsDataWatcher = Class.forName("net.minecraft.network.syncher.DataWatcher"); // SynchedEntityData
                 nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject"); // EntityDataAccessor
                 nmsEntityEnderman = Class.forName("net.minecraft.world.entity.monster.EntityEnderman");
-                nmsLivingEntity = Class.forName("net.minecraft.world.entity.EntityLiving");
-                String attackStrengthField = null;
-                boolean isCompat = false;
                 if (SentinelVersionCompat.v1_20 && !SentinelVersionCompat.vFuture) { // 1.20 names
-                    // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.20
+                    // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.20.2
                     endermanAngryField = "bV"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
-                    attackStrengthField = "aQ"; // net.minecraft.world.entity.LivingEntity#attackStrengthTicker
                     broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
                     dataWatcherSet = "a"; // net.minecraft.network.syncher.SynchedEntityData#set
-                    isCompat = true;
                 }
                 else if (SentinelVersionCompat.v1_19 && !SentinelVersionCompat.v1_20) { // 1.19.4 names
                     // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.19.4
                     endermanAngryField = "bU"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
-                    attackStrengthField = "aO"; // net.minecraft.world.entity.LivingEntity#attackStrengthTicker
                     broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
                     dataWatcherSet = "b"; // net.minecraft.network.syncher.SynchedEntityData#set
-                    isCompat = true;
                 }
                 else if (SentinelVersionCompat.v1_18 && !SentinelVersionCompat.v1_19) { // 1.18 names
                     // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.18.2
                     endermanAngryField = "bX"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
-                    attackStrengthField = "aQ"; // net.minecraft.world.entity.LivingEntity#attackStrengthTicker
                     broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
                     dataWatcherSet = "b"; // net.minecraft.network.syncher.SynchedEntityData#set
-                    isCompat = true;
                 }
                 else if (!SentinelVersionCompat.v1_18) { // 1.17 names
                     endermanAngryField = "bV"; // EnderMan#DATA_CREEPY
-                    attackStrengthField = "aQ"; // LivingEntity#attackStrengthTicker
-                    isCompat = true;
-                }
-                if (isCompat) {
-                    LIVINGENTITY_ATTACKSTRENGTHTICKS = NMS.getSetter(nmsLivingEntity, attackStrengthField);
                 }
             }
             else { // 1.12 through 1.16 - Original Spigot NMS versioned mappings
+                String packageVersion = bukkitPackageName.substring(bukkitPackageName.lastIndexOf('.') + 1); // Should be like "v1_16_R3"
                 String nmsPackageName = "net.minecraft.server." + packageVersion;
                 nmsEntity = Class.forName(nmsPackageName + ".Entity");
                 nmsWorld = Class.forName(nmsPackageName + ".World");

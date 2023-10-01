@@ -281,9 +281,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             }
         }
         else {
-            if (SentinelPlugin.debugMe) {
-                sentinel.debug("I have nowhere to run!");
-            }
+            sentinel.debug("I have nowhere to run!");
         }
     }
 
@@ -293,10 +291,12 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
     public Location findBestRunSpot() {
         if (sentinel.avoidReturnPoint != null
                 && sentinel.avoidReturnPoint.getWorld().equals(getLivingEntity().getWorld())) {
+            sentinel.debug("I have an avoid return point, I'll go there");
             return sentinel.avoidReturnPoint.clone();
         }
         Location pos = sentinel.getGuardZone();
         if (!pos.getWorld().equals(getLivingEntity().getWorld())) {
+            sentinel.debug("Run spot out-of-world, must teleport away!");
             // Emergency corrective measures...
             getNPC().getNavigator().cancelNavigation();
             Bukkit.getScheduler().scheduleSyncDelayedTask(SentinelPlugin.instance, () ->  getLivingEntity().teleport(sentinel.getGuardZone()), 1);
@@ -312,14 +312,14 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
             }
         }
         if (closestThreat == null) {
+            sentinel.debug("No threats in range, actually I won't run away");
             return null;
         }
         if (threatRangeSquared >= sentinel.avoidRange * sentinel.avoidRange) {
-            if (SentinelPlugin.debugMe) {
-                sentinel.debug("Threats are getting close... holding my post.");
-            }
+            sentinel.debug("Threats are getting close... holding my post.");
             return pos.clone();
         }
+        sentinel.debug("I'll just pick a direction to run in I guess...");
         return runDirection(pos);
     }
 
