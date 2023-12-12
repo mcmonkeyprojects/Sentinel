@@ -276,7 +276,7 @@ These are all valid targets and ignores:
     - These all use "ITEM_MATCHER"s, which, at their simplest, are just a regex that matches the material name. So, `helditem:diamond_sword` targets enemies that are holding a diamond sword.
     - However, you can also do `lore:LORE(REGEX)` as a matcher for a line of lore, or `name:NAME(REGEX)` as a matcher for the item display name.
     - For example, `offhand:name:Stick\d+` would target players holding an item in their offhand named like "Stick123".
-- Also, event:`pvp`/`pvnpc`/`pve`/`pvsentinel`/`eve` (pvp is Player-vs-Player, eve is Entity-vs-Entity, etc.)
+- Also, event:`pvp`/`pvnpc`/`pve`/`pvsentinel`/`eve`/`npcvnpc` (pvp is Player-vs-Player, eve is Entity-vs-Entity, etc.)
 - Also, event:`pv:ENTITY`/`ev:ENTITY` (`pv:ENTITY` is used like `event:pv:chicken` for players attacking chickens)
 - Also, `event:guarded_fight` to attack whatever the guarded player attacks.
 - Also, `event:message:SOMETEXT` will match chat messages that contain 'sometext'.

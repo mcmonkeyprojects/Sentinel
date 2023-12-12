@@ -436,6 +436,11 @@ public class SentinelTargetList {
                     && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).hasTrait(SentinelTrait.class)) {
                 return true;
             }
+            else if (evt.equals("npcvnpc")
+                    && CitizensAPI.getNPCRegistry().isNPC(damager)
+                    && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+                return true;
+            }
             if (evt.contains(":")) {
                 int colon = evt.indexOf(':');
                 String prefix = evt.substring(0, colon);

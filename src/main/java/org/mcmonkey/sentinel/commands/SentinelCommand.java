@@ -172,7 +172,7 @@ public class SentinelCommand implements CommandExecutor, TabCompleter {
         addTargetTabCompletions.addAll(Arrays.asList("player:", "npc:", "entityname:", "group:"));
         addTargetTabCompletions.addAll(Arrays.asList("helditem:", "offhand:", "equipped:", "in_inventory:"));
         addTargetTabCompletions.addAll(Arrays.asList("status:angry", "status:passive"));
-        addTargetTabCompletions.addAll(Arrays.asList("event:", "event:pvp", "event:pve", "event:pvnpc", "event:pvsentinel", "event:eve", "event:pv:", "event:ev:", "event:guarded_fight", "event:message:"));
+        addTargetTabCompletions.addAll(Arrays.asList("event:", "event:pvp", "event:pve", "event:pvnpc", "event:pvsentinel", "event:eve", "event:pv:", "event:ev:", "event:npcvnpc", "event:guarded_fight", "event:message:"));
         addTargetTabCompletions.addAll(SentinelPlugin.targetOptions.keySet().stream().map(String::toLowerCase).collect(Collectors.toList()));
     }
 
