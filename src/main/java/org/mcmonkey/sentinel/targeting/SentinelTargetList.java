@@ -390,7 +390,7 @@ public class SentinelTargetList {
     /**
      * Returns whether the damager in a damage event is targeted by this list.
      */
-    public boolean isEventTarget(EntityDamageByEntityEvent event) {
+    public boolean isEventTarget(EntityDamageByEntityEvent event, SentinelTrait sentinel) {
         Entity damager = event.getDamager();
         if (event.getDamager() instanceof Projectile) {
             ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
@@ -398,40 +398,38 @@ public class SentinelTargetList {
                 damager = (Entity) source;
             }
         }
-        if (CitizensAPI.getNPCRegistry().isNPC(damager)) {
-            return false;
-        }
+        boolean damagerIsNPC = CitizensAPI.getNPCRegistry().isNPC(damager);
         if (damager.equals(event.getEntity())) {
             return false; // Players can accidentally hurt themselves - that's not PvP
         }
         for (String evt : byEvent) {
             if (evt.equals("pvp")
                     && event.getEntity() instanceof Player
-                    && damager instanceof Player
+                    && damager instanceof Player && !damagerIsNPC
                     && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
                 return true;
             }
             else if (evt.equals("pve")
                     && !(event.getEntity() instanceof Player)
-                    && damager instanceof Player
+                    && damager instanceof Player && !damagerIsNPC
                     && event.getEntity() instanceof LivingEntity) {
                 return true;
             }
             else if (evt.equals("eve")
-                    && !(damager instanceof Player)
+                    && !(damager instanceof Player) && !damagerIsNPC
                     && !(event.getEntity() instanceof Player)
                     && event.getEntity() instanceof LivingEntity) {
                 return true;
             }
             else if (evt.equals("pvnpc")
                     && event.getEntity() instanceof LivingEntity
-                    && damager instanceof Player
+                    && damager instanceof Player && !damagerIsNPC
                     && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
                 return true;
             }
             else if (evt.equals("pvsentinel")
                     && event.getEntity() instanceof LivingEntity
-                    && damager instanceof Player
+                    && damager instanceof Player && !damagerIsNPC
                     && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
                     && CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).hasTrait(SentinelTrait.class)) {
                 return true;
@@ -445,24 +443,33 @@ public class SentinelTargetList {
                 int colon = evt.indexOf(':');
                 String prefix = evt.substring(0, colon);
                 String value = evt.substring(colon + 1);
-                if (prefix.equals("pv")) {
-                    SentinelTarget target = SentinelTarget.forName(value);
-                    if (target != null) {
+                if (prefix.equals("pv") && !damagerIsNPC) {
+                    SentinelTargetList list = new SentinelTargetList();
+                    SentinelTargetLabel label = new SentinelTargetLabel(value);
+                    if (label.isValidTarget()) {
+                        label.addToList(list);
                         if (damager instanceof Player
                                 && event.getEntity() instanceof LivingEntity
-                                && target.isTarget((LivingEntity) event.getEntity())) {
+                                && list.isTarget((LivingEntity) event.getEntity(), sentinel)) {
                             return true;
                         }
                     }
+                    else {
+                        sentinel.debug("Invalid event:pv: target label: " + value);
+                    }
                 }
-                else if (prefix.equals("ev")) {
-                    SentinelTarget target = SentinelTarget.forName(value);
-                    if (target != null) {
-                        if (!(damager instanceof Player)
-                                && event.getEntity() instanceof LivingEntity
-                                && target.isTarget((LivingEntity) event.getEntity())) {
+                else if (prefix.equals("ev") && !damagerIsNPC) {
+                    SentinelTargetList list = new SentinelTargetList();
+                    SentinelTargetLabel label = new SentinelTargetLabel(value);
+                    if (label.isValidTarget()) {
+                        label.addToList(list);
+                        if (event.getEntity() instanceof LivingEntity
+                                && list.isTarget((LivingEntity) event.getEntity(), sentinel)) {
                             return true;
                         }
+                    }
+                    else {
+                        sentinel.debug("Invalid event:ev: target label: " + value);
                     }
                 }
             }

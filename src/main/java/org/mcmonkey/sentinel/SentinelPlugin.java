@@ -34,7 +34,7 @@ public class SentinelPlugin extends JavaPlugin {
      * A map of all valid event targets.
      */
     public static HashSet<String> validEventTargets = new HashSet<>(
-            Arrays.asList("pvp", "pve", "pv", "pvnpc", "pvsentinel", "guarded_fight", "eve", "ev", "message")
+            Arrays.asList("pvp", "pve", "pv", "pvnpc", "pvsentinel", "guarded_fight", "eve", "ev", "message", "npcvnpc")
     );
 
     /**

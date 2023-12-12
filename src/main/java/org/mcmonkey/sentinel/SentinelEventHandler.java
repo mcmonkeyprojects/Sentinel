@@ -231,11 +231,11 @@ public class SentinelEventHandler implements Listener {
         if (damager instanceof LivingEntity) {
             LivingEntity damagerLiving = (LivingEntity) damager;
             for (SentinelTrait sentinel : cleanCurrentList()) {
-                if (sentinel.allTargets.isEventTarget(event)
+                if (sentinel.allTargets.isEventTarget(event, sentinel)
                         && sentinel.targetingHelper.canSee(damagerLiving) && !sentinel.targetingHelper.isIgnored(damagerLiving)) {
                     sentinel.targetingHelper.addTarget(damager.getUniqueId());
                 }
-                if (sentinel.allAvoids.isEventTarget(event)
+                if (sentinel.allAvoids.isEventTarget(event, sentinel)
                         && sentinel.targetingHelper.canSee(damagerLiving) && !sentinel.targetingHelper.isIgnored(damagerLiving)) {
                     sentinel.targetingHelper.addAvoid(damager.getUniqueId());
                 }
