@@ -221,6 +221,10 @@ public class SentinelItemHelper extends SentinelHelperObject {
             items[0] = items[bestIndex] == null ? null : items[bestIndex].clone();
             items[bestIndex] = held == null ? null : held.clone();
             inv.setContents(items);
+            if (!(sentinel.getLivingEntity() instanceof Player)) {
+                // Patch for non-player NPCs doing equipment differenty
+                sentinel.getLivingEntity().getEquipment().setItemInMainHand(items[0]);
+            }
             if (sentinel.getLivingEntity() instanceof Player && bestIndex == 40 && SentinelVersionCompat.v1_9 && sentinel.getLivingEntity().getEquipment() != null) {
                 // Patch for offhand, which is "in the inventory" but not really tracked through it
                 sentinel.getLivingEntity().getEquipment().setItemInOffHand(items[bestIndex]);
