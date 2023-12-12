@@ -58,6 +58,8 @@ permissions:
       sentinel.invincible: true
       # /sentinel protected
       sentinel.protected: true
+      # /sentinel protectfromrange
+      sentinel.protectfromrange: true
       # /sentinel fightback
       sentinel.fightback: true
       # /sentinel runaway

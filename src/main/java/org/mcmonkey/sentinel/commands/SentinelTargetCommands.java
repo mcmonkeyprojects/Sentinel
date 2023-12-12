@@ -289,6 +289,30 @@ public class SentinelTargetCommands {
         }
     }
 
+    @Command(aliases = {"sentinel"}, usage = "protectfromrange RANGE",
+            desc = "Sets the maximum range after which damage should start being ignored. If zero, this does nothing. Set eg 100 to ignore all damage from over 100 blocks away.",
+            modifiers = { "protectfromrange" }, permission = "sentinel.protectfromrange", min = 1, max = 2)
+    @Requirements(livingEntity = true, ownership = true, traits = {SentinelTrait.class})
+    public void protectFromRange(CommandContext args, CommandSender sender, SentinelTrait sentinel) {
+        if (args.argsLength() <= 1) {
+            sender.sendMessage(SentinelCommand.prefixGood + "Current protect-from-range: " + SentinelCommand.colorEmphasis + sentinel.protectFromRange);
+            return;
+        }
+        try {
+            double d = Double.parseDouble(args.getString(1));
+            if (d >= 0 && d < 500) {
+                sentinel.protectFromRange = d;
+                sender.sendMessage(SentinelCommand.prefixGood + "Protect-from-range set!");
+            }
+            else {
+                throw new NumberFormatException("Number out of range (must be >= 0 and < 500).");
+            }
+        }
+        catch (NumberFormatException ex) {
+            sender.sendMessage(SentinelCommand.prefixBad + "Invalid range number: " + ex.getMessage());
+        }
+    }
+
     @Command(aliases = {"sentinel"}, usage = "fightback ['true'/'false']",
             desc = "Toggles whether the NPC will fight back.",
             modifiers = {"fightback"}, permission = "sentinel.fightback", min = 1, max = 2)

@@ -372,8 +372,14 @@ public class SentinelTrait extends Trait {
     /**
      * Whether the NPC should be protected from damage by ignore targets.
      */
-    @Persist ("protected")
+    @Persist("protected")
     public boolean protectFromIgnores = false;
+
+    /**
+     * Maximum distance after which damage starts being ignored.
+     */
+    @Persist("protectFromRange")
+    public double protectFromRange = 0;
 
     /**
      * Whether the NPC "fights back" against attacks (targets anyone that damages it).
@@ -973,6 +979,14 @@ public class SentinelTrait extends Trait {
                 return;
             }
             else if (projectileSource != null && targetingHelper.isIgnored(projectileSource)) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+        if (isMe && protectFromRange > 0) {
+            Location loc1 = damager.getLocation();
+            Location loc2 = getLivingEntity().getLocation();
+            if (loc1.getWorld() != loc2.getWorld() || loc1.distanceSquared(loc2) > protectFromRange * protectFromRange) {
                 event.setCancelled(true);
                 return;
             }

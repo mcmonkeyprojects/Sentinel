@@ -221,6 +221,7 @@ Sentinel is integrated into by external plugins as well, including:
     - /sentinel squad SQUAD - Sets the NPC's squad name (null for none). NPCs with the same squad name share aggro (if a player angers one NPC, the rest get angry too).
     - /sentinel reach REACH - Sets the NPC's reach (how far it can punch).
     - /sentinel projectilerange RANGE - Sets the NPC's projectile range (how far it is willing to shoot projectiles).
+    - /sentinel protectfromrange RANGE - Sets the maximum range after which damage should start being ignored. If zero, this does nothing. Set eg 100 to ignore all damage from over 100 blocks away.
     - /sentinel avoidreturnpoint - Changes the location the NPC runs to when avoid mode is activated, or removes it if the NPC is already there.
 - **Toggleable NPC configuration commands:**
     - /sentinel invincible \['true'/'false'\] - Toggles whether the NPC is invincible.

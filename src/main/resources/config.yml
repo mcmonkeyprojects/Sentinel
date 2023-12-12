@@ -21,6 +21,8 @@ sentinel defaults:
     heal rate: 100
     # Whether the NPC should be protected from damage by ignore targets.
     protected: true
+    # Maximum range after which damage should start being ignored. If zero, this does nothing. Set eg 100 to ignore all damage from over 100 blocks away.
+    protect from range: 0
     # Whether this NPC fights back.
     fightback: true
     # Whether this NPC needs ammo to fight with.
