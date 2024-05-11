@@ -1,6 +1,7 @@
 package org.mcmonkey.sentinel;
 
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Represents an integration of an external plugin or system into Sentinel.
@@ -51,6 +52,14 @@ public class SentinelIntegration {
      * (and no default attack handling is needed).
      */
     public boolean tryAttack(SentinelTrait st, LivingEntity ent) {
+        return false;
+    }
+
+    /**
+     * For autoswitch logic, return 'true' if the item should be considered a valid ranged weapon to swap to.
+     * If Sentinel's core and all integrations return 'false', the item will be considered a melee weapon.
+     */
+    public boolean itemIsRanged(SentinelTrait sentinel, ItemStack item) {
         return false;
     }
 }

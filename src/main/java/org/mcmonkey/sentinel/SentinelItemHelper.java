@@ -289,7 +289,7 @@ public class SentinelItemHelper extends SentinelHelperObject {
      * Returns whether the NPC is holding a ranged weapon.
      */
     public boolean isRanged(ItemStack item) {
-        return usesBow(item)
+        if (usesBow(item)
                 || usesFireball(item)
                 || usesSnowball(item)
                 || usesLightning(item)
@@ -300,7 +300,15 @@ public class SentinelItemHelper extends SentinelHelperObject {
                 || usesSpectral(item)
                 || usesPotion(item)
                 || usesLlamaSpit(item)
-                || usesShulkerBullet(item);
+                || usesShulkerBullet(item)) {
+            return true;
+        }
+        for (SentinelIntegration integration : SentinelPlugin.integrations) {
+            if (integration.itemIsRanged(sentinel, item)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

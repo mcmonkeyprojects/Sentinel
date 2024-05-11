@@ -23,6 +23,15 @@ public class SentinelCrackShot extends SentinelIntegration {
     }
 
     @Override
+    public boolean itemIsRanged(SentinelTrait sentinel, ItemStack item) {
+        if (!(sentinel.getLivingEntity() instanceof Player)) {
+            return false;
+        }
+        CSDirector direc = (CSDirector) Bukkit.getPluginManager().getPlugin("CrackShot");
+        return direc.itemParentNode(item, (Player) sentinel.getLivingEntity()) != null;
+    }
+
+    @Override
     public boolean tryAttack(SentinelTrait st, LivingEntity ent) {
         if (!(st.getLivingEntity() instanceof Player)) {
             return false;
