@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.mcmonkey.sentinel.utilities.SentinelAPIBreakageFix;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 import org.mcmonkey.sentinel.utilities.VelocityTracker;
 
@@ -125,8 +126,8 @@ public class SentinelUtilities {
         }
         int level = 0;
         for (ItemStack item : entity.getEquipment().getArmorContents()) {
-            if (item != null && item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.PROTECTION_FIRE)) {
-                level = Math.max(level, item.getItemMeta().getEnchantLevel(Enchantment.PROTECTION_FIRE));
+            if (item != null && item.hasItemMeta() && item.getItemMeta().hasEnchant(SentinelAPIBreakageFix.ENCHANTMENT_PROTECTION_FIRE)) {
+                level = Math.max(level, item.getItemMeta().getEnchantLevel(SentinelAPIBreakageFix.ENCHANTMENT_PROTECTION_FIRE));
             }
         }
         return level;

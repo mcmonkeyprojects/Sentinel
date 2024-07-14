@@ -38,7 +38,13 @@ public class SentinelNMSHelper {
                 nmsDataWatcher = Class.forName("net.minecraft.network.syncher.DataWatcher"); // SynchedEntityData
                 nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject"); // EntityDataAccessor
                 nmsEntityEnderman = Class.forName("net.minecraft.world.entity.monster.EntityEnderman");
-                if (SentinelVersionCompat.v1_20 && !SentinelVersionCompat.vFuture) { // 1.20 names
+                if (SentinelVersionCompat.v1_21 && !SentinelVersionCompat.vFuture) { // 1.21 names
+                    // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.21
+                    endermanAngryField = "ce"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
+                    broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
+                    dataWatcherSet = "a"; // net.minecraft.network.syncher.SynchedEntityData#set
+                }
+                else if (SentinelVersionCompat.v1_20 && !SentinelVersionCompat.v1_21) { // 1.20 names
                     try {
                         // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.20.2
                         if (nmsEntityEnderman.getDeclaredField("bV") != null) {

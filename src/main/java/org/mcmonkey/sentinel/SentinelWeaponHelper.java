@@ -3,7 +3,6 @@ package org.mcmonkey.sentinel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -13,10 +12,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 import org.mcmonkey.sentinel.targeting.SentinelTarget;
-import org.mcmonkey.sentinel.utilities.SentinelNMSHelper;
+import org.mcmonkey.sentinel.utilities.SentinelAPIBreakageFix;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
 import java.util.HashMap;
@@ -26,19 +24,27 @@ import java.util.HashMap;
  */
 public class SentinelWeaponHelper extends SentinelHelperObject {
 
-    public static final EntityType LINGERING_POTION, TIPPED_ARROW;
+    public static final EntityType LINGERING_POTION, TIPPED_ARROW, SPLASH_POTION;
 
     static {
-        if (SentinelVersionCompat.v1_14) {
-            LINGERING_POTION = EntityType.SPLASH_POTION;
+        if (SentinelVersionCompat.v1_21) {
+            LINGERING_POTION = EntityType.POTION;
+            SPLASH_POTION = EntityType.POTION;
+            TIPPED_ARROW = EntityType.ARROW;
+        }
+        else if (SentinelVersionCompat.v1_14) {
+            LINGERING_POTION = EntityType.valueOf("SPLASH_POTION");
+            SPLASH_POTION = EntityType.valueOf("SPLASH_POTION");
             TIPPED_ARROW = EntityType.ARROW;
         }
         else if (SentinelVersionCompat.v1_9) {
             LINGERING_POTION = EntityType.valueOf("LINGERING_POTION");
+            SPLASH_POTION = EntityType.valueOf("SPLASH_POTION");
             TIPPED_ARROW = EntityType.valueOf("TIPPED_ARROW");
         }
         else {
             LINGERING_POTION = null;
+            SPLASH_POTION = null;
             TIPPED_ARROW = null;
         }
     }
@@ -55,11 +61,11 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         HashMap.SimpleEntry<Location, Vector> start = sentinel.getLaunchDetail(target, lead);
         Entity entpotion;
         if (SentinelVersionCompat.v1_14 || !SentinelVersionCompat.v1_9) {
-            entpotion = start.getKey().getWorld().spawnEntity(start.getKey(), EntityType.SPLASH_POTION);
+            entpotion = start.getKey().getWorld().spawnEntity(start.getKey(), SPLASH_POTION);
         }
         else { // 1_9 to 1_13 temporarily had a unique type for lingering
             entpotion = start.getKey().getWorld().spawnEntity(start.getKey(),
-                    potion.getType() == Material.SPLASH_POTION ? EntityType.SPLASH_POTION : LINGERING_POTION);
+                    potion.getType() == Material.SPLASH_POTION ? SPLASH_POTION : LINGERING_POTION);
         }
         ((ThrownPotion) entpotion).setShooter(getLivingEntity());
         ((ThrownPotion) entpotion).setItem(potion);
@@ -99,7 +105,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
                 if (type.getType() == Material.FIREWORK_ROCKET) {
                     FireworkMeta meta = (FireworkMeta) type.getItemMeta();
                     meta.setPower(3);
-                    arrow = launchStart.getWorld().spawn(launchStart, EntityType.FIREWORK.getEntityClass(), (e) -> {
+                    arrow = launchStart.getWorld().spawn(launchStart, SentinelAPIBreakageFix.ENTITY_TYPE_FIREWORK.getEntityClass(), (e) -> {
                         ((Firework) e).setShotAtAngle(true);
                         ((Firework) e).setFireworkMeta(meta);
                         e.setVelocity(velocity);
@@ -114,9 +120,9 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
                     ((AbstractArrow) arrow).setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                     if (type.getItemMeta() instanceof PotionMeta) {
                         PotionData data = ((PotionMeta) type.getItemMeta()).getBasePotionData();
-                        if (data.getType() == null || data.getType() == PotionType.UNCRAFTABLE) {
+                        if (data.getType() == null || data.getType() == SentinelAPIBreakageFix.POTION_TYPE_UNCRAFTABLE) {
                             if (SentinelPlugin.debugMe) {
-                                sentinel.debug("Potion data '" + data + "' for '" + type.toString() + "' is invalid.");
+                                sentinel.debug("Potion data '" + data + "' for '" + type + "' is invalid.");
                             }
                         }
                         else {
@@ -141,7 +147,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
             ((Projectile) arrow).setShooter(getLivingEntity());
             arrow.setVelocity(velocity);
         }
-        if (sentinel.itemHelper.getHeldItem().containsEnchantment(Enchantment.ARROW_FIRE)) {
+        if (sentinel.itemHelper.getHeldItem().containsEnchantment(SentinelAPIBreakageFix.ENCHANTMENT_ARROW_FIRE)) {
             arrow.setFireTicks(10000);
         }
         if (SentinelPlugin.instance.arrowCleanupTime > 0) {
@@ -286,7 +292,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         sentinel.stats_evokerFangsSpawned++;
         sentinel.faceLocation(target);
         if (SentinelVersionCompat.v1_13) {
-            getLivingEntity().getWorld().spawnParticle(Particle.SPELL, getLivingEntity().getEyeLocation().add(0, 1, 0), 10, 1, 1, 1);
+            getLivingEntity().getWorld().spawnParticle(SentinelAPIBreakageFix.PARTICLE_SPELL, getLivingEntity().getEyeLocation().add(0, 1, 0), 10, 1, 1, 1);
         }
         Vector forward = getLivingEntity().getEyeLocation().getDirection().setY(0).normalize();
         Location start = getLivingEntity().getLocation().clone().add(forward.clone().multiply(Math.max(3, sentinel.firingMinimumRange())));

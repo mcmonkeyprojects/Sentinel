@@ -44,6 +44,7 @@ import org.mcmonkey.sentinel.targeting.SentinelTarget;
 import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 import org.mcmonkey.sentinel.targeting.SentinelTargetList;
 import org.mcmonkey.sentinel.targeting.SentinelTargetingHelper;
+import org.mcmonkey.sentinel.utilities.SentinelAPIBreakageFix;
 import org.mcmonkey.sentinel.utilities.SentinelNMSHelper;
 import org.mcmonkey.sentinel.utilities.SentinelVersionCompat;
 
@@ -1275,15 +1276,15 @@ public class SentinelTrait extends Trait {
         }
         // TODO: Less arbitrary values, more game-like calculations.
         double multiplier = 1;
-        multiplier += weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.DAMAGE_ALL)
-                ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL) * 0.2;
+        multiplier += weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(SentinelAPIBreakageFix.ENCHANTMENT_DAMAGE_ALL)
+                ? 0 : weapon.getItemMeta().getEnchantLevel(SentinelAPIBreakageFix.ENCHANTMENT_DAMAGE_ALL) * 0.2;
         Material weaponType = weapon.getType();
         if (SentinelVersionCompat.BOW_MATERIALS.contains(weaponType)) {
             if (!forRangedAttacks) {
                 return 1;
             }
-            return 6 * (1 + (weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)
-                    ? 0 : weapon.getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE) * 0.3));
+            return 6 * (1 + (weapon.getItemMeta() == null || !weapon.getItemMeta().hasEnchant(SentinelAPIBreakageFix.ENCHANTMENT_ARROW_DAMAGE)
+                    ? 0 : weapon.getItemMeta().getEnchantLevel(SentinelAPIBreakageFix.ENCHANTMENT_ARROW_DAMAGE) * 0.3));
         }
         Double damageMult = SentinelVersionCompat.WEAPON_DAMAGE_MULTIPLIERS.get(weaponType);
         if (damageMult == null) {

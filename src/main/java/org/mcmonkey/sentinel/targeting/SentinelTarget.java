@@ -7,6 +7,7 @@ import org.bukkit.entity.LivingEntity;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.SentinelUtilities;
+import org.mcmonkey.sentinel.utilities.SentinelAPIBreakageFix;
 
 import java.util.*;
 
@@ -45,12 +46,12 @@ public class SentinelTarget {
             SHEEP = new SentinelTarget(new EntityType[]{EntityType.SHEEP}, "SHEEP"),
             CHICKENS = new SentinelTarget(new EntityType[]{EntityType.CHICKEN}, "CHICKEN", "DUCK"),
             HORSES = new SentinelTarget(new EntityType[]{EntityType.HORSE}, "HORSE"),
-            MUSHROOM_COW = new SentinelTarget(new EntityType[]{EntityType.MUSHROOM_COW}, "MUSHROOM_COW", "MUSHROOMCOW", "MOOSHROOM"),
+            MUSHROOM_COW = new SentinelTarget(new EntityType[]{SentinelAPIBreakageFix.ENTITY_TYPE_MUSHROOM_COW}, "MUSHROOM_COW", "MUSHROOMCOW", "MOOSHROOM"),
             IRON_GOLEMS = new SentinelTarget(new EntityType[]{EntityType.IRON_GOLEM}, "IRON_GOLEM", "IRONGOLEM"),
             SQUIDS = new SentinelTarget(new EntityType[]{EntityType.SQUID}, "SQUID"),
             VILLAGER = new SentinelTarget(new EntityType[]{EntityType.VILLAGER}, "VILLAGER"),
             WOLVES = new SentinelTarget(new EntityType[]{EntityType.WOLF}, "WOLF", "WOLVE"),
-            SNOWMEN = new SentinelTarget(new EntityType[]{EntityType.SNOWMAN}, "SNOWMAN", "SNOWMEN"),
+            SNOWMEN = new SentinelTarget(new EntityType[]{SentinelAPIBreakageFix.ENTITY_TYPE_SNOWMAN}, "SNOWMAN", "SNOWMEN"),
             WITCHES = new SentinelTarget(new EntityType[]{EntityType.WITCH}, "WITCH"),
             GUARDIANS = new SentinelTarget(new EntityType[]{EntityType.GUARDIAN}, "GUARDIAN"),
             CREERERS = new SentinelTarget(new EntityType[]{EntityType.CREEPER}, "CREEPER"),
@@ -121,6 +122,11 @@ public class SentinelTarget {
      * Valid target types for 1.19 or higher.
      */
     public static SentinelTarget TADPOLES, FROGS, ALLAYS, WARDENS, CAMELS, SNIFFERS;
+
+    /**
+     * Valid target types for 1.21 or higher.
+     */
+    public static SentinelTarget ARMADILLOS, BOGGEDS, BREEZES;
 
     /**
      * Multiple-entity-type targets.

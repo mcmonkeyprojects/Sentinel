@@ -49,12 +49,13 @@ public class SentinelVersionCompat {
     /**
      * Boolean indicating if the server version is >= the named version.
      */
-    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14, v1_15, v1_16, v1_17, v1_18, v1_19, v1_20, vFuture;
+    public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14, v1_15, v1_16, v1_17, v1_18, v1_19, v1_20, v1_21, vFuture;
 
     static {
         String vers = Bukkit.getBukkitVersion(); // Returns in format like: 1.12.2-R0.1-SNAPSHOT
-        vFuture = vers.startsWith("1.21") || vers.startsWith("1.22") || vers.startsWith("1.23");
-        v1_20 = vers.startsWith("1.20") || vFuture;
+        vFuture = vers.startsWith("1.22") || vers.startsWith("1.23") || vers.startsWith("1.24") || vers.startsWith("1.25") || vers.startsWith("1.26");
+        v1_21 = vers.startsWith("1.21") || vFuture;
+        v1_20 = vers.startsWith("1.20") || v1_21;
         v1_19 = vers.startsWith("1.19") || v1_20;
         v1_18 = vers.startsWith("1.18") || v1_19;
         v1_17 = vers.startsWith("1.17") || v1_18;
@@ -200,7 +201,15 @@ public class SentinelVersionCompat {
             SentinelTarget.MONSTERS = new SentinelTarget(v1_19_monsters(), "MONSTER");
         }
         // 1.20 didn't add new mobs
-        if (v1_20) { // && !v1_21
+        if (v1_20 && !v1_21) {
+            SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_19_passive(), passiveNames());
+            SentinelTarget.MOBS = new SentinelTarget(combine(v1_19_passive(), v1_19_monsters()), "MOB");
+            SentinelTarget.MONSTERS = new SentinelTarget(v1_19_monsters(), "MONSTER");
+        }
+        if (v1_21) { // && !v1_22
+            SentinelTarget.HOGLINS = new SentinelTarget(new EntityType[]{EntityType.BREEZE}, "BREEZE");
+            SentinelTarget.HOGLINS = new SentinelTarget(new EntityType[]{EntityType.BOGGED}, "BOGGED", "BOGGEDSKELETON", "BOGGED_SKELETON");
+            SentinelTarget.HOGLINS = new SentinelTarget(new EntityType[]{EntityType.ARMADILLO}, "ARMADILLO");
             SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_19_passive(), passiveNames());
             SentinelTarget.MOBS = new SentinelTarget(combine(v1_19_passive(), v1_19_monsters()), "MOB");
             SentinelTarget.MONSTERS = new SentinelTarget(v1_19_monsters(), "MONSTER");
@@ -374,6 +383,9 @@ public class SentinelVersionCompat {
             SentinelPlugin.instance.getLogger().info("Sentinel loaded on a fully supported Minecraft version."
                 + " If you encounter any issues or need to ask a question, please join our Discord at https://discord.gg/Q6pZGSR and post in the '#sentinel' channel.");
         }
+        else if (!v1_8) {
+            SentinelPlugin.instance.getLogger().warning("You are running on an unrecognized (ancient?) minecraft version. This probably won't work.");
+        }
         else {
             SentinelPlugin.instance.getLogger().warning("You are running on an unrecognized (future?) minecraft version."
                 + " Support channel be guaranteed. Check if there is a newer version of Sentinel available that supports your minecraft version.");
@@ -425,8 +437,8 @@ public class SentinelVersionCompat {
 
     static EntityType[] v1_8_passive() {
         return new EntityType[]{
-                EntityType.PIG, EntityType.OCELOT, EntityType.COW, EntityType.RABBIT, EntityType.SHEEP, EntityType.CHICKEN, EntityType.MUSHROOM_COW,
-                EntityType.HORSE, EntityType.IRON_GOLEM, EntityType.SQUID, EntityType.VILLAGER, EntityType.WOLF, EntityType.SNOWMAN
+                EntityType.PIG, EntityType.OCELOT, EntityType.COW, EntityType.RABBIT, EntityType.SHEEP, EntityType.CHICKEN, SentinelAPIBreakageFix.ENTITY_TYPE_MUSHROOM_COW,
+                EntityType.HORSE, EntityType.IRON_GOLEM, EntityType.SQUID, EntityType.VILLAGER, EntityType.WOLF, SentinelAPIBreakageFix.ENTITY_TYPE_SNOWMAN
         };
     }
 
