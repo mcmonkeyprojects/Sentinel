@@ -1845,6 +1845,7 @@ public class SentinelTrait extends Trait {
      */
     @Override
     public void onSpawn() {
+        debug("Spawned.");
         isBlocking = false;
         lastEntityUUID = getLivingEntity().getUniqueId();
         stats_timesSpawned++;
@@ -2094,6 +2095,7 @@ public class SentinelTrait extends Trait {
      */
     @Override
     public void onDespawn() {
+        debug("Despawned.");
         targetingHelper.currentTargets.clear();
         targetingHelper.currentAvoids.clear();
         SentinelPlugin.instance.currentSentinelNPCs.remove(this);
