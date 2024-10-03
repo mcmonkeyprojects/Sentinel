@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
+import org.mcmonkey.sentinel.utilities.SentinelNMSHelper;
 import org.mcmonkey.sentinel.utilities.VelocityTracker;
 
 import java.util.ArrayList;
@@ -419,7 +420,7 @@ public class SentinelEventHandler implements Listener {
      */
     @EventHandler
     public void onInvClose(InventoryCloseEvent event) {
-        String invTitle = SentinelUtilities.getInventoryTitle(event);
+        String invTitle = SentinelNMSHelper.getInventoryTitle(event);
         if (invTitle.startsWith(InvPrefix)) {
             int id = Integer.parseInt(invTitle.substring(InvPrefix.length()));
             NPC npc = CitizensAPI.getNPCRegistry().getById(id);

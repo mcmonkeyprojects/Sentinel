@@ -4,6 +4,7 @@ import net.citizensnpcs.util.NMS;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.IronGolem;
+import org.bukkit.event.inventory.InventoryEvent;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -19,8 +20,14 @@ public class SentinelNMSHelper {
 
     private static boolean nmsWorks = true, endermanValid = false;
 
+    public static MethodHandle INVENTORYCLOSEEVENT_GETVIEW, INVENTORYVIEW_GETTITLE;
+
     public static void init() {
         try {
+            if (SentinelVersionCompat.v1_10) {
+                INVENTORYCLOSEEVENT_GETVIEW = NMS.getMethodHandle(InventoryEvent.class, "getView", true);
+                INVENTORYVIEW_GETTITLE = NMS.getMethodHandle(INVENTORYCLOSEEVENT_GETVIEW.type().returnType(), "getTitle", true);
+            }
             if (!SentinelVersionCompat.v1_12) {
                 nmsWorks = false;
                 return;
@@ -132,5 +139,27 @@ public class SentinelNMSHelper {
         catch (Throwable ex) {
             endermanValid = false;
         }
+    }
+
+
+    /**
+     * Gets the title of an inventory in an InventoryEvent (compensates for code change between Spigot versions).
+     */
+    public static String getInventoryTitle(InventoryEvent event) {
+        try {
+            if (SentinelVersionCompat.v1_10) {
+                // Note: these methods are visible, but specific signatures change between versions, so reflection is only reliable inter-version option
+                Object view = INVENTORYCLOSEEVENT_GETVIEW.invoke(event);
+                return (String) INVENTORYVIEW_GETTITLE.invoke(view);
+            }
+            else {
+                Object inventory = event.getInventory();
+                return (String) inventory.getClass().getMethod("getTitle").invoke(inventory);
+            }
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

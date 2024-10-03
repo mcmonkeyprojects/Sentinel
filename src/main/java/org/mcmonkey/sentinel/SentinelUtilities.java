@@ -4,12 +4,9 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
@@ -51,23 +48,6 @@ public class SentinelUtilities {
             return 255;
         }
         return world.getMaxHeight();
-    }
-
-    /**
-     * Gets the title of an inventory in an InventoryCloseEvent (compensates for code change between Spigot versions).
-     */
-    public static String getInventoryTitle(InventoryCloseEvent event) {
-        if (SentinelVersionCompat.v1_10) {
-            return event.getView().getTitle();
-        }
-        try {
-            Object inventory = event.getInventory();
-            return (String) inventory.getClass().getMethod("getTitle").invoke(inventory);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     /**
