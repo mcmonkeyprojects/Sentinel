@@ -3,7 +3,6 @@ package org.mcmonkey.sentinel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -396,7 +395,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
             return;
         }
         if (SentinelVersionCompat.v1_12) {
-            float resist = (float) entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue();
+            float resist = (float) entity.getAttribute(SentinelAPIBreakageFix.ATTRIBUTE_GENERIC_KNOCKBACK_RESISTANCE).getValue();
             if (resist > 0.0 && resist <= 1.0) {
                 force *= (1.0 - resist);
             }

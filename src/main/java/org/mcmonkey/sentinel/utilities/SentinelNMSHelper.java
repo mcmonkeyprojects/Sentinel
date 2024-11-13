@@ -22,6 +22,15 @@ public class SentinelNMSHelper {
 
     public static MethodHandle INVENTORYCLOSEEVENT_GETVIEW, INVENTORYVIEW_GETTITLE;
 
+    public static Class<?> getOptionalFieldType(Class<?> clazz, String fieldName) {
+        try {
+            return clazz.getDeclaredField(fieldName).getType();
+        }
+        catch (NoSuchFieldException ex) {
+            return null;
+        }
+    }
+
     public static void init() {
         try {
             if (SentinelVersionCompat.v1_10) {
@@ -46,15 +55,21 @@ public class SentinelNMSHelper {
                 nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject"); // EntityDataAccessor
                 nmsEntityEnderman = Class.forName("net.minecraft.world.entity.monster.EntityEnderman");
                 if (SentinelVersionCompat.v1_21 && !SentinelVersionCompat.vFuture) { // 1.21 names
-                    // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.21
-                    endermanAngryField = "ce"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
+                    // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.21.3
+                    if (getOptionalFieldType(nmsEntityEnderman, "cc") == nmsDataWatcherObject) {
+                        endermanAngryField = "cc"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
+                    }
+                    else {
+                        // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.21
+                        endermanAngryField = "ce"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
+                    }
                     broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
                     dataWatcherSet = "a"; // net.minecraft.network.syncher.SynchedEntityData#set
                 }
                 else if (SentinelVersionCompat.v1_20 && !SentinelVersionCompat.v1_21) { // 1.20 names
                     try {
                         // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.20.2
-                        if (nmsEntityEnderman.getDeclaredField("bV") != null) {
+                        if (getOptionalFieldType(nmsEntityEnderman, "bV") == nmsDataWatcherObject) {
                             endermanAngryField = "bV"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
                         }
                     }
