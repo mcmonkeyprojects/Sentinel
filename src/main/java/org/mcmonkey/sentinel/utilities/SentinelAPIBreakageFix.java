@@ -29,9 +29,20 @@ public class SentinelAPIBreakageFix {
 
     public static PotionType POTION_TYPE_UNCRAFTABLE = _getEnumValue(PotionType.class, "UNCRAFTABLE"); // NOTE: Null after 1.21
 
-    public static Particle PARTICLE_SPELL = _getEnumValue(Particle.class, "SPELL", "EFFECT");
+    public static Object PARTICLE_SPELL;
 
-    public static Attribute ATTRIBUTE_GENERIC_KNOCKBACK_RESISTANCE = _getEnumValue(Attribute.class, "GENERIC_KNOCKBACK_RESISTANCE", "KNOCKBACK_RESISTANCE");
+    public static Object ATTRIBUTE_GENERIC_KNOCKBACK_RESISTANCE;
+
+    static {
+        try {
+            PARTICLE_SPELL = _getEnumValue(Particle.class, "SPELL", "EFFECT");
+        }
+        catch (Throwable ex) {};
+        try {
+            ATTRIBUTE_GENERIC_KNOCKBACK_RESISTANCE = _getEnumValue(Attribute.class, "GENERIC_KNOCKBACK_RESISTANCE", "KNOCKBACK_RESISTANCE");
+        }
+        catch (Throwable ex) {};
+    }
 
     /**
      * Note: not necessarily actually an enum.

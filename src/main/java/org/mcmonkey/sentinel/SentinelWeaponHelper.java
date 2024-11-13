@@ -3,6 +3,8 @@ package org.mcmonkey.sentinel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -291,7 +293,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
         sentinel.stats_evokerFangsSpawned++;
         sentinel.faceLocation(target);
         if (SentinelVersionCompat.v1_13) {
-            getLivingEntity().getWorld().spawnParticle(SentinelAPIBreakageFix.PARTICLE_SPELL, getLivingEntity().getEyeLocation().add(0, 1, 0), 10, 1, 1, 1);
+            getLivingEntity().getWorld().spawnParticle((Particle) SentinelAPIBreakageFix.PARTICLE_SPELL, getLivingEntity().getEyeLocation().add(0, 1, 0), 10, 1, 1, 1);
         }
         Vector forward = getLivingEntity().getEyeLocation().getDirection().setY(0).normalize();
         Location start = getLivingEntity().getLocation().clone().add(forward.clone().multiply(Math.max(3, sentinel.firingMinimumRange())));
@@ -395,7 +397,7 @@ public class SentinelWeaponHelper extends SentinelHelperObject {
             return;
         }
         if (SentinelVersionCompat.v1_12) {
-            float resist = (float) entity.getAttribute(SentinelAPIBreakageFix.ATTRIBUTE_GENERIC_KNOCKBACK_RESISTANCE).getValue();
+            float resist = (float) entity.getAttribute((Attribute) SentinelAPIBreakageFix.ATTRIBUTE_GENERIC_KNOCKBACK_RESISTANCE).getValue();
             if (resist > 0.0 && resist <= 1.0) {
                 force *= (1.0 - resist);
             }
