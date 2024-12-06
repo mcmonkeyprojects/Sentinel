@@ -176,12 +176,14 @@ public class SentinelItemHelper extends SentinelHelperObject {
                 break;
             }
         }
-        // Index 40 is offhand.
+        // Index 40 is offhand on some versions, but it later changed to be a non-inventory magic slot.
         if (index != -1 && index != 40) {
             ItemStack oldItem = SentinelUtilities.getOffhandItem(sentinel.getLivingEntity()).clone();
             ItemStack newItem = items[index].clone();
             items[index] = oldItem;
-            items[40] = newItem;
+            if (items.length >= 40) {
+                items[40] = newItem;
+            }
             inv.setContents(items);
             sentinel.getLivingEntity().getEquipment().setItemInOffHand(newItem);
             return true;
