@@ -55,13 +55,24 @@ public class SentinelNMSHelper {
                 nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject"); // EntityDataAccessor
                 nmsEntityEnderman = Class.forName("net.minecraft.world.entity.monster.EntityEnderman");
                 if (SentinelVersionCompat.v1_21 && !SentinelVersionCompat.vFuture) { // 1.21 names
-                    // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.21.3
-                    if (getOptionalFieldType(nmsEntityEnderman, "cc") == nmsDataWatcherObject) {
-                        endermanAngryField = "cc"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
+                    // Try multiple possible field names for different 1.21.x versions
+                    String[] possibleFields = {"cc", "ce", "cf", "cg", "ch", "ci", "cj", "ck", "cl", "cm", "cn", "co", "cp", "cq", "cr", "cs", "ct", "cu", "cv", "cw", "cx", "cy", "cz"};
+                    for (String fieldName : possibleFields) {
+                        if (getOptionalFieldType(nmsEntityEnderman, fieldName) == nmsDataWatcherObject) {
+                            endermanAngryField = fieldName;
+                            break;
+                        }
                     }
-                    else {
-                        // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.21
-                        endermanAngryField = "ce"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
+                    // Fallback to known mappings if the search above fails
+                    if (endermanAngryField == null) {
+                        // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.21.3
+                        if (getOptionalFieldType(nmsEntityEnderman, "cc") == nmsDataWatcherObject) {
+                            endermanAngryField = "cc"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
+                        }
+                        else if (getOptionalFieldType(nmsEntityEnderman, "ce") == nmsDataWatcherObject) {
+                            // https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.21
+                            endermanAngryField = "ce"; // net.minecraft.world.entity.monster.EnderMan#DATA_CREEPY
+                        }
                     }
                     broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
                     dataWatcherSet = "a"; // net.minecraft.network.syncher.SynchedEntityData#set
@@ -114,10 +125,28 @@ public class SentinelNMSHelper {
             NMSWORLD_BROADCASTENTITYEFFECT = NMS.getMethodHandle(nmsWorld, broadcastEffectMethod, true, nmsEntity, byte.class);
             DATWATCHER_SET = NMS.getMethodHandle(nmsDataWatcher, dataWatcherSet, true, nmsDataWatcherObject, Object.class);
             if (endermanAngryField != null && nmsEntityEnderman != null) {
-                Field dataWatcherAngryField = NMS.getField(nmsEntityEnderman, endermanAngryField);
-                dataWatcherAngryField.setAccessible(true);
-                ENTITYENDERMAN_DATAWATCHER_ANGRY = dataWatcherAngryField.get(null);
-                endermanValid = true;
+                try {
+                    Field dataWatcherAngryField = NMS.getField(nmsEntityEnderman, endermanAngryField);
+                    if (dataWatcherAngryField != null) {
+                        dataWatcherAngryField.setAccessible(true);
+                        ENTITYENDERMAN_DATAWATCHER_ANGRY = dataWatcherAngryField.get(null);
+                        endermanValid = true;
+                    }
+                    else {
+                        System.out.println("[Sentinel] Warning: Could not find enderman angry field '" + endermanAngryField + "' in class " + nmsEntityEnderman.getName() + ". Enderman functionality will be disabled.");
+                        endermanValid = false;
+                    }
+                }
+                catch (Exception ex) {
+                    System.out.println("[Sentinel] Warning: Failed to access enderman angry field '" + endermanAngryField + "': " + ex.getMessage() + ". Enderman functionality will be disabled.");
+                    endermanValid = false;
+                }
+            }
+            else {
+                if (endermanAngryField == null) {
+                    System.out.println("[Sentinel] Warning: No suitable enderman angry field found for this Minecraft version. Enderman functionality will be disabled.");
+                }
+                endermanValid = false;
             }
         }
         catch (Throwable ex) {
