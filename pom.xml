@@ -13,8 +13,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit.version>1.21.3-R0.1-SNAPSHOT</bukkit.version>
-        <citizens.version>2.0.36-SNAPSHOT</citizens.version>
+        <bukkit.version>1.21.8-R0.1-SNAPSHOT</bukkit.version>
+        <citizens.version>2.0.39-SNAPSHOT</citizens.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
     </properties>
 
