@@ -1,5 +1,6 @@
 package org.mcmonkey.sentinel.targeting;
 
+import net.citizensnpcs.api.ai.NavigatorParameters;
 import net.citizensnpcs.api.astar.AStarMachine;
 import net.citizensnpcs.api.astar.pathfinder.*;
 import org.bukkit.Bukkit;
@@ -337,7 +338,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
 
     private static AStarMachine ASTAR = AStarMachine.createWithDefaultStorage();
 
-    private static BlockExaminer examiner = new MinecraftBlockExaminer();
+    private static NavigatorParameters parameters = new NavigatorParameters();
 
     /**
      * Returns a spot to run to if running in a certain direction.
@@ -345,7 +346,7 @@ public class SentinelTargetingHelper extends SentinelHelperObject {
      */
     public static Location findSpotForRunDirection(Location start, double distance, Vector direction) {
         VectorGoal goal = new VectorGoal(start.clone().add(direction.clone().multiply(distance)), 4);
-        VectorNode startNode = new VectorNode(goal, start, new ChunkBlockSource(start, (float)distance + 10), examiner);
+        VectorNode startNode = new VectorNode(goal, start, new ChunkBlockSource(start, (float)distance + 10), parameters);
         Path resultPath = (Path) ASTAR.runFully(goal, startNode, (int)(distance * 50));
         if (resultPath == null || resultPath.isComplete()) {
             return null;
