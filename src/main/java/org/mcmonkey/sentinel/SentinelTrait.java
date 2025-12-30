@@ -1463,7 +1463,7 @@ public class SentinelTrait extends Trait {
     public void pauseWaypoints() {
         otherBehaviorPaused = true;
         Waypoints wp = npc.getTraitNullable(Waypoints.class);
-        if (wp != null) {
+        if (wp != null && wp.getCurrentProvider() != null) {
             if (!wp.getCurrentProvider().isPaused()) {
                 wp.getCurrentProvider().setPaused(true);
             }
@@ -1480,7 +1480,9 @@ public class SentinelTrait extends Trait {
         otherBehaviorPaused = false;
         if (needsToUnpause && npc.hasTrait(Waypoints.class)) {
             Waypoints wp = npc.getOrAddTrait(Waypoints.class);
-            wp.getCurrentProvider().setPaused(false);
+            if (wp.getCurrentProvider() != null) {
+                wp.getCurrentProvider().setPaused(false);
+            }
             needsToUnpause = false;
         }
         Bukkit.getPluginManager().callEvent(new SentinelCombatStateChangeEvent(getNPC(), false));
@@ -1778,6 +1780,9 @@ public class SentinelTrait extends Trait {
         Location nearest = null;
         double dist = MAX_DIST;
         Waypoints wp = npc.getOrAddTrait(Waypoints.class);
+        if (wp.getCurrentProvider() == null) {
+            return null;
+        }
         if (wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider) {
             for (Waypoint wayp : ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()) {
                 Location l = wayp.getLocation();
