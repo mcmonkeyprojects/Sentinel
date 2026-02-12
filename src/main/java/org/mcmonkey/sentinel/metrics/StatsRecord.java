@@ -41,6 +41,9 @@ public class StatsRecord extends Thread {
         int mcPart = mcVersion.indexOf("(MC: ");
         int endPart = mcPart == -1 ? -1 : mcVersion.indexOf(")", mcPart);
         String platform = secondDash == -1 ? "" : mcVersion.substring(firstDash + 1, secondDash);
+        if (platform.matches("^\\d+$")) {
+            platform = Bukkit.getName();
+        }
         mcVersion = (endPart == -1) ? "" : mcVersion.substring(mcPart + "(MC: ".length(), endPart);
         content = "postid=pluginstats&plugin=Sentinel"
                 + "&differentiator=" + differentiator
