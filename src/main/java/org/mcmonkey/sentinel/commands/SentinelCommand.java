@@ -14,6 +14,7 @@ import org.bukkit.command.*;
 import org.mcmonkey.sentinel.SentinelPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -68,16 +69,25 @@ public class SentinelCommand implements CommandExecutor, TabCompleter {
         command.setTabCompleter(this);
     }
 
-    private static Field commandInfoMethodField;
+    private static Field commandInfoMethodField, annotationsField;
 
     private void grabCommandField() {
         try {
-            Field field = CommandManager.CommandInfo.class.getDeclaredField("method");
-            field.setAccessible(true);
-            commandInfoMethodField = field;
+            annotationsField = CommandManager.CommandInfo.class.getDeclaredField("annotations");
+            annotationsField.setAccessible(true);
         }
         catch (Exception ex) {
-            ex.printStackTrace();
+            // ignore
+        }
+        try {
+            commandInfoMethodField = CommandManager.CommandInfo.class.getDeclaredField("method");
+            commandInfoMethodField.setAccessible(true);
+        }
+        catch (Exception ex) {
+            // ignore
+        }
+        if (annotationsField == null && commandInfoMethodField == null) {
+            SentinelPlugin.instance.getLogger().warning("Cannot read CommandInfo method or annotations fields, command handling will fail.");
         }
     }
 
@@ -87,12 +97,29 @@ public class SentinelCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         try {
-            Method method = (Method) commandInfoMethodField.get(info);
-            Requirements[] req = method.getDeclaredAnnotationsByType(Requirements.class);
-            if (req == null || req.length == 0) {
+            Requirements req = null;
+            if (annotationsField != null) {
+                List<Annotation> annotations = (List<Annotation>) annotationsField.get(info);
+                if (annotations != null) {
+                    for (Annotation annotation : annotations) {
+                        if (annotation instanceof Requirements) {
+                            req = (Requirements) annotation;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (commandInfoMethodField != null && req == null) {
+                Method method = (Method) commandInfoMethodField.get(info);
+                Requirements[] reqs = method.getDeclaredAnnotationsByType(Requirements.class);
+                if (reqs.length > 0) {
+                    req = reqs[0];
+                }
+            }
+            if (req == null) {
                 return false;
             }
-            for (Class<? extends Trait> traitClass : req[0].traits()) {
+            for (Class<? extends Trait> traitClass : req.traits()) {
                 if (traitClass.equals(SentinelTrait.class)) {
                     return true;
                 }

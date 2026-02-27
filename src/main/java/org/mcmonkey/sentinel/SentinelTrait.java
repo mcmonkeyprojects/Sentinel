@@ -1867,8 +1867,10 @@ public class SentinelTrait extends Trait {
      * Causes the NPC to speak a message to a player.
      */
     public void sayTo(Player player, String message) {
-        SpeechContext sc = new SpeechContext(npc, message, player);
-        npc.getDefaultSpeechController().speak(sc);
+        //SpeechContext sc = new SpeechContext(npc, message, player);
+        //npc.getDefaultSpeechController().speak(sc);
+        // TODO: ?? why did speech controller get broken?
+        player.sendMessage(SentinelCommand.colorEmphasis + "[" + npc.getName() + "]: " + SentinelCommand.colorBasic + message);
     }
 
     /**
