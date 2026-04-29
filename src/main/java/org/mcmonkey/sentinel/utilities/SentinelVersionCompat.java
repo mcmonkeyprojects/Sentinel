@@ -53,7 +53,7 @@ public class SentinelVersionCompat {
 
     static {
         String vers = Bukkit.getBukkitVersion(); // Returns in format like: 1.12.2-R0.1-SNAPSHOT
-        vFuture = vers.startsWith("1.22") || vers.startsWith("1.23") || vers.startsWith("1.24") || vers.startsWith("1.25") || vers.startsWith("1.26");
+        vFuture = vers.startsWith("26.") || vers.startsWith("27.") || vers.startsWith("28.") || vers.startsWith("29.") || vers.startsWith("30.");
         v1_21 = vers.startsWith("1.21") || vFuture;
         v1_20 = vers.startsWith("1.20") || v1_21;
         v1_19 = vers.startsWith("1.19") || v1_20;
