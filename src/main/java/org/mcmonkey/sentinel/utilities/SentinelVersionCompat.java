@@ -53,7 +53,8 @@ public class SentinelVersionCompat {
 
     static {
         String vers = Bukkit.getBukkitVersion(); // Returns in format like: 1.12.2-R0.1-SNAPSHOT
-        vFuture = vers.startsWith("26.") || vers.startsWith("27.") || vers.startsWith("28.") || vers.startsWith("29.");
+        vFuture = vers.startsWith("26.2") || vers.startsWith("26.3") || vers.startsWith("26.4")
+                || vers.startsWith("27.") || vers.startsWith("28.") || vers.startsWith("29.");
         v26_1 = vers.startsWith("26.1") || vFuture;
         v1_21 = vers.startsWith("1.21") || v26_1;
         v1_20 = vers.startsWith("1.20") || v1_21;
@@ -207,21 +208,15 @@ public class SentinelVersionCompat {
             SentinelTarget.MOBS = new SentinelTarget(combine(v1_19_passive(), v1_19_monsters()), "MOB");
             SentinelTarget.MONSTERS = new SentinelTarget(v1_19_monsters(), "MONSTER");
         }
-        // TODO: The below section is entirely wrong and needs redoing properly
         if (v1_21) {
-            SentinelTarget.HOGLINS = new SentinelTarget(new EntityType[]{EntityType.BREEZE}, "BREEZE");
-            SentinelTarget.HOGLINS = new SentinelTarget(new EntityType[]{EntityType.BOGGED}, "BOGGED", "BOGGEDSKELETON", "BOGGED_SKELETON");
-            SentinelTarget.HOGLINS = new SentinelTarget(new EntityType[]{EntityType.ARMADILLO}, "ARMADILLO");
+            SentinelTarget.BREEZES = new SentinelTarget(new EntityType[]{EntityType.BREEZE}, "BREEZE");
+            SentinelTarget.BOGGEDS = new SentinelTarget(new EntityType[]{EntityType.BOGGED}, "BOGGED", "BOGGEDSKELETON", "BOGGED_SKELETON");
+            SentinelTarget.ARMADILLOS = new SentinelTarget(new EntityType[]{EntityType.ARMADILLO}, "ARMADILLO");
         }
-        if (v1_21 && !v26_1) {
-            SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_19_passive(), passiveNames());
-            SentinelTarget.MOBS = new SentinelTarget(combine(v1_19_passive(), v1_19_monsters()), "MOB");
-            SentinelTarget.MONSTERS = new SentinelTarget(v1_19_monsters(), "MONSTER");
-        }
-        if (v26_1) { // && !v26_2 or v27
-            SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_19_passive(), passiveNames());
-            SentinelTarget.MOBS = new SentinelTarget(combine(v1_19_passive(), v1_19_monsters()), "MOB");
-            SentinelTarget.MONSTERS = new SentinelTarget(v1_19_monsters(), "MONSTER");
+        if (v1_21) { // && !v1_22
+            SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_21_passive(), passiveNames());
+            SentinelTarget.MOBS = new SentinelTarget(combine(v1_21_passive(), v1_21_monsters()), "MOB");
+            SentinelTarget.MONSTERS = new SentinelTarget(v1_21_monsters(), "MONSTER");
         }
         // ========================== End Entities ==========================
         // ========================== Begin Materials ==========================
@@ -490,6 +485,10 @@ public class SentinelVersionCompat {
         return res;
     }
 
+    static EntityType[] v1_21_passive() {
+        return combine(v1_19_passive(), EntityType.ARMADILLO);
+    }
+
     static EntityType[] v1_8_monsters() {
         return new EntityType[]{EntityType.GUARDIAN, EntityType.CREEPER, EntityType.SKELETON, EntityType.ZOMBIE,
                 EntityType.MAGMA_CUBE, EntityType.valueOf("PIG_ZOMBIE"), EntityType.SILVERFISH, EntityType.BAT, EntityType.BLAZE,
@@ -551,6 +550,10 @@ public class SentinelVersionCompat {
 
     static EntityType[] v1_19_monsters() {
         return combine(v1_16_monsters(), EntityType.WARDEN);
+    }
+
+    static EntityType[] v1_21_monsters() {
+        return combine(v1_16_monsters(), EntityType.BREEZE, EntityType.BOGGED);
     }
 
     /**
