@@ -117,7 +117,7 @@ public class SentinelNMSHelper {
         }
         catch (Throwable ex) {
             ex.printStackTrace();
-            nmsWorks = false; 
+            nmsWorks = false;
         }
     }
 
