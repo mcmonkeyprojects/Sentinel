@@ -7,7 +7,6 @@ import org.bukkit.entity.IronGolem;
 import org.bukkit.event.inventory.InventoryEvent;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Field;
 
 /**
  * Helper for NMS-based actions.
@@ -29,6 +28,34 @@ public class SentinelNMSHelper {
         }
     }
 
+    /**
+     * Returns the first of the given class names that exists (multi-mapping support: Mojang-mapped vs legacy Spigot-remapped NMS).
+     */
+    private static Class<?> classForFirst(String... classNames) {
+        for (String name : classNames) {
+            try {
+                return Class.forName(name);
+            }
+            catch (ClassNotFoundException ex) {
+                // Try the next candidate name.
+            }
+        }
+        throw new RuntimeException("None of the candidate NMS classes exist: " + String.join(", ", classNames));
+    }
+
+    /**
+     * Returns a handle for the first of the given method names that exists on the class (multi-mapping support: Mojang names vs obfuscated/Spigot names).
+     */
+    private static MethodHandle methodHandleForFirst(Class<?> clazz, Class<?>[] params, String... methodNames) {
+        for (String name : methodNames) {
+            MethodHandle handle = NMS.getMethodHandle(clazz, name, false, params);
+            if (handle != null) {
+                return handle;
+            }
+        }
+        throw new RuntimeException("None of the candidate NMS methods exist: " + String.join(", ", methodNames));
+    }
+
     public static void init() {
         try {
             if (SentinelVersionCompat.v1_10) {
@@ -47,9 +74,9 @@ public class SentinelNMSHelper {
             String broadcastEffectMethod = "broadcastEntityEffect", dataWatcherSet = "set";
             if (SentinelVersionCompat.v1_17) { // 1.17+ - Mojang mappings update
                 nmsEntity = Class.forName("net.minecraft.world.entity.Entity");
-                nmsWorld = Class.forName("net.minecraft.world.level.World"); // Level
-                nmsDataWatcher = Class.forName("net.minecraft.network.syncher.DataWatcher"); // SynchedEntityData
-                nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject"); // EntityDataAccessor
+                nmsWorld = classForFirst("net.minecraft.world.level.Level", "net.minecraft.world.level.World");
+                nmsDataWatcher = classForFirst("net.minecraft.network.syncher.SynchedEntityData", "net.minecraft.network.syncher.DataWatcher");
+                nmsDataWatcherObject = classForFirst("net.minecraft.network.syncher.EntityDataAccessor", "net.minecraft.network.syncher.DataWatcherObject");
                 if (SentinelVersionCompat.v1_21 && !SentinelVersionCompat.vFuture) { // 1.21 names
                     broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
                     dataWatcherSet = "a"; // net.minecraft.network.syncher.SynchedEntityData#set
@@ -80,12 +107,12 @@ public class SentinelNMSHelper {
             }
             NMSENTITY_WORLDGETTER = NMS.getFirstGetter(nmsEntity, nmsWorld);
             NMSENTITY_GETDATAWATCHER = NMS.getFirstGetter(nmsEntity, nmsDataWatcher);
-            NMSWORLD_BROADCASTENTITYEFFECT = NMS.getMethodHandle(nmsWorld, broadcastEffectMethod, true, nmsEntity, byte.class);
-            DATWATCHER_SET = NMS.getMethodHandle(nmsDataWatcher, dataWatcherSet, true, nmsDataWatcherObject, Object.class);
+            NMSWORLD_BROADCASTENTITYEFFECT = methodHandleForFirst(nmsWorld, new Class<?>[]{nmsEntity, byte.class}, "broadcastEntityEvent", broadcastEffectMethod);
+            DATWATCHER_SET = methodHandleForFirst(nmsDataWatcher, new Class<?>[]{nmsDataWatcherObject, Object.class}, "set", dataWatcherSet);
         }
         catch (Throwable ex) {
             ex.printStackTrace();
-            nmsWorks = false; 
+            nmsWorks = false;
         }
     }
 
