@@ -7,7 +7,6 @@ import org.bukkit.entity.IronGolem;
 import org.bukkit.event.inventory.InventoryEvent;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Field;
 
 /**
  * Helper for NMS-based actions.
@@ -29,6 +28,34 @@ public class SentinelNMSHelper {
         }
     }
 
+    /**
+     * Returns the first of the given class names that exists (multi-mapping support: Mojang-mapped vs legacy Spigot-remapped NMS).
+     */
+    private static Class<?> classForFirst(String... classNames) throws ClassNotFoundException {
+        for (String name : classNames) {
+            try {
+                return Class.forName(name);
+            }
+            catch (ClassNotFoundException ex) {
+                // Try the next candidate name.
+            }
+        }
+        throw new ClassNotFoundException("None of the candidate NMS classes exist: " + String.join(", ", classNames));
+    }
+
+    /**
+     * Returns a handle for the first of the given method names that exists on the class (multi-mapping support: Mojang names vs obfuscated/Spigot names).
+     */
+    private static MethodHandle methodHandleForFirst(Class<?> clazz, Class<?>[] params, String... methodNames) {
+        for (String name : methodNames) {
+            MethodHandle handle = NMS.getMethodHandle(clazz, name, false, params); // log=false: missing candidates are expected, don't spam the console
+            if (handle != null) {
+                return handle;
+            }
+        }
+        return null;
+    }
+
     public static void init() {
         try {
             if (SentinelVersionCompat.v1_10) {
@@ -47,9 +74,10 @@ public class SentinelNMSHelper {
             String broadcastEffectMethod = "broadcastEntityEffect", dataWatcherSet = "set";
             if (SentinelVersionCompat.v1_17) { // 1.17+ - Mojang mappings update
                 nmsEntity = Class.forName("net.minecraft.world.entity.Entity");
-                nmsWorld = Class.forName("net.minecraft.world.level.World"); // Level
-                nmsDataWatcher = Class.forName("net.minecraft.network.syncher.DataWatcher"); // SynchedEntityData
-                nmsDataWatcherObject = Class.forName("net.minecraft.network.syncher.DataWatcherObject"); // EntityDataAccessor
+                // Try Mojang-mapped names first (server runtime mappings since 1.20.5+, including 26.1), then the legacy Spigot-remapped names (1.17-1.21).
+                nmsWorld = classForFirst("net.minecraft.world.level.Level", "net.minecraft.world.level.World");
+                nmsDataWatcher = classForFirst("net.minecraft.network.syncher.SynchedEntityData", "net.minecraft.network.syncher.DataWatcher");
+                nmsDataWatcherObject = classForFirst("net.minecraft.network.syncher.EntityDataAccessor", "net.minecraft.network.syncher.DataWatcherObject");
                 if (SentinelVersionCompat.v1_21 && !SentinelVersionCompat.vFuture) { // 1.21 names
                     broadcastEffectMethod = "a"; // net.minecraft.world.level.Level#broadcastEntityEvent(Entity,byte)
                     dataWatcherSet = "a"; // net.minecraft.network.syncher.SynchedEntityData#set
@@ -80,8 +108,12 @@ public class SentinelNMSHelper {
             }
             NMSENTITY_WORLDGETTER = NMS.getFirstGetter(nmsEntity, nmsWorld);
             NMSENTITY_GETDATAWATCHER = NMS.getFirstGetter(nmsEntity, nmsDataWatcher);
-            NMSWORLD_BROADCASTENTITYEFFECT = NMS.getMethodHandle(nmsWorld, broadcastEffectMethod, true, nmsEntity, byte.class);
-            DATWATCHER_SET = NMS.getMethodHandle(nmsDataWatcher, dataWatcherSet, true, nmsDataWatcherObject, Object.class);
+            // Try the Mojang-mapped method name first (26.1+ runs on Mojang mappings), then fall back to the per-version Spigot/obfuscated name selected above.
+            NMSWORLD_BROADCASTENTITYEFFECT = methodHandleForFirst(nmsWorld, new Class<?>[]{nmsEntity, byte.class}, "broadcastEntityEvent", broadcastEffectMethod);
+            DATWATCHER_SET = methodHandleForFirst(nmsDataWatcher, new Class<?>[]{nmsDataWatcherObject, Object.class}, "set", dataWatcherSet);
+            if (NMSWORLD_BROADCASTENTITYEFFECT == null || DATWATCHER_SET == null) {
+                nmsWorks = false; // Couldn't resolve the NMS methods on this version; cosmetic NMS effects will be skipped (plugin otherwise functions normally).
+            }
         }
         catch (Throwable ex) {
             ex.printStackTrace();
