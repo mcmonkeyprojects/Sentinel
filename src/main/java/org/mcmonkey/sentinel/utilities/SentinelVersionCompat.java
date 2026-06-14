@@ -52,19 +52,9 @@ public class SentinelVersionCompat {
     public static final boolean v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14, v1_15, v1_16, v1_17, v1_18, v1_19, v1_20, v1_21, v26_1, vFuture;
 
     static {
-        String vers = Bukkit.getBukkitVersion(); // Returns in format like: 1.12.2-R0.1-SNAPSHOT (or 26.1.2-R0.1-SNAPSHOT for the post-1.x version scheme)
-        // Minecraft moved from the "1.x" scheme to a year-based one (e.g. 26.1.2 = year 26, major release 1, patch 2). Parse the leading "major.minor".
-        int versMajor = 1, versMinor = 0;
-        try {
-            String[] parts = vers.split("[.\\-]");
-            versMajor = Integer.parseInt(parts[0]);
-            versMinor = Integer.parseInt(parts[1]);
-        } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
-            // Leave as 1.0 (legacy "1.x" scheme); the startsWith checks below handle minor versions.
-        }
-        // Anything past the latest known release (26.1) is treated as future.
-        vFuture = versMajor > 26 || (versMajor == 26 && versMinor > 1);
-        v26_1 = (versMajor == 26 && versMinor >= 1) || vFuture;
+        String vers = Bukkit.getBukkitVersion(); // Returns in format like: 1.12.2-R0.1-SNAPSHOT
+        vFuture = vers.startsWith("26.") || vers.startsWith("27.") || vers.startsWith("28.") || vers.startsWith("29.");
+        v26_1 = vers.startsWith("26.1") || vFuture;
         v1_21 = vers.startsWith("1.21") || v26_1;
         v1_20 = vers.startsWith("1.20") || v1_21;
         v1_19 = vers.startsWith("1.19") || v1_20;
@@ -217,7 +207,8 @@ public class SentinelVersionCompat {
             SentinelTarget.MOBS = new SentinelTarget(combine(v1_19_passive(), v1_19_monsters()), "MOB");
             SentinelTarget.MONSTERS = new SentinelTarget(v1_19_monsters(), "MONSTER");
         }
-        if (v1_21) { // BREEZE/BOGGED/ARMADILLO added in 1.21, still present in newer versions
+        // TODO: The below section is entirely wrong and needs redoing properly
+        if (v1_21) {
             SentinelTarget.HOGLINS = new SentinelTarget(new EntityType[]{EntityType.BREEZE}, "BREEZE");
             SentinelTarget.HOGLINS = new SentinelTarget(new EntityType[]{EntityType.BOGGED}, "BOGGED", "BOGGEDSKELETON", "BOGGED_SKELETON");
             SentinelTarget.HOGLINS = new SentinelTarget(new EntityType[]{EntityType.ARMADILLO}, "ARMADILLO");
@@ -227,7 +218,7 @@ public class SentinelVersionCompat {
             SentinelTarget.MOBS = new SentinelTarget(combine(v1_19_passive(), v1_19_monsters()), "MOB");
             SentinelTarget.MONSTERS = new SentinelTarget(v1_19_monsters(), "MONSTER");
         }
-        if (v26_1) { // && !future ; 26.1 "Tiny Takeover" added no new mobs (only baby variants of existing mobs), so reuse the latest known lists
+        if (v26_1) { // && !v26_2 or v27
             SentinelTarget.PASSIVE_MOBS = new SentinelTarget(v1_19_passive(), passiveNames());
             SentinelTarget.MOBS = new SentinelTarget(combine(v1_19_passive(), v1_19_monsters()), "MOB");
             SentinelTarget.MONSTERS = new SentinelTarget(v1_19_monsters(), "MONSTER");

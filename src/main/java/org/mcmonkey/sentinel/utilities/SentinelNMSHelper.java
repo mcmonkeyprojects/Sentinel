@@ -31,7 +31,7 @@ public class SentinelNMSHelper {
     /**
      * Returns the first of the given class names that exists (multi-mapping support: Mojang-mapped vs legacy Spigot-remapped NMS).
      */
-    private static Class<?> classForFirst(String... classNames) throws ClassNotFoundException {
+    private static Class<?> classForFirst(String... classNames) {
         for (String name : classNames) {
             try {
                 return Class.forName(name);
@@ -40,7 +40,7 @@ public class SentinelNMSHelper {
                 // Try the next candidate name.
             }
         }
-        throw new ClassNotFoundException("None of the candidate NMS classes exist: " + String.join(", ", classNames));
+        throw new RuntimeException("None of the candidate NMS classes exist: " + String.join(", ", classNames));
     }
 
     /**
@@ -48,12 +48,12 @@ public class SentinelNMSHelper {
      */
     private static MethodHandle methodHandleForFirst(Class<?> clazz, Class<?>[] params, String... methodNames) {
         for (String name : methodNames) {
-            MethodHandle handle = NMS.getMethodHandle(clazz, name, false, params); // log=false: missing candidates are expected, don't spam the console
+            MethodHandle handle = NMS.getMethodHandle(clazz, name, false, params);
             if (handle != null) {
                 return handle;
             }
         }
-        return null;
+        throw new RuntimeException("None of the candidate NMS methods exist: " + String.join(", ", methodNames));
     }
 
     public static void init() {
@@ -74,7 +74,6 @@ public class SentinelNMSHelper {
             String broadcastEffectMethod = "broadcastEntityEffect", dataWatcherSet = "set";
             if (SentinelVersionCompat.v1_17) { // 1.17+ - Mojang mappings update
                 nmsEntity = Class.forName("net.minecraft.world.entity.Entity");
-                // Try Mojang-mapped names first (server runtime mappings since 1.20.5+, including 26.1), then the legacy Spigot-remapped names (1.17-1.21).
                 nmsWorld = classForFirst("net.minecraft.world.level.Level", "net.minecraft.world.level.World");
                 nmsDataWatcher = classForFirst("net.minecraft.network.syncher.SynchedEntityData", "net.minecraft.network.syncher.DataWatcher");
                 nmsDataWatcherObject = classForFirst("net.minecraft.network.syncher.EntityDataAccessor", "net.minecraft.network.syncher.DataWatcherObject");
@@ -108,12 +107,8 @@ public class SentinelNMSHelper {
             }
             NMSENTITY_WORLDGETTER = NMS.getFirstGetter(nmsEntity, nmsWorld);
             NMSENTITY_GETDATAWATCHER = NMS.getFirstGetter(nmsEntity, nmsDataWatcher);
-            // Try the Mojang-mapped method name first (26.1+ runs on Mojang mappings), then fall back to the per-version Spigot/obfuscated name selected above.
             NMSWORLD_BROADCASTENTITYEFFECT = methodHandleForFirst(nmsWorld, new Class<?>[]{nmsEntity, byte.class}, "broadcastEntityEvent", broadcastEffectMethod);
             DATWATCHER_SET = methodHandleForFirst(nmsDataWatcher, new Class<?>[]{nmsDataWatcherObject, Object.class}, "set", dataWatcherSet);
-            if (NMSWORLD_BROADCASTENTITYEFFECT == null || DATWATCHER_SET == null) {
-                nmsWorks = false; // Couldn't resolve the NMS methods on this version; cosmetic NMS effects will be skipped (plugin otherwise functions normally).
-            }
         }
         catch (Throwable ex) {
             ex.printStackTrace();
